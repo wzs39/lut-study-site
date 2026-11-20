@@ -13,7 +13,7 @@ window.STUDY_SITE_CONFIG = {
   storageBucket: "materials",
   tableName: "chapter_materials",
   requirePasscode: false,
-  githubRepo: "overthinknow/lut-study-site",
+  githubRepo: "wzs39/lut-study-site",
   maxFileSizeMB: 25,
   allowedExtensions: [
     ".pdf", ".pptx", ".ppt", ".docx", ".doc",
