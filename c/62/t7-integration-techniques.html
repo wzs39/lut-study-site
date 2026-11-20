@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 章 · 微积分基本定理与积分方法 · 62</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-4.html">第 4 章 积分</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">7.1 微积分基本定理（第一部分）</a><a class="toc-l3" href="#s3">7.2 微积分基本定理（第二部分）</a><a class="toc-l3" href="#s4">7.3 函数的平均值</a><a class="toc-l3" href="#s5">7.4 分段连续函数</a><a class="toc-l3" href="#s6">7.5 用 FTC 计算定积分</a><a class="toc-l3" href="#s7">7.6 曲线下方的面积</a><a class="toc-l3" href="#s8">7.7 两曲线之间的面积</a><a class="toc-l3" href="#s9">7.8 定积分的换元法</a><a class="toc-l3" href="#s10">7.9 不定积分的换元与三道任务</a><a class="toc-l3" href="#s11">7.10 三角函数的积分</a><a class="toc-l3" href="#s12">7.11 sinᵐx cosⁿx 型</a><a class="toc-l3" href="#s13">7.12 secᵐx tanⁿx 型与 cscᵐx cotⁿx 型</a><a class="toc-l3" href="#s14">7.13 三角代换：消除根式</a><a class="toc-l3" href="#s15">7.14 分部积分</a><a class="toc-l3" href="#s16">7.15 递推公式</a><a class="toc-l3" href="#s17">7.16 有理函数的积分：第一步永远是除法</a><a class="toc-l3" href="#s18">7.17 部分分式：四种情形</a><a class="toc-l2" href="#s19">方法与清单</a><a class="toc-l3" href="#s20">定积分计算（四步）</a><a class="toc-l3" href="#s21">分部积分的 u 选择顺序</a><a class="toc-l3" href="#s22">有理函数积分（四步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a href="t2-limits-continuity.html">第 1 章 · 极限与连续性</a><a href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a href="t5-inverse-exp-log.html">第 3 章 · 反函数、指数与对数</a><a href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a class="toc-l3" href="t7-integration-techniques.html">▸ 第 4 章 · 微积分基本定理与积分方法</a><a href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 4 章 · 微积分基本定理与积分方法</h1><p class="lead">Fundamental Theorem of Calculus and Techniques of Integration <span class="badge mute">62</span> <span class="badge mute">第 7 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 积分</a></p><p class="src">原始文件：<code>Topic 7/EMI_Week7_Lecture.pdf</code> <code>Topic 7/EMI_7.pdf</code> <code>Topic 7/EM_7_sol.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 6 讲把定积分定义成黎曼和的极限，但那个定义几乎不能用来算题——除了 x² 这类极简单的函数，求和公式都不存在。本讲给出真正的计算工具：微积分基本定理（FTC）把定积分转成「找原函数 + 代端点」，随后是换元、分部积分、三角积分、三角代换与部分分式五套方法，覆盖本课程所有积分题。</p><p>这五套方法不是并列的选项，而是一棵决策树：先看被积函数的结构（复合、乘积、三角幂、根式、有理式），再决定用哪一套。本讲会把判断顺序写清楚，并在 checklist 里给出可执行流程。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>陈述并证明 FTC 的两个部分，用它计算定积分并求函数在区间上的平均值（含分段连续函数）</li><li>用换元法（定积分要同时换上下限）计算复合型积分</li><li>用分部积分处理「多项式 × 指数/三角/对数/反三角」型积分</li><li>按幂次奇偶选择三角积分的代换，必要时用倍角公式降幂</li><li>用 <code>a sin θ</code>、<code>a tan θ</code>、<code>a sec θ</code> 消除根式</li><li>把有理函数拆成部分分式并逐项积分</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">7.1 微积分基本定理（第一部分）</h3><p>设 f 在含点 a 的区间 I 上连续，定义<b>累积函数</b></p><p><code>F(x) = ∫ₐˣ f(t) dt</code>（<code>x ∈ I</code>）。</p><p><b>FTC 第一部分</b>：<code>F′(x) = f(x)</code>。也就是说，累积函数是 f 的一个原函数——「先积分再求导」会回到原函数。</p><p>证明：由导数定义</p><p><code>F′(x) = lim_{h→0}[F(x+h) − F(x)]/h = lim_{h→0}(1/h)∫ₓ^{x+h} f(t)dt</code>。</p><p>由积分中值定理，<code>∫ₓ^{x+h} f(t)dt = h·f(ξ)</code>，其中 ξ 在 x 与 x+h 之间；当 <code>h → 0</code> 时 <code>ξ → x</code>，由 f 的连续性得 <code>f(ξ) → f(x)</code>。故 <code>F′(x) = f(x)</code>。</p><p>直观解释（源文件）：若 <code>x(t)</code> 是位置，则 <code>∫ₐᵇ x′(t)dt</code> 把「速度表读数」按时间累加，得到「从 t = a 到 t = b 走了多远」。FTC 说的就是「速度的累积等于位移」，这正是里程表与速度表的关系。</p><h3 id="s3">7.2 微积分基本定理（第二部分）</h3><p><b>FTC 第二部分</b>：若 F 是 f 在 I 上的任一原函数（即 <code>F′ = f</code>），则</p><p><b><code>∫ₐᵇ f(x)dx = F(b) − F(a)</code></b>。</p><p>证明：设 <code>G(x) = ∫ₐˣ f</code>，由第一部分 <code>G′ = f</code>，故 <code>F − G</code> 的导数为 0，即为常数 C：<code>F = G + C</code>。取 <code>x = a</code> 得 <code>0 = G(a) = F(a) − C</code>，故 <code>C = −F(a)</code>。于是 <code>G(b) = F(b) − F(a)</code>。</p><p>求值符号：<code>F(x)|ₐᵇ = F(b) − F(a)</code>。写题时标准格式是 <code>∫ₐᵇ f(x)dx = [F(x)]ₐᵇ = F(b) − F(a)</code>。</p><div class="callout tip"><b>FTC 把「求和」变成「找原函数」</b>这是整门课最有价值的一句话：定积分不再需要求和公式，只需要一个原函数。而原函数可以通过第 4 讲的不定积分（+C 的那个）来求，因此「积分表 + 五套方法」就足以应付所有题目。</div><h3 id="s4">7.3 函数的平均值</h3><p>若 f 在 <code>[a, b]</code> 上可积，则它在区间上的<b>平均值</b>（average / mean value）为</p><p><b><code>f̄ = (1/(b−a))∫ₐᵇ f(x)dx</code></b>。</p><p>源文件例：求 <code>f(x) = √x</code> 在 <code>[1, 5]</code> 上的平均值。</p><p><code>f̄ = (1/4)∫₁⁵ √x dx = (1/4)·(2/3)x^{3/2}|₁⁵ = (1/6)(5√5 − 1)</code>。</p><p>（源文件把结果写成 <code>(5√5 − 1)/6</code>，是一样的。）注意平均值不是「端点的平均」，也不是「中点的函数值」。</p><h3 id="s5">7.4 分段连续函数</h3><p>若 f 在 <code>[a, b]</code> 上只有有限个间断点、在间断点之间连续，且在每个间断点处的单侧极限存在（有限），则称 f 在 <code>[a, b]</code> 上<b>分段连续</b>（piecewise continuous）。分段连续函数可积，且积分可以按段相加。</p><p>源文件例：<code>f(x) = √(1−x²)</code>（<code>0 ≤ x ≤ 1</code>）、<code>f(x) = 2</code>（<code>1 &lt; x ≤ 2</code>）、<code>f(x) = x − 2</code>（<code>2 &lt; x ≤ 3</code>），求 <code>∫₀³ f</code>。</p><p><code>∫₀³ f = ∫₀¹√(1−x²)dx + ∫₁²2dx + ∫₂³(x−2)dx</code>。</p><p>第一段是单位圆在第一象限的四分之一，面积 <code>π/4</code>（用几何意义而非原函数，因为 <code>√(1−x²)</code> 的原函数要用三角代换，见 7.16）；第二段 <code>= 2(2−1) = 2</code>；第三段 <code>= (1/2)(1)(1) = 1/2</code>。故</p><p><code>∫₀³ f = π/4 + 2 + 1/2 = π/4 + 5/2</code>。</p><h3 id="s6">7.5 用 FTC 计算定积分</h3><p>源文件例 1(a)：<code>∫₀²(x² − x)dx = [x³/3 − x²/2]₀² = 8/3 − 2 = 2/3</code>。</p><p>源文件例 1(b)：<code>∫₋₁²(x² − 3x + 2)dx = [x³/3 − 3x²/2 + 2x]₋₁² = (8/3 − 6 + 4) − (−1/3 − 3/2 − 2) = 2/3 − (−23/6) = 9/2</code>。</p><p>第二题最容易错在「代下限」时的符号：先把原函数在 a 处的值整体算出，再用 <code>F(b) − F(a)</code>，不要在式子中间随手加减。</p><h3 id="s7">7.6 曲线下方的面积</h3><p>源文件例 2：求 <code>y = 3x − x²</code> 在 x 轴上方部分的面积。先找 x 截距：<code>3x − x² = x(3 − x) = 0</code>，得 <code>x = 0, 3</code>；在 <code>(0, 3)</code> 内 <code>3x − x² &gt; 0</code>，故</p><p><code>A = ∫₀³(3x − x²)dx = [3x²/2 − x³/3]₀³ = 27/2 − 9 = 9/2</code>。</p><p>要点：面积题必须先定积分区间（找交点或截距），再确认被积函数在该区间上非负；否则会用「有向面积」算出错误的正负。</p><h3 id="s8">7.7 两曲线之间的面积</h3><p>源文件例 3：求 <code>y = 5/(x²+1)</code> 与 <code>y = 1</code> 在 <code>x = −2</code> 到 <code>x = 2</code> 之间的面积。先求交点：<code>5/(x²+1) = 1</code> 得 <code>x² = 4</code>，<code>x = ±2</code>。在该区间上 <code>5/(x²+1) ≥ 1</code>，故</p><p><code>A = ∫₋₂²[5/(x²+1) − 1]dx = 2∫₀²[5/(x²+1) − 1]dx</code>（被积函数为偶函数）。</p><p>原函数：<code>5tan⁻¹x − x</code>。故 <code>A = 2[5tan⁻¹2 − 2]</code>。</p><div class="callout warn"><b>上减下的顺序</b>「两曲线之间的面积」永远是<code>上函数 − 下函数</code>；若不确定谁在上，先在区间内取一个测试点算两者的值。若两曲线在区间内交叉，必须分段积分，否则会正负抵消。</div><h3 id="s9">7.8 定积分的换元法</h3><p>若 <code>u = g(x)</code> 在 <code>[a, b]</code> 上可导、<code>g′</code> 连续，f 在 g 的值域上连续，则</p><p><b><code>∫ₐᵇ f(g(x))g′(x)dx = ∫_{g(a)}^{g(b)} f(u)du</code></b>。</p><p>证明：设 F 是 f 的原函数，则 <code>(F∘g)′ = f(g(x))g′(x)</code>（链式法则），由 FTC：</p><p><code>∫ₐᵇ f(g(x))g′(x)dx = F(g(b)) − F(g(a)) = ∫_{g(a)}^{g(b)} f(u)du</code>。</p><p>关键差别：<b>定积分换元必须同时把上下限换成 u 的值</b>，换完直接算，不需要再换回 x。若坚持换回 x，就要把上下限也换回来（多一步、易错）。</p><p>源文件例：<code>∫₀⁸ cos√(x+1)/√(x+1) dx</code>。令 <code>u = √(x+1)</code>，则 <code>du = dx/(2√(x+1))</code>，即 <code>dx/√(x+1) = 2du</code>。</p><p>换限：<code>x = 0 → u = 1</code>；<code>x = 8 → u = 3</code>。于是</p><p><code>∫₀⁸ ... = 2∫₁³ cos u du = 2[sin u]₁³ = 2(sin3 − sin1)</code>。</p><h3 id="s10">7.9 不定积分的换元与三道任务</h3><p>不定积分换元后必须<b>换回原变量</b>（因为答案要以 x 表示），并加 C。源文件三道任务：</p><ul><li><code>∫(2x−3)/√(x²−3x+1) dx</code>：令 <code>u = x²−3x+1</code>，<code>du = (2x−3)dx</code>，得 <code>∫u^{−1/2}du = 2√u + C = 2√(x²−3x+1) + C</code></li><li><code>∫dx/√(6x−x²)</code>：配方 <code>6x−x² = 9 − (x−3)²</code>，令 <code>u = x−3</code>，得 <code>sin⁻¹((x−3)/3) + C</code></li><li><code>∫(2x−1)/√(1−x²) dx</code>：拆成 <code>2∫x/√(1−x²)dx − ∫dx/√(1−x²)</code>，前者令 <code>u = 1−x²</code> 得 <code>−2√(1−x²)</code>，后者为 <code>sin⁻¹x</code>，故 <code>−2√(1−x²) − sin⁻¹x + C</code></li></ul><p>第三题示范了「拆项」技巧：一个积分拆成两个各自可算的部分，比分母整体换元更省力。</p><h3 id="s11">7.10 三角函数的积分</h3><p>四个基本结果（源文件给出并推导前两个）：</p><table><tr><th>积分</th><th>结果</th><th>代换</th></tr><tr><td><code>∫tan x dx</code></td><td><code>ln|sec x| + C</code></td><td><code>u = cos x</code></td></tr><tr><td><code>∫cot x dx</code></td><td><code>ln|sin x| + C</code></td><td><code>u = sin x</code></td></tr><tr><td><code>∫sec x dx</code></td><td><code>ln|sec x + tan x| + C</code></td><td><code>u = sec x + tan x</code></td></tr><tr><td><code>∫csc x dx</code></td><td><code>−ln|csc x + cot x| + C</code></td><td><code>u = csc x − cot x</code></td></tr></table><p><code>∫tan x dx</code>：<code>∫(sin x/cos x)dx</code>，令 <code>u = cos x</code>、<code>du = −sin x dx</code>，得 <code>−∫du/u = −ln|u| = −ln|cos x| = ln|sec x|</code>。</p><p><code>∫sec x dx</code>：分子分母同乘 <code>(sec x + tan x)</code>，得 <code>∫(sec²x + sec x tan x)/(sec x + tan x)dx</code>；令 <code>u = sec x + tan x</code>，则 <code>du</code> 恰为分子，故 <code>= ln|u| = ln|sec x + tan x|</code>。这个「乘一个巧妙的因子」是本节唯一的技巧点，记不住可以现场推。</p><h3 id="s12">7.11 sinᵐx cosⁿx 型</h3><p>按幂次奇偶分三种情形：</p><ul><li><b>m 为奇数</b>：留一个 <code>sin x</code> 与 <code>dx</code> 配对，其余用 <code>sin² = 1 − cos²</code> 转成 cos，令 <code>u = cos x</code></li><li><b>n 为奇数</b>：对称处理，令 <code>u = sin x</code></li><li><b>m、n 都是偶数</b>：用倍角公式降幂：<code>sin²x = (1 − cos2x)/2</code>、<code>cos²x = (1 + cos2x)/2</code></li></ul><p>源文件例 (a)：<code>∫sin³x cos⁸x dx</code>。sin 的幂为奇，令 <code>u = cos x</code>，<code>du = −sin x dx</code>：</p><p><code>∫sin³x cos⁸x dx = ∫(1 − cos²x)cos⁸x sin x dx = −∫(1 − u²)u⁸du = ∫(u¹⁰ − u⁸)du</code>，</p><p>故 <code>= u¹¹/11 − u⁹/9 + C = (1/11)cos¹¹x − (1/9)cos⁹x + C</code>。</p><p>源文件例 (b)：<code>∫cos⁴x dx</code>。用倍角公式：<code>cos⁴x = [(1 + cos2x)/2]² = (1 + 2cos2x + cos²2x)/4</code>；再对 <code>cos²2x</code> 用一次倍角：<code>= (1 + cos4x)/2</code>。于是</p><p><code>∫cos⁴x dx = (1/4)∫[1 + 2cos2x + (1 + cos4x)/2]dx = (3/8)x + (1/4)sin2x + (1/32)sin4x + C</code>。</p><h3 id="s13">7.12 secᵐx tanⁿx 型与 cscᵐx cotⁿx 型</h3><p><code>secᵐ tanⁿ</code>：若 n 为偶数，留 <code>sec²x dx</code>，令 <code>u = tan x</code>；若 m 为偶数，留 <code>sec²x</code> 转成 <code>1 + tan²</code>；若 m 为奇数、n 为偶数，用分部积分。恒等式：<code>sec² = 1 + tan²</code>。</p><p>例：<code>∫sec⁴x dx = ∫(1 + tan²x)sec²x dx</code>，令 <code>u = tan x</code>，得 <code>∫(1 + u²)du = u + u³/3 = tan x + (1/3)tan³x + C</code>。</p><p><code>cscᵐ cotⁿ</code>：若 n 为偶数，留 <code>csc²x dx</code>，令 <code>u = cot x</code>；若 m 为奇数，令 <code>u = csc x</code>；恒等式 <code>csc² = 1 + cot²</code>。</p><p>例：<code>∫csc³x cot³x dx = ∫csc²x·cot²x·csc x cot x dx</code>，令 <code>u = csc x</code>、<code>du = −csc x cot x dx</code>，且 <code>cot² = u² − 1</code>：</p><p><code>= −∫u²(u² − 1)du = ∫(u² − u⁴)du = u³/3 − u⁵/5 + C = (1/3)csc³x − (1/5)csc⁵x + C</code>。</p><p>源文件另一道任务：<code>∫(sec x + tan x)²dx</code>。展开得 <code>sec²x + 2sec x tan x + tan²x</code>，用 <code>tan² = sec² − 1</code> 化为 <code>2sec²x + 2sec x tan x − 1</code>，逐项积分得 <code>2tan x + 2sec x − x + C</code>。</p><p>产品化公式：<code>∫sin2x cos3x dx</code> 用积化和差 <code>sinA cosB = [sin(A−B) + sin(A+B)]/2</code>，得 <code>(1/2)cos x − (1/10)cos5x + C</code>。</p><p><code>∫√(1 − cos4x)dx</code>（<code>0 ≤ x ≤ π/2</code>）：由 <code>1 − cos4x = 2sin²2x</code> 得被积函数 <code>√2 sin2x</code>（该区间内 sin2x ≥ 0），故积分为 <code>−(√2/2)cos2x + C</code>。</p><h3 id="s14">7.13 三角代换：消除根式</h3><p>当被积函数含下列根式时，用三角代换把根式变成有理式：</p><table><tr><th>根式</th><th>代换</th><th>化简结果</th><th>θ 的范围</th></tr><tr><td><code>√(a² − x²)</code></td><td><code>x = a sin θ</code></td><td><code>a cos θ</code></td><td><code>[−π/2, π/2]</code></td></tr><tr><td><code>√(a² + x²)</code></td><td><code>x = a tan θ</code></td><td><code>a sec θ</code></td><td><code>(−π/2, π/2)</code></td></tr><tr><td><code>√(x² − a²)</code></td><td><code>x = a sec θ</code></td><td><code>a tan θ</code></td><td><code>x ≥ a: [0, π/2)</code>；<code>x ≤ −a: (π/2, π]</code></td></tr></table><p>记忆方式：画直角三角形。<code>x = a sin θ</code> 时对边 x、斜边 a，邻边 <code>√(a²−x²)</code>；<code>x = a tan θ</code> 时对边 x、邻边 a，斜边 <code>√(a²+x²)</code>；<code>x = a sec θ</code> 时斜边 x、邻边 a，对边 <code>√(x²−a²)</code>。</p><p>源文件例 (a)：<code>∫dx/(x²√(16−x²))</code>。令 <code>x = 4sin θ</code>，<code>dx = 4cos θ dθ</code>，<code>√(16−x²) = 4cos θ</code>：</p><p><code>∫ = ∫(4cos θ dθ)/(16sin²θ·4cos θ) = (1/16)∫csc²θ dθ = −(1/16)cot θ + C</code>。</p><p>由三角形：<code>cot θ = (邻边)/(对边) = √(16−x²)/x</code>，故 <code>= −√(16−x²)/(16x) + C</code>。</p><p>源文件例 (b)：<code>∫dx/√(4+x²)</code>。令 <code>x = 2tan θ</code>，<code>dx = 2sec²θ dθ</code>，<code>√(4+x²) = 2sec θ</code>：</p><p><code>∫ = ∫sec θ dθ = ln|sec θ + tan θ| + C = ln|√(4+x²)/2 + x/2| + C = ln(√(4+x²) + x) + C₁</code>，其中 <code>C₁ = C − ln2</code>。</p><div class="callout warn"><b>换回原变量时别漏常数</b>三角代换常会带出 <code>ln 2</code> 之类的常数，把它并进 C 即可；但必须显式说明「令 <code>C₁ = C − ln2</code>」，否则答案形式与标准答案不一致会被扣分。</div><h3 id="s15">7.14 分部积分</h3><p>由乘积法则 <code>(uv)′ = u′v + uv′</code> 移项、积分，得</p><p><b><code>∫u dv = uv − ∫v du</code></b>，或写成 <b><code>∫u(x)v′(x)dx = u(x)v(x) − ∫v(x)u′(x)dx</code></b>。</p><p>它的作用是「把不好积的 <code>u dv</code> 换成可能好积的 <code>v du</code>」。选 u 的顺序（源文件虽未明说，但由例题可归纳）：<b>反三角 → 对数 → 幂 → 三角 → 指数</b>（越靠前越适合当 u，因为求导后会变简单）。</p><p>源文件例 1(a)：<code>∫x cos x dx</code>。取 <code>u = x</code>、<code>dv = cos x dx</code>，则 <code>du = dx</code>、<code>v = sin x</code>：</p><p><code>= x sin x − ∫sin x dx = x sin x + cos x + C</code>。</p><p>源文件例 1(b)：<code>∫x²eˣ dx</code>。取 <code>u = x²</code>、<code>dv = eˣdx</code>，两次分部：</p><p><code>= x²eˣ − 2∫xeˣdx = x²eˣ − 2(xeˣ − ∫eˣdx) = eˣ(x² − 2x + 2) + C</code>。</p><p>源文件例 2(a)：<code>∫ln x dx</code>。取 <code>u = ln x</code>、<code>dv = dx</code>，则 <code>du = dx/x</code>、<code>v = x</code>：</p><p><code>= x ln x − ∫x·(1/x)dx = x ln x − x + C</code>。</p><p>源文件例 2(b)：<code>∫x tan⁻¹x dx</code>。取 <code>u = tan⁻¹x</code>、<code>dv = x dx</code>，则 <code>du = dx/(1+x²)</code>、<code>v = x²/2</code>：</p><p><code>= (x²/2)tan⁻¹x − (1/2)∫x²/(1+x²)dx = (x²/2)tan⁻¹x − (1/2)∫(1 − 1/(1+x²))dx</code>，</p><p>故 <code>= (x²/2)tan⁻¹x − x/2 + (1/2)tan⁻¹x + C = ((x²+1)/2)tan⁻¹x − x/2 + C</code>。</p><p>源文件任务：<code>∫x²sin x dx = −x²cos x + 2x sin x + 2cos x + C</code>；<code>∫sin⁻¹x dx = x sin⁻¹x + √(1−x²) + C</code>；<code>∫eˣcos x dx = (1/2)eˣ(sin x + cos x) + C</code>。</p><p>最后这个「循环型」值得单独记：两次分部后右边重新出现原积分，把它移到左边解方程即可（系数为 1/2）。</p><h3 id="s16">7.15 递推公式</h3><p>分部积分还可以用来把高次幂降到低次幂，得到<b>递推公式</b>（reduction formula）。源文件推导 <code>∫sinⁿx dx</code>：取 <code>u = sin^{n−1}x</code>、<code>dv = sin x dx</code>，则 <code>du = (n−1)sin^{n−2}x cos x dx</code>、<code>v = −cos x</code>：</p><p><code>∫sinⁿx dx = −cos x sin^{n−1}x + (n−1)∫cos²x sin^{n−2}x dx</code>，</p><p>把 <code>cos² = 1 − sin²</code> 代入，右边的 <code>∫sinⁿ</code> 移项，得</p><p><b><code>∫sinⁿx dx = −(1/n)cos x sin^{n−1}x + ((n−1)/n)∫sin^{n−2}x dx</code></b>。</p><p>应用（<code>n = 4</code>）：<code>∫sin⁴x dx = −(1/4)cos x sin³x + (3/4)∫sin²x dx</code>；再用 <code>n = 2</code>：<code>∫sin²x dx = −(1/2)cos x sin x + (1/2)∫dx = −(1/2)sin x cos x + x/2</code>。合并得</p><p><code>∫sin⁴x dx = −(1/4)cos x sin³x − (3/8)sin x cos x + (3/8)x + C</code>，</p><p>与用倍角公式得到的 <code>(3/8)x − (1/4)sin2x + (1/32)sin4x + C</code> 等价（展开 <code>sin2x</code>、<code>sin4x</code> 可互相转化）。</p><h3 id="s17">7.16 有理函数的积分：第一步永远是除法</h3><p>形如 <code>∫P(x)/Q(x)dx</code> 的积分。若 <code>deg P ≥ deg Q</code>，先用多项式除法把它写成「多项式 + 真分式」：</p><p><code>P/Q = S + R/Q</code>，其中 <code>deg R &lt; deg Q</code>。</p><p>源文件例：<code>∫(x³ + 3x²)/(x² + 1)dx</code>。除法得 <code>= x + 3 − (x+3)/(x²+1)</code>，故</p><p><code>= x²/2 + 3x − (1/2)ln(x²+1) − 3tan⁻¹x + C</code>。</p><p>三个基本公式（分母是一次或二次）：</p><table><tr><th>积分</th><th>结果</th></tr><tr><td><code>∫dx/(ax + b)</code></td><td><code>(1/a)ln|ax + b| + C</code></td></tr><tr><td><code>∫x dx/(x² ± a²)</code></td><td><code>(1/2)ln|x² ± a²| + C</code></td></tr><tr><td><code>∫dx/(x² + a²)</code></td><td><code>(1/a)tan⁻¹(x/a) + C</code></td></tr><tr><td><code>∫dx/(x² − a²)</code></td><td><code>(1/(2a))ln|(x−a)/(x+a)| + C</code></td></tr></table><h3 id="s18">7.17 部分分式：四种情形</h3><p>设 <code>f(x) = P(x)/Q(x)</code> 且 <code>deg P &lt; deg Q</code>（否则先除法）：</p><ul><li><b>互不相同的线性因子</b> <code>Q = (x−a)(x−b)⋯</code>：<code>f = A/(x−a) + B/(x−b) + ⋯</code></li><li><b>重复线性因子</b> <code>(x−a)²</code>：<code>f = A/(x−a) + B/(x−a)² + ⋯</code></li><li><b>不可约二次因子</b> <code>ax²+bx+c</code>（判别式 &lt; 0）：<code>f = (Ax+B)/(ax²+bx+c) + ⋯</code></li><li><b>重复不可约二次因子</b>：<code>f = (Ax+B)/(ax²+bx+c) + (Cx+D)/(ax²+bx+c)² + ⋯</code></li></ul><p>求系数的方法：两边乘以 Q(x) 得到多项式恒等式，再「代入特殊值」或「比较同次项系数」。前者更快，后者更稳。</p><p>源文件例（互异线性）：<code>1/(x² − a²) = (1/(2a))[1/(x−a) − 1/(x+a)]</code>，故 <code>∫ = (1/(2a))ln|x−a| − (1/(2a))ln|x+a| + C</code>。</p><p>源文件例（重复线性）：<code>1/(x(x−1)²) = 1/x − 1/(x−1) + 1/(x−1)²</code>。验证：通分后分子 <code>(x−1)² − x(x−1) + x = x² − 2x + 1 − x² + x + x = 1</code> ✓。故积分为 <code>ln|x| − ln|x−1| − 1/(x−1) + C</code>。</p><p>源文件例（不可约二次）：<code>∫dx/(x³+1)</code>。分解 <code>x³+1 = (x+1)(x²−x+1)</code>，设</p><p><code>1/((x+1)(x²−x+1)) = A/(x+1) + (Bx+C)/(x²−x+1)</code>，</p><p>解得 <code>A = 1/3</code>、<code>B = −1/3</code>、<code>C = 2/3</code>。二次因子配方：<code>x² − x + 1 = (x − 1/2)² + 3/4</code>。于是</p><p><code>∫ = (1/3)ln|x+1| − (1/6)ln(x²−x+1) + (1/√3)tan⁻¹((2x−1)/√3) + C</code>。</p><p>其中二次项的处理技巧：把分子 <code>(−x+2)/3</code> 拆成 <code>−(1/6)(2x−1) + (1/2)</code>，第一块凑成「分母的导数」得到对数，第二块用 <code>tan⁻¹</code> 公式。</p><p>源文件综合例：<code>∫(x³+2)/(x³−x)dx</code>。除法：<code>(x³+2)/(x³−x) = 1 + (x+2)/(x(x−1)(x+1))</code>；部分分式解得 <code>A = −2</code>（对应 <code>1/x</code>）、<code>B = 3/2</code>（对应 <code>1/(x−1)</code>）、<code>C = 1/2</code>（对应 <code>1/(x+1)</code>）。故</p><p><code>= x − 2ln|x| + (3/2)ln|x−1| + (1/2)ln|x+1| + C</code>。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>fundamental theorem of calculus</td><td>微积分基本定理</td><td>d/dx∫ₐˣf = f(x) and ∫ₐᵇf = F(b) − F(a).</td></tr><tr><td>average value</td><td>平均值</td><td>f̄ = (1/(b−a))∫ₐᵇ f(x)dx.</td></tr><tr><td>piecewise continuous</td><td>分段连续</td><td>Finitely many discontinuities with finite one-sided limits; integrable.</td></tr><tr><td>substitution</td><td>换元法</td><td>∫f(g(x))g′(x)dx = ∫f(u)du; for definite integrals also change the limits.</td></tr><tr><td>change of limits</td><td>换上下限</td><td>In a definite integral, x = a gives u = g(a), x = b gives u = g(b).</td></tr><tr><td>integration by parts</td><td>分部积分</td><td>∫u dv = uv − ∫v du.</td></tr><tr><td>reduction formula</td><td>递推公式</td><td>Expresses ∫sinⁿ in terms of ∫sin^{n−2}.</td></tr><tr><td>trigonometric integral</td><td>三角积分</td><td>Choose u = cos x or sin x according to which power is odd.</td></tr><tr><td>double-angle formula</td><td>倍角公式</td><td>sin²x = (1−cos2x)/2, cos²x = (1+cos2x)/2, used when both powers are even.</td></tr><tr><td>trigonometric substitution</td><td>三角代换</td><td>x = a sin θ, a tan θ, a sec θ to remove √(a²−x²), √(a²+x²), √(x²−a²).</td></tr><tr><td>partial fractions</td><td>部分分式</td><td>Decompose P/Q into simple fractions according to the factor type of Q.</td></tr><tr><td>improper factor</td><td>不可约二次因子</td><td>ax²+bx+c with negative discriminant; its partial fraction has a linear numerator.</td></tr><tr><td>completing the square</td><td>配方</td><td>ax²+bx+c = a(x + b/2a)² + (c − b²/4a).</td></tr><tr><td>polynomial division</td><td>多项式除法</td><td>Write P/Q = S + R/Q before decomposing, when deg P ≥ deg Q.</td></tr><tr><td>improper integral form</td><td>假分式</td><td>deg P ≥ deg Q; must be divided first.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p11）　计算 (a) ∫₀²(x² − x)dx；(b) ∫₋₁²(x² − 3x + 2)dx。</div><p>(a) 原函数 <code>x³/3 − x²/2</code>。代入：<code>[8/3 − 2] − [0] = 2/3</code>。</p><p>(b) 原函数 <code>x³/3 − 3x²/2 + 2x</code>。</p><p>上端：<code>8/3 − 6 + 4 = 2/3</code>；下端：<code>−1/3 − 3/2 − 2 = −23/6</code>。</p><p>相减：<code>2/3 − (−23/6) = 4/6 + 23/6 = 27/6 = 9/2</code>。</p><p><b>要点：</b>先把 <code>F(b)</code> 与 <code>F(a)</code> 各自算成一个数，再做减法；分式运算不要在中途混着做，容易丢负号。</p></div><div class="qa"><div class="q">例 2（源文件 p15）　计算 ∫₀⁸ cos√(x+1)/√(x+1) dx。</div><p>令 <code>u = √(x+1)</code>，则 <code>u² = x + 1</code>、<code>2u du = dx</code>，故 <code>dx/√(x+1) = 2du</code>。</p><p>换限：<code>x = 0 → u = 1</code>；<code>x = 8 → u = 3</code>。</p><p>原式 <code>= ∫₁³ 2cos u du = 2[sin u]₁³ = 2(sin3 − sin1)</code>。</p><p><b>结果保留精确形式</b>（考试无计算器），不要写 0.28 之类的小数。若题目要求近似，用 <code>sin3 ≈ 0.141</code>、<code>sin1 ≈ 0.841</code> 得 <code>2(−0.700) ≈ −1.40</code>。</p><p><b>对照：</b>若用不定积分换元再回代，会得到 <code>2sin√(x+1)</code>，再代 0 与 8，结果相同——但多一步回代，容易在回代时把 <code>√(x+1)</code> 写成 <code>x+1</code>。</p><div class="qa"><div class="q">例 3（源文件 p30–p33）　求 (a) ∫x²eˣ dx；(b) ∫x tan⁻¹x dx。</div><p>(a) 取 <code>u = x²</code>、<code>dv = eˣdx</code>，<code>v = eˣ</code>：<code>= x²eˣ − 2∫xeˣdx</code>。</p><p>对 <code>∫xeˣdx</code> 再用一次（<code>u = x</code>、<code>dv = eˣdx</code>）：<code>= xeˣ − ∫eˣdx = xeˣ − eˣ</code>。</p><p>代回：<code>= x²eˣ − 2(xeˣ − eˣ) + C = eˣ(x² − 2x + 2) + C</code>。</p><p>(b) 取 <code>u = tan⁻¹x</code>、<code>dv = x dx</code>，<code>v = x²/2</code>、<code>du = dx/(1+x²)</code>：</p><p><code>= (x²/2)tan⁻¹x − (1/2)∫x²/(1+x²)dx</code>。</p><p>拆项：<code>x²/(1+x²) = 1 − 1/(1+x²)</code>，故 <code>∫ = x − tan⁻¹x</code>。</p><p>代回：<code>= (x²/2)tan⁻¹x − x/2 + (1/2)tan⁻¹x + C = ((x²+1)/2)tan⁻¹x − x/2 + C</code>。</p><p><b>要点：</b>分部积分后剩下的积分要「凑成可算的形状」——通常靠拆项、配方或再分部。<code>x²/(1+x²)</code> 的拆项是固定套路。</p></div><div class="qa"><div class="q">例 4（源文件 p41–p42）　计算 ∫(x³ + 2)/(x³ − x) dx。</div><p><b>步骤 1（除法）：</b><code>(x³+2)/(x³−x) = (x³ − x + x + 2)/(x³−x) = 1 + (x+2)/(x³−x)</code>。</p><p><b>步骤 2（分解分母）：</b><code>x³ − x = x(x−1)(x+1)</code>。</p><p><b>步骤 3（部分分式）：</b>设 <code>(x+2)/(x(x−1)(x+1)) = A/x + B/(x−1) + C/(x+1)</code>。两边乘分母：<code>x + 2 = A(x−1)(x+1) + Bx(x+1) + Cx(x−1)</code>。</p><p>代 <code>x = 0</code>：<code>2 = A(−1)(1)</code>，故 <code>A = −2</code>；代 <code>x = 1</code>：<code>3 = B(1)(2)</code>，故 <code>B = 3/2</code>；代 <code>x = −1</code>：<code>1 = C(−1)(−2)</code>，故 <code>C = 1/2</code>。</p><p><b>步骤 4（逐项积分）：</b></p><p><code>∫ = ∫1dx − 2∫dx/x + (3/2)∫dx/(x−1) + (1/2)∫dx/(x+1)</code></p><p><code>= x − 2ln|x| + (3/2)ln|x−1| + (1/2)ln|x+1| + C</code>。</p><p><b>验算：</b>对结果求导，应回到 <code>(x³+2)/(x³−x)</code>；也可取 <code>x = 2</code> 数值核对（结果约 <code>2 − 1.386 + 0 + 0.549 = 1.163</code>，与 <code>10/6 ≈ 1.667</code>？——注意数值核对要连同 C 的任意性一起看，通常验算导数更可靠）。</p></div></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>∫dx/(x² − 9)</code>。</li><li>求 <code>∫(2x − 3)/√(x² − 3x + 1) dx</code>。</li><li>求 <code>∫sin³x cos⁸x dx</code>。</li><li>求 <code>∫dx/(x²√(16 − x²))</code>。</li><li>求 <code>∫x² cos(πx) dx</code>。</li><li>求 <code>∫₀^{π/4} sec⁵x dx</code>（作业七第 4(b) 题）。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 分解 <code>1/(x²−9) = (1/6)[1/(x−3) − 1/(x+3)]</code>，故 <code>(1/6)ln|(x−3)/(x+3)| + C</code>。</p><p><b>2.</b> 令 <code>u = x² − 3x + 1</code>、<code>du = (2x−3)dx</code>，得 <code>2√(x²−3x+1) + C</code>。</p><p><b>3.</b> 令 <code>u = cos x</code>：<code>−∫(1−u²)u⁸du = ∫(u¹⁰ − u⁸)du = (1/11)cos¹¹x − (1/9)cos⁹x + C</code>。</p><p><b>4.</b> 令 <code>x = 4sin θ</code>：<code>(1/16)∫csc²θ dθ = −(1/16)cot θ = −√(16−x²)/(16x) + C</code>。</p><p><b>5.</b> 两次分部：<code>u = x²</code>、<code>dv = cos πx dx</code>，得 <code>v = sin πx/π</code>；<code>= (x²/π)sin πx − (2/π)∫x sin πx dx</code>；再对 <code>∫x sin πx dx</code> 分部（<code>v = −cos πx/π</code>），最终 <code>(x²/π)sin πx + (2x/π²)cos πx − (2/π³)sin πx + C</code>。</p><p><b>6.</b> 用递推公式：<code>∫sec⁵ = (1/4)sec³x tan x + (3/4)∫sec³x</code>，<code>∫sec³ = (1/2)sec x tan x + (1/2)ln|sec x + tan x|</code>。合并后代入上下限：在 <code>π/4</code> 处 <code>sec = √2</code>、<code>tan = 1</code>，得 <code>(1/4)(2√2) + (3/8)(√2) + (3/8)ln(1+√2) = 7√2/8 + (3/8)ln(1+√2)</code>；在 0 处各项为 0。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>①FTC 求定积分（含分段函数）；②换元法（定积分换上下限）；③分部积分（多项式 × eˣ/三角/ln/反三角）；④三角幂的积分（奇偶判断 + 倍角）；⑤三角代换；⑥部分分式（四种情形，含先除法）。这六类基本覆盖全部积分题，每一类都要能独立完成一道中等难度的题。</div><div class="callout warn"><b>易错 1</b><b>定积分换元后忘记换上下限</b>。换元后仍用旧的 a、b 会得到完全错误的结果；要么换限，要么换回 x 后再代原限（二选一，不能混）。</div><div class="callout warn"><b>易错 2</b><b>部分分式前忘记做多项式除法</b>。当 <code>deg P ≥ deg Q</code> 时必须先除，否则分解形式不成立。</div><div class="callout warn"><b>易错 3</b><b>三角积分选错代换</b>。规则是「谁的幂是奇数就令 u 等于另一个」（<code>sin</code> 奇则 <code>u = cos</code>，<code>cos</code> 奇则 <code>u = sin</code>）；两者都偶时必须降幂，不能硬代换。</div><div class="callout warn"><b>易错 4</b><b>面积题不检查上下关系</b>。两曲线之间的面积是「上减下」，若曲线交叉必须分段；直接用 <code>∫(f − g)</code> 会在交叉处出现负面积抵消。</div><div class="callout tip"><b>进阶</b>把积分方法画成决策树：先看是否「基本公式/直接换元」→ 再看是否「乘积」（分部）→ 再看是否「三角幂」（奇偶/降幂）→ 再看是否「根式」（三角代换）→ 最后看是否「有理式」（除法 + 部分分式）。按这个顺序扫一遍，几乎不会选错方法。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">方法与清单</h2><h3 id="s20">定积分计算（四步）</h3><ol class="steps"><li>先看能否直接用基本公式或 FTC：找原函数</li><li>复合型先换元；若做定积分换元，立即把上下限换成新变量并写清新限</li><li>分段函数按段积分再相加；含绝对值先按零点分段去绝对值</li><li>用几何意义（面积、奇偶性）交叉验证结果的正负与量级</li></ol><h3 id="s21">分部积分的 u 选择顺序</h3><ol class="steps"><li>优先级：反三角函数 → 对数函数 → 幂函数（多项式）→ 三角函数 → 指数函数，越靠前越适合作 u</li><li>把剩下的部分整体作 dv，并确认 dv 容易积分出 v</li><li>套 <code>uv − ∫v du</code>，检查新积分是否比原积分更简单</li><li>若新积分与原积分同型（如 <code>eˣcos x</code>），移项解出原积分</li></ol><h3 id="s22">有理函数积分（四步）</h3><ol class="steps"><li>若 <code>deg P ≥ deg Q</code>，先做多项式除法</li><li>把 Q 在实数范围内分解成线性因子与不可约二次因子的乘积</li><li>按因子类型写出部分分式（互异线性、重复线性、不可约二次、重复二次）</li><li>用代特殊值或比较系数求系数，逐项积分（对数项 + tan⁻¹ 项）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p2–p3</td><td>黎曼和与定积分定义的复习</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p4–p7</td><td>FTC 两部分、直觉解释、第一部分的证明、求值符号</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p8</td><td>平均值定义与 √x 在 [1,5] 上的例子</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p9–p10</td><td>分段连续函数与三分段例题</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p11–p13</td><td>两道定积分计算、y = 3x−x² 的面积、两曲线间面积</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p14–p16</td><td>定积分换元定理与证明、∫₀⁸ 的例题、三道换元任务</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p17–p24</td><td>∫tan/cot/sec/csc 的公式与推导、sinᵐcosⁿ 策略与两例、secᵐtanⁿ 与 cscᵐcotⁿ 策略与两例、三道三角积分任务</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p25–p28</td><td>三类三角代换与三角形图示、两个根式积分例子</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p29–p33</td><td>分部积分的推导与 Leibniz 写法、四道例题、三道任务</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p36–p37</td><td>∫sinⁿ 的递推公式推导与 ∫sin⁴ 的应用</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p38–p40</td><td>有理函数与除法算法、(x³+3x²)/(x²+1)、线性与二次分母公式、互异线性因子的部分分式</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p41–p42</td><td>(x³+2)/(x³−x) 的四步分解与积分</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p43–p45</td><td>重复线性因子、不可约二次因子、重复二次因子的部分分式形式</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p46–p48</td><td>1/(x³+1) 的部分分式、配方与最终结果</td></tr><tr><td>Topic 7/EMI_Week7_Lecture.pdf</td><td>p49–p50</td><td>六道综合任务（4x²+13x−9 型、1/(x(x−1)²) 型等）及答案</td></tr><tr><td>Topic 7/EMI_7.pdf</td><td>p1</td><td>作业七的五道题（平均值、sgn 与 |cos| 的定积分、三角幂、分部积分、有理函数）</td></tr><tr><td>Topic 7/EM_7_sol.pdf</td><td>p1–p3</td><td>作业七的完整解答：π/4、1、8、sin 幂代换、sec⁵tan、x²cos πx、∫₀^{π/4}sec⁵、三个有理函数积分</td></tr><tr><td>（跳过）Topic 7/Lecture One.html、Exercise Seven.html、Exercise Seven Solutions.html</td><td>—</td><td>均为 Moodle 登录页快照，无可读正文；作业与解答以 EMI_7.pdf、EM_7_sol.pdf 为准</td></tr><tr><td>（拓展）</td><td>—</td><td>分部积分的 u 选择顺序、积分方法决策树、secⁿ 递推公式为归纳性补充，源文件以例题形式呈现</td></tr></table></section><div class="lnav"><a class="prev" href="t6-inverse-trig-lhopital-riemann.html">← 第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a class="next" href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

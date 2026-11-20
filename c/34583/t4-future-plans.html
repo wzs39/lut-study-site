@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 讲 · 将来表达与周末计划 · 34583</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ99 芬兰语2</a> / <a href="part-1.html">第 1 章 自我介绍与日常时间</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">4.1 芬兰语没有将来时</a><a class="toc-l3" href="#s3">4.2 将来时间词系统</a><a class="toc-l3" href="#s4">4.3 tulla + -maan/-mään：强调式的将来</a><a class="toc-l3" href="#s5">4.4 计划与安排的常用短语</a><a class="toc-l3" href="#s6">4.5 移动动词与地点格：去、在、从</a><a class="toc-l3" href="#s7">4.6 否定的将来与「不做」</a><a class="toc-l3" href="#s8">4.7 写作任务：用现在时写「下周」</a><a class="toc-l2" href="#s9">谈计划清单</a><a class="toc-l3" href="#s10">造句四步</a><a class="toc-l3" href="#s11">移动三问</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-intro-numbers.html">第 1 讲 · 自我介绍、数字与存在句</a><a href="t2-weather-seasons-months.html">第 2 讲 · 天气、季节与月份</a><a href="t3-clock-time-expression.html">第 3 讲 · 钟点、星期与 Milloin 时间格</a><a class="toc-l3" href="t4-future-plans.html">▸ 第 4 讲 · 将来表达与周末计划</a><a href="t5-present-tense-vt1.html">第 5 讲 · 现在时与第一类动词</a><a href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务</a><a href="t7-verb-types-1-6.html">第 7 讲 · 六类动词系统</a><a href="t8-food-shopping.html">第 8 讲 · 食物词汇与购物场景</a><a href="t9-nominative-genitive.html">第 9 讲 · 格系统与属格</a><a href="t10-partitive.html">第 10 讲 · 部分格的构成与用法</a><a href="t11-likes-meals-restaurant.html">第 11 讲 · 喜好表达、餐食与餐厅场景</a><a href="t12-review-exam.html">第 12 讲 · 复习与考试题型</a><a href="supp-interview-task.html">补充 · 食物访谈作业（haastattelu ruoka）</a></div></aside><article><h1>第 4 讲 · 将来表达与周末计划</h1><p class="lead">Expressing the Future and Making Plans <span class="badge mute">34583</span> <span class="badge mute">第 4 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 自我介绍与日常时间</a></p><p class="src">原始文件：<code>05_Tunti 4/4_futuuri, korjattu.pdf</code> <code>05_Tunti 4/5_EXTRA, futuuri, korjattu.pptx</code> <code>05_Tunti 4/1_KOTITEHTÄVÄ (Tunti 3) Sanasto, Mitä teet viikonloppuna_/intro/Sanasto, mitä teet viikonloppuna.docx</code> <code>05_Tunti 4/3_PUHU PARILLE.html</code> <code>05_Tunti 4/6_KOTITEHTÄVÄ Mitä teet ensi viikolla_/intro/Kotitehtävä, ensi viikolla.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第四讲回答一个初学者必问的问题：芬兰语的「将来时」在哪？答案是<b>没有独立的将来时</b>，将来由「现在时 + 时间词」共同表达。这一讲因此同时是语法课（时间副词系统）和句型课（<code>tulla + -maan</code>）。</p><p>它还把第 3 讲的时间格真正用起来：<code>ensi viikolla</code>、<code>ensi maanantaina</code>、<code>viikonloppuna</code> 全部是前面学过的 -lla / -na 形式，只是前面多了一个 <code>ensi</code>（下一个）。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>解释为什么 <code>Huomenna ostan ruokaa</code> 已经是将来句，并列出十个以上的将来时间词</li><li>用 <code>tulla + -maan/-mään</code> 结构表达「确定会做」的语气，并正确构造 -ma 形式</li><li>回答 <code>Mitä teet illalla / huomenna / viikonloppuna / ensi viikolla?</code> 并给出两句以上计划</li><li>区分移动动词搭配的地点格（<code>menen salille</code>、<code>menen kauppaan</code>、<code>käyn salilla</code>）</li><li>用 <code>ajattelin</code>、<code>minun pitää</code> 等短语补充计划与义务的表达</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 芬兰语没有将来时</h3><p>材料的第一句就是结论：<code>Finnish language doesn’t have a separate tense for future actions. Instead, we use the present tense.</code> 芬兰语只有现在时与过去时两套时间形式（过去时在本课程只以个别词形出现，见第 6、12 讲），将来完全靠现在时加时间状语。</p><p>同一句现在时可以指现在，也可以指将来，区别只在时间词：</p><table><tr><th>句子</th><th>含义</th><th>时间指向</th></tr><tr><td>Tänään ostan ruokaa.</td><td>今天我买菜。</td><td>现在 / 今天</td></tr><tr><td>Huomenna ostan ruokaa.</td><td>明天我将买菜。</td><td>将来</td></tr><tr><td>Ensi viikolla menen salille.</td><td>下周我去健身房。</td><td>将来</td></tr><tr><td>Illalla katson elokuvan.</td><td>晚上我要看一部电影。</td><td>将来（今天晚些）</td></tr><tr><td>Joka päivä käyn koulussa.</td><td>我每天去学校。</td><td>习惯性，跨现在与将来</td></tr></table><div class="callout tip"><b>判断口诀</b>看到动词是现在时，先不要译成「正在」。先找句子里有没有将来时间词；有就是将来，没有才是现在。反过来，写作时想说「将要」，只需要加时间词，不必造新形式。</div><h3 id="s3">4.2 将来时间词系统</h3><p>下面是材料给出的将来时间词，全部可以直接放在句首或句尾：</p><table><tr><th>时间词</th><th>含义</th><th>构成说明</th></tr><tr><td>tänään</td><td>今天</td><td>时间副词，不变格</td></tr><tr><td>huomenna</td><td>明天</td><td>-na 形式（样格），与星期同理</td></tr><tr><td>myöhemmin</td><td>稍后、以后</td><td>比较级形式的副词</td></tr><tr><td>ensi maanantaina</td><td>下周一</td><td>ensi + 星期 -na</td></tr><tr><td>ensi viikolla</td><td>下周</td><td>ensi + viikko 的 -lla</td></tr><tr><td>ensi vuonna</td><td>明年</td><td>ensi + vuosi 的 -na</td></tr><tr><td>ensi kerralla</td><td>下次</td><td>ensi + kerta 的 -lla</td></tr><tr><td>ensi viikonloppuna</td><td>下个周末</td><td>ensi + viikonloppu 的 -na</td></tr><tr><td>jatkossa</td><td>今后、往后</td><td>jatko 的 -ssa，固定副词</td></tr><tr><td>tulevaisuudessa</td><td>在未来</td><td>tulevaisuus 的 -ssa</td></tr><tr><td>illalla</td><td>晚上</td><td>ilta 的 -lla</td></tr><tr><td>viikonloppuna</td><td>周末</td><td>viikonloppu 的 -na</td></tr><tr><td>ylihuomenna</td><td>后天</td><td>yli + huomenna</td></tr></table><p>注意 <code>ensi</code> 与 <code>viime</code> 的对立：<code>ensi viikolla</code>（下周）／<code>viime viikolla</code>（上周）。<code>ensi</code> 本身不变格，格加在后面的名词上，这是「前修饰语不变、中心词变格」的典型例子（第 9 讲属格部分会再遇到同类结构）。</p><p>还有一个细节：<code>huomenna</code> 与 <code>tänään</code> 是副词，不带格词尾；而 <code>ensi maanantaina</code>、<code>ensi viikolla</code> 是「修饰语 + 变格名词」的组合。写作时不要写成 <code>ensi viikko</code> 当时间状语，必须变格。</p><h3 id="s4">4.3 tulla + -maan/-mään：强调式的将来</h3><p>除了「现在时 + 时间词」，还有一种更有把握、更强调的将来表达：<b><code>tulla</code> 的现在时 + 主动作动词的 -maan/-mään 形式</b>。材料把它描述为 <code>more pressuring way to tell that something will happen</code>，即「肯定会、我保证会」。</p><p>结构分两步：</p><ol class="steps"><li>把 <code>tulla</code> 按人称变位：<code>tulen, tulet, tulee, tulemme, tulette, tulevat</code></li><li>把主动作动词变成 -ma/-mä 形式，再加 <code>-an/-än</code> 的 illative 词尾，得到 <code>-maan/-mään</code></li><li>主动作动词的人称由 <code>tulla</code> 承担，后面那个形式<b>不再变人称</b></li></ol><p>材料给的六个转换例子正好覆盖六类动词，可以当作构造模板：</p><table><tr><th>原形</th><th>-maan / -mään 形式</th><th>构造过程</th></tr><tr><td>ostaa</td><td>ostamaan</td><td>词干 osta- + maan</td></tr><tr><td>juoda</td><td>juomaan</td><td>词干 juo- + maan（第二类去 -da）</td></tr><tr><td>kävellä</td><td>kävelemään</td><td>词干 kävele- + mään（第三类加 -e）</td></tr><tr><td>haluta</td><td>haluamaan</td><td>词干 halua- + maan（第四类，注意不是 halaamaan）</td></tr><tr><td>tarvita</td><td>tarvitsemaan</td><td>词干 tarvitse- + maan（第五类加 -se）</td></tr><tr><td>vanheta</td><td>vanhenemaan</td><td>词干 vanhene- + maan（第六类加 -ne）</td></tr><tr><td>mennä</td><td>menemään</td><td>词干 mene- + mään</td></tr><tr><td>tehdä</td><td>tekemään</td><td>词干 teke- + mään</td></tr></table><p>例句：<code>Tulen ostamaan lahjan.</code>（我一定会买礼物。）／<code>Hän tulee tarvitsemaan lisää.</code>（他肯定会需要更多。）／<code>Me tulemme kävelemään paljon.</code>（我们一定会走很多路。）</p><div class="callout warn"><b>两个常见错法</b>一是 <code>Tulen ostaa</code>（把主动作留原形）；二是 <code>Minä tulen ostan</code>（给主动作也变了人称）。记住：<b>只有 tulla 变位，第二个动词永远是 -maan 形式</b>。</div><p>语用提醒：这个结构语气偏重，日常对话里用得不多。多数情况单纯用现在时更自然：<code>Huomenna ostan lahjan</code> 已经足够。写作或口语考试里，一两句 <code>tulen … -maan</code> 能显示语法掌握度，但通篇使用会显得生硬。</p><h3 id="s5">4.4 计划与安排的常用短语</h3><p>材料里的词汇表给了几个谈计划的高频短语，值得整块记住：</p><ul><li><code>Mitä teet illalla?</code> —— 你晚上做什么？（<code>tehdä</code> 的第二人称单数 <code>teet</code>）</li><li><code>En mitään ihmeellistä.</code> —— 没什么特别的。（否定句 + 部分格 <code>mitään</code>）</li><li><code>ajattelin pysyä kotona</code> —— 我打算待在家（<code>ajattelin</code> 是「我想过 / 我打算」，过去形式但表委婉的现在意图）</li><li><code>minun pitää tehdä koulutehtäviä</code> —— 我得做课程作业（<code>pitää</code> 表义务，主语用属格 <code>minun</code>）</li><li><code>menen salille</code> —— 我去健身房（<code>sali</code> 的 -lle）</li><li><code>lähden kävelylle</code> —— 我出去散步（<code>kävely</code> 的 -lle）</li><li><code>menen baariin</code> —— 我去酒吧（<code>baari</code> 的 -hVn）</li><li><code>konserttiin</code> —— 去音乐会（illative）</li><li><code>kääntyä</code> —— 转弯；<code>Kuulostaapa hienolta!</code> —— 听起来不错啊！（<code>-pa</code> 加强语气）</li></ul><p>其中 <code>minun pitää + 动词原形</code> 是「必须」的最常用说法，与 <code>täytyy</code> 同义。注意主语用属格：<code>minun pitää</code>、<code>sinun pitää</code>、<code>hänen pitää</code>。</p><h3 id="s6">4.5 移动动词与地点格：去、在、从</h3><p>谈计划离不开「去哪」。芬兰语的移动动词对格很敏感，三个方向对应三类后缀：</p><table><tr><th>方向</th><th>格</th><th>例子</th><th>动词</th></tr><tr><td>去某地（进入）</td><td>-hVn / -Vn（illative）</td><td>menen kauppaan, menen salille, menen baariin, menen kotiin</td><td>mennä, lähteä, tulla</td></tr><tr><td>在某地（内部）</td><td>-ssa/-ssä（inessive）</td><td>olen kaupassa, käyn salilla（注意 sali 用 -lla）</td><td>olla, käydä, asua</td></tr><tr><td>在某地（表面 / 活动）</td><td>-lla/-llä（adessive）</td><td>olen salilla, olen mökillä, käyn salilla</td><td>olla, käydä</td></tr><tr><td>从某地离开</td><td>-sta/-stä（elative）</td><td>tulen kaupasta, lähden kotoa</td><td>tulla, lähteä</td></tr></table><p>特别注意 <code>käydä</code>（去一下、访问）后面接 -ssa 或 -lla，表示「去某处办事 / 参加活动」：<code>käyn salilla</code>（我去健身）、<code>käyn kaupassa</code>（我去趟商店）、<code>käyn saunassa</code>（我去桑拿）。而 <code>mennä</code> 强调「去」这个动作本身，常用 illative：<code>menen kauppaan</code>。</p><p>另外 <code>koti</code>（家）的 illative 是不规则的 <code>kotiin</code>，elative 是 <code>kotoa</code>：<code>Menen kotiin</code>（我回家）、<code>Tulen kotoa</code>（我从家里来）。这两个形式必须单独记。</p><h3 id="s7">4.6 否定的将来与「不做」</h3><p>否定式与现在时否定相同：<code>en</code> + 动词词干。<code>Huomenna en mene salille, minä lepään.</code>（明天我不去健身，我休息。）注意否定的宾语若出现，同样要部分格：<code>En osta ruokaa tänään.</code></p><p>材料里有一个很实用的否定答句 <code>En mitään ihmeellistä</code>：<code>mitään</code> 是 <code>mitä</code> 的部分格（否定句要求），<code>ihmeellistä</code> 是形容词部分格，与 <code>mitään</code> 一致。</p><h3 id="s8">4.7 写作任务：用现在时写「下周」</h3><p>材料的家庭作业要求写「下周我做什么」，每天两件事，明确要求 <code>Käytä preesensiä ilmaisemaan futuuria</code>（用现在时表达将来）。这类写作有三条硬要求：</p><ol><li>每天的时间词必须用 -na 形式：<code>maanantaina, tiistaina, keskiviikkona, torstaina, perjantaina, lauantaina, sunnuntaina</code></li><li>每天至少两个动词，且动词要按人称变位（第一人称单数 -n）</li><li>若出现宾语，判断该用总格还是部分格（第 10 讲详述），拿不准时优先部分格</li></ol><p>示例段落：<code>Maanantaina minä menen kouluun ja opiskelen suomea. Tiistaina käyn salilla ja luen kirjaa. Keskiviikkona minä tapaan ystävän ja syömme pizzaa.</code></p><div class="callout warn"><b>高频错误 1</b>用 <code>ensi viikko</code> 作时间状语（缺格）：应为 <code>ensi viikolla</code>。</div><div class="callout warn"><b>高频错误 2</b>把 <code>tulla + -maan</code> 当成唯一将来式，所有句子都套：日常用现在时更自然，<code>tulen tekemään</code> 只在强调确定性时用。</div><div class="callout tip"><b>口语提示</b>口语里「将来」还常用 <code>meen</code>（menen）、<code>tuun</code>（tulen）、<code>teen</code>（teen）这类缩短形式，听力里听到不要当成新词。</div><div class="callout idea" data-ext="t4-future-plans-0"><b>前后衔接</b><p>芬兰语没有独立将来时：<code>Huomenna ostan ruokaa</code> 已经是「明天我要买菜」，动词仍是现在时，将来靠时间词判断——看到现在时先别译「正在」，先找 <code>huomenna / ensi viikolla / illalla / tulevaisuudessa</code>。时间词本身要带格：<code>ensi</code> 不变，格加在中心词上，所以 <code>ensi viikolla</code>、<code>ensi maanantaina</code> 才对，<code>ensi viikko</code> 不能作状语。强调式 <code>tulla + -maan/-mään</code> 只有 <code>tulla</code> 变位：<code>Tulen ostamaan lahjan</code>，主动作永远是 -maan 形式，不要再给它加人称；语气偏重，日常多用现在时更自然。移动动词对格敏感：<code>menen kauppaan</code>（入格）、<code>käyn salilla</code>（上格，「去某处办事」）、<code>tulen kaupasta</code>（出格），<code>koti</code> 的不规则形 <code>kotiin / kotoa</code> 单独记。义务句 <code>minun pitää tehdä koulutehtäviä</code> 的主语用属格，与 <code>haluta + 原形</code> 不同。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi</th><th>中文</th><th>English 说明</th></tr><tr><td>preesens</td><td>现在时</td><td>The present tense also expresses the future.</td></tr><tr><td>huomenna</td><td>明天</td><td>Tomorrow; an adverb, no case ending.</td></tr><tr><td>ensi viikolla</td><td>下周</td><td>ensi + viikko in the adessive.</td></tr><tr><td>ensi maanantaina</td><td>下周一</td><td>ensi + weekday in the essive.</td></tr><tr><td>myöhemmin</td><td>稍后</td><td>Later.</td></tr><tr><td>tulevaisuudessa</td><td>在未来</td><td>In the future.</td></tr><tr><td>jatkossa</td><td>今后</td><td>From now on; a fixed adverb.</td></tr><tr><td>tulla + -maan</td><td>将要（强调）</td><td>Tulen ostamaan = I will definitely buy.</td></tr><tr><td>ostamaan</td><td>去买（-maan 形式）</td><td>The -ma form of ostaa, used after tulla.</td></tr><tr><td>menemään</td><td>去（-maan 形式）</td><td>The -ma form of mennä.</td></tr><tr><td>ajattelin</td><td>我打算</td><td>ajattelin pysyä kotona = I was thinking of staying home.</td></tr><tr><td>minun pitää</td><td>我必须</td><td>Obligation with the genitive subject: minun pitää tehdä.</td></tr><tr><td>salille</td><td>去健身房</td><td>Allative of sali: menen salille.</td></tr><tr><td>kotiin</td><td>回家</td><td>Irregular illative of koti; kotoa = from home.</td></tr><tr><td>ostoksille</td><td>去买东西</td><td>mennä ostoksille = to go shopping.</td></tr><tr><td>konserttiin</td><td>去音乐会</td><td>Illative of konsertti.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把「明天我买菜，然后去健身房」译成芬兰语，并改用强调式重说一遍。</div><p><b>解：</b>普通式：<code>Huomenna ostan ruokaa ja menen salille.</code> 强调式：<code>Huomenna tulen ostamaan ruokaa ja menemään salille.</code></p><p><b>要点：</b><code>ruokaa</code> 是部分格（买的是「一些食物」）；<code>salille</code> 是 -lle，因为 sali 被视为「活动场所」。强调式里两个主动作都变 -maan，只有 <code>tulen</code> 变位。</p></div><div class="qa"><div class="q">例 2　判断下列句子指现在还是将来，并说明依据：<code>Käyn joka päivä koulussa.</code> / <code>Ensi kerralla tulen ajoissa.</code> / <code>Illalla katson elokuvan.</code></div><p><b>解：</b>第一句是习惯性（跨现在与将来），依据是 <code>joka päivä</code>。第二句是将来，依据是 <code>ensi kerralla</code> 与强调式 <code>tulen</code>。第三句是将来（今晚），依据是 <code>illalla</code>。</p><p><b>注意：</b><code>katson elokuvan</code> 用总格宾语（-n），表示「看完整部」；若说 <code>katson elokuvaa</code> 则是「在看、没看完」，这是第 10 讲的部分格与总格对立。</p></div><div class="qa"><div class="q">例 3　构造 <code>haluta</code> 的 -maan 形式并造句「我肯定会想要更多」。</div><p><b>解：</b><code>haluta</code> 属第四类，词干是 <code>halua-</code>（不是 <code>hala-</code>），加 <code>-maan</code> 得 <code>haluamaan</code>。句：<code>Minä tulen haluamaan lisää.</code></p><p><b>易错点：</b>受 <code>halata</code>（拥抱 → halaan）干扰，容易写成 <code>halaamaan</code>，那是「来拥抱」的意思。</p></div><div class="qa"><div class="q">例 4　回答 <code>Mitä teet viikonloppuna?</code>，写三句，其中一句用 <code>pitää</code> 表义务。</div><p><b>解：</b><code>Lauantaina minä käyn salilla ja tapaan ystäviä.</code> / <code>Sunnuntaina minun pitää tehdä koulutehtäviä.</code> / <code>Illalla katson elokuvan kotona.</code></p><p><b>核对：</b>星期 -na、<code>minun pitää</code> 主语属格、<code>koulutehtäviä</code> 部分格复数、<code>elokuvan</code> 总格。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出十个将来时间词，并用其中五个各造一句计划句。</li><li>把下列动词变成 -maan/-mään 形式：ostaa、juoda、kävellä、tarvita、vanheta、mennä、tehdä。</li><li>翻译：「下周我会开始学芬兰语，并且每天听芬兰广播。」</li><li>改错：<code>Ensi viikko minä menen salille.</code> / <code>Huomenna minä tulen ostaa ruokaa.</code> / <code>Minä pitää tehdä kotitehtävät.</code></li><li>写一段 5 句的「下周计划」，每天至少一个动词，最后一句用否定式说明哪天不做什么。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 示例十个：<code>tänään, huomenna, ylihuomenna, illalla, viikonloppuna, ensi viikolla, ensi maanantaina, ensi vuonna, myöhemmin, tulevaisuudessa</code>。造句：<code>Ensi viikolla minä aloitan uuden kurssin.</code></p><p><b>2.</b> <code>ostamaan, juomaan, kävelemään, tarvitsemaan, vanhenemaan, menemään, tekemään</code>。检查点：第四类 haluta/tarvita 类是否保留了原来的元音（tarvitse-）。</p><p><b>3.</b> <code>Ensi viikolla minä aloitan suomen opiskelun ja kuuntelen suomalaista radiota joka päivä.</code> 第一句动作可用 <code>tulen aloittamaan</code> 强化；<code>joka päivä</code> 不加格。</p><p><b>4.</b> 三处：<code>ensi viikko</code> → <code>ensi viikolla</code>；<code>tulen ostaa</code> → <code>tulen ostamaan</code>；<code>minä pitää</code> → <code>minun pitää</code>。</p><p><b>5.</b> 示例：<code>Maanantaina minä menen kouluun ja opiskelen suomea. Tiistaina käyn salilla. Keskiviikkona tapaan ystävän. Torstaina minun pitää tehdä koulutehtäviä. Perjantaina en mene baariin, minä lepään kotona.</code></p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>「现在时表将来」这一原则、将来时间词的格（ensi viikolla / ensi maanantaina / viikonloppuna）、<code>tulla + -maan</code> 的构造。</div><div class="callout warn"><b>易错 1</b><code>tulla + -maan</code> 里给第二个动词也变人称：<code>tulen ostamaan</code> 对，<code>tulen ostan</code> 错。</div><div class="callout warn"><b>易错 2</b><code>ensi</code> 后面的名词忘变格：<code>ensi viikko</code>、<code>ensi kuukausi</code> 都缺格。</div><div class="callout warn"><b>易错 3</b>移动动词的格混淆：<code>menen salille</code>（去）与 <code>olen salilla</code>（在）不能互换。</div><div class="callout tip"><b>进阶</b>能说明 <code>tulen ostamaan</code> 与 <code>ostan</code> 的语用差别（承诺 / 确定性 vs 中性叙述），并在写作中按语境选择。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s9">谈计划清单</h2><h3 id="s10">造句四步</h3><ol class="steps"><li>先定时间词，并检查它的格：下周 -lla、周一 -na、周末 -na</li><li>动词用现在时并按人称变位</li><li>检查宾语：否定或部分动作 → 部分格；完整动作 → 总格</li><li>需要强调确定性时改用 <code>tulen + -maan</code></li></ol><h3 id="s11">移动三问</h3><ol class="steps"><li>去哪 → illative：kauppaan、kotiin、baariin、salille</li><li>在哪 → inessive / adessive：kaupassa、salilla、mökillä</li><li>从哪来 → elative：kaupasta、kotoa</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖知识点</th></tr><tr><td>05_Tunti 4/4_futuuri, korjattu.pdf</td><td>p1–p3</td><td>现在时 = 将来、八个将来时间词、Tänään/Huomenna 对照</td></tr><tr><td>05_Tunti 4/5_EXTRA, futuuri, korjattu.pptx</td><td>slide 2–3</td><td>tulla + -maan/-mään 结构、六个动词转换、两句范例</td></tr><tr><td>05_Tunti 4/1_KOTITEHTÄVÄ … Sanasto, mitä teet viikonloppuna.docx</td><td>全篇</td><td>周末计划词汇：tehdä、ajattelin、pitää tehdä、mennä salille、lähteä kävelylle、konserttiin</td></tr><tr><td>05_Tunti 4/3_PUHU PARILLE.html</td><td>全篇 7 问</td><td>口语问句模板：Mitä tekee illalla / viikonloppuna、Missä opiskelevat</td></tr><tr><td>05_Tunti 4/6_KOTITEHTÄVÄ … ensi viikolla.docx</td><td>全篇</td><td>写作任务要求：用现在时表将来、星期 -na 逐日安排</td></tr><tr><td>（补充）</td><td>4.5</td><td>illative / inessive / adessive 三向对照表属归纳性拓展，原文只给例句</td></tr><tr><td>（跳过）</td><td>—</td><td>材料中的图片与对话插图不含语言点</td></tr></table></section><div class="lnav"><a class="prev" href="t3-clock-time-expression.html">← 第 3 讲 · 钟点、星期与 Milloin 时间格</a><a class="next" href="t5-present-tense-vt1.html">第 5 讲 · 现在时与第一类动词 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

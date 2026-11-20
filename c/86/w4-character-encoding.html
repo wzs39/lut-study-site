@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8 · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-3.html">第 3 章 数字编码与压缩</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、从字符到二进制</a><a class="toc-l3" href="#s3">1.1 计算机只存二进制</a><a class="toc-l3" href="#s4">1.2 一个关键追问</a><a class="toc-l3" href="#s5">1.3 两个方向</a><a class="toc-l2" href="#s6">二、什么是字符，什么是文本</a><a class="toc-l3" href="#s7">2.1 字符的定义</a><a class="toc-l3" href="#s8">2.2 字符 ≠ 数字</a><a class="toc-l3" href="#s9">2.3 文本是字符的序列</a><a class="toc-l2" href="#s10">三、为什么需要字符编码</a><a class="toc-l2" href="#s11">四、字符集与字符编码：两件不同的事</a><a class="toc-l3" href="#s12">4.1 各自的定义</a><a class="toc-l3" href="#s13">4.2 一句话区分</a><a class="toc-l2" href="#s14">五、ASCII</a><a class="toc-l3" href="#s15">5.1 全称与来历</a><a class="toc-l3" href="#s16">5.2 两种版本</a><a class="toc-l3" href="#s17">5.3 必须记住的几个码</a><a class="toc-l3" href="#s18">5.4 五类字符</a><a class="toc-l3" href="#s19">5.5 完整算例：CAT</a><a class="toc-l2" href="#s20">六、ASCII 的局限</a><a class="toc-l2" href="#s21">七、Unicode</a><a class="toc-l3" href="#s22">7.1 定义</a><a class="toc-l3" href="#s23">7.2 码位（code point）</a><a class="toc-l3" href="#s24">7.3 一个必须记住的提醒</a><a class="toc-l2" href="#s25">八、Unicode 不是编码</a><a class="toc-l3" href="#s26">8.1 常见误解</a><a class="toc-l3" href="#s27">8.2 四层概念链</a><a class="toc-l2" href="#s28">九、UTF-8 的结构</a><a class="toc-l3" href="#s29">9.1 全称与变长</a><a class="toc-l3" href="#s30">9.2 首字节模式表</a><a class="toc-l3" href="#s31">9.3 为什么 UTF-8 流行</a><a class="toc-l2" href="#s32">十、三个完整的 UTF-8 编码例子</a><a class="toc-l3" href="#s33">10.1 英文：A</a><a class="toc-l3" href="#s34">10.2 中文：你</a><a class="toc-l3" href="#s35">10.3 emoji：😂</a><a class="toc-l2" href="#s36">十一、字符、码位与字节：三层对照</a><a class="toc-l2" href="#s37">十二、编码与解码</a><a class="toc-l3" href="#s38">12.1 编码</a><a class="toc-l3" href="#s39">12.2 解码</a><a class="toc-l3" href="#s40">12.3 双方必须约定一致</a><a class="toc-l2" href="#s41">十三、乱码（mojibake）</a><a class="toc-l3" href="#s42">13.1 现象</a><a class="toc-l3" href="#s43">13.2 逐步还原</a><a class="toc-l3" href="#s44">13.3 关键教训</a><a class="toc-l2" href="#s45">十四、文本要占多少空间</a><a class="toc-l3" href="#s46">14.1 三个决定因素</a><a class="toc-l3" href="#s47">14.2 两个算例</a><a class="toc-l3" href="#s48">14.3 混合文本的算法</a><a class="toc-l2" href="#s49">十五、文本文件</a><a class="toc-l3" href="#s50">15.1 换行：文本不只是字符</a><a class="toc-l2" href="#s51">十六、从键盘到屏幕：完整流水线</a><a class="toc-l2" href="#s52">十七、四个常见误解</a><a class="toc-l2" href="#s53">十八、课件小测（附答案）</a><a class="toc-l2" href="#s54">方法清单</a><a class="toc-l3" href="#s55">判断一个字符在 UTF-8 占几字节（三步）</a><a class="toc-l3" href="#s56">算一段文本的 UTF-8 字节数（四步）</a><a class="toc-l3" href="#s57">排查乱码（五步）</a><a class="toc-l3" href="#s58">区分四个概念（自查表）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a class="toc-l3" href="w4-character-encoding.html">▸ Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</h1><p class="lead">Character and Text Encoding <span class="badge mute">86</span> <span class="badge mute">第 4 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 数字编码与压缩</a></p><p class="src">原始文件：<code>Week4- Character and Text Encoding/Lecture4.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 2、3 讲把「数」变成了 0/1。可屏幕上绝大多数内容不是数，而是文字。这一讲回答三个问题：字符凭什么变成 0/1（编码）、为什么同一个字节串能读出不同的字（编码方案）、为什么会出现乱码（编码不匹配）。</p><p>本节的核心是一条四层链：<b>字符 → 码位 → 编码 → 字节</b>。把这条链分清，ASCII 与 Unicode 的关系、UTF-8 为什么变长、乱码从哪来，就都是同一条链上不同层的现象，不需要死记。</p><p>本讲与前后讲的关系：上一讲用补码与 IEEE 754 处理「数值」，本讲处理「符号」；下一讲把同样的「采样—量化—编码」框架搬到图像上。三者合起来，文本、数值、图像、音视频就都有了数字化路径。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>区分字符、文本、字符集、字符编码四个概念</li><li>说出标准 ASCII 与扩展 ASCII 的位数、字符数与取值范围</li><li>写出常见字符的 ASCII 码（A、a、0、空格）并解释大小写差 32</li><li>说明 Unicode 与 UTF-8 的关系，指出「Unicode 就是编码」为什么错</li><li>按 UTF-8 的首字节模式判断一个字符占几个字节，并把码位编码成字节</li><li>计算一段中英混排文本在 UTF-8 下的字节数</li><li>解释乱码（mojibake）的成因，并说明为什么「字节不知道自己是什么编码」</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、从字符到二进制</h2><h3 id="s3">1.1 计算机只存二进制</h3><p>课件开场重复了全书的主线：计算机以二进制数据的形式处理与存储信息。例如 <code>A → 01000001</code>。</p><h3 id="s4">1.2 一个关键追问</h3><p>课件紧接着问：<code>01000001</code> 到底是什么？答案是<b>取决于编码方案</b>（"It depends on the encoding scheme"）。同一个字节串，按 ASCII 读是字母 A，按无符号整数读是 65，按别的编码读可能是另一个字符或半个字符。</p><h3 id="s5">1.3 两个方向</h3><pre><code>字符 → 编码 → 二进制表示
+二进制表示 → 解码 → 字符</code></pre><p>课件补了一句关键结论：<b>同一串位在不同编码方案下可以代表不同字符</b>。这句话是全讲的伏笔，第十三节的乱码就是它的直接后果。</p><h2 id="s6">二、什么是字符，什么是文本</h2><h3 id="s7">2.1 字符的定义</h3><p>字符（character）是书面或文本信息的基本单位。课件给了六类例子：</p><ul><li>字母：A、B、a、b</li><li>数字字符：0、1、2</li><li>标点：<code>.</code>、<code>,</code>、<code>?</code>、<code>!</code></li><li>符号：<code>+</code>、<code>@</code>、<code>€</code></li><li>汉字：你、好</li><li>其他文字系统：Ж（西里尔）、한（韩文）</li></ul><p>注意第二行写的是「数字字符」，不是数字。这就引出下一个区分。</p><h3 id="s8">2.2 字符 ≠ 数字</h3><p>课件的例子很短但很关键：<code>5</code> 作为字符，是那个字形「5」；<code>5</code> 作为数字，是一个整数值。计算机可能用不同的方式表示它们，取决于上下文。</p><table><tr><th>写法</th><th>角色</th><th>编码结果</th><th>用途</th></tr><tr><td><code>"5"</code></td><td>字符</td><td>ASCII 53 = <code>0011 0101</code></td><td>文本里的一个字符</td></tr><tr><td><code>5</code></td><td>数值</td><td>二进制 <code>0000 0101</code>（8 位）</td><td>参与算术运算</td></tr></table><p>这不是文字游戏：如果把「5」当数值存，字节是 00000101；当字符存，字节是 00110101。同一屏幕上的字形，内存里完全不同的两个值。程序里把字符串 <code>"5"</code> 转成整数 5，做的就是这件事（<code>int("5")</code>）。</p><h3 id="s9">2.3 文本是字符的序列</h3><p>课件定义：文本是字符的序列。例如 <code>Hello</code> 可以看成 H、e、l、l、o 五个字符排成一列。于是：</p><pre><code>文本 = 字符序列
+在计算机层面：文本 → 字符 → 编码后的二进制数据</code></pre><p>这个分解很重要：字节数 ≠ 字符数（第十四节会算），因为「一个字符几个字节」由编码决定。</p><h2 id="s10">三、为什么需要字符编码</h2><p>课件把矛盾摆得很清楚：计算机只存二进制，而人类用的是字母、数字、标点、符号、汉字、阿拉伯文字……因此需要一套<b>系统化</b>的映射，把字符对应到二进制值。</p><p>编码（character encoding）的定义：它规定字符怎样被表示为数值，再表示为二进制数据。例：</p><pre><code>A → 65 → 01000001</code></pre><p>注意这是两级映射：字符到编号（65），编号到二进制（01000001）。第 2 讲讲过的「按权展开」在这里第二次出现——65 就是 01000001 的十进制形式。</p><h2 id="s11">四、字符集与字符编码：两件不同的事</h2><h3 id="s12">4.1 各自的定义</h3><table><tr><th>概念</th><th>定义</th><th>回答的问题</th><th>例子</th></tr><tr><td>字符集（character set）</td><td>规定「有哪些字符存在」</td><td>有没有这个字符？</td><td>A B C … Z；a b … z；0 1 … 9</td></tr><tr><td>字符编码（character encoding）</td><td>规定这些字符怎样在计算机数据中表示</td><td>它写成什么字节？</td><td>A → 65 → 01000001</td></tr></table><h3 id="s13">4.2 一句话区分</h3><p>课件给了一句极简的对照：<b>字符集回答「What characters?」，编码回答「How are they represented?」</b>。</p><p>为什么这个区分重要？因为 Unicode 是一个字符集（它规定了全世界有哪些字符、各叫什么码位），而 UTF-8 是一种编码（它规定这些码位怎么写字节）。两者不是同一层的东西，混为一谈就会得出「Unicode 是编码」的错误结论（第八节）。</p><h2 id="s14">五、ASCII</h2><h3 id="s15">5.1 全称与来历</h3><p>ASCII = American Standard Code for Information Interchange（美国信息交换标准代码）。课件说明它最初是为表示英文文本而设计的。</p><h3 id="s16">5.2 两种版本</h3><table><tr><th>版本</th><th>位数</th><th>字符数</th><th>取值范围</th></tr><tr><td>标准 ASCII（standard）</td><td>7 位</td><td>128 个</td><td>0–127</td></tr><tr><td>扩展 ASCII（extended）</td><td>8 位</td><td>256 个</td><td>0–255</td></tr></table><p>7 位是因为最初只用低 7 位，最高位留给校验或扩展；8 位版本把 128–255 也用上了，塞进西欧字母（à、ö、ß）与制表符。问题在于：扩展的 128 个位置，不同厂商、不同国家各填各的，导致互不兼容——这是第六节「局限」的一半原因。</p><h3 id="s17">5.3 必须记住的几个码</h3><table><tr><th>字符</th><th>十进制</th><th>二进制（7 位）</th></tr><tr><td>A</td><td>65</td><td>1000001</td></tr><tr><td>B</td><td>66</td><td>1000010</td></tr><tr><td>a</td><td>97</td><td>1100001</td></tr><tr><td>0（数字字符）</td><td>48</td><td>0110000</td></tr><tr><td>空格</td><td>32</td><td>0100000</td></tr></table><div class="callout tip"><b>三个规律省一半记忆量</b>① 大写 A–Z 连续排：A=65 到 Z=90。② 小写 a–z 连续排：a=97 到 z=122。<b>同一个字母的大小写相差 32</b>（因为第 5 位不同），所以 <code>a</code> 与 <code>A</code> 只差一个位。③ 数字字符 0–9 连续排：48–57。有了这三条，绝大多数编码题都能现场推出来。</div><h3 id="s18">5.4 五类字符</h3><ol><li>大写字母 A–Z</li><li>小写字母 a–z</li><li>数字 0–9</li><li>标点与符号：<code>.</code>、<code>,</code>、<code>!</code>、<code>?</code>、<code>+</code>、<code>−</code>、<code>*</code>、<code>/</code>、<code>@</code></li><li>控制字符（control characters）：换行、回车、制表符等</li></ol><p>第五类是容易被忽略的一类：它们不显示图形，而是指挥设备动作。回车（CR，13）、换行（LF，10）、制表符（HT，9）都属于这一类。第十五节讲换行符时还会用到。</p><h3 id="s19">5.5 完整算例：CAT</h3><p>课件用它示范「文本 → 编号 → 二进制」的完整链条：</p><pre><code>C → 67 → 1000011
+A → 65 → 1000001
+T → 84 → 1010100
+
+CAT → 67 65 84 → 1000011 1000001 1010100</code></pre><p>三个字符，三个字节（按 7 位写）/ 三个字节（按 8 位补前导 0 写）。ASCII 文本的大小就等于字符个数乘以 1 字节。</p><h2 id="s20">六、ASCII 的局限</h2><p>课件用四个反例把局限摆出来：<code>你好</code>、<code>Привет</code>、<code>こんにちは</code>、<code>안녕하세요</code>。标准 ASCII 根本没有这些文字系统的字符。</p><p>问题的本质：<b>128 个字符装不下世界上所有书写系统</b>。于是历史上出现了大量互不兼容的扩展编码（各种「代码页」、GB2312/GBK、Shift-JIS、ISO-8859 系列……）。同一份文件在不同机器上打开，就可能变成乱码。这就直接催生了 Unicode。</p><h2 id="s21">七、Unicode</h2><h3 id="s22">7.1 定义</h3><p>Unicode 是一个<b>通用字符集</b>，目标是表示不同书写系统的文本。课件列出它覆盖的范围：拉丁、希腊、西里尔、中文、日文、韩文、阿拉伯、希伯来等等，另外还包括大量符号与 emoji。</p><h3 id="s23">7.2 码位（code point）</h3><p>Unicode 给每个字符分配一个唯一的<b>码位</b>，通常写成十六进制形式 <code>U+XXXX</code>。</p><table><tr><th>字符</th><th>Unicode 码位</th></tr><tr><td>A</td><td>U+0041</td></tr><tr><td>a</td><td>U+0061</td></tr><tr><td>你</td><td>U+4F60</td></tr><tr><td>好</td><td>U+597D</td></tr><tr><td>😂</td><td>U+1F602</td></tr></table><p>注意最后一行是 5 位十六进制：Unicode 的码位空间超过 0xFFFF，所以码位要写 4–6 位。这也预告了 UTF-8 为什么必须有 4 字节的形式。</p><h3 id="s24">7.3 一个必须记住的提醒</h3><p>课件加粗写了一句话：<b>Unicode 码位不一定等于文件里存的字节</b>。这个区分在第 8 节与第 9 节会被反复使用。</p><h2 id="s25">八、Unicode 不是编码</h2><h3 id="s26">8.1 常见误解</h3><p>课件直接点出这个误解：<b>Unicode ≠ UTF-8</b>。更准确的说法是：Unicode 定义了大量字符及其码位；UTF-8 / UTF-16 / UTF-32 定义这些码位怎样编码成字节。</p><h3 id="s27">8.2 四层概念链</h3><pre><code>字符（Character）
+  ↓
+Unicode 码位（Code Point）
+  ↓
+UTF-8 / UTF-16 / UTF-32
+  ↓
+字节（Bytes）</code></pre><p>把这条链背下来，很多判断题就能秒答。例如「一个字符在 UTF-8 里占 1 个字节」错在第一层到第四层的距离；「U+4F60 是 E4 BD A0」混淆了第二层与第四层。</p><h2 id="s28">九、UTF-8 的结构</h2><h3 id="s29">9.1 全称与变长</h3><p>UTF-8 = Unicode Transformation Format – 8-bit。它是 Unicode 的一种<b>变长</b>编码：一个字符可能用 1、2、3 或 4 个字节，取决于它的码位。</p><table><tr><th>字符</th><th>字节数</th><th>说明</th></tr><tr><td>A</td><td>1 字节</td><td>落在 ASCII 范围</td></tr><tr><td>é</td><td>2 字节</td><td>拉丁补充区</td></tr><tr><td>你</td><td>3 字节</td><td>中日韩区</td></tr><tr><td>😂</td><td>4 字节</td><td>emoji，码位超过 0xFFFF</td></tr></table><h3 id="s30">9.2 首字节模式表</h3><p>UTF-8 用首字节的高位模式告诉解码器「这个字符一共几个字节」：</p><table><tr><th>字节数</th><th>首字节模式</th><th>可容纳的有效位</th><th>后面跟几个续字节</th></tr><tr><td>1（ASCII）</td><td><code>0xxxxxxx</code></td><td>7 位</td><td>0 个</td></tr><tr><td>2</td><td><code>110xxxxx</code></td><td>5 位</td><td>1 个（<code>10xxxxxx</code>）</td></tr><tr><td>3</td><td><code>1110xxxx</code></td><td>4 位</td><td>2 个</td></tr><tr><td>4</td><td><code>11110xxx</code></td><td>3 位</td><td>3 个</td></tr></table><p>续字节（continuation byte）的固定形式是 <code>10xxxxxx</code>：最高位固定为 1、次高位固定为 0，剩下 6 位装数据。</p><p>为什么要这样设计？因为解码器只读第一个字节就能知道边界，不需要额外的长度字段；而且 ASCII 字节（0 开头）与多字节序列的首字节（11 开头）、续字节（10 开头）互不混淆，可以随时从中间开始扫描。这是 UTF-8 能被广泛采用的技术原因。</p><h3 id="s31">9.3 为什么 UTF-8 流行</h3><p>课件给了四条，每一条都能落到具体后果：</p><ol><li>ASCII 兼容：前 128 个 Unicode 字符与 ASCII 的字节值完全相同，所以「A」在两种编码下都是 01000001。旧文件不用转换就能读。</li><li>变长：不同字符用不同字节数，英文字本不会为了中文而付出代价。</li><li>覆盖广：几乎能表示所有现代 Unicode 字符。</li><li>用得广：网页、文本文件、源代码、数据交换、大量软件系统都用它。</li></ol><p>第一条尤其重要：这就是为什么英文网页从 ASCII 迁到 UTF-8 几乎不需要改内容，而中文网页迁移就必须要转码。</p><h2 id="s32">十、三个完整的 UTF-8 编码例子</h2><h3 id="s33">10.1 英文：A</h3><pre><code>Unicode 码位：U+0041
+UTF-8：01000001</code></pre><p>与 ASCII 的字节值完全相同，所以叫 ASCII 兼容（ASCII compatibility）。课件强调这一点时说得很直白：ASCII 里 A 是 01000001，UTF-8 里 A 也是 01000001。</p><h3 id="s34">10.2 中文：你</h3><p>码位 U+4F60，UTF-8 用 3 个字节，字节是 <code>E4 BD A0</code>，二进制：</p><pre><code>11100100 10111101 10100000</code></pre><p>推导过程（把 16 位码位按 4+6+6 切开，塞进三段模板）：</p><ol class="steps"><li>码位写成 16 位二进制：<code>0100 1111 0110 0000</code></li><li>首字节模板 <code>1110xxxx</code>，填入前 4 位 <code>0100</code> → <code>1110 0100</code> = <b>E4</b></li><li>第二字节模板 <code>10xxxxxx</code>，填入接下来 6 位 <code>111101</code> → <code>10 111101</code> = <b>BD</b></li><li>第三字节模板 <code>10xxxxxx</code>，填入最后 6 位 <code>100000</code> → <code>10 100000</code> = <b>A0</b></li><li>拼起来：<code>你 → U+4F60 → E4 BD A0</code></li></ol><p>核对位数：4 + 6 + 6 = 16，正好是 16 位码位的全部内容，一位不剩、一位不补。这就是模板里xxxx个数的来历。</p><h3 id="s35">10.3 emoji：😂</h3><p>码位 U+1F602 需要 21 位二进制 <code>000 011111 011000 000010</code>，超过 16 位，只能走 4 字节模板（3+6+6+6 = 21 位）：</p><pre><code>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+→ F0 9F 98 82</code></pre><p>这解释了为什么 emoji 比汉字更占空间：汉字 3 字节，emoji 4 字节。发一条全是表情的消息，文件比同字数的中文大。</p><h2 id="s36">十一、字符、码位与字节：三层对照</h2><p>课件专门用一页把这三个概念并列，避免混淆：</p><table><tr><th>层</th><th>你的例子</th><th>形式</th></tr><tr><td>字符（character）</td><td>你</td><td>人类看到的字形</td></tr><tr><td>Unicode 码位（code point）</td><td>U+4F60</td><td>抽象编号</td></tr><tr><td>UTF-8 编码（encoding）</td><td><code>E4 BD A0</code></td><td>字节序列（十六进制写法）</td></tr><tr><td>存储数据（stored data）</td><td>11100100 10111101 10100000</td><td>磁盘/内存里真正的 0 和 1</td></tr></table><p>关系链：<b>字符 → 码位 → 编码 → 字节</b>。这条链的每一层都可以被独立追问，考试里「这个字符占几字节」「这个码位写成什么字节」是两个不同的问题。</p><h2 id="s37">十二、编码与解码</h2><h3 id="s38">12.1 编码</h3><p>编码（encoding）按指定方案把字符转换成字节序列。例：<code>"Hello" → UTF-8 → 字节</code>。概念流程是：字符序列 → 码位 → UTF-8 → 字节。</p><h3 id="s39">12.2 解码</h3><p>解码（decoding）是反向过程：字节 → UTF-8 解码器 → Unicode 码位 → 字符 → 文本。课件给的例子：<code>E4 BD A0 → UTF-8 → U+4F60 → 你</code>。</p><h3 id="s40">12.3 双方必须约定一致</h3><table><tr><th>过程</th><th>方向</th><th>目的</th></tr><tr><td>编码（encoding）</td><td>字符 → 字节</td><td>存储与传输文本</td></tr><tr><td>解码（decoding）</td><td>字节 → 字符</td><td>解释与阅读文本</td></tr></table><p>课件加了一句重要提醒：编码器与解码器必须对编码达成一致。用错编码就会得到错误字符（第十三节）。</p><h2 id="s41">十三、乱码（mojibake）</h2><h3 id="s42">13.1 现象</h3><p>课件展示了一种典型现象：本该显示 <code>你好</code>，屏幕上却出现 <code>ä½ å¥½</code> 一类的怪字符。这种现象叫乱码（mojibake）。</p><p>它的成因只有一个：<b>用与生成时不匹配的编码去解码</b>。</p><h3 id="s43">13.2 逐步还原</h3><p>以「你好」为例，两个汉字在 UTF-8 下是 6 个字节：<code>E4 BD A0 E5 A5 BD</code>。若某个程序不用 UTF-8，而用单字节的 Latin-1（每字节一个字符）去解码，就会得到 6 个互不相关的西欧字符——因为 <code>E4</code>、<code>BD</code>、<code>A0</code> 在 Latin-1 里各有各的样子。屏幕上于是出现一串「像字又不是字」的符号。</p><pre><code>正确：你好 → UTF-8 → E4 BD A0 E5 A5 BD
+错误：E4 BD A0 E5 A5 BD → Latin-1 解码 → 6 个乱字符</code></pre><h3 id="s44">13.3 关键教训</h3><p>课件把教训写得很硬：<b>字节本身并不知道自己代表哪种编码</b>（"Bytes do not inherently know which encoding they represent"）。程序必须知道该怎么解释它们。</p><p>这条结论有一个非常实际的推论：拿到一份来历不明的文本文件，光看内容是猜不出编码的；必须看元数据、BOM、或者试。这也是第 4 章讲文件格式与元数据时的伏笔。</p><h2 id="s45">十四、文本要占多少空间</h2><h3 id="s46">14.1 三个决定因素</h3><ul><li>字符个数</li><li>编码方案</li><li>具体是哪些字符</li></ul><p>课件把最后一条单独强调，因为在 UTF-8 下这一点影响最大：英文常 1 字节，中文常 3 字节，部分符号与 emoji 常 4 字节。于是：</p><p><b><code>字符数 ≠ 字节数</code></b></p><h3 id="s47">14.2 两个算例</h3><p><code>Hello</code>：五个 ASCII 字符，每个 1 字节 → 共 <b>5 字节</b>。</p><p><code>你好</code>：两个汉字，各 3 字节 → <code>2 × 3 =</code> <b>6 字节</b>。</p><p>同样的「两个字」与「五个字母」，字节数差了一倍多。写存储估算题时必须先问编码。</p><h3 id="s48">14.3 混合文本的算法</h3><p>遇到中英混排，逐个字符判字节数再相加。判据是码位区间：码位 ≤ 0x7F 用 1 字节；≤ 0x7FF 用 2 字节；≤ 0xFFFF 用 3 字节；否则 4 字节。</p><h2 id="s49">十五、文本文件</h2><p>文本文件通常包含编码后的字符数据，有时还带额外信息，例如<b>字节顺序标记</b>（Byte Order Mark，BOM）。常见文本格式有：</p><span class="chip">.txt</span> <span class="chip">.csv</span> <span class="chip">.html</span> <span class="chip">.xml</span> <span class="chip">.json</span><p>格式只规定数据怎样组织，具体字节仍然取决于编码。课件画的链是：<code>文本 → UTF-8 编码 → 字节 → 文件</code>。</p><h3 id="s50">15.1 换行：文本不只是字符</h3><p>课件提醒：文本还包含格式与控制信息。例如下面两行文字之间有一个换行：</p><pre><code>Hello
+World</code></pre><p>不同系统历史上用了不同的行尾约定：<b>LF（<code>
+</code>）</b>、<b>CR（<code></code>）</b>、<b>CRLF（<code>
+</code>）</b>。于是同一份文本在另一台机器上打开，换行可能显示不正常（例如所有行挤成一行，或每行之间多出空行）。</p><p>这与第七节的乱码是同一类问题：文件里只有字节，约定不同就解释不同。</p><h2 id="s51">十六、从键盘到屏幕：完整流水线</h2><p>课件用「输入你好」把全讲串了一遍：</p><pre><code>键盘输入 → 字符 → Unicode 码位 → UTF-8 编码 → 字节
+→ 存储/传输 → UTF-8 解码 → Unicode 字符 → 显示</code></pre><p>保存文件的例子同样具体：新建 <code>hello.txt</code>，内容是 <code>Hello, 你好!</code>，过程是：文本 → Unicode 字符 → UTF-8 编码 → 字节序列 → 写入文件；打开时反向执行：字节 → UTF-8 解码 → 字符 → 显示。</p><p>把这条链记住，遇到任何「文件坏了/乱码了/字数不对」的问题，都能沿着链找出是哪一层出了差错。</p><h2 id="s52">十七、四个常见误解</h2><table><tr><th>误解</th><th>更准确的说法</th></tr><tr><td>「Unicode 就是一种字符编码」</td><td>Unicode 定义字符与码位；UTF-8/UTF-16/UTF-32 才是把它们编码成字节的方案</td></tr><tr><td>「一个字符总是占一个字节」</td><td>UTF-8 下每个字符占 1–4 字节</td></tr><tr><td>「ASCII 与 UTF-8 完全不同」</td><td>UTF-8 对前 128 个字符与标准 ASCII 完全兼容</td></tr><tr><td>「一个字节自动告诉我们它是什么字符」</td><td>不一定，必须先知道用的是哪种编码</td></tr></table><h2 id="s53">十八、课件小测（附答案）</h2><p>课件留了三道快速检查题，第四节的例题与练习会用到：</p><ol><li>标准 ASCII 能表示多少个字符？A. 64　B. 128　C. 256　D. 1024 → <b>B</b></li><li>下列哪句正确？A. Unicode 与 UTF-8 是同一件事　B. UTF-8 里每个字符占一字节　C. UTF-8 是 Unicode 字符的一种编码　D. ASCII 能表示所有现代文字 → <b>C</b></li><li>为什么 A 占 1 字节、你占 3 字节、emoji 占 4 字节？→ 因为 UTF-8 是变长编码，字节数由码位大小决定。</li></ol></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>character</td><td>字符</td><td>A basic unit of written or textual information, e.g. A, 你, Ж.</td></tr><tr><td>character set</td><td>字符集</td><td>Defines which characters exist, e.g. ASCII, Unicode.</td></tr><tr><td>character encoding</td><td>字符编码</td><td>Defines how characters are represented as bytes, e.g. A → 65 → 01000001.</td></tr><tr><td>ASCII</td><td>美国信息交换标准代码</td><td>A 7-bit encoding for 128 English characters, values 0–127.</td></tr><tr><td>extended ASCII</td><td>扩展 ASCII</td><td>An 8-bit variant with 256 characters; the upper 128 differ between vendors.</td></tr><tr><td>code point</td><td>码位</td><td>A unique number assigned to a Unicode character, written U+XXXX.</td></tr><tr><td>Unicode</td><td>统一字符集</td><td>A universal character set covering most writing systems; it is not an encoding.</td></tr><tr><td>UTF-8</td><td>8 位统一码转换格式</td><td>A variable-length encoding of Unicode using 1–4 bytes per character.</td></tr><tr><td>variable-length encoding</td><td>变长编码</td><td>Different characters occupy different numbers of bytes.</td></tr><tr><td>continuation byte</td><td>续字节</td><td>A follow-up byte of the form 10xxxxxx in a multi-byte UTF-8 sequence.</td></tr><tr><td>ASCII compatible</td><td>ASCII 兼容</td><td>The first 128 Unicode characters use the same byte values as ASCII.</td></tr><tr><td>encoding</td><td>编码</td><td>Characters → code points → bytes.</td></tr><tr><td>decoding</td><td>解码</td><td>Bytes → code points → characters.</td></tr><tr><td>mojibake</td><td>乱码</td><td>Garbled text produced by decoding bytes with the wrong encoding.</td></tr><tr><td>byte order mark (BOM)</td><td>字节顺序标记</td><td>Optional leading bytes in a text file that identify the encoding.</td></tr><tr><td>line ending</td><td>行尾</td><td>LF, CR or CRLF conventions that differ between systems.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写出 <code>Cat</code> 与 <code>CAT</code> 的 ASCII 码与字节，并解释大小写只差一位。</div><p><code>C = 67</code>、<code>a = 97</code>、<code>t = 116</code>；<code>A = 65</code>、<code>T = 84</code>。</p><p><code>Cat</code> → <code>67 97 116</code> → 二进制 <code>1000011 1100001 1110100</code>，共 3 字节。</p><p><code>CAT</code> → <code>67 65 84</code> → 二进制 <code>1000011 1000001 1010100</code>，共 3 字节。</p><p><b>大小写规律：</b><code>A = 0100 0001</code>（65），<code>a = 0110 0001</code>（97），只差<b>第 5 位</b>（从 0 计是 2^5 = 32）。所以大写到小写是「加 32」，小写到大写是「减 32」。</p><p>这条规律在编程里很实用：<code>chr(ord(c) + 32)</code> 就能把小写变大写。但它只对 ASCII 字母成立，对汉字与带音标的字母（如 é）无效——因为那些字符根本不在 65–122 这个区间。</p></div><div class="qa"><div class="q">例 2　把 <code>é</code>（U+00E9）按 UTF-8 编码成字节，写出推导过程。</div><p>码位 0x00E9 只需 8 位：<code>1110 1001</code>。它大于 0x7F（127），不能用 1 字节，但小于 0x7FF，所以用 2 字节模板 <code>110xxxxx 10xxxxxx</code>（5 + 6 = 11 位，够装 8 位）。</p><ol class="steps"><li>补齐到 11 位：<code>000 11101001</code></li><li>首字节取前 5 位 <code>00011</code>：<code>110 00011</code> = <b>C3</b></li><li>续字节取后 6 位 <code>101001</code>：<code>10 101001</code> = <b>A9</b></li><li>结果：<code>é → U+00E9 → C3 A9</code></li></ol><p>验证：<code>C3</code> 的首字节模式是 <code>110</code> 开头，说明这是 2 字节字符；<code>A9</code> 以 <code>10</code> 开头，符合续字节形式。两步都对，结果才可信。</p><p>这也解释了为什么「带音标的西欧字母」在 UTF-8 里占 2 字节，而纯 ASCII 字母只占 1 字节——码位跨过了 0x7F 这条线。</p></div><div class="qa"><div class="q">例 3　计算 <code>Hello, 你好!</code> 在 UTF-8 下的字节数，并说明若改用 UTF-16 会怎样。</div><p>逐字符判：</p><table><tr><th>片段</th><th>字符数</th><th>每字符字节</th><th>小计</th></tr><tr><td><code>Hello</code></td><td>5</td><td>1</td><td>5</td></tr><tr><td><code>,</code></td><td>1</td><td>1</td><td>1</td></tr><tr><td>空格</td><td>1</td><td>1</td><td>1</td></tr><tr><td><code>你好</code></td><td>2</td><td>3</td><td>6</td></tr><tr><td><code>!</code></td><td>1</td><td>1</td><td>1</td></tr></table><p>合计 <code>5 + 1 + 1 + 6 + 1 =</code> <b>14 字节</b>。字符总数是 11 个，字节数是 14——这就是「字符数 ≠ 字节数」。</p><p>若改用 UTF-16：BMP 内的字符（含汉字、ASCII）多为 2 字节，11 个字符约 22 字节，另外可能还有 BOM 的 2 字节。所以同一段中文文本，UTF-16 往往比 UTF-8 更大；但若文本全是汉字、且不含 ASCII，UTF-16 反而可能更省——编码选择要看内容。</p><p>答题模板：列表 → 逐段乘 → 相加 → 与字符数对照。凡是这类题都按这四步写，不会漏项。</p></div><div class="qa"><div class="q">例 4　收到一份文本文件，打开后全是 <code>ä½ å¥½</code> 这类怪字符。写出排查步骤。</div><p><b>第一步，判断是不是编码问题。</b>现象是「有字形但不通顺」，多半是编码不匹配；若显示为方块或问号，则可能是缺字体或缺字形。</p><p><b>第二步，反推原编码。</b>若乱码里出现大量 <code>Ã</code>、<code>Â</code>、<code>ä</code> 这类西欧字符，说明原文件很可能用 UTF-8 编码，却被按 Latin-1 或 Windows-1252 解码了。</p><p><b>第三步，换解码器重开。</b>在编辑器里把编码从 Latin-1 切到 UTF-8，若恢复正常即确认结论。</p><p><b>第四步，检查是否丢过信息。</b>如果原文件曾被「按错误编码保存」，字节可能已被改写，此时无法还原，只能回到原始文件。这一步区分「只是显示错」与「已经坏掉」。</p><p><b>第五步，防复发。</b>保存时显式指定 UTF-8，跨平台交换前统一编码，必要时保留 BOM。</p><p>这道题的通用思路是「现象 → 假设 → 验证 → 修复 → 预防」，可迁移到任何编码类故障。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出 <code>Hi!</code> 三个字符的 ASCII 十进制值与十六进制字节。</li><li>只看 UTF-8 首字节，判断下列各表示几字节字符：<code>0x41</code>、<code>0xC3</code>、<code>0xE4</code>、<code>0xF0</code>。</li><li>计算 <code>信息处理</code> 四个汉字在 UTF-8 下的字节数。</li><li>用自己的话解释「Unicode 不是编码」，并举一个例子说明混淆后会得出什么错结论。</li><li>为什么扩展 ASCII 会带来乱码？请说清「同一位置被不同厂商填了不同字符」这层原因。</li><li>一段 6 字节数据 <code>E4 BD A0 E5 A5 BD</code>，按 UTF-8 解码是什么？按 Latin-1 解码会怎样？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>H = 72</code>、<code>i = 105</code>、<code>! = 33</code>，十进制写出 <code>72 105 33</code>；十六进制 <code>0x48 0x69 0x21</code>。共 3 字节。</p><p><b>2.</b> <code>0x41 = 0100 0001</code> 以 0 开头 → 1 字节；<code>0xC3 = 1100 0011</code> 以 110 开头 → 2 字节；<code>0xE4 = 1110 0100</code> 以 1110 开头 → 3 字节；<code>0xF0 = 1111 0000</code> 以 11110 开头 → 4 字节。</p><p><b>3.</b> 四个汉字都在 U+4E00–U+9FFF 区间（BMP 内、大于 0x7FF），每个 3 字节 → <code>4 × 3 = 12</code> 字节。</p><p><b>4.</b> Unicode 只规定「有哪些字符、各是哪个码位」，不规定怎么写字节；UTF-8/16/32 才规定字节形式。混淆后会得出「一个字符就是一个码位所以只占一字节」这类错结论，或把 <code>U+4F60</code> 直接当成存储内容。</p><p><b>5.</b> 扩展 ASCII 把 128–255 这 128 个位置留给「本地字符」，但各国各厂商填法不同（西欧美、俄文、希腊文、制表符各有版本）。同一字节在不同代码页下指向不同字符，跨语言交换就必然出乱码。这正是 Unicode 出现的原因：先把「有哪些字符」统一，再谈字节。</p><p><b>6.</b> 按 UTF-8：<code>E4 BD A0</code> = 你，<code>E5 A5 BD</code> = 好 → <b>你好</b>。按 Latin-1：每个字节独立解释成一个字符，得到 6 个西欧符号（课件里显示为 <code>ä½ å¥½</code> 一类），既不是中文也不是有意义的文本——这就是乱码。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① ASCII 关键码（A=65、a=97、0=48、空格=32）与大小写差 32；② 标准/扩展 ASCII 的位数与字符数；③ 字符集与编码的区别；④ Unicode 码位写法与 UTF-8 首字节模式表；⑤ 中英混排文本的字节数计算；⑥ 乱码成因与「字节不知道自己是什么编码」。</div><div class="callout warn"><b>易错 1</b>把「一个字符 = 一个字节」当通则。UTF-8 是 1–4 字节，中文 3 字节、emoji 4 字节。</div><div class="callout warn"><b>易错 2</b>把码位当成存储内容。码位是抽象编号（U+4F60），存储的是字节（E4 BD A0）。</div><div class="callout warn"><b>易错 3</b>以为 Unicode 与 UTF-8 是同一件事。前者是字符集，后者是它的编码方案之一（还有 UTF-16、UTF-32）。</div><div class="callout warn"><b>易错 4</b>算字节数时按「字的个数」乘 3 就算完。英文、标点、空格各占 1 字节，必须逐段算。</div><div class="callout tip"><b>进阶</b>① 记住 0x7F / 0x7FF / 0xFFFF 三条分界线，就能现场判断字符占几字节；② 4 字节模板是 3+6+6+6 = 21 位，正好覆盖 U+10FFFF；③ BOM 是「编码指纹」，但它本身也占字节，算大小时别忘；④ LF/CRLF 的差异会造成「行数对不上」这类隐性 bug。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s54">方法清单</h2><h3 id="s55">判断一个字符在 UTF-8 占几字节（三步）</h3><ol class="steps"><li>查出它的 Unicode 码位（U+XXXX）</li><li>比较码位与三条分界线：≤ 0x7F → 1 字节；≤ 0x7FF → 2 字节；≤ 0xFFFF → 3 字节；否则 4 字节</li><li>若要写字节，按模板填入：<code>0xxxxxxx</code> / <code>110xxxxx 10xxxxxx</code> / <code>1110xxxx 10xxxxxx 10xxxxxx</code> / <code>11110xxx …</code></li></ol><h3 id="s56">算一段文本的 UTF-8 字节数（四步）</h3><ol class="steps"><li>按「ASCII 段 / 非 ASCII 段」把文本切块</li><li>ASCII 段：字符数 × 1</li><li>汉字与 BMP 符号：字符数 × 3；emoji：字符数 × 4</li><li>各段相加，并与字符总数对照（两者一般不等）</li></ol><h3 id="s57">排查乱码（五步）</h3><ol class="steps"><li>看现象：怪字符 → 编码不匹配；方块/问号 → 缺字形或字体</li><li>猜原编码：出现大量 Ã、Â、ä 类字符，多半是 UTF-8 被按 Latin-1 解码</li><li>换解码器重开验证</li><li>检查文件是否已被错误保存（字节被改写则不可恢复）</li><li>定规范：统一 UTF-8、显式声明编码、必要时保留 BOM</li></ol><h3 id="s58">区分四个概念（自查表）</h3><ul class="checklist"><li>字符：你看到的字形</li><li>字符集：规定了「有哪些字符」（ASCII、Unicode）</li><li>编码：规定了「怎么写字节」（UTF-8、UTF-16、GBK）</li><li>字节：磁盘上真正的 0 和 1</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p2–p3</td><td>五个关键问题、A → 01000001 的含义取决于编码、编码/解码两个方向、同位串可代表不同字符</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p4–p5</td><td>字符的定义与六类例子、字符 ≠ 数字（「5」的两种表示）、文本 = 字符序列</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p6–p7</td><td>为什么需要编码、编码定义、字符集与编码方案的分工</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p8–p10</td><td>ASCII 全称、7 位 128 个 / 8 位 256 个、码表（A/B/a/0/空格）、五类字符、CAT 完整算例</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p11–p14</td><td>ASCII 的局限（四种文字反例）、Unicode 覆盖范围、码位 U+XXXX 与码表、码位 ≠ 字节、Unicode 不是编码的四层链</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p15–p19</td><td>UTF-8 全称、1–4 字节变长、首字节模式表与续字节、ASCII 兼容、A 的 1 字节、你 的 E4 BD A0 与二进制</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p20–p23</td><td>字符/码位/编码/存储数据四层对照、编码与解码的方向和目的、编解码器必须一致</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p24–p25</td><td>乱码（mojibake）现象与成因、错误解码的示意、字节本身不知道自己的编码</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p26–p28</td><td>文本大小的三个决定因素、Hello 5 字节与你好 6 字节、字符数 ≠ 字节数、文本文件与 BOM、常见文本格式</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p29–p31</td><td>换行 LF/CR/CRLF 的差异、键盘到屏幕的完整流水线、保存 hello.txt 的过程</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p32–p35</td><td>四个常见误解、关键概念总结、核心信息（计算机不存字符，只存代表字符的二进制）</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>p36–p37</td><td>三道 Quick Check（128 个字符、UTF-8 是 Unicode 的一种编码、字节数为何不同），已收入本讲第十八节</td></tr><tr><td>（跳过）Week1- Introduction/Lecture_1.pdf p10 的 ASCII 例子</td><td>重复</td><td>第 1 讲已用 A/B 两例引出编码，本讲不重复</td></tr><tr><td>（补充）</td><td>—</td><td>大小写差 32、0x7F/0x7FF/0xFFFF 三条分界线、é 的 2 字节推导、emoji 的 4 字节推导、UTF-16 对照、乱码排查五步，均为方法论拓展，不改变课件考点</td></tr></table></section><div class="lnav"><a class="prev" href="w3-signed-numbers-and-float.html">← Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a class="next" href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 章 · 柱坐标与球坐标 · 80</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4020 工程数学 II</a> / <a href="part-2.html">第 2 章 空间坐标与矩阵</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节在整门课中的位置</a><a class="toc-l3" href="#s2">3.1 从平面坐标到空间坐标</a><a class="toc-l3" href="#s3">3.2 柱坐标的三张坐标面</a><a class="toc-l3" href="#s4">3.3 例：识别三个柱坐标方程</a><a class="toc-l3" href="#s5">3.4 例：点的坐标互化</a><a class="toc-l3" href="#s6">3.5 例：识别柱坐标方程（进阶）</a><a class="toc-l3" href="#s7">3.6 球坐标：一个距离与两个角</a><a class="toc-l3" href="#s8">3.7 三种坐标之间的转换公式</a><a class="toc-l3" href="#s9">3.8 例：由球坐标方程识别球面</a><a class="toc-l3" href="#s10">3.9 例：一点的三种坐标</a><a class="toc-l3" href="#s11">3.10 例：把球面方程写成球坐标形式</a><a class="toc-l3" href="#s12">3.11 例：圆锥与偏心球</a><a class="toc-l3" href="#s13">3.12 怎样选择坐标系</a><a class="toc-l3" href="#s14">3.13 常见误解</a><a class="toc-l2" href="#s15">方法与检查清单</a><a class="toc-l3" href="#s16">坐标互化的四步法</a><a class="toc-l3" href="#s17">识别曲面的检查项</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch1-parametric-curves.html">第 1 章 · 平面曲线与参数方程</a><a href="ch1-arc-polar.html">第 1 章 · 弧长、旋转曲面与极坐标</a><a class="toc-l3" href="ch2-cyl-spherical.html">▸ 第 2 章 · 柱坐标与球坐标</a><a href="ch2-matrices.html">第 2 章 · 矩阵、特殊矩阵与几何变换</a><a href="ch3-determinant-inverse.html">第 3 章 · 行列式、伴随矩阵与逆矩阵</a><a href="ch3-gaussian-elimination.html">第 3 章 · 线性方程组与高斯消元</a><a href="ch3-eigenvalues-cramer.html">第 3 章 · 特征值与克拉默法则</a><a href="ch4-vectors-dot-product.html">第 4 章 · 向量、点积与两个不等式</a></div></aside><article><h1>第 2 章 · 柱坐标与球坐标</h1><p class="lead">Cylindrical and Spherical Coordinates <span class="badge mute">80</span> <span class="badge mute">第 3 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 空间坐标与矩阵</a></p><p class="src">原始文件：<code>Topic 2/EMII_Week2_Lecture1.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>上一讲的极坐标用「距离 + 角度」定位平面上的点。本节把这个想法抬到三维空间：柱坐标保留高度 z 与极坐标 (r, θ)，球坐标则连高度也换成角度，用 (ρ, φ, θ) 三个量定位。两种坐标系的共同好处是——把具有旋转对称性的曲面（圆柱、球、圆锥）写成极简单的方程。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出柱坐标与直角坐标的互化公式，并说明 r、θ、z 各自的几何意义</li><li>写出球坐标三个分量 ρ、φ、θ 的定义与取值范围</li><li>在直角、柱、球三种坐标之间自由转换点坐标</li><li>把 <code>z = r²</code>、<code>z² = x² + y²</code>、<code>ρ = 2sinφ sinθ</code> 这类方程识别成具体曲面</li><li>根据曲面的对称性判断该用哪种坐标系描述</li></ul><p>与前后讲的衔接：本节的三种坐标之间的关系本身就是一组「变量之间的线性（或含三角的）关系式」。课件紧接着正是用「变量之间的线性关系」这句话，把坐标与矩阵接了起来。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 从平面坐标到空间坐标</h3><p>三维空间中的点可以用直角坐标 (x, y, z) 定位。柱坐标的做法很直接：<b>把水平面上的 (x, y) 换成极坐标 (r, θ)，高度 z 原样保留</b>，得到三元组 [r, θ, z]。</p><p><b><code>x = r cos θ</code>，<code>y = r sin θ</code>，<code>z = z</code></b></p><p>反向：<code>r = √(x² + y²)</code>，<code>θ = tan⁻¹(y/x)</code>（按象限修正），<code>z = z</code>。</p><p>三个分量的含义：r 是点到 z 轴的垂直距离（不是到原点的距离），θ 是点在 xy 平面上投影的方位角，z 是高度（可为负）。因此取值范围通常取 r ≥ 0、0 ≤ θ &lt; 2π、z ∈ ℝ。</p><p>点到原点的距离用柱坐标表示特别简洁：</p><p><code>d² = r² + z²</code>，而 <code>r² = x² + y²</code>，合起来就是 <code>d² = x² + y² + z²</code>。</p><p>这三步等式（<code>r² = x² + y²</code>、<code>d² = r² + z²</code>、<code>d² = x² + y² + z²</code>）在课件第 3 页并排给出，是后面所有转换的公共基础。</p><h3 id="s3">3.2 柱坐标的三张坐标面</h3><p>固定三个分量中的任意一个，得到的曲面叫<b>坐标面</b>（coordinate surface）。柱坐标的三张坐标面各有明确形状：</p><table><tr><th>方程</th><th>坐标面</th><th>说明</th></tr><tr><td>r = 常数</td><td>以 z 轴为轴的圆柱面</td><td>半径等于该常数，高度不限</td></tr><tr><td>θ = 常数</td><td>过 z 轴的半平面</td><td>与 xy 平面垂直</td></tr><tr><td>z = 常数</td><td>水平平面</td><td>与 xy 平面平行</td></tr></table><p>这三张面互相垂直，把空间切成一个个「弯的方块」。理解这一点，才能在后面处理三重积分时正确写出体积微元——虽然本课不展开三重积分，但曲面识别的思路完全一致。</p><h3 id="s4">3.3 例：识别三个柱坐标方程</h3><p>课件给出三个方程，要求指出它们代表什么曲面。做法固定：把 r、θ 换成 x、y，再看形状。</p><p><b>（1）<code>z = r²</code>。</b>由 <code>r² = x² + y²</code> 得 <code>z = x² + y²</code>，这是<b>旋转抛物面</b>（circular paraboloid）：顶点在原点，对称轴沿 z 轴正方向，开口向上。</p><p><b>（2）<code>z = r cos θ</code>。</b>由 <code>r cos θ = x</code> 得 <code>z = x</code>，这是一个<b>平面</b>：它包含 y 轴（方程里没有 y），并且过点 (1, 0, 1)。</p><p><b>（3）<code>z² = x² + y²</code>。</b>先写成柱坐标 <code>z² = r²</code>，即 <code>z = ±r</code>。这是<b>两个圆锥</b>共顶点于原点：一支开口向上（过 (1, 0, 1)），一支开口向下，对称轴都沿 z 轴。</p><div class="callout tip"><b>识别曲面的固定套路</b>先看方程里出现了哪几个量的组合：<code>x² + y²</code> 一起出现 → 旋转对称，用柱坐标或球坐标；只有 r 与 z 的关系 → 旋转面；出现 <code>ρ²</code> → 球面。<b>不要</b>先把方程硬展开成 x、y、z 的多项式再猜。</div><h3 id="s5">3.4 例：点的坐标互化</h3><p>课件 Task 1a：给 P₁ = (1, 1, 2) 求柱坐标；给 P₂ = [2, π/3, 1] 求直角坐标。</p><p><b>P₁。</b><code>r = √(1² + 1²) = √2</code>，<code>θ = π/4</code>（第一象限），<code>z = 2</code>。故 <code>P₁ = [√2, π/4, 2]</code>。</p><p><b>P₂。</b><code>x = 2cos(π/3) = 1</code>，<code>y = 2sin(π/3) = √3</code>，<code>z = 1</code>。故 <code>P₂ = (1, √3, 1)</code>。</p><p>课件答案写作 <code>(√2, π/4, 2)</code> 与 <code>(1, √3, 1)</code>，与上面一致。注意两种记号的差别：直角坐标用圆括号 <code>(x, y, z)</code>，柱坐标与球坐标用方括号 <code>[r, θ, z]</code>、<code>[ρ, φ, θ]</code>——这不是装饰，是提醒你分量含义不同。</p><h3 id="s6">3.5 例：识别柱坐标方程（进阶）</h3><p>课件 Task 1b：识别 <code>r² + z² = 1</code> 与 <code>r = 4 sin θ</code>。</p><p><b>（1）<code>r² + z² = 1</code>。</b>因为 <code>r² = x² + y²</code>，直接得 <code>x² + y² + z² = 1</code>：以原点为心、半径为 1 的<b>球面</b>。</p><p><b>（2）<code>r = 4 sin θ</code>。</b>两边乘 r：<code>r² = 4r sin θ</code>，即 <code>x² + y² = 4y</code>。配方：<code>x² + (y − 2)² = 4</code>。这是一个<b>圆柱面</b>：中心轴平行于 z 轴、过点 (0, 2, 0)，半径 2。</p><p>这两个结果与课件答案一致。注意第（2）题与上一讲极坐标里 <code>r = 4 sin θ</code>（圆）的区别：在平面里它是圆，在空间里没有 z 的限制，它是这个圆沿 z 方向「拉」出来的柱面。</p><h3 id="s7">3.6 球坐标：一个距离与两个角</h3><p>球坐标（spherical coordinates）可以理解为「三维版的极坐标」。点 P 用 [ρ, φ, θ] 表示：</p><ul><li><b>ρ</b>：P 到原点的距离（radial distance），ρ ≥ 0；</li><li><b>φ</b>：径向线段 OP 与 z 轴正方向的夹角（inclination angle，倾角），0 ≤ φ ≤ π；</li><li><b>θ</b>：过 P 与 z 轴的平面与 xz 平面的夹角（azimuthal angle，方位角），与柱坐标、极坐标中的 θ 是同一个角。</li></ul><p>取值范围必须记牢：<b>ρ ≥ 0，0 ≤ φ ≤ π</b>。φ 只到 π，因为从 z 轴正方向转到负方向就转完了；若允许 φ 超过 π，同一个点会被重复表示。θ 与极坐标一样可任意加减 2π。</p><p>φ 与 θ 最容易混淆。记忆方法：<b>φ 是从 z 轴「低头」量下来的角</b>（像纬度从北极量起），<b>θ 是绕 z 轴「转」的角</b>（像经度）。</p><h3 id="s8">3.7 三种坐标之间的转换公式</h3><p>把 OP 分解成「竖直分量」与「水平分量」两步，就能得到全部公式。先分解竖直方向：</p><p><code>z = ρ cos φ</code>，水平分量 <code>r = √(x² + y²) = ρ sin φ</code>。</p><p>再把水平分量按 θ 分解：</p><p><b><code>x = ρ sin φ cos θ</code>，<code>y = ρ sin φ sin θ</code>，<code>z = ρ cos φ</code></b></p><p>反向：<code>ρ = √(x² + y² + z²)</code>，<code>tan φ = r/z = √(x² + y²)/z</code>，<code>θ = tan⁻¹(y/x)</code>。</p><p>球坐标与柱坐标之间只需两步：<code>r = ρ sin φ</code>、<code>z = ρ cos φ</code>，θ 保持不变。这三组公式必须能不看笔记写出来，因为考试中几乎每道空间题都要用。</p><h3 id="s9">3.8 例：由球坐标方程识别球面</h3><p>课件 Example 1：识别 <code>ρ = 2 sin φ sin θ</code> 代表的曲面。</p><p><b>第一步，两边乘 ρ。</b><code>ρ² = 2ρ sin φ sin θ</code>。</p><p><b>第二步，逐项替换。</b><code>ρ² = x² + y² + z²</code>，而 <code>ρ sin φ sin θ = y</code>，所以</p><p><code>x² + y² + z² = 2y</code>。</p><p><b>第三步，配方。</b><code>x² + (y − 1)² + z² = 1</code>：以 (0, 1, 0) 为心、半径 1 的<b>球面</b>。</p><p>这个球过原点（ρ = 0 时方程成立），并且在原点处与 xz 平面相切。系数 2 出现在 sin θ 前，说明球心在 y 轴上；出现在 sin φ cos θ 前则球心在 x 轴上；只含 cos φ 则球心在 z 轴上。</p><h3 id="s10">3.9 例：一点的三种坐标</h3><p>课件 Example 2：把球坐标 <code>[8, π/3, π/6]</code> 转成直角坐标与柱坐标。</p><p><b>直角坐标。</b></p><p><code>x = 8 sin(π/3) cos(π/6) = 8 · (√3/2) · (√3/2) = 6</code></p><p><code>y = 8 sin(π/3) sin(π/6) = 8 · (√3/2) · (1/2) = 2√3</code></p><p><code>z = 8 cos(π/3) = 8 · (1/2) = 4</code></p><p>得 <code>(6, 2√3, 4)</code>。</p><p><b>柱坐标。</b><code>r = ρ sin φ = 8 sin(π/3) = 4√3</code>，<code>θ = π/6</code>，<code>z = 4</code>，即 <code>[4√3, π/6, 4]</code>。</p><p><b>验算。</b><code>r² + z² = 48 + 16 = 64 = ρ²</code>，与 ρ = 8 一致；<code>x² + y² + z² = 36 + 12 + 16 = 64</code>，同样一致。凡是转换题，用 <code>ρ² = x² + y² + z²</code> 回代一次就能自查。</p><h3 id="s11">3.10 例：把球面方程写成球坐标形式</h3><p>课件 Task 2a：求两个球的球坐标方程。</p><p><b>（1）<code>(x − 1)² + y² + z² = 1</code>。</b>展开得 <code>x² + y² + z² = 2x</code>，即 <code>ρ² = 2ρ sin φ cos θ</code>，约去一个 ρ（ρ ≠ 0 时）得 <b><code>ρ = 2 sin φ cos θ</code></b>。</p><p><b>（2）<code>x² + y² + (z − 1)² = 1</code>。</b>展开得 <code>x² + y² + z² = 2z</code>，即 <code>ρ² = 2ρ cos φ</code>，得 <b><code>ρ = 2 cos φ</code></b>。</p><p>两个结果与课件答案一致。规律很清楚：球心在 x 轴 → 出现 <code>sin φ cos θ</code>；球心在 y 轴 → <code>sin φ sin θ</code>；球心在 z 轴 → 只出现 <code>cos φ</code>。</p><h3 id="s12">3.11 例：圆锥与偏心球</h3><p>课件 Task 2b：求 <code>z² = x² + y²</code> 与 <code>x² + y² + (z − a)² = 1</code> 的球坐标方程并识别曲面。</p><p><b>（1）<code>z² = x² + y²</code>。</b>代入 <code>z = ρ cos φ</code>、<code>x² + y² = ρ² sin²φ</code>：</p><p><code>ρ²cos²φ = ρ²sin²φ</code>，即 <code>tan²φ = 1</code>，故 <code>φ = π/4</code> 或 <code>φ = 3π/4</code>。</p><p>课件写作 <code>φ = ±π/4</code>，在 0 ≤ φ ≤ π 的约定下正好对应这两个值：φ = π/4 是开口向上的锥面，φ = 3π/4 是开口向下的锥面。这是「不含 ρ 的球坐标方程」的典型——它描述的是过原点的锥面，与 ρ 无关。</p><p><b>（2）<code>x² + y² + (z − a)² = 1</code>。</b>展开：<code>x² + y² + z² − 2az + a² = 1</code>，代入 <code>ρ² = x² + y² + z²</code>、<code>z = ρ cos φ</code>：</p><p><code>ρ² − 2aρ cos φ + a² = 1</code>，即 <b><code>ρ² − 2aρ cos φ = 1 − a²</code></b>。</p><p>这是以 (0, 0, a) 为心、半径 1 的球面，与课件给出的一致。注意它与 Task 2a（2）的区别：那里 a = 1，右边为 0，方程退化成 <code>ρ = 2cos φ</code> 的简单形式；a ≠ 1 时无法约简，只能保留二次式。</p><h3 id="s13">3.12 怎样选择坐标系</h3><p>三种坐标都能描述同一个点，但方程的复杂度差别很大。选坐标系的判据是对称性：</p><table><tr><th>曲面 / 区域的对称性</th><th>首选坐标</th><th>理由</th></tr><tr><td>绕 z 轴的旋转对称（圆柱、旋转抛物面、圆锥）</td><td>柱坐标</td><td>方程里只出现 r 与 z，θ 消失</td></tr><tr><td>关于原点对称（球、锥、过原点的平面）</td><td>球坐标</td><td>方程里只出现 ρ 与 φ，θ 消失或形式简单</td></tr><tr><td>长方体、边界平行于坐标面的区域</td><td>直角坐标</td><td>边界就是 x = 常数、y = 常数</td></tr><tr><td>含 <code>x² + y²</code> 且带一个线性 z 项</td><td>柱坐标</td><td>移项后成为 <code>z = r²</code> 或 <code>z = 2r</code> 型</td></tr></table><p>这条判据不只为了「好算」，也为了「看得懂」：同一个球面在直角坐标里是 <code>x² + y² + z² = 1</code>，在球坐标里就是 <code>ρ = 1</code>——一句话说清「到原点距离恒为 1」。</p><h3 id="s14">3.13 常见误解</h3><ul><li><b>把 ρ 与 r 混用</b>：r 是到 z 轴的距离，ρ 是到原点的距离，<code>ρ² = r² + z²</code>，只有 z = 0 时两者才相等。</li><li><b>φ 与 θ 位置写反</b>：球坐标顺序是 [ρ, φ, θ]，φ 是倾角（从 z 轴量），θ 是方位角（绕 z 轴量）。写成 [ρ, θ, φ] 会得到完全不同的点。</li><li><b>φ 的取值范围写成 0 ≤ φ ≤ 2π</b>：正确范围是 0 ≤ φ ≤ π，超出后同一个点会被重复表示。</li><li><b>识别曲面时直接展开成多项式</b>：应先在柱/球坐标下看方程形状，再决定是否展开；<code>z = r cos θ</code> 一眼是平面，绕成多项式反而慢。</li><li><b>忘记「无 z 限制」的柱面</b>：平面上的 <code>r = 4 sin θ</code> 是圆，空间里同样的方程是柱面。</li></ul></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>cylindrical coordinates</td><td>柱坐标</td><td>A point is given as [r, θ, z] with x = r cos θ, y = r sin θ, z = z.</td></tr><tr><td>spherical coordinates</td><td>球坐标</td><td>A point is given as [ρ, φ, θ] with x = ρ sin φ cos θ, y = ρ sin φ sin θ, z = ρ cos φ.</td></tr><tr><td>radial distance</td><td>径向距离</td><td>ρ, the distance from the point to the origin.</td></tr><tr><td>inclination angle</td><td>倾角</td><td>φ, the angle between OP and the positive z-axis, 0 ≤ φ ≤ π.</td></tr><tr><td>azimuthal angle</td><td>方位角</td><td>θ, the angle between the xz-plane and the plane containing P and the z-axis.</td></tr><tr><td>coordinate surface</td><td>坐标面</td><td>The surface obtained by holding one coordinate constant; r = constant is a cylinder.</td></tr><tr><td>circular paraboloid</td><td>旋转抛物面</td><td>z = x² + y², i.e. z = r² in cylindrical coordinates.</td></tr><tr><td>cone</td><td>圆锥面</td><td>z² = x² + y², i.e. φ = π/4 or 3π/4 in spherical coordinates.</td></tr><tr><td>half-plane</td><td>半平面</td><td>θ = constant in cylindrical coordinates.</td></tr><tr><td>identify a surface</td><td>识别曲面</td><td>Convert the equation to Cartesian form and recognise its shape.</td></tr><tr><td>convert coordinates</td><td>坐标互化</td><td>r = ρ sin φ, z = ρ cos φ, ρ² = r² + z² = x² + y² + z².</td></tr><tr><td>symmetry</td><td>对称性</td><td>The criterion used to choose cylindrical or spherical coordinates.</td></tr><tr><td>sphere in spherical form</td><td>球面的球坐标形式</td><td>ρ = 2 cos φ is the sphere x² + y² + (z − 1)² = 1.</td></tr><tr><td>distance to the z-axis</td><td>到 z 轴的距离</td><td>r = √(x² + y²), which is not the same as ρ.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把直角坐标点 (−1, 1, 2) 化为柱坐标与球坐标。</div><p><b>柱坐标。</b><code>r = √(1 + 1) = √2</code>；点在第二象限，<code>θ = 3π/4</code>（不是 tan⁻¹(−1) = −π/4，那是对应第四象限的主值）；<code>z = 2</code>。故为 <code>[√2, 3π/4, 2]</code>。</p><p><b>球坐标。</b><code>ρ = √(1 + 1 + 4) = √6</code>；<code>cos φ = z/ρ = 2/√6</code>，故 <code>φ = cos⁻¹(2/√6) ≈ 35.3°</code>；<code>θ = 3π/4</code>。故为 <code>[√6, cos⁻¹(2/√6), 3π/4]</code>。</p><p><b>验算。</b><code>ρ sin φ = √6 · √(1 − 4/6) = √6 · √(1/3) = √2 = r</code>，与柱坐标的 r 一致。</p></div><div class="qa"><div class="q">例 2　把球坐标 <code>[4, π/4, π/3]</code> 化为直角坐标与柱坐标。</div><p><b>直角坐标。</b><code>x = 4 sin(π/4) cos(π/3) = 4 · (√2/2) · (1/2) = √2</code>；<code>y = 4 sin(π/4) sin(π/3) = 4 · (√2/2) · (√3/2) = √6</code>；<code>z = 4 cos(π/4) = 2√2</code>。</p><p><b>柱坐标。</b><code>r = ρ sin φ = 2√2</code>，<code>θ = π/3</code>，<code>z = 2√2</code>。</p><p><b>验算。</b><code>r² + z² = 8 + 8 = 16 = ρ²</code>；<code>x² + y² + z² = 2 + 6 + 8 = 16</code>。两处都吻合，说明三个量没有代错。</p></div><div class="qa"><div class="q">例 3　识别并化简柱坐标方程 <code>r² + z² = 2z</code>。</div><p><b>换直角坐标。</b><code>r² = x² + y²</code>，代入得 <code>x² + y² + z² = 2z</code>。</p><p><b>配方。</b><code>x² + y² + (z − 1)² = 1</code>：以 (0, 0, 1) 为心、半径 1 的球面。</p><p><b>换球坐标验算。</b><code>ρ² = 2ρ cos φ</code>，即 <code>ρ = 2cos φ</code>，与 3.10 的 Task 2a（2）完全一致。这说明柱坐标与球坐标两条路给出同一个答案。</p></div><div class="qa"><div class="q">例 4　识别球坐标方程 <code>ρ = 2 sin φ cos θ + 2 sin φ sin θ</code> 所代表的曲面。</div><p><b>两边乘 ρ。</b><code>ρ² = 2ρ sin φ cos θ + 2ρ sin φ sin θ</code>。</p><p><b>替换。</b><code>ρ sin φ cos θ = x</code>、<code>ρ sin φ sin θ = y</code>，故 <code>x² + y² + z² = 2x + 2y</code>。</p><p><b>配方。</b><code>(x − 1)² + (y − 1)² + z² = 2</code>：以 (1, 1, 0) 为心、半径 √2 的球面。</p><p><b>点评。</b>两个三角项同时出现，相当于球心在 x、y 两个方向都有偏移。只要坚持「乘 ρ → 替换 → 配方」三步，再复杂的球坐标方程都能还原。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把点 (2, −2, 3) 化为柱坐标与球坐标。</li><li>把柱坐标 <code>[3, π/6, 4]</code> 化为直角坐标与球坐标。</li><li>识别柱坐标方程 <code>z = 2r</code> 所代表的曲面。</li><li>识别球坐标方程 <code>ρ sin φ = 2</code> 所代表的曲面。</li><li>把 <code>x² + y² = 4z</code> 写成球坐标方程。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>r = √(4 + 4) = 2√2</code>；点在第四象限，<code>θ = −π/4</code>（或 7π/4）；<code>z = 3</code>，柱坐标为 <code>[2√2, −π/4, 3]</code>。<code>ρ = √(8 + 9) = √17</code>，<code>cos φ = 3/√17</code>，球坐标为 <code>[√17, cos⁻¹(3/√17), −π/4]</code>。</p><p><b>2.</b> <code>x = 3cos(π/6) = 3√3/2</code>，<code>y = 3sin(π/6) = 3/2</code>，<code>z = 4</code>。<code>ρ = √(9 + 16) = 5</code>，<code>φ = cos⁻¹(4/5)</code>，<code>θ = π/6</code>。</p><p><b>3.</b> <code>z = 2r</code> 即 <code>z² = 4(x² + y²)</code>，是顶点在原点、开口沿 z 轴的圆锥面，半顶角满足 <code>tan α = 1/2</code>。</p><p><b>4.</b> <code>ρ sin φ = r = 2</code>，即 <code>x² + y² = 4</code>：以 z 轴为轴、半径 2 的圆柱面。</p><p><b>5.</b> 代入 <code>x² + y² = ρ² sin²φ</code>、<code>z = ρ cos φ</code>：<code>ρ² sin²φ = 4ρ cos φ</code>，即 <b><code>ρ sin²φ = 4 cos φ</code></b>（ρ ≠ 0）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>三种坐标的互化（点与方程两个层面）是每次考试的第一道计算题；识别 <code>z = r²</code>、<code>z² = x² + y²</code>、<code>ρ = 2cos φ</code> 这类标准曲面必然出现。</div><div class="callout warn"><b>易错一：角度象限</b><code>θ = tan⁻¹(y/x)</code> 只给主值，第二、三象限的点必须加 π；直接用计算器结果会得到镜像点。</div><div class="callout warn"><b>易错二：φ 与 θ 互换</b>球坐标顺序是 [ρ, φ, θ]，φ 从 z 轴量、θ 绕 z 轴量。写反会让 z 分量算错。</div><div class="callout warn"><b>易错三：把 r 当成 ρ</b>柱坐标的 r 是水平距离，球坐标的 ρ 是空间距离，只有 z = 0 时二者相等。</div><div class="callout tip"><b>进阶：先看对称性再换坐标</b>遇到 <code>x² + y²</code> 就想到柱坐标，遇到 <code>x² + y² + z²</code> 就想到球坐标。换完坐标立刻用 <code>ρ² = r² + z²</code> 回代验算，能挡住绝大多数低级错误。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">方法与检查清单</h2><h3 id="s16">坐标互化的四步法</h3><ol class="steps"><li>判断目标坐标系：柱坐标看 r 与 θ，球坐标看 ρ、φ、θ</li><li>先算距离量（r 或 ρ），再算角度（θ 按象限修正，φ 用 <code>cos φ = z/ρ</code>）</li><li>写答案时用对括号：直角坐标 <code>(x, y, z)</code>，柱/球坐标用方括号</li><li>回代验算：<code>ρ² = r² + z² = x² + y² + z²</code>，三个平方和必须相等</li></ol><h3 id="s17">识别曲面的检查项</h3><ul class="checklist"><li>方程里是否只出现 <code>x² + y²</code> 的组合（→ 旋转面，用柱坐标）</li><li>是否只出现 ρ 与 φ（→ 过原点的锥面或球面）</li><li>是否缺少某个变量（缺 z → 柱面；缺 x、y → 平面）</li><li>化简后能否配方成球面或抛物面的标准形式</li><li>答案是否写清了曲面类型与关键参数（球心、半径、轴、顶点）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码 / 位置</th><th>覆盖的知识点</th></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p2–p3</td><td>柱坐标定义、互化公式、<code>r² = x² + y²</code> 与距离公式</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p4–p5</td><td>例：识别 z = r²、z = r cos θ、z² = x² + y² 三个曲面</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p6–p7</td><td>Task 1a 点互化、Task 1b 识别 r² + z² = 1 与 r = 4 sin θ</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p8–p9</td><td>球坐标定义、ρ / φ / θ 的几何含义与取值范围</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p10</td><td>球、柱、直角三种坐标的完整转换公式</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p11–p13</td><td>Example 1（ρ = 2sinφ sinθ）与 Example 2（[8, π/3, π/6] 的两种转换）</td></tr><tr><td>Topic 2/EMII_Week2_Lecture1.pdf</td><td>p14–p15</td><td>Task 2a 与 Task 2b：球面、圆锥的球坐标方程</td></tr><tr><td>（跳过）_info_*.html.txt</td><td>全篇</td><td>Moodle 快照，无讲义内容</td></tr><tr><td>（跳过）Topic 1/Lecture 2.html</td><td>全篇</td><td>Moodle 登录页，无正文</td></tr><tr><td>（拓展）</td><td>—</td><td>3.12 的「按对称性选坐标系」对照表、3.13 的五条误解属归纳性补充；Task 2b 的 <code>φ = ±π/4</code> 按 0 ≤ φ ≤ π 解释为 π/4 与 3π/4，属记号澄清，不新增考点</td></tr></table></section><div class="lnav"><a class="prev" href="ch1-arc-polar.html">← 第 1 章 · 弧长、旋转曲面与极坐标</a><a class="next" href="ch2-matrices.html">第 2 章 · 矩阵、特殊矩阵与几何变换 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

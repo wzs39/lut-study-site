@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 讲 · 一阶逻辑、三类证明与数系进制 · 30565</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-2.html">第 2 章 证明、函数与基数</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">4.1 复习：真值表的两种排版</a><a class="toc-l3" href="#s3">4.2 一阶逻辑的记号</a><a class="toc-l3" href="#s4">4.3 量词的否定</a><a class="toc-l3" href="#s5">4.4 为什么需要证明</a><a class="toc-l3" href="#s6">4.5 三类证明与两个模型问题</a><a class="toc-l3" href="#s7">4.6 直接证明</a><a class="toc-l3" href="#s8">4.7 逆否证明</a><a class="toc-l3" href="#s9">4.8 反证法</a><a class="toc-l3" href="#s10">4.9 数系的历史</a><a class="toc-l3" href="#s11">4.10 二进制与十六进制转十进制</a><a class="toc-l3" href="#s12">4.11 十进制转二进制：除二取余</a><a class="toc-l3" href="#s13">4.12 拓展：用 0/1 向量表示集合</a><a class="toc-l2" href="#s14">考点分层</a><a class="toc-l2" href="#s15">方法清单</a><a class="toc-l3" href="#s16">选证明类型</a><a class="toc-l3" href="#s17">写证明的骨架</a><a class="toc-l3" href="#s18">进制转换</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a href="relations-inverse-composition-logic.html">第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a class="toc-l3" href="formal-proofs-number-systems.html">▸ 第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a href="combinatorics-counting.html">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a href="divisibility-euclidean-algorithm.html">第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a href="modular-inverse-rsa-matrices-intro.html">第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a href="supp-set-proof-workshop.html">补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>第 4 讲 · 一阶逻辑、三类证明与数系进制</h1><p class="lead">First-Order Logic, Three Proof Types and Number Systems <span class="badge mute">30565</span> <span class="badge mute">第 4 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 证明、函数与基数</a></p><p class="src">原始文件：<code>04-lesson.pdf</code> <code>05-exercise.pdf</code> <code>Lecture2_Logic, propositions and representation of information.pdf</code> <code>Lecture3_Proving mathematical theorems.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 3 讲解决了“真值怎么算”，第 4 讲解决“证明怎么写”。它把第 3 讲的真值表升级为一阶逻辑的记号（∃、∀），并给出三类标准证明结构：直接证明、逆否证明、反证法。后半段转入数系与二进制、十六进制转换——这是软件工程方向唯一直接对应硬件的数学内容。</p><p>本讲对应第 4 周学习目标 5.1–5.2（读懂并判断证明是否正确、运用三类证明）与 4.1–4.2（举出数系例子、手动做二进制与十进制转换）。考试中“证明”题的比重最大，通常 6–8 分；“进制转换”几乎必出一道小题。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用谓词、量词与集合记号把数学命题写成紧凑的一阶逻辑式</li><li>正确否定含 ∃ 与 ∀ 的命题，并区分“所有都不”与“并非所有”</li><li>按“Proof → 假设 → 推导 → 结论 → □”的框架写出直接证明</li><li>识别何时该用逆否证明，并写出 ¬C ⇒ ¬A 的推导</li><li>用反证法证明“不存在整数解”“√2 无理”这类命题</li><li>手动完成二进制与十进制、十六进制与十进制的互相转换</li><li>用 0/1 向量表示集合，并用 ∧、∨、¬ 实现集合运算</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 复习：真值表的两种排版</h3><p>上一讲的真值表可以用两种排版。Type 1 为每个中间子公式单独开一列；Type 2 把运算符写在原子命题之间，按优先级从内到外计算并编号。例如 S 为 <code>(A ⇒ B) ⇒ (A ⇒ (C ∧ B))</code> 时，Type 2 会在 A、B、C 之后依次填 A⇒B、C∧B、A⇒(C∧B)，最后填中间的 ⇒。两种排版结论相同，答题时任选一种，但要写全中间列。</p><p>课堂练习：<code>(P ∧ ¬Q) ∨ (¬P ∧ Q)</code> 在哪些真值组合下为真？四行算下来只有 P=0,Q=1 与 P=1,Q=0 为真——它正是 xor 的展开式。这条练习说明“同一个逻辑运算可以有多种写法”，后面化简逻辑式时会反复用到。</p><h3 id="s3">4.2 一阶逻辑的记号</h3><p>为了更紧凑地写数学命题，需要一套“语言”。数学表达式分两类：封闭的（closed），如 2 + 2 = 4、0 &gt; 10、π ∈ R，它们有确定真值；开放的（open），如 x ∈ R、x + 2 = 4、x² + x − 5 &gt; 10，真值取决于 x。</p><p>谓词（predicate）P(x)、Q(x, y) 表示“关于 x 的命题”“关于 x, y 的命题”，把具体对象代入后才有真值。例：若 P(x) 表示“x ∈ R”，则 P(1) = T、P(π) = T、P(i) = F、P({1, 2, 4}) = F（集合不是实数）；若 Q(x, y) 表示“x &lt; y”，则 Q(1, 2) = T、Q(5, 5) = F；若 R 表示“2 + 2 = 5”，则 R = F。</p><p>存在量词（existential quantifier）<code>∃</code> 读作“存在”“至少有一个”“对某个”；<code>∃x P(x)</code> 表示“存在 x 使 P(x) 为真”。全称量词（universal quantifier）<code>∀</code> 读作“对所有”“任给”；<code>∀x P(x)</code> 表示“P(x) 对所有 x 为真”。限定取值集合时写 <code>(∃x ∈ A)P(x)</code> 或 <code>(∀x ∈ A)P(x)</code>。</p><p>用它们可以把子集定义写成一串等价式：<code>A ⊆ B ⇔ ∀x (x ∈ A ⇒ x ∈ B) ⇔ (∀x ∈ A)(x ∈ B)</code>。这三步是同一个意思的三种写法，第 8 讲的“堆叠蕴含”与第 9 讲的整除证明都会用到这种翻译。</p><h3 id="s4">4.3 量词的否定</h3><p>设 Rock 为全体岩石，G(x) 表示“x 是绿色的”。四句话：<code>(∃x ∈ Rock)G(x)</code>（有些岩石是绿的）、<code>(∀x ∈ Rock)G(x)</code>（所有岩石都是绿的）、<code>(∃x ∈ Rock)(¬G(x))</code>（有些岩石不是绿的）、<code>(∀x ∈ Rock)(¬G(x))</code>（所有岩石都不是绿的，即“没有岩石是绿的”）。</p><p>两条等值式必须背下来：<code>¬(∃x)G(x) ⇔ (∀x)(¬G(x))</code>；<code>¬(∀x)G(x) ⇔ (∃x)(¬G(x))</code>。也就是说，否定时量词翻转、谓词取反。</p><div class="callout warn"><b>英文表述的陷阱</b>“All rocks are not green” 意思是每一块岩石都不绿（∀x¬G(x)）；“Not all rocks are green” 意思是有些岩石不绿（∃x¬G(x)）。中文同理：“所有岩石都不是绿的”与“并非所有岩石都是绿的”完全不同。</div><h3 id="s5">4.4 为什么需要证明</h3><p>背景知识：自然数 p 是素数（prime），如果 p 只能被 p 与 1 整除。7 是素数，6 = 2·3 不是；素数序列 2, 3, 5, 7, 11, 13, 17, …。</p><p>数学结论并不宣称“终极真理”，它总是这种形式：<b>假设 A（或某个语境），则 C 为真</b>。证明的流程是：从假设出发，解释符号，做逻辑推导，抵达结论。不能跳细节，也不能误解句子；必须能回答任何人追问的“为什么”。</p><p>好证明的三条标准：使用公认的数学约定；逻辑有效（logically valid）；可读（引导读者、没有明显跳跃）；并且尽可能简洁（不重复、不写废话）。读证明的收益是：理解命题为何为真、看清因果、学会证明技巧、发现新的解题方法、以及评估结论的可信度（同行评议）。</p><h3 id="s6">4.5 三类证明与两个模型问题</h3><p>模型问题 1（Goldbach 猜想）：若自然数 n &gt; 2 是偶数，则它是两个素数之和。它有“假设—结论”的形式 A ⇒ C，其中 A 是“n &gt; 2 且为偶数”，C 是“n 是两个素数之和”。</p><p>模型问题 2（Euclid 定理）：存在无穷多个素数。它只有结论 C，很难写成 A ⇒ C 的形式。这两类问题的区别决定了能用哪些证明方法——这一点在第 4.7 节会立刻用到。</p><h3 id="s7">4.6 直接证明</h3><p>直接证明（direct proof）直接推出结论 C；若有假设（形如 A ⇒ C），就用上假设。结构是：假设 A → 逻辑推导 → 得到 C。开头写 Proof，结尾写 □、■ 或 Q.E.D.。</p><p>范例（源文件 p24）：设 A、B 是集合，证明 <code>A ∩ B ⊆ B</code>。先翻译：A ∩ B ⊆ B 意为“对任意 x，若 x ∈ A ∩ B 则 x ∈ B”。证明：设 x ∈ A ∩ B，由交集定义得 x ∈ A 且 x ∈ B，于是 x ∈ B。因 x 任意，故 A ∩ B ⊆ B。□</p><p>直接证明在中学最常见；成年之后要根据问题选择最合适的类型。判断标准在第 5 讲给出（假设简单就用直接证明）。</p><h3 id="s8">4.7 逆否证明</h3><p>逆否证明（proof by contrapositive）证明 <code>¬C ⇒ ¬A</code>，它与 <code>A ⇒ C</code> 等值。它只适用于 A ⇒ C 形式的命题。结构：从结论的否定 ¬C 出发 → 推导 → 得到假设的否定 ¬A。</p><table><tr><th>A</th><th>C</th><th>A ⇒ C</th><th>¬C ⇒ ¬A</th></tr><tr><td>0</td><td>0</td><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td><td>1</td></tr></table><p>范例（源文件 p29）：设 n ∈ Z，证明“若 n⁹ 是奇数，则 n 是奇数”。假设 n 不是奇数，则 n 是偶数，n = 2k（k ∈ Z）；于是 <code>n⁹ = (2k)⁹ = 2⁹k⁹ = 2·(2⁸k⁹)</code>，而 2⁸k⁹ 是整数，故 n⁹ 是偶数，即 n⁹ 不是奇数。这正好是 ¬C ⇒ ¬A。□</p><p>注意：Euclid 定理（“存在无穷多素数”）不能逆否证明，因为它不是 A ⇒ C 形式。判断“能否用逆否”的第一步永远是“命题有没有假设”。</p><p>为什么逆否与原命题等值？可以用一个生活例子检验：原句“如果下雨，我就待在室内”与逆否“如果我出门了，就没有下雨”同真同假；而逆命题“如果我待在室内，就下雨了”显然不等值。</p><h3 id="s9">4.8 反证法</h3><p>反证法（proof by contradiction，reductio ad absurdum）证明“结论的否定会导致矛盾”。两种形式：结论型 C 证明 <code>¬C ⇒ F</code>；蕴含型 A ⇒ C 证明 <code>(A ∧ ¬C) ⇒ F</code>。结构：假设 ¬C（若有假设 A 也一并假设）→ 逻辑推导 → 得到矛盾 F（如 0 = 1）→ 结论成立。</p><p>范例（源文件 p34）：证明方程 <code>2x + 6y = 1</code> 没有整数解。假设存在 x, y ∈ Z 使 2x + 6y = 1，则 <code>1 = 2(x + 3y)</code>；因 x + 3y ∈ Z，故 1 是偶数。但 1 是奇数，矛盾。所以无整数解。□</p><p>范例（源文件 Ex4）：证明 √2 是无理数。假设 √2 是有理数，则可写成最简分数 <code>√2 = a/b</code>（a, b ∈ Z⁺，且 a、b 无公因数）。两边平方：<code>2b² = a²</code>，故 a² 是偶数，由“a² 偶 ⇒ a 偶”得 a = 2k。代回：<code>2b² = 4k²</code>，即 <code>b² = 2k²</code>，故 b 也是偶数。于是 a、b 都是偶数，与“最简分数”矛盾。因此 √2 不是有理数。□</p><p>范例（源文件 Ex5）：一个挖去两个对角格的棋盘无法用 2×1 或 1×2 骨牌无重叠铺满。把棋盘染色成黑白相间，每块骨牌恰好覆盖一黑一白；挖去的两个对角格同色，故剩下的黑白格数相差 2，不可能配对。这是“不变量”式的反证。</p><div class="callout tip"><b>选择证明类型的口诀</b>命题有假设 A 且 A 简单 → 直接证明；假设复杂而结论简单 → 逆否证明；结论是“不存在”“不是”“无穷多”这类难以下手的形态 → 反证法。</div><h3 id="s10">4.9 数系的历史</h3><p>课件按历史顺序展示数系：简单计数（tally counting，一根竖线表示 1）；象形文字与罗马数字；现代十进制；二进制；十六进制。</p><p>简单计数：one |、two ||、three |||、four ||||、five |||||、six ||||||……（Lebombo bone，Eswatini，约公元前 35000 年）。更高级的写法是分组：埃及象形文字里 ten 记作 2 形符号、twenty 记作 22，而 4622 写作 4444 3333 3322 ||（四个“千”、三个“百”、两个“十”、两根竖线）。</p><p>十进制：zero 0、one 1、…、four thousand six hundred twenty two 4622，即 <code>4×1000 + 6×100 + 2×10 + 2×1</code>。古埃及也用“大单位在前”的思想，但他们写四千用四个“千”符号，而不是把 4 这一个符号放到千位；现代位值制（positional notation）的关键是同一个符号 1 在不同位置表示不同值：最右位是 1，右数第二位是 10，第三位是 100，第七位是 10⁶。</p><p>二进制：zero 0、one 1、two 10、three 11、four 100、forty nine 110001。十六进制：0–9 之后用 A = 10、B = 11、…、F = 15。计算机用二进制是因为两种状态（通/断）最容易实现；十六进制是二进制的“缩写”，因为 16 = 2⁴，一位十六进制恰好对应四位二进制。</p><h3 id="s11">4.10 二进制与十六进制转十进制</h3><p>二进制数的每位按 2 的幂加权：<code>110001 = 1×2⁵ + 1×2⁴ + 0×2³ + 0×2² + 0×2¹ + 1×2⁰ = 32 + 16 + 1 = 49</code>。课件给出 2¹⁰ 到 2⁰ 的值表：1024、512、256、128、64、32、16、8、4、2、1；另一例 <code>1001 1110 = 128 + 16 + 8 + 4 + 2 = 158</code>。</p><p>十六进制按 16 的幂加权：<code>4E5A = 4×16³ + 14×16² + 5×16¹ + 10×16⁰ = 4×4096 + 14×256 + 5×16 + 10 = 16384 + 3584 + 80 + 10 = 20058</code>。</p><p>术语来源：decimal ← 拉丁 decimus（第十）← decem（十）；binary ← binarius（由两个组成）← bini（成对）；hexadecimal ← hexa（六）+ deca（十），即十六进制。</p><p>记号歧义：1001 到底是“一千零一”还是二进制的 9？有歧义时写底数：<code>1001₂</code> 表示二进制 1001，值等于 <code>2³ + 2⁰ = 9</code>；<code>1001₁₀</code> 表示十进制一千零一。答卷里凡非十进制数，务必标底数。</p><h3 id="s12">4.11 十进制转二进制：除二取余</h3><p>算法：不断除以 2，记录商与余数，直到商为 0；把余数从下往上读，就是二进制表示。以 152 为例：152/2 = 76 余 0；76/2 = 38 余 0；38/2 = 19 余 0；19/2 = 9 余 1；9/2 = 4 余 1；4/2 = 2 余 0；2/2 = 1 余 0；1/2 = 0 余 1。自下而上读余数：<code>1001 1000</code>，即 <code>152₁₀ = 10011000₂</code>。</p><p>检验方法：把结果按权展开加回去，<code>128 + 16 + 8 = 152</code>。这个“回代检验”只需几秒钟，却能挡住绝大多数抄写错误。</p><h3 id="s13">4.12 拓展：用 0/1 向量表示集合</h3><p>设 <code>U = {a, 2, 0, d, 5, hello}</code>，取一个向量表示（vector representation）<code>V = (0, 2, 5, a, d, hello)</code>，即把 U 的元素各列一次。对子集 <code>A = {hello, 2, d}</code>，它的二进制向量是 <code>V_A = (0, 1, 0, 0, 1, 1)</code>：第 k 位为 1 当且仅当 V 的第 k 个元素属于 A。</p><p>形式化：若 V = (a₁, …, aₙ)，且 (b₁, …, bₙ) 是 0/1 向量，则它对应子集 <code>A = { aⱼ ∈ U : bⱼ = 1 }</code>；反之 <code>bⱼ = 1 当 aⱼ ∈ A</code>，否则为 0。</p><p>用途：集合运算变成逐位逻辑运算。<code>V<sub>A∪B</sub> = V_A ∨ V_B</code>、<code>V<sub>A∩B</sub> = V_A ∧ V_B</code>、<code>V<sub>A∁</sub> = ¬V_A</code>（逐位进行）。例：V = (0,1,2,3,4,5)、A = {0,2,4}、B = {3,4,5}，则 V_A = (1,0,1,0,1,0)、V_B = (0,0,0,1,1,1)；逐位 ∧ 得 (0,0,0,0,1,0) 即 A ∩ B = {4}，逐位 ∨ 得 (1,0,1,1,1,1) 即 A ∪ B，逐位 ¬ 得 (0,1,0,1,0,1) 即 A∁。这就是计算机里“用位图做集合运算”的原理。</p><div class="callout idea" data-ext="formal-proofs-number-systems-0"><b>英文表述</b><p>量词否定的规则是量词翻转、谓词取反，即存在命题的否定变成全称的否定。英文表述有个陷阱：所有岩石都不是绿的，意思是每一块都不绿；并非所有岩石都是绿的，意思只是有些不绿，两句完全不同。子集定义可写成三种等价形式，核心是对任意元素，若属于甲则也属于乙。这三种写法表达同一件事，后面的堆叠蕴含与整除证明都靠这种翻译。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>predicate</td><td>谓词</td><td>P(x) becomes true or false once x is given.</td></tr><tr><td>existential quantifier</td><td>存在量词</td><td>∃x P(x): there is at least one x with P(x).</td></tr><tr><td>universal quantifier</td><td>全称量词</td><td>∀x P(x): P(x) holds for every x.</td></tr><tr><td>negation of quantifiers</td><td>量词否定</td><td>¬∃x P(x) ⇔ ∀x ¬P(x); ¬∀x P(x) ⇔ ∃x ¬P(x).</td></tr><tr><td>direct proof</td><td>直接证明</td><td>Assume A, deduce, conclude C.</td></tr><tr><td>proof by contrapositive</td><td>逆否证明</td><td>Prove ¬C ⇒ ¬A instead of A ⇒ C.</td></tr><tr><td>proof by contradiction</td><td>反证法</td><td>Assume ¬C (and A) and derive a contradiction F.</td></tr><tr><td>reductio ad absurdum</td><td>归谬法</td><td>Latin name for proof by contradiction.</td></tr><tr><td>logically valid</td><td>逻辑有效</td><td>Every step follows from definitions or earlier results.</td></tr><tr><td>Q.E.D.</td><td>证毕</td><td>Marker at the end of a proof; also written □.</td></tr><tr><td>positional notation</td><td>位值制</td><td>The same digit means different values in different positions.</td></tr><tr><td>binary</td><td>二进制</td><td>Base 2; digits 0 and 1; weights 2<sup>k</sup>.</td></tr><tr><td>hexadecimal</td><td>十六进制</td><td>Base 16; digits 0–9 and A–F.</td></tr><tr><td>least significant digit</td><td>最低位</td><td>The rightmost digit, weight 2⁰ or 16⁰.</td></tr><tr><td>binary vector</td><td>二进制向量</td><td>A 0/1 vector describing which elements belong to a subset.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 p24）设 A、B 是集合，用直接证明证 A ∩ B ⊆ B。</div><p>先把 ⊆ 翻译成元素语言：对任意 x，若 x ∈ A ∩ B 则 x ∈ B。</p><p>Proof. 设 x ∈ A ∩ B 为任意元素。由交集定义，x ∈ A 且 x ∈ B。于是 x ∈ B。由于 x 任意，故 A ∩ B ⊆ B。□</p><p>要点：整个证明只用了一次定义；不要写“显然”，因为“显然”掩盖了正是要考的那一步。</p></div><div class="qa"><div class="q">例 2　（源文件 p29）设 n ∈ Z，证明：若 n⁹ 是奇数，则 n 是奇数。</div><p>这是 A ⇒ C 形式（A：n⁹ 奇；C：n 奇）。结论的否定“n 不是奇数”比假设更容易展开，故选逆否证明。</p><p>Proof. 假设 n 不是奇数，则 n 是偶数，故存在 k ∈ Z 使 n = 2k。于是 <code>n⁹ = (2k)⁹ = 2⁹k⁹ = 2·(2⁸k⁹)</code>。因为 2⁸k⁹ ∈ Z，所以 n⁹ 是偶数，即 n⁹ 不是奇数。</p><p>我们证明了 ¬C ⇒ ¬A，它与 A ⇒ C 等值，故原命题成立。□</p></div><div class="qa"><div class="q">例 3　（源文件 p34）证明 2x + 6y = 1 没有整数解。</div><p>结论是“不存在”，适合反证法。</p><p>Proof. 假设存在 x, y ∈ Z 使 2x + 6y = 1。则 <code>1 = 2(x + 3y)</code>。因 x + 3y ∈ Z，这说明 1 是偶数。但 1 是奇数，矛盾（1 既偶又奇）。因此不存在整数解。□</p><p>推广：<code>ax + by = c</code> 有整数解的必要条件是 gcd(a, b) | c。本例 gcd(2, 6) = 2 不整除 1，故无解。第 9 讲会把这条充分必要条件完整证明。</p></div><div class="qa"><div class="q">例 4　（源文件 Ex4）证明 √2 是无理数。</div><p>Proof. 假设 √2 是有理数，则可写成最简分数 √2 = a/b，其中 a, b ∈ Z⁺ 且 a、b 没有公因数。</p><p>两边平方：<code>2b² = a²</code>。故 a² 是偶数；由“平方为偶数则本身为偶数”，a 是偶数，设 a = 2k。</p><p>代回：<code>2b² = (2k)² = 4k²</code>，两边除以 2 得 <code>b² = 2k²</code>，故 b² 是偶数，b 也是偶数。</p><p>于是 a 与 b 都是偶数，至少有公因数 2，与“最简分数”矛盾。因此 √2 不是有理数，即无理数。□</p><p>关键引理“n² 偶 ⇒ n 偶”本身可用逆否证明：若 n 奇则 n = 2k+1，n² = 4k²+4k+1 为奇。</p></div><div class="qa"><div class="q">例 5　把 152₁₀ 写成二进制，把 4E5A₁₆ 写成十进制，并检验 110001₂ 的值。</div><p>152 除二取余：152→76 余 0；76→38 余 0；38→19 余 0；19→9 余 1；9→4 余 1；4→2 余 0；2→1 余 0；1→0 余 1。自下而上读：<code>10011000</code>。</p><p>回代检验：128 + 16 + 8 = 152，正确。</p><p>4E5A：<code>4×4096 + 14×256 + 5×16 + 10 = 16384 + 3584 + 80 + 10 = 20058</code>。</p><p>110001：<code>32 + 16 + 1 = 49</code>。三个结果与源文件数值一致，可作为核对。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用直接证明证明：若 A ⊆ B 且 B ⊆ C，则 A ⊆ C。</li><li>用逆否证明证明：若 x² 是偶数（x ∈ Z），则 x 是偶数。</li><li>用反证法证明：不存在整数 x, y 使 x² − 9y = 3。</li><li>把 238510 写成二进制，把 1011 1110₂ 写成十进制与十六进制。</li><li>设 U = {p, q, r, s}，V = (p, q, r, s)，A = {p, r}。写出 V_A，并用逐位运算求 A∁ 的向量。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 设 x ∈ A 任意。由 A ⊆ B 得 x ∈ B；由 B ⊆ C 得 x ∈ C。故 x ∈ C，因 x 任意得 A ⊆ C。□（这是传递性，三步只用两次定义。）</p><p><b>2.</b> 逆否：假设 x 不是偶数，则 x 是奇数，x = 2k + 1，于是 x² = 4k² + 4k + 1 = 2(2k² + 2k) + 1 为奇数，即 x² 不是偶数。故 ¬C ⇒ ¬A 成立，原命题成立。□</p><p><b>3.</b> 假设有整数解。则 x² = 9y + 3 = 3(3y + 1)，故 3 | x²。讨论 x 除以 3 的余数：x = 3k 时 x² = 9k² 被 9 整除；x = 3k ± 1 时 x² = 9k² ± 6k + 1 ≡ 1 (mod 3)，均不可能使 x² ≡ 0 (mod 3)。更简单的做法：x² ≡ 0, 1 (mod 3)，而 9y + 3 ≡ 0 (mod 3)，需 x² ≡ 0 (mod 3)，则 x = 3k，x² = 9k²，于是 9k² = 9y + 3，左边被 9 整除、右边不被 9 整除，矛盾。</p><p><b>4.</b> 238510 连续除 2 取余，得 111010001111011110₂（可用 2 的幂回代核对）。1011 1110₂ = 128 + 32 + 16 + 8 + 4 + 2 = 190；十六进制按四位一组：1011 = B、1110 = E，故为 BE₁₆。</p><p><b>5.</b> V_A = (1, 0, 1, 0)；A∁ 的向量 = ¬V_A = (0, 1, 0, 1)，对应 {q, s}。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s14">考点分层</h2><div class="callout exam"><b>必考</b>① 用直接证明、逆否证明或反证法证明一个数论或集合命题（几乎每次 6–8 分）。② 二进制与十进制的互相转换、二进制加法（2022 年第二次考试第 2 题共 8 分）。③ 一阶逻辑式与自然语言互译、量词否定。④ 用反证法证明“无整数解”“无理数”。</div><div class="callout warn"><b>易错点</b>① 逆否证明里把结论的否定写成“结论的反面例子”，方向搞反。② 反证法最后没有明确指出“矛盾在哪里”（应写出如 1 既偶又奇）。③ 二进制除二取余后从上往下读（应自下而上）。④ 忘记标底数，1001 到底是 9 还是 1001。⑤ 量词否定只改谓词不翻转量词。</div><div class="callout warn"><b>失分点</b>证明开头不写“设……为任意元素”、结尾不写“因任意，故……”，会被判逻辑不完整；进制题只有答案没有过程，通常拿不到过程分。</div><div class="callout tip"><b>进阶</b>① 会把 A ⊆ B 写成 ∀x(x ∈ A ⇒ x ∈ B)，从而把集合证明变成逻辑推导。② 知道“n² 偶 ⇒ n 偶”是 √2 无理性证明的关键引理。③ 会用不变量（染色）论证铺砖问题。④ 会把集合运算翻译成 0/1 向量的逐位运算。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">方法清单</h2><h3 id="s16">选证明类型</h3><ol class="steps"><li>先把命题写成 A ⇒ C 或纯 C 的形式</li><li>若是 A ⇒ C 且 A 简单，选直接证明</li><li>若是 A ⇒ C 但 ¬C 更好展开，选逆否证明</li><li>若结论是“不存在/不是/无穷”，选反证法</li><li>若都不顺，先用小例子与反例试探命题是否为真</li></ol><h3 id="s17">写证明的骨架</h3><ul class="checklist"><li>第一行写 Proof，并声明“设 … 为任意元素”或“假设 …”</li><li>每个推导都注明依据（定义、已证结论、代数运算）</li><li>不跳步：把“由定义得”写出来，而不是写“显然”</li><li>结尾明确写出目标结论，并以 □ 收尾</li><li>检查是否用到了全部假设（未用的假设通常意味着证明有漏洞）</li></ul><h3 id="s18">进制转换</h3><ol class="steps"><li>十进制转二进制：反复除以 2，记下余数</li><li>从最后一个余数往上读，得到二进制串</li><li>二进制转十进制：按 2 的幂展开相加</li><li>二进制转十六进制：从右往左每四位一组，查表 1011=B、1110=E</li><li>最后用另一种方法回代检验</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>04-lesson.pdf</td><td>p2–p6</td><td>真值表复习（五种运算符）、S 的两种排版、课堂练习 xor 展开</td></tr><tr><td>04-lesson.pdf</td><td>p7–p12</td><td>第 4 周学习目标、一阶逻辑记号（谓词、∃、∀）、A ⊆ B 的逻辑写法、量词否定</td></tr><tr><td>04-lesson.pdf</td><td>p14–p17</td><td>为什么需要证明、数学事实的形式、好证明的三条标准、读证明的收益</td></tr><tr><td>04-lesson.pdf</td><td>p19–p24</td><td>两个模型问题（Goldbach、Euclid）、直接证明的结构与集合范例</td></tr><tr><td>04-lesson.pdf</td><td>p26–p30</td><td>逆否证明的结构与真值表、n⁹ 为奇的范例、Ex1–Ex3</td></tr><tr><td>04-lesson.pdf</td><td>p32–p35</td><td>反证法的两种形式、2x+6y=1、√2 无理、棋盘染色</td></tr><tr><td>04-lesson.pdf</td><td>p39–p43</td><td>计数、象形、罗马、十进制、位值制、二进制与十六进制示例</td></tr><tr><td>04-lesson.pdf</td><td>p45–p46</td><td>二进制按权展开、1001 1110 = 158、术语来源与底数记号</td></tr><tr><td>04-lesson.pdf</td><td>p47–p49</td><td>0/1 向量表示子集、逐位 ∧ ∨ ¬ 实现集合运算</td></tr><tr><td>04-lesson.pdf</td><td>p51–p52</td><td>除二取余算法（152 例）、Ex6–Ex8 进制计算</td></tr><tr><td>05-exercise.pdf</td><td>Ex3、Ex4</td><td>判断证明是否 sound、整除的传递性直接证明</td></tr><tr><td>（跳过）</td><td>p8–p9、p13、p16、p21、p25、p31、p37–p38</td><td>目录页与课堂讨论页，内容已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>√2 无理性的完整证明、量词否定的英文陷阱、位图集合运算</td></tr></table></section><div class="lnav"><a class="prev" href="relations-inverse-composition-logic.html">← 第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a class="next" href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

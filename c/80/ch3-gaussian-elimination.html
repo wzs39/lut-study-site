@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 章 · 线性方程组与高斯消元 · 80</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4020 工程数学 II</a> / <a href="part-3.html">第 3 章 行列式与线性方程组</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节在整门课中的位置</a><a class="toc-l3" href="#s2">6.1 方程组的矩阵形式</a><a class="toc-l3" href="#s3">6.2 解的三种情形</a><a class="toc-l3" href="#s4">6.3 三条行运算</a><a class="toc-l3" href="#s5">6.4 例 1：唯一解的完整消元</a><a class="toc-l3" href="#s6">6.5 例 2：无解</a><a class="toc-l3" href="#s7">6.6 例 3：无穷多解</a><a class="toc-l3" href="#s8">6.7 齐次方程组：零解与非零解</a><a class="toc-l3" href="#s9">6.8 非平凡解的充要条件</a><a class="toc-l3" href="#s10">6.9 例：判断是否有非平凡解</a><a class="toc-l3" href="#s11">6.10 高斯消元与逆矩阵法的比较</a><a class="toc-l3" href="#s12">6.11 常见误解</a><a class="toc-l2" href="#s13">方法与检查清单</a><a class="toc-l3" href="#s14">高斯消元的标准流程</a><a class="toc-l3" href="#s15">解的情形判定表</a><a class="toc-l3" href="#s16">交卷前自查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch1-parametric-curves.html">第 1 章 · 平面曲线与参数方程</a><a href="ch1-arc-polar.html">第 1 章 · 弧长、旋转曲面与极坐标</a><a href="ch2-cyl-spherical.html">第 2 章 · 柱坐标与球坐标</a><a href="ch2-matrices.html">第 2 章 · 矩阵、特殊矩阵与几何变换</a><a href="ch3-determinant-inverse.html">第 3 章 · 行列式、伴随矩阵与逆矩阵</a><a class="toc-l3" href="ch3-gaussian-elimination.html">▸ 第 3 章 · 线性方程组与高斯消元</a><a href="ch3-eigenvalues-cramer.html">第 3 章 · 特征值与克拉默法则</a><a href="ch4-vectors-dot-product.html">第 4 章 · 向量、点积与两个不等式</a></div></aside><article><h1>第 3 章 · 线性方程组与高斯消元</h1><p class="lead">Systems of Linear Equations and Gaussian Elimination <span class="badge mute">80</span> <span class="badge mute">第 6 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 行列式与线性方程组</a></p><p class="src">原始文件：<code>Topic 3/EMII_Week3_Lecture1.pdf</code> <code>Topic 3/EMII_Week3_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>上一讲用 <code>x = A⁻¹b</code> 解方程组，前提是逆矩阵存在。但工程里更常见的情形恰恰是「逆不存在」：方程之间互相矛盾，或者方程数量不够。这时需要一种不依赖逆、又能直接判断解的情形的算法——<b>高斯消元</b>（Gaussian elimination）。</p><p>本节还处理一个特殊但极重要的子类：右端全为零的<b>齐次方程组</b>。齐次方程组永远有零解，真正的问题是「除了零解还有没有别的解」。这个问题正是下一讲特征值的入口。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>把线性方程组写成 <code>Ax = b</code> 与增广矩阵形式，并区分齐次与非齐次</li><li>写出并正确使用三条行运算，把矩阵化成阶梯形</li><li>用回代法求唯一解，并判断「无解」与「无穷多解」两种情形</li><li>说明 <code>det(A) = 0</code> 时非齐次方程组为什么可能无解也可能无穷多解</li><li>写出齐次方程组有非平凡解的充要条件 <code>det(A) = 0</code>，并用于判定</li><li>用参数表示无穷多解的通解</li></ul><p>与前后讲的衔接：本节的「阶梯形」与「回代」是数值线性代数的起点；下一讲会把这个工具用在 <code>(A − λI)x = 0</code> 上，求出的 λ 就是特征值。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">6.1 方程组的矩阵形式</h3><p>n 个方程 n 个未知数的线性方程组</p><p><code>a₁₁x₁ + … + a₁ₙxₙ = b₁</code>，…，<code>aₙ₁x₁ + … + aₙₙxₙ = bₙ</code></p><p>可以缩写成 <b><code>Ax = b</code></b>，其中 A 是<b>系数矩阵</b>（coefficient matrix），x 是未知数列向量，b 是右端列向量。</p><p>若 b = 0，方程组叫<b>齐次</b>（homogeneous）；否则叫<b>非齐次</b>（non-homogeneous）。这个区分不是术语游戏：齐次组的结构比非齐次组简单得多，永远至少有一个解。</p><p>求解时更常用的形式是<b>增广矩阵</b>（augmented matrix）：把 b 作为最后一列拼在 A 的右侧，记作 <code>[A | b]</code>。所有行运算都对整行（含最后一列）同时进行，这样就不会漏掉右端的改动。</p><h3 id="s3">6.2 解的三种情形</h3><p>对非齐次方程组 <code>Ax = b</code>：</p><ul><li><b>A 非奇异（det ≠ 0）</b>：逆存在，解唯一，<code>x = A⁻¹b</code>。</li><li><b>A 奇异（det = 0）</b>：可能<b>无解</b>，也可能有<b>无穷多解</b>，绝不会是唯一解。</li></ul><p>第二种情形必须靠消元后的矩阵来判断，光看 det = 0 无法区分「无解」与「无穷多解」。这是本节最重要的逻辑点，也是考试最容易出陷阱的地方。</p><p>对<b>齐次</b>方程组 <code>Ax = 0</code>，情形简单一些：</p><ul><li><b>det(A) ≠ 0</b>：只有零解（trivial solution），即所有未知数都为 0。</li><li><b>det(A) = 0</b>：除零解外还有非零解（non-trivial solutions），且必有无穷多解。</li></ul><p>为什么齐次组不会「无解」？因为把 x = 0 代进去，左边永远是 0，右边也是 0，零解一定成立。所以齐次组只有两种命运：唯一零解，或无穷多解（含零解）。</p><h3 id="s4">6.3 三条行运算</h3><p>高斯消元只允许三种操作，它们都<b>不改变方程组的解集</b>：</p><ol class="steps"><li><b>倍乘</b>：把某个方程（整行）乘以一个<b>非零</b>常数</li><li><b>换行</b>：交换两个方程的位置</li><li><b>倍加</b>：把某个方程的 k 倍加到另一个方程上</li></ol><p>第一条要求 k ≠ 0：乘 0 会把方程抹掉，解集就变了。第二、三条显然是等价变形——交换方程的顺序、或者把一个方程替换成它与另一个方程的线性组合，都不改变满足所有方程的 x 的集合。</p><p>消元的目标是把矩阵化成<b>阶梯形</b>（echelon form）：</p><p><code>[[∗, ∗, ∗, | ∗], [0, ∗, ∗, | ∗], [0, 0, ∗, | ∗]]</code></p><p>左下角全为零，每一行的第一个非零元（主元）逐行向右移动。化到这一步之后，最后一个方程只含一个未知数，可以直接解出；把它代回上一行，又解出一个；如此<b>回代</b>（back substitution）直到全部解出。</p><h3 id="s5">6.4 例 1：唯一解的完整消元</h3><p>解 <code>x + 5y − z = 8</code>、<code>3x − y + 2z = 7</code>、<code>2x + y + 3z = 13</code>。</p><p><b>第一步，写增广矩阵。</b></p><p><code>[[1, 5, −1, 8], [3, −1, 2, 7], [2, 1, 3, 13]]</code></p><p><b>第二步，消去第二、三行的第一个元。</b>做 <code>R₂ − 3R₁</code> 与 <code>R₃ − 2R₁</code>：</p><p><code>[[1, 5, −1, 8], [0, −16, 5, −17], [0, −9, 5, −3]]</code></p><p>核对：<code>−1 − 3(5) = −16</code>，<code>2 − 3(−1) = 5</code>，<code>7 − 3(8) = −17</code>；<code>1 − 2(5) = −9</code>，<code>3 − 2(−1) = 5</code>，<code>13 − 2(8) = −3</code>。</p><p><b>第三步，消去第三行的第二个元。</b>用 <code>16R₃ − 9R₂</code>（避免分数）：</p><p><code>[[1, 5, −1, 8], [0, −16, 5, −17], [0, 0, 35, 105]]</code></p><p>核对：<code>16(5) − 9(5) = 35</code>，<code>16(−3) − 9(−17) = −48 + 153 = 105</code>。</p><p><b>第四步，回代。</b>第三行给出 <code>35z = 105</code>，即 <b>z = 3</b>；</p><p>第二行：<code>−16y + 5(3) = −17</code> → <code>−16y = −32</code> → <b>y = 2</b>；</p><p>第一行：<code>x + 5(2) − 3 = 8</code> → <b>x = 1</b>。</p><p>解为 (1, 2, 3)，与课件一致。代回原方程检验：<code>1 + 10 − 3 = 8</code> ✓，<code>3 − 2 + 6 = 7</code> ✓，<code>2 + 2 + 9 = 13</code> ✓。</p><div class="callout tip"><b>消元时尽量避免分数</b>第三步若直接把 R₃ 的首元化成 0，会得到分数系数；用「交叉相乘再相减」（如 16R₃ − 9R₂）可以保持整数，手算更稳。</div><h3 id="s6">6.5 例 2：无解</h3><p>解 <code>x + 3y = 5</code>、<code>7x + 21y = 28</code>。</p><p>增广矩阵 <code>[[1, 3, 5], [7, 21, 28]]</code>，做 <code>R₂ − 7R₁</code>：</p><p><code>[[1, 3, 5], [0, 0, −7]]</code></p><p>第二行相当于 <code>0x + 0y = −7</code>，左边恒为 0、右边是 −7，矛盾，故<b>无解</b>。</p><p>从另一个角度看：系数矩阵 <code>[[1, 3], [7, 21]]</code> 的 det = 21 − 21 = 0，奇异，不可逆。而两个方程化简后是 <code>x + 3y = 5</code> 与 <code>x + 3y = 4</code>——同一条直线的两个不同平移，永远不可能相交。</p><p>这个例子说明：<b>奇异 + 右端不匹配 = 无解</b>。阶梯形里出现 <code>[0, …, 0 | 非零]</code> 这一行，就是无解的信号。</p><h3 id="s7">6.6 例 3：无穷多解</h3><p>解 <code>x + 2y − 3z = 8</code>、<code>−3x − 6y + 14z = 21</code>、<code>2x + 4y + 3z = 97</code>。</p><p>增广矩阵 <code>[[1, 2, −3, 8], [−3, −6, 14, 21], [2, 4, 3, 97]]</code>。</p><p>做 <code>R₂ + 3R₁</code>：<code>[0, 0, 5, 45]</code>；做 <code>R₃ − 2R₁</code>：<code>[0, 0, 9, 81]</code>。得</p><p><code>[[1, 2, −3, 8], [0, 0, 5, 45], [0, 0, 9, 81]]</code></p><p>两行都给出 <code>z = 9</code>（<code>5z = 45</code> 与 <code>9z = 81</code> 一致，说明方程相容）。代回第一行：</p><p><code>x + 2y − 27 = 8</code> → <code>x + 2y = 35</code>。</p><p>一个方程、两个未知数，故 x 与 y 中可任取一个作自由参数：令 y = t，则 <code>x = 35 − 2t</code>，<b>无穷多解</b>。</p><p>课件写作「x 或 y 可取任意值，y = (35 − x)/2」，思路相同。系数矩阵的 det = 0（可以验算：第一行与第二行的前两列成比例，展开后为零），所以奇异、不可逆。</p><p>这个例子说明：<b>奇异 + 右端匹配 = 无穷多解</b>。阶梯形里出现一整行零（<code>[0, 0, 0 | 0]</code>），就是自由变量出现的信号。</p><h3 id="s8">6.7 齐次方程组：零解与非零解</h3><p>齐次方程组 <code>Ax = 0</code> 永远有<b>平凡解</b>（trivial solution）<code>x = 0</code>，即所有未知数都取 0。除它之外的解——至少有一个未知数不为零——叫<b>非平凡解</b>（non-trivial solutions）。</p><p>课件的两个对比例子说得很清楚：</p><p><b>齐次组 1：</b><code>x + 3y = 0</code>、<code>7x + 30y = 0</code>。det = 30 − 21 = 9 ≠ 0，只有零解 x = y = 0。</p><p><b>齐次组 2：</b><code>x + 3y = 0</code>、<code>7x + 21y = 0</code>。det = 21 − 21 = 0，两行成比例（第二行 = 7 × 第一行），于是 <code>x = −3y</code>，y 任意取值——既有零解（y = 0），也有无穷多非平凡解。</p><p>区别只在一个数字：30 与 21。前者让两行独立，后者让两行成比例。这就是行列式在起作用。</p><h3 id="s9">6.8 非平凡解的充要条件</h3><p>课件给出了 2×2 的推导：方程组 <code>ax + by = 0</code>、<code>cx + dy = 0</code> 要有非平凡解，必须有一式是另一式的倍数：</p><p><code>ax + by = 0</code> 与 <code>kax + kby = 0</code>（k 为常数）</p><p>此时系数矩阵 <code>[[a, b], [ka, kb]]</code> 的行列式</p><p><code>det = a(kb) − b(ka) = 0</code>。</p><p>反过来，若 det = 0，两行成比例，方程只剩一个，必有无穷多解。于是得到一般结论：</p><p><b>齐次方程组 <code>Ax = 0</code> 只有零解 ⟺ <code>det(A) ≠ 0</code>；有非平凡解 ⟺ <code>det(A) = 0</code>。</b></p><p>这条结论是整个第 3 章的核心，下一讲的特征方程 <code>det(A − λI) = 0</code> 就是把它用在「系数矩阵含参数 λ」的情形上。</p><h3 id="s10">6.9 例：判断是否有非平凡解</h3><p>课件 Task 1：判断两个齐次组是否有非平凡解。</p><p><b>（1）</b><code>x − 2y = 0</code>、<code>2x + 3y = 0</code>。系数矩阵 <code>[[1, −2], [2, 3]]</code>，det = 3 + 4 = 7 ≠ 0，<b>只有零解</b>，没有非平凡解。</p><p><b>（2）</b><code>2x − 5y = 0</code>、<code>−10x + 25y = 0</code>。系数矩阵 <code>[[2, −5], [−10, 25]]</code>，det = 50 − 50 = 0，<b>有非平凡解</b>（第二行 = −5 × 第一行，两方程等价，解为 <code>x = 5y/2</code>）。</p><p>答案与课件一致：第（1）题 no，第（2）题 yes。</p><h3 id="s11">6.10 高斯消元与逆矩阵法的比较</h3><p>两种方法都能解方程组，但适用面不同：</p><table><tr><th>比较项</th><th>逆矩阵法</th><th>高斯消元</th></tr><tr><td>前提</td><td>A 必须非奇异</td><td>任何矩阵都可以</td></tr><tr><td>计算量</td><td>要算 n² 个代数余子式（求 adj）</td><td>只需约 n³/3 次乘加，且可造零</td></tr><tr><td>能否判断解的情形</td><td>不能——det = 0 时方法失效</td><td>能：出现 <code>[0 | 非零]</code> 是无解，出现整行零是无穷多解</td></tr><tr><td>适用场景</td><td>2×2、3×3，且已确认 det ≠ 0</td><td>阶数较大，或不确定是否有解</td></tr></table><p>考试中若题目只问「求解」，且矩阵是三阶以下，用逆矩阵往往更快；若题目问「判断解的情形」或矩阵含参数，必须用消元。</p><h3 id="s12">6.11 常见误解</h3><ul><li><b>行运算时忘了同步改右端</b>：增广矩阵是一整行一起变，只改左边系数不改最后一列，答案必错。</li><li><b>把某行乘以 0</b>：这不是合法行运算，会把方程抹掉、改变解集。</li><li><b>看到 det = 0 就写「无解」</b>：det = 0 只说明不是唯一解，还要看右端是否匹配。匹配则无穷多解，不匹配才无解。</li><li><b>齐次组写「无解」</b>：齐次组永远有零解，只可能是「唯一零解」或「无穷多解」。</li><li><b>自由变量表示不规范</b>：无穷多解要写出通解（如 <code>x = 35 − 2t, y = t, z = 9</code>），只写「有无穷多解」拿不到全分。</li><li><b>回代时把已经求出的值代错行</b>：回代必须<b>自下而上</b>，从最后一个方程开始，逐级往上代。</li></ul></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>system of linear equations</td><td>线性方程组</td><td>A collection of linear equations written compactly as Ax = b.</td></tr><tr><td>coefficient matrix</td><td>系数矩阵</td><td>The matrix A formed by the coefficients of the unknowns.</td></tr><tr><td>augmented matrix</td><td>增广矩阵</td><td>[A | b], the coefficient matrix with the constant column appended.</td></tr><tr><td>homogeneous system</td><td>齐次方程组</td><td>A system with b = 0; it always has the trivial solution.</td></tr><tr><td>non-homogeneous system</td><td>非齐次方程组</td><td>A system with b ≠ 0.</td></tr><tr><td>trivial solution</td><td>平凡解</td><td>x = 0, which every homogeneous system possesses.</td></tr><tr><td>non-trivial solution</td><td>非平凡解</td><td>A solution in which at least one unknown is non-zero.</td></tr><tr><td>Gaussian elimination</td><td>高斯消元</td><td>Using row operations to reduce the augmented matrix to echelon form.</td></tr><tr><td>row operation</td><td>行运算</td><td>Scaling a row by a non-zero constant, swapping rows, or adding a multiple of one row to another.</td></tr><tr><td>echelon form</td><td>阶梯形</td><td>Zeros below the leading entry of each row, with leading entries moving right.</td></tr><tr><td>back substitution</td><td>回代</td><td>Solve the last equation first, then substitute upward.</td></tr><tr><td>free variable</td><td>自由变量</td><td>A variable that can be chosen freely when the system has infinitely many solutions.</td></tr><tr><td>contradictory row</td><td>矛盾行</td><td>A row of the form [0 … 0 | c] with c ≠ 0, signalling no solution.</td></tr><tr><td>singular</td><td>奇异的</td><td>det(A) = 0; the system is either inconsistent or under-determined.</td></tr><tr><td>unique solution</td><td>唯一解</td><td>Occurs exactly when det(A) ≠ 0.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用高斯消元解 <code>2x + y − z = 1</code>、<code>x − y + z = 2</code>、<code>3x + 2y + z = 5</code>。</div><p><b>增广矩阵。</b><code>[[2, 1, −1, 1], [1, −1, 1, 2], [3, 2, 1, 5]]</code>。</p><p><b>先把首元化成 1。</b>交换 R₁ 与 R₂：<code>[[1, −1, 1, 2], [2, 1, −1, 1], [3, 2, 1, 5]]</code>。</p><p><b>消元。</b><code>R₂ − 2R₁</code>：<code>[0, 3, −3, −3]</code>；<code>R₃ − 3R₁</code>：<code>[0, 5, −2, −1]</code>。</p><p><b>再消。</b>用 <code>3R₃ − 5R₂</code>：<code>[0, 0, −6 + 15, −3 + 15] = [0, 0, 9, 12]</code>。</p><p><b>回代。</b><code>9z = 12</code> → <code>z = 4/3</code>；<code>3y − 3(4/3) = −3</code> → <code>3y = 1</code> → <code>y = 1/3</code>；<code>x − 1/3 + 4/3 = 2</code> → <code>x = 1</code>。</p><p><b>检验。</b><code>2(1) + 1/3 − 4/3 = 2 − 1 = 1</code> ✓；<code>1 − 1/3 + 4/3 = 2</code> ✓；<code>3 + 2/3 + 4/3 = 5</code> ✓。解为 (1, 1/3, 4/3)。</p></div><div class="qa"><div class="q">例 2　判断并求解 <code>x + y + z = 3</code>、<code>2x + 2y + 2z = 6</code>、<code>x − y = 0</code>。</div><p><b>增广矩阵。</b><code>[[1, 1, 1, 3], [2, 2, 2, 6], [1, −1, 0, 0]]</code>。</p><p><b>消元。</b><code>R₂ − 2R₁</code> 得整行零 <code>[0, 0, 0, 0]</code>；<code>R₃ − R₁</code> 得 <code>[0, −2, −1, −3]</code>。</p><p><b>观察。</b>第二行全零说明第二个方程是第一个方程的 2 倍，是冗余信息，行列式必为 0。剩下两个独立方程、三个未知数，故有无穷多解。</p><p><b>求通解。</b>由 <code>x = y</code>（第三行：<code>−2y − z = −3</code> → <code>z = 3 − 2y</code>），代入第一行：<code>y + y + (3 − 2y) = 3</code>，恒成立。</p><p>故通解为 <code>x = t</code>、<code>y = t</code>、<code>z = 3 − 2t</code>，t 任意。</p><p><b>点评。</b>这一题的关键是「整行零」——它不是无解，而是把自由变量解放出来。只有 <code>[0, 0, 0 | 非零]</code> 才是无解。</p></div><div class="qa"><div class="q">例 3　问 k 取何值时，<code>x + y = 1</code>、<code>kx + 2y = 3</code> 无解？何时有无穷多解？</div><p><b>行列式。</b><code>det = 1×2 − 1×k = 2 − k</code>。</p><p><b>唯一解。</b><code>k ≠ 2</code> 时 det ≠ 0，有唯一解。</p><p><b>讨论 k = 2。</b>方程组变成 <code>x + y = 1</code>、<code>2x + 2y = 3</code>，即 <code>x + y = 1.5</code>，与第一式矛盾，<b>无解</b>。</p><p><b>有没有无穷多解的 k？</b>把右端改成 <code>kx + 2y = 2</code> 时，k = 2 使两式相同，此时无穷多解。可见「奇异」必须与右端一起看。</p><p><b>点评。</b>含参数题的标准做法是：先算 det，求出使它为零的临界值，再逐个代回讨论。不要一上来就消元。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用高斯消元解 <code>x + 2y = 4</code>、<code>3x − y = 1</code>。</li><li>用高斯消元解 <code>x + y + z = 6</code>、<code>2x − y + z = 3</code>、<code>x + 2y − z = 2</code>。</li><li>判断 <code>x + 2y = 1</code>、<code>2x + 4y = 3</code> 是否有解，并说明理由。</li><li>判断齐次组 <code>x + y + z = 0</code>、<code>2x + 2y + 2z = 0</code> 是否有非平凡解，并写出通解。</li><li>问 a 取何值时 <code>x + y = 2</code>、<code>ax + 2y = 4</code> 有无穷多解。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 增广矩阵 <code>[[1, 2, 4], [3, −1, 1]]</code>，<code>R₂ − 3R₁</code> 得 <code>[0, −7, −11]</code>，故 <code>y = 11/7</code>，<code>x = 4 − 22/7 = 6/7</code>。检验：<code>18/7 − 11/7 = 1</code> ✓。</p><p><b>2.</b> 消元：<code>R₂ − 2R₁</code> 得 <code>[0, −3, −1, −9]</code>，<code>R₃ − R₁</code> 得 <code>[0, 1, −2, −4]</code>，再用 <code>R₂ + 3R₃</code> 得 <code>[0, 0, −7, −21]</code>。故 <code>z = 3</code>，由第三行 <code>y − 2z = −4</code> 得 <code>y = 2</code>，由第一行 <code>x = 6 − 2 − 3 = 1</code>。解为 (1, 2, 3)，代回三式均成立。</p><p><b>3.</b> 系数行列式 <code>1×4 − 2×2 = 0</code>，奇异。消元得 <code>[0, 0 | 1]</code>（第二式减 2 倍第一式：<code>3 − 2 = 1</code>），出现矛盾行，<b>无解</b>。</p><p><b>4.</b> 第二式是第一式的 2 倍，独立方程只有一个，三个未知数，故<b>有非平凡解</b>。通解：<code>y = s</code>、<code>z = t</code>、<code>x = −s − t</code>（s、t 任意）。</p><p><b>5.</b> <code>det = 2 − a</code>。a = 2 时两式变成 <code>x + y = 2</code> 与 <code>2x + 2y = 4</code>，完全一致，故 <b>a = 2 时有无穷多解</b>（若右端改成 5 则无解）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>用高斯消元求解三阶方程组、判断无解 / 无穷多解、齐次组非平凡解的判定（<code>det = 0</code>）——这三类题每次考试至少出现一道。</div><div class="callout warn"><b>易错一：det = 0 直接判无解</b>奇异只说明「不是唯一解」。要再看消元结果：整行零 → 无穷多解；<code>[0 | 非零]</code> → 无解。</div><div class="callout warn"><b>易错二：行运算漏改右端</b>增广矩阵的最后一列必须与系数同步运算。只改系数是考场上最常见的丢分点。</div><div class="callout warn"><b>易错三：齐次组写「无解」</b>齐次组永远有零解，只可能「唯一零解」或「无穷多解」。写出「无解」直接零分。</div><div class="callout tip"><b>进阶：含参数题先算 det</b>遇到 <code>kx + y = …</code> 这类题，先算 det 找出临界 k 值，再逐个代入讨论。比一上来就消元更省时，也不会漏掉情形。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">方法与检查清单</h2><h3 id="s14">高斯消元的标准流程</h3><ol class="steps"><li>写成增广矩阵 <code>[A | b]</code></li><li>若首元不为 1，先交换行或整行倍乘，把首元化成 1（便于心算）</li><li>用倍加把该列下方全部消成 0</li><li>对第二列重复上一步，直到形成阶梯形</li><li>自下而上回代，逐个解出未知数</li><li>代回原方程检验；若出现整行零或矛盾行，改写结论（无穷多解 / 无解）</li></ol><h3 id="s15">解的情形判定表</h3><table><tr><th>消元后的现象</th><th>结论</th></tr><tr><td>阶梯形每行都有主元，无零行</td><td>唯一解</td></tr><tr><td>出现 <code>[0, …, 0 | c]</code>（c ≠ 0）</td><td>无解</td></tr><tr><td>出现整行零 <code>[0, …, 0 | 0]</code></td><td>无穷多解，需引入自由变量写通解</td></tr></table><h3 id="s16">交卷前自查</h3><ul class="checklist"><li>行运算是否对整行（含最后一列）同时进行</li><li>乘以的常数是否非零</li><li>回代方向是否自下而上</li><li>无穷多解是否写出了含参数的通解</li><li>齐次组的结论是否只用了「唯一零解 / 无穷多解」两种说法</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码 / 位置</th><th>覆盖的知识点</th></tr><tr><td>Topic 3/EMII_Week3_Lecture1.pdf</td><td>p26–p28</td><td>方程组的矩阵形式 Ax = b、系数矩阵、齐次与非齐次、x = A⁻¹b</td></tr><tr><td>Topic 3/EMII_Week3_Lecture1.pdf</td><td>p29–p30</td><td>用逆矩阵解方程组的例子与 Task 2</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p5–p9</td><td>高斯消元的动机、阶梯形的目标、三条行运算、增广矩阵</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p10–p11</td><td>例 1 的完整消元步骤与回代</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p12–p13</td><td>例 2：矛盾行导致无解、det = 0</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p14–p16</td><td>例 3：整行零导致无穷多解、自由变量</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p17–p18</td><td>平凡解与非平凡解的定义、两个齐次组对比</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p19–p21</td><td>非平凡解的条件推导与结论 det(A) = 0</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p22</td><td>Task 1：两组齐次方程组的判定</td></tr><tr><td>（跳过）_info_*.html.txt</td><td>全篇</td><td>Moodle 快照，无讲义内容</td></tr><tr><td>（拓展）</td><td>—</td><td>6.10 的两种解法对照表、6.2 的解的情形归纳、例 3 的含参数讨论均为方法性补充；不新增考点</td></tr></table></section><div class="lnav"><a class="prev" href="ch3-determinant-inverse.html">← 第 3 章 · 行列式、伴随矩阵与逆矩阵</a><a class="next" href="ch3-eigenvalues-cramer.html">第 3 章 · 特征值与克拉默法则 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

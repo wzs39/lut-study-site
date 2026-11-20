@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 10 · 数据加密：古典密码、OTP、AES 与 RSA · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-5.html">第 5 章 数据加密与信息安全</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、为什么必须保护数字信息</a><a class="toc-l2" href="#s3">二、什么是信息安全</a><a class="toc-l2" href="#s4">三、什么是数据加密</a><a class="toc-l3" href="#s5">3.1 四个基本术语</a><a class="toc-l3" href="#s6">3.2 加密用在哪里</a><a class="toc-l2" href="#s7">四、隐写术：藏「存在」而不是藏「内容」</a><a class="toc-l3" href="#s8">4.1 定义与词源</a><a class="toc-l3" href="#s9">4.2 三个例子</a><a class="toc-l3" href="#s10">4.3 与加密的区别</a><a class="toc-l2" href="#s11">五、加密与解密的过程</a><a class="toc-l3" href="#s12">5.1 两个函数</a><a class="toc-l3" href="#s13">5.2 术语表</a><a class="toc-l3" href="#s14">5.3 一句关键的设计原则</a><a class="toc-l2" href="#s15">六、密钥</a><a class="toc-l3" href="#s16">6.1 定义</a><a class="toc-l3" href="#s17">6.2 密钥不是密码</a><a class="toc-l3" href="#s18">6.3 为什么需要密钥</a><a class="toc-l2" href="#s19">七、两大类加密</a><a class="toc-l2" href="#s20">八、古典密码之一：替换密码</a><a class="toc-l3" href="#s21">8.1 定义</a><a class="toc-l3" href="#s22">8.2 简单替换：Caesar</a><a class="toc-l3" href="#s23">8.3 ROT13</a><a class="toc-l3" href="#s24">8.4 同音替换（homophonic）</a><a class="toc-l3" href="#s25">8.5 多字替换（polygram）</a><a class="toc-l3" href="#s26">8.6 多表替换（polyalphabetic）</a><a class="toc-l2" href="#s27">九、古典密码之二：置换密码</a><a class="toc-l3" href="#s28">9.1 定义</a><a class="toc-l3" href="#s29">9.2 ADFGVX</a><a class="toc-l3" href="#s30">9.3 转子机（rotor-based cipher machines）</a><a class="toc-l3" href="#s31">9.4 Enigma 的结构</a><a class="toc-l3" href="#s32">9.5 Enigma 的强与弱</a><a class="toc-l2" href="#s33">十、一次性密码本（one-time pad）</a><a class="toc-l3" href="#s34">10.1 定义</a><a class="toc-l3" href="#s35">10.2 四个条件</a><a class="toc-l3" href="#s36">10.3 Vernam 与 XOR</a><a class="toc-l3" href="#s37">10.4 怎样用 XOR</a><a class="toc-l3" href="#s38">10.5 为什么「完美」</a><a class="toc-l3" href="#s39">10.6 为什么难以实用</a><a class="toc-l2" href="#s40">十一、对称加密的现代代表：AES</a><a class="toc-l3" href="#s41">11.1 关键事实</a><a class="toc-l3" href="#s42">11.2 轮结构</a><a class="toc-l3" href="#s43">11.3 用在哪里</a><a class="toc-l3" href="#s44">11.4 静止加密与传输加密</a><a class="toc-l3" href="#s45">11.5 优点与局限</a><a class="toc-l2" href="#s46">十二、非对称加密</a><a class="toc-l3" href="#s47">12.1 两个密钥</a><a class="toc-l3" href="#s48">12.2 为什么它有用</a><a class="toc-l3" href="#s49">12.3 RSA 的来历</a><a class="toc-l3" href="#s50">12.4 RSA 的四个步骤</a><a class="toc-l3" href="#s51">12.5 e 与 d 的进阶约束</a><a class="toc-l3" href="#s52">12.6 为什么不用公钥加密一切</a><a class="toc-l2" href="#s53">十三、对称与非对称对照</a><a class="toc-l2" href="#s54">十四、三个实际应用</a><a class="toc-l3" href="#s55">14.1 HTTPS</a><a class="toc-l3" href="#s56">14.2 全盘加密</a><a class="toc-l3" href="#s57">14.3 端到端加密（E2EE）</a><a class="toc-l2" href="#s58">十五、加密不是安全的全部</a><a class="toc-l2" href="#s59">方法清单</a><a class="toc-l3" href="#s60">用 RSA 做一次加密（六步）</a><a class="toc-l3" href="#s61">算模幂 a^b mod n（三步）</a><a class="toc-l3" href="#s62">判断该用哪种加密（三问）</a><a class="toc-l3" href="#s63">检查一个「加密方案」是否真的安全（四查）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a class="toc-l3" href="w10-data-encryption.html">▸ Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</h1><p class="lead">Data Encryption <span class="badge mute">86</span> <span class="badge mute">第 10 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 数据加密与信息安全</a></p><p class="src">原始文件：<code>Week10- Data Encryption/Lecture10.pdf</code> <code>Week10- Data Encryption/Exercise6.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲让数据「能被找到」，这一讲让数据「不该被看到的人看不到」。加密（encryption）用算法与密钥把可读的明文变成不可读的密文，只有持密钥的一方能还原。这一讲从古典密码一路讲到 AES 与 RSA，主线是一条：<b>安全应当依赖密钥的保密，而不是算法的保密</b>。</p><p>为什么这条主线重要？因为算法会被逆向、会被公开、会被标准化。若安全性建立在「别人不知道我的算法」上，一旦算法泄露就全盘皆输。现代密码学的做法相反：算法完全公开，安全性全部押在密钥上。</p><p>与前几讲的衔接：第 8 讲说「数据存在介质上、会通过云服务访问」，本讲说「这些数据怎样才安全」。第 6 章讲逻辑门时，AES 的轮函数与 XOR 一次性密码本都会让你看到「加密就是一堆逻辑运算」。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用明文、密文、算法、密钥四个词描述一次加密与解密</li><li>说明为什么安全性应当依赖密钥而不是算法</li><li>区分替换密码与置换密码，并各举一例</li><li>说明一次性密码本为什么「完美」以及为什么难以实用</li><li>写出 AES 的关键参数（分组、密钥长度、轮结构）</li><li>按步骤完成 RSA 的密钥生成、加密、解密，并会做模幂运算</li><li>说明对称与非对称各自的优劣，以及混合加密的必要性</li><li>区分加密在静止时、传输中、端到端三种场景的作用与局限</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、为什么必须保护数字信息</h2><p>课件开篇把数字信息在现代生活中的位置摆了一遍：</p><ul><li>个人信息与照片</li><li>网上银行与支付记录</li><li>学校档案与科研数据</li><li>商业文件与客户数据库</li><li>医疗与政府信息</li></ul><p>然后问：<b>如果未经授权的人访问或修改了这些信息，会发生什么？</b>可能的结果包括：隐私泄漏、财产损失、身份盗用、误诊、名誉受损、业务中断。</p><h2 id="s3">二、什么是信息安全</h2><p>课件的定义：信息安全是保护信息与信息系统，使其免受<b>未经授权的访问、使用、披露、修改、中断或破坏</b>。</p><p>它的目的是确保信息：</p><ul><li>对授权用户可访问（可用性）</li><li>保持准确与可信（完整性）</li><li>不被未授权披露（保密性）</li></ul><p>课件补了一句：信息安全涉及<b>技术、流程与人</b>三方面。这句话解释了一个常见现象：技术再强，一封钓鱼邮件就能突破——因为人的环节没有防住。</p><h2 id="s4">三、什么是数据加密</h2><h3 id="s5">3.1 四个基本术语</h3><p>课件用四句话定义：</p><table><tr><th>术语</th><th>定义</th></tr><tr><td>明文（plaintext）</td><td>原始的可读数据</td></tr><tr><td>加密算法（encryption algorithm）</td><td>用来变换数据的方法</td></tr><tr><td>密钥（key）</td><td>算法使用的一个值</td></tr><tr><td>密文（ciphertext）</td><td>加密后的数据</td></tr></table><p>加密就是「用加密算法与密钥，把可读信息变成不可理解的形式」。预期的接收者用相应的解密过程与密钥，可以恢复原始信息。</p><h3 id="s6">3.2 加密用在哪里</h3><p>课件列了六处：</p><span class="chip">安全网站与网上银行</span> <span class="chip">即时通讯应用</span> <span class="chip">Wi-Fi 网络</span> <span class="chip">加密的文件与存储设备</span> <span class="chip">云存储服务</span> <span class="chip">手机与笔记本</span><p>课件强调：加密既保护<b>存储中</b>的信息，也保护<b>传输中</b>的信息。这两种场景在第十二节会正式区分（encryption at rest / in transit）。</p><h2 id="s7">四、隐写术：藏「存在」而不是藏「内容」</h2><h3 id="s8">4.1 定义与词源</h3><p>隐写术（steganography）是把一条消息藏在另一条消息或一个实物之中。词源来自古希腊语：</p><pre><code>steganos = covered or concealed（覆盖、隐藏）
+graphein = to write（写）</code></pre><h3 id="s9">4.2 三个例子</h3><table><tr><th>例子</th><th>做法</th></tr><tr><td>埃及的「头发加密」</td><td>把消息写在剃光的头上，等头发长出来，再把信使送到目的地</td></tr><tr><td>数字图像中的数字签名</td><td>用最低有效位（LSB）把签名藏进图像，用于验证原真性；签名对人不可见但可被解码</td></tr><tr><td>文本的隐藏含义：藏头诗（acrostic）</td><td>ALICE PLEASANCE LIDDELL —— 其诗作《A boat beneath a sunny sky…》各行的首字母拼出 Alice Pleasance Liddell</td></tr></table><h3 id="s10">4.3 与加密的区别</h3><p>加密让内容<b>不可读但可见</b>（一看就知道这是密文）；隐写术让内容<b>不可见</b>（根本不知道有秘密）。两者可以叠加：先加密，再把密文藏进图片。</p><p>课件用 LSB 例子把这条与第 5 讲接上：一个像素的最低有效位改动 1，人眼几乎看不出来；但它能承载隐藏信息。这也提醒我们——图像文件里可能藏着你看不见的数据。</p><h2 id="s11">五、加密与解密的过程</h2><h3 id="s12">5.1 两个函数</h3><p>课件用函数记号把过程写清楚：</p><p>加密（encoding）用 E：从明文 M 得到密文 C，即 <b><code>E(M) = C</code></b>。</p><p>解密（decoding）用 D：从密文得到明文，即 <b><code>D(C) = M</code></b>。</p><p>于是必然有：<b><code>D(E(M)) = M</code></b>。这条式子叫「往返一致」，是任何可用加密方案的最低要求。</p><pre><code>明文 → [加密算法 + 密钥] → 密文 → [解密算法 + 密钥] → 原始明文</code></pre><h3 id="s13">5.2 术语表</h3><table><tr><th>术语</th><th>含义</th></tr><tr><td>明文 Plaintext</td><td>原始可读信息</td></tr><tr><td>密文 Ciphertext</td><td>加密后的信息</td></tr><tr><td>加密 Encryption</td><td>从明文到密文的变换</td></tr><tr><td>解密 Decryption</td><td>从密文恢复明文</td></tr><tr><td>密码算法 Cipher</td><td>加密/解密算法</td></tr><tr><td>密钥 Key</td><td>控制密码运算的值</td></tr></table><h3 id="s14">5.3 一句关键的设计原则</h3><p>课件加粗写了一句话：<b>一个安全的系统不应当依赖「算法保密」；必须保护的是密钥</b>（"A secure system should not depend on keeping its algorithm secret. The keys must be protected."）。</p><p>这就是现代密码学的基本原则（常被称为 Kerckhoffs 原则）。它有一个非常实际的推论：开源加密软件（如 OpenSSL、Signal 协议）可以是安全的——因为安全不靠藏着算法。</p><h2 id="s15">六、密钥</h2><h3 id="s16">6.1 定义</h3><p>密钥是算法用来执行加密、解密或其他密码运算的一个值。密钥可以：</p><ul><li>控制明文怎样被变换</li><li>决定密文怎样被解密</li><li>在通信双方之间共享，或以「公钥/私钥对」的形式使用</li></ul><h3 id="s17">6.2 密钥不是密码</h3><p>课件明确提醒：<b>密钥不等于密码</b>，尽管密码可以用来派生密钥。</p><p>区别在于：密码是给人记的、熵很低（常见密码几十万次尝试就能破）；密钥是给机器用的、通常 128 位或 256 位的随机值，穷举不可能。把密码直接当密钥用，是很多真实漏洞的来源。</p><h3 id="s18">6.3 为什么需要密钥</h3><p>课件用一个假设说明：如果所有人都知道加密算法，而安全性只靠「藏住算法」，那么一旦有人发现算法，整个系统就被攻破。</p><p>正确的做法是：</p><ul><li>算法可以公开</li><li>安全依赖密钥的保密</li><li>只有持有合适密钥的人才能解密受保护的数据</li></ul><p>这是现代密码学的基本原理。它把「安全」从一个难以验证的假设（没人知道算法）变成了一个可管理的工程问题（管好密钥）。</p><h2 id="s19">七、两大类加密</h2><p>课件把加密分成两类：</p><table><tr><th>类型</th><th>密钥结构</th></tr><tr><td>对称加密（symmetric）</td><td>加密与解密用<b>同一个</b>秘密密钥</td></tr><tr><td>非对称加密（asymmetric）</td><td>用一对相关的密钥：公钥与私钥；不同操作使用不同密钥</td></tr></table><p>这两类的差别不只是「一个钥匙还是两个钥匙」，更是「密钥分发」这一根本难题的两种解法。第十三节会展开。</p><h2 id="s20">八、古典密码之一：替换密码</h2><h3 id="s21">8.1 定义</h3><p>替换密码（substitution cipher）把明文的符号（通常是字符）按某种策略换成别的符号，但<b>它们在明文中的位置不变</b>。</p><p>一句话记法：<b>符号变了，位置没变</b>。</p><h3 id="s22">8.2 简单替换：Caesar</h3><p>最简单的替换是把消息的字符换成同一字母表中的其他字符。Caesar（凯撒）把字母表向前移 3 位，例如 a 变成 d，于是内容变得不可读。</p><p>这个「向前移 3 位」在数学上就是 <code>c = (m + 3) mod 26</code>（a = 0）。解密用 <code>m = (c − 3) mod 26</code>。</p><h3 id="s23">8.3 ROT13</h3><p>ROT13 是「rotated by 13 places」，作用于英文字母表。13 = 26/2，所以加密与解密是同一个操作——连做两次回到原文。</p><p>课件的例子说它用于「把可疑的网络讨论从直接可见中藏起来」（例如论坛剧透、谜题答案）。注意它的定位：<b>ROT13 不是加密，而是遮挡</b>，任何人点一下就能解开。</p><h3 id="s24">8.4 同音替换（homophonic）</h3><p>同音替换给一个字符提供多种替换选项：替换字母表里一个字符对应一个或多个选项。</p><p>课件的例子：字母 E 有四个选项 Z、7、2、1。合理的做法是——<b>字母越常见，给的选项越多</b>。为什么？因为频率分析是破解简单替换的主要手段；若把 E 的 4 个选项随机使用，E 的出现就被「摊平」到 4 个符号上，统计特征被打散。</p><h3 id="s25">8.5 多字替换（polygram）</h3><p>多字替换把一串字符整体换成另一组字符表示。课件的两个例子：</p><ul><li>罗马人用希腊字母写拉丁文消息（由 Caesar 引入）</li><li>Huffman 编码——它把符号映射成变长码，也可视为一种替换</li></ul><p>第二个例子很有意思：它把第 7 讲的压缩与本章的加密连起来了。两者共享同一个形式结构（符号到符号的映射），但目标不同：压缩求短，加密求乱。</p><h3 id="s26">8.6 多表替换（polyalphabetic）</h3><p>多表替换使用多个字母表：同一个明文字母可以映射成<b>不同的密文字母，取决于它出现的位置</b>。</p><p>课件的例子：美国内战中使用过；Alberti 密码盘（Leon Baptista Alberti，1467）——两个同心圆盘用一根轴固定，可以相对旋转。转动一个位置，就等于换一张替换表。</p><p>为什么这一步是进步？因为单表替换的密文保留了原文的字母频率分布，用频率分析就能破；多表替换让同一个字母在不同位置产生不同密文，频率特征被抹平。</p><h2 id="s27">九、古典密码之二：置换密码</h2><h3 id="s28">9.1 定义</h3><p>置换密码（transposition cipher）按某种规则<b>重排</b>明文字符，产生原文的一个排列。</p><p>一句话记法：<b>位置变了，符号没变</b>。与替换密码正好互为镜像。</p><p>这个区别带来不同的破解方式：替换密码要分析频率，置换密码要分析「哪些字母一起出现」（因为字母本身没变，只是被打乱）。</p><h3 id="s29">9.2 ADFGVX</h3><p>课件的例子：一战德军的 ADFGVX 密码在最后的列置换阶段用了这项技术。字符只从 A、D、F、G、V、X 六个字母里取，用一张二维置换表：<code>AA = b</code>、<code>AF = a</code> 等，i 与 j 共用代码 GD。</p><p>为什么只用六个字母？因为在摩尔斯电码里，这六个字母的编码差别最大，最不容易听错——这是工程细节，也是「密码设计要考虑传输介质」的早期例子。</p><h3 id="s30">9.3 转子机（rotor-based cipher machines）</h3><p>用多级（约等于多个转子）的字符置乱机制。例子：二战前后的德国 Enigma（希腊语 enigma = 谜）与二战中及之后的 Lorenz（由 C. Lorenz AG 公司制造）。</p><h3 id="s31">9.4 Enigma 的结构</h3><p>课件给了相当详细的一段：</p><ul><li>Arthur Scherbius，德国工程师，1918 年</li><li>最初用于商业，保护商业通信；后来才用于军事，尤其二战</li><li>电气与机械部件的结合：可旋转的盘（rotor），每盘 26 个字母，实际使用 3–5 个盘</li><li>键盘 26 个字符</li><li>插线板（plugboard）：10 根电缆连接盘与键盘</li></ul><p>工作过程：每按一个键（一个明文字符），对应的密文字符由盘与插线板决定，然后<b>产生新的编码</b>——即转子转动，替换表变了。这就是一台机械化的多表替换机。</p><h3 id="s32">9.5 Enigma 的强与弱</h3><p>课件给了两个数字与事实：</p><p><b>密钥空间：158 million million million = 158 × 10^18</b> 种设置。这个数字大到无法穷举。</p><p><b>但有两个弱点：</b></p><ol><li>加密方案<b>从不产生与原文相同的字符</b>——例如 a 永远不会被加密成 a。这条「自反限制」大幅缩小了搜索空间，也是破译的突破口之一。</li><li>所有潜艇（U-boat）上都配有用于初始化 Enigma 的<b>密码本</b>，其中含秘密信息。缴获密码本等于直接拿到当日密钥。</li></ol><p>Alan Turing（英国数学家、计算机科学家，剑桥与普林斯顿）领导了代号 Ultra 的行动。Ultra 小组用一台计算机器破译了 Enigma，而这台机器后来被进一步发展成可编程机器——也就是今天所说的计算机。</p><p>这段历史值得记住的不只是「图灵很聪明」，而是：<b>破译靠的是利用结构弱点与密钥管理漏洞，而不是穷举</b>。这与本节主线完全一致。</p><h2 id="s33">十、一次性密码本（one-time pad）</h2><h3 id="s34">10.1 定义</h3><p>一次性密码本（OTP）：明文与一个随机秘密密钥（叫 one-time pad）配对，然后明文的每一位或每个字符与密钥中对应位/字符通过<b>模加</b>组合，得到密文。</p><h3 id="s35">10.2 四个条件</h3><p>只要满足以下四条，就<b>不可能</b>被解密或破解：</p><ol><li>随机密钥：用纯随机方式生成</li><li>密钥长度：至少与明文一样长</li><li>一次性使用：绝不重复使用密钥</li><li>绝对保密：双方严格保密</li></ol><h3 id="s36">10.3 Vernam 与 XOR</h3><p>Vernam 密码：Gilbert S. Vernam，贝尔实验室，1919 年获美国专利（1917 年提出），用于加密电传打字机消息。它把明文与伪随机的多表字符序列用<b>异或</b>（XOR）组合成密文。</p><p>位运算的异或定义（课件原式）：</p><pre><code>0 ⊕ 0 = 0
+0 ⊕ 1 = 1
+1 ⊕ 0 = 1
+1 ⊕ 1 = 0</code></pre><p>还要成立的一条性质是<b>自反性</b>：<code>X ⊕ X = 0</code>，因此 <code>(M ⊕ K) ⊕ K = M</code>——同一个操作既加密又解密。</p><h3 id="s37">10.4 怎样用 XOR</h3><p>设 M 是消息、K 是密钥、C 是密文：</p><pre><code>加密：C = M ⊕ K
+解密：M = C ⊕ K</code></pre><p>课件补了一句：字符由位表示，来自一张码本——即第 4 讲的字符编码。所以 OTP 作用在「位」层面，与编码方案无关。</p><h3 id="s38">10.5 为什么「完美」</h3><p>课件给了两条规则与其结果：</p><table><tr><th>规则</th><th>结果</th></tr><tr><td>单次使用密钥</td><td>摧毁密码分析的价值（密钥重用被消除）</td></tr><tr><td>密钥等长</td><td>达到完美保密（所有可能的明文等概率，零线索泄漏）</td></tr></table><p>「等概率」是关键：攻击者拿到密文 C 后，对任意候选明文 M'，都存在唯一密钥 <code>K' = C ⊕ M'</code> 使其成立。于是密文对「明文是什么」没有提供任何信息。这就是「完美加密方法」。</p><h3 id="s39">10.6 为什么难以实用</h3><p>课件留了一个反问：它对实时通信是否可行？答案是不实用，原因全在那四个条件里：</p><ul><li>密钥必须与明文等长，且纯随机——意味着要预先分发与消息同样大的密钥材料</li><li>绝不能重用——用完就作废，规模一大就难管理</li><li>必须绝对保密地分发——分发本身成了最脆弱的一环</li></ul><p>所以 OTP 主要用在极小量、极高价值的场景（外交热线、情报），日常通信用的是「计算上安全」的算法，如 AES。</p><h2 id="s40">十一、对称加密的现代代表：AES</h2><h3 id="s41">11.1 关键事实</h3><p>AES 是广泛使用的对称加密算法：</p><ul><li>它是一个标准化的<b>分组密码</b>（block cipher）：每次处理固定长度（128 位）的数据块</li><li>支持 128 位、192 位与 256 位密钥</li><li>被用在许多存储与通信系统中</li></ul><p>课件加了一句限定：<b>AES 是算法，不是文件格式，也不是完整的安全协议</b>。这句话很重要——「我用 AES 加密了」不等于「我的系统安全」，因为密钥管理、随机数、认证都在算法之外。</p><h3 id="s42">11.2 轮结构</h3><p>课件用一页图描述 AES 加密流程，并给出一个细节：当轮数 R 达到 14 时，流程会跳过 MixColumns（因为最后一轮不需要混合步骤）。</p><p>这句话透露三件事：① AES 分多轮执行，每轮做同样的几种变换；② 轮数由密钥长度决定（128 位 10 轮、192 位 12 轮、256 位 14 轮）；③ 最后一轮少一步，是为了「加密与解密的对称性」。</p><p>每一轮内部的变换（字节替换、行移位、列混合、轮密钥加）都由第 6 章的逻辑运算构成——按位异或、查表替换。所以「加密」在硬件里就是一片逻辑门。</p><h3 id="s43">11.3 用在哪里</h3><ul><li>全盘加密（full-disk encryption）</li><li>加密文件存储</li><li>数据库加密</li><li>安全网络通信</li><li>加密备份</li></ul><p>课件指出：对称加密特别适合保护<b>大量数据</b>，因为它通常效率高。第 7 讲讲压缩时讲「数据量大」，这里就有代价了——量大就要算得快，对称算法正合适。</p><h3 id="s44">11.4 静止加密与传输加密</h3><table><tr><th>场景</th><th>保护什么</th><th>例子</th></tr><tr><td>加密静止数据（at rest）</td><td>存在磁盘、SSD 或其他存储设备上的数据</td><td>笔记本上的全盘加密</td></tr><tr><td>加密传输数据（in transit）</td><td>数据在网络传输途中的内容</td><td>浏览器与网站之间的 HTTPS</td></tr></table><p>两者都重要，因为数据在<b>存储</b>与<b>传输</b>两种状态下都可能暴露。只做一种，另一种状态就是缺口。</p><h3 id="s45">11.5 优点与局限</h3><table><tr><th>优点</th><th>局限</th></tr><tr><td>高性能</td><td>密钥必须安全地共享</td></tr><tr><td>适合大数据集</td><td>用户一多，密钥管理就困难</td></tr><tr><td>算法成熟可靠</td><td>共享密钥一旦泄露，该密钥保护的所有数据都暴露</td></tr></table><p>课件的结论句：<b>强加密还需要安全的密钥管理</b>。这句是本讲的第二个核心——算法再强，密钥管不好等于没有加密。</p><h2 id="s46">十二、非对称加密</h2><h3 id="s47">12.1 两个密钥</h3><p>非对称密码使用数学上相关的两个密钥：</p><table><tr><th>密钥</th><th>能否分享</th><th>用途</th></tr><tr><td>公钥（public key）</td><td>可以给别人</td><td>用于加密消息</td></tr><tr><td>私钥（private key）</td><td>必须自己保密</td><td>用于解密受保护的消息</td></tr></table><p>两个密钥在密码运算中扮不同角色。注意「相关」二字：它们成对生成，数学上关联，但不能由公钥推出私钥（至少在计算上不可行）。</p><h3 id="s48">12.2 为什么它有用</h3><p>课件列了三个解决的问题：</p><ol><li>公钥可以在不分享私钥的前提下分发</li><li>此前没有共享密钥的双方也能建立安全通信</li><li>数字签名可以验证数据的来源与完整性</li></ol><p>第二条是革命性的：对称加密要求双方事先有同一个秘密；非对称加密打破了这个前提——你可以把公钥贴在网页上，任何人用它加密后只有你能解。</p><p>课件也加了限定：<b>公钥密码并不消除保护私钥、验证公钥身份的必要</b>。若攻击者能替换你拿到的公钥（中间人攻击），他就能解密你的消息。这就是证书体系存在的原因。</p><h3 id="s49">12.3 RSA 的来历</h3><p>RSA 是广为人知的公钥密码算法：</p><ul><li>Rivest（MIT）、Shamir（Tel Aviv、Weizmann）、Adleman（UCB），1978 年</li><li>同等地，由 Clifford Cocks 于 1973 年在英国政府通信总部（GCHQ）保密地发明（保密至 1997 年才公开）</li></ul><p>课件用一句话概括它的安全基础：<b>正向计算容易（加密），反向计算很难（解密）</b>——除非知道全部密钥。这个「容易/很难」正是「单向函数」的通俗版。</p><h3 id="s50">12.4 RSA 的四个步骤</h3><p>课件用 p = 5、q = 11 做完整示范。</p><p><b>第 1 步：密钥生成（Alice）</b></p><ol class="steps"><li>选两个素数 p = 5、q = 11</li><li>算模数 n = p × q = 55</li><li>算欧拉函数 φ(n) = (p−1)(q−1) = 4 × 10 = 40</li><li>选 e = 3（必须与 φ(n) 互质）</li><li>求 d：解 (e × d) mod φ(n) = 1，即 (3 × d) mod 40 = 1 → d = 27</li><li>结果：公钥 (55, 3)，私钥 (55, 27)</li></ol><p><b>第 2 步：加密（Bob）</b></p><p>明文 m = 4（二进制 100）。公式 <code>c = m^e mod n</code>：</p><pre><code>c = 4^3 mod 55 = 64 mod 55 = 9
+密文 c = 9（二进制 1001）</code></pre><p><b>第 3 步：解密（Alice）</b></p><p>公式 <code>m = c^d mod n</code>：</p><pre><code>m = 9^27 mod 55 = 4
+恢复出原始消息 4</code></pre><p>验算 9^27 mod 55 的过程（用平方取幂，避免直接算巨大的数）：</p><pre><code>9^2 = 81 ≡ 26
+9^4 ≡ 26^2 = 676 ≡ 16
+9^8 ≡ 16^2 = 256 ≡ 36
+9^16 ≡ 36^2 = 1296 ≡ 31
+27 = 16 + 8 + 2 + 1 → 31 × 36 × 26 × 9 mod 55
+= 31×36 = 1116 ≡ 16；16×26 = 416 ≡ 31；31×9 = 279 ≡ 4</code></pre><p>结果确为 4。这段计算值得动手抄一遍，因为考试里 <code>c^d mod n</code> 的数字往往很大，只会「直接乘」的人算不动。</p><h3 id="s51">12.5 e 与 d 的进阶约束</h3><p>课件列了四条，都是真实系统中的教训：</p><table><tr><th>约束</th><th>原因</th></tr><tr><td>e ≠ d（反对称）</td><td>若公钥指数等于私钥指数，公钥能解自己的密文，安全性崩溃</td></tr><tr><td>e 必须与 φ(n) 互质</td><td>否则模逆不存在，无法求出 d</td></tr><tr><td>e 常用 65537</td><td>e 太小（如 3）会受低指数攻击；65537 兼顾安全与速度。教学题里可用小的 e（如 3）以方便手算</td></tr><tr><td>d 不能太小（Wiener 攻击）</td><td>若 <code>d &lt; (1/3) n^(1/4)</code>，攻击者可在数秒内数学推出私钥</td></tr></table><p>最后一条要特别注意：为了「解密快」而选小 d，是历史上真实出现过的漏洞（Wiener 于 1990 年给出攻击方法）。这与「e 取 65537」形成对照——公钥指数小没关系（公开的东西不怕算），私钥指数小就危险。</p><h3 id="s52">12.6 为什么不用公钥加密一切</h3><p>课件给了理由与做法：</p><p><b>理由：</b>非对称密码运算通常比对称加密<b>计算代价高得多</b>（慢几个数量级）。</p><p><b>做法：</b></p><ul><li>公钥技术用来<b>建立或保护一个会话密钥</b></li><li>对称加密用来保护<b>实际数据</b></li><li>两者结合用于许多安全通信系统</li></ul><p>这叫作混合加密（hybrid encryption）。HTTPS 就是标准案例：用非对称算法协商出会话密钥，然后用 AES 加密整段流量。</p><h2 id="s53">十三、对称与非对称对照</h2><table><tr><th>特性</th><th>对称</th><th>非对称</th></tr><tr><td>密钥</td><td>一个共享的秘密密钥</td><td>公钥/私钥对</td></tr><tr><td>典型速度</td><td>快</td><td>通常较慢</td></tr><tr><td>密钥分发</td><td>共享密钥必须受保护</td><td>公钥可以分发</td></tr><tr><td>常见用途</td><td>加密大量数据</td><td>密钥建立、数字签名</td></tr><tr><td>例子</td><td>AES</td><td>RSA、椭圆曲线密码（ECC）</td></tr></table><p>课件补了一句：真实系统常常结合两种方法。这句话就是上一小节的结论。</p><h2 id="s54">十四、三个实际应用</h2><h3 id="s55">14.1 HTTPS</h3><p>HTTPS 是用 TLS（Transport Layer Security）保护的 HTTP 通信。TLS 提供：</p><ul><li>加密：保护传输中的数据</li><li>完整性保护：防止传输数据被篡改</li><li>认证：在典型网页浏览中通过证书认证服务器</li></ul><p>典型场景：网上银行、购物网站、大学登录系统、云应用。</p><p>课件加了一条限定，很重要：<b>HTTPS 保护端点之间的通信，但不保证网站本身可信，也不保证终端设备安全</b>。钓鱼网站也能用 HTTPS——它只是保证「你和这个域名之间的通道是加密的」。</p><h3 id="s56">14.2 全盘加密</h3><p>全盘加密保护设备上存储的数据。例子：Windows 的 BitLocker、macOS 的 FileVault、受支持移动设备的设备加密。</p><p>好处：笔记本或存储设备丢失、被盗时，帮助保护数据；没有凭据或恢复密钥时，离线访问存储数据更难。</p><p>局限：它未必能防恶意软件，也防不住「设备已解锁时」的攻击者。因为解锁后数据就是明文，加密层已经让路。</p><h3 id="s57">14.3 端到端加密（E2EE）</h3><p>E2EE 的设计目标是：只有通信的两端能读消息内容。</p><ol class="steps"><li>发送方设备加密消息</li><li>消息经过服务提供商的服务器</li><li>接收方设备解密</li></ol><p>在正确实现的 E2EE 系统里，服务提供商不应能访问明文。</p><p>局限：元数据、备份、被入侵的设备、消息预览，仍可能造成隐私风险，取决于实现方式。这条限定很实在——「内容加密」不等于「通信行为不可见」。</p><h2 id="s58">十五、加密不是安全的全部</h2><p>课件最后用一页把边界划清。加密有用，但不能解决所有安全问题：</p><ul><li>它不能阻止别人在授权用户解密之后读取数据</li><li>它不能自动阻止恶意软件访问已解锁的设备</li><li>它不保证数据可用（被删掉的数据不会因为加密而回来）</li><li>它不自动证明消息是谁发的（除非配合签名与身份验证）</li></ul><p>课件的结论：<b>信息安全需要多种互补的机制</b>。这句话把第二节的「技术、流程、人」三方面收束起来：加密只是技术工具箱里的一件。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>information security</td><td>信息安全</td><td>Protecting information and systems against unauthorised access, use, disclosure, modification, disruption or destruction.</td></tr><tr><td>encryption</td><td>加密</td><td>Transforming readable plaintext into unintelligible ciphertext using an algorithm and a key.</td></tr><tr><td>plaintext / ciphertext</td><td>明文 / 密文</td><td>The original readable data / the encrypted data.</td></tr><tr><td>key</td><td>密钥</td><td>A value used by the algorithm; not the same as a password.</td></tr><tr><td>steganography</td><td>隐写术</td><td>Concealing a message inside another message or object.</td></tr><tr><td>substitution cipher</td><td>替换密码</td><td>Symbols are replaced but their positions stay the same; e.g. Caesar, ROT13.</td></tr><tr><td>transposition cipher</td><td>置换密码</td><td>Characters are rearranged but keep their identity; e.g. ADFGVX, rotor machines.</td></tr><tr><td>one-time pad</td><td>一次性密码本</td><td>Modular addition with a random key at least as long as the message, used once.</td></tr><tr><td>XOR</td><td>异或</td><td>Bit operation where equal bits give 0 and different bits give 1; self-inverse.</td></tr><tr><td>symmetric encryption</td><td>对称加密</td><td>The same secret key encrypts and decrypts; e.g. AES.</td></tr><tr><td>AES</td><td>高级加密标准</td><td>A standardised block cipher with 128/192/256-bit keys.</td></tr><tr><td>asymmetric encryption</td><td>非对称加密</td><td>A public key encrypts and a private key decrypts; e.g. RSA.</td></tr><tr><td>RSA</td><td>RSA 算法</td><td>Public-key cryptosystem based on the difficulty of factoring n = p × q.</td></tr><tr><td>hybrid encryption</td><td>混合加密</td><td>Public-key methods establish a session key; symmetric encryption protects the data.</td></tr><tr><td>end-to-end encryption</td><td>端到端加密</td><td>Only the communicating endpoints can read the message content.</td></tr><tr><td>encryption at rest / in transit</td><td>静止加密 / 传输加密</td><td>Protecting stored data versus data travelling over a network.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用 Caesar 密码（移 3 位）加密 <code>attack at dawn</code>，并说明它为什么容易被破。</div><p><b>第一步，写规则：</b><code>c = (m + 3) mod 26</code>，a = 0。</p><p><b>第二步，逐字母移位：</b>a→d、t→w、t→w、a→d、c→f、k→n；a→d、t→w；d→g、a→d、w→z、n→q。</p><p><b>结果：</b><code>dwwdfn dw gdzq</code>（空格保留）。</p><p><b>第三步，说明弱点：</b>只有 25 种非平凡移位，逐个试就能破；即使不知道是 Caesar，字母频率分布（e、t、a 最常见）在密文里原封不动地保留，频率分析也能还原。</p><p>这正是「替换密码」的共性弱点：<b>符号变了、位置没变</b>，于是统计特征也没变。多表替换与置换密码就是针对这一点设计的。</p></div><div class="qa"><div class="q">例 2　按 RSA 完成 p = 5、q = 11 的全流程：生成密钥、加密 m = 4、解密验证。</div><p><b>密钥生成：</b></p><pre><code>n = 5 × 11 = 55
+φ(n) = (5−1)(11−1) = 4 × 10 = 40
+取 e = 3（gcd(3, 40) = 1 ✓）
+求 d：3d ≡ 1 (mod 40) → 试 d = 27，3×27 = 81 = 2×40 + 1 ✓
+公钥 (n, e) = (55, 3)，私钥 (n, d) = (55, 27)</code></pre><p><b>加密：</b><code>c = m^e mod n = 4^3 mod 55 = 64 mod 55 = 9</code>，密文 <b>9</b>（二进制 1001）。</p><p><b>解密：</b><code>m = c^d mod n = 9^27 mod 55</code>。用平方取幂分解 27 = 16 + 8 + 2 + 1：</p><pre><code>9^2 ≡ 26；9^4 ≡ 26^2 = 676 ≡ 16；9^8 ≡ 16^2 = 256 ≡ 36；9^16 ≡ 36^2 = 1296 ≡ 31
+31×36 ≡ 1116 ≡ 16；16×26 ≡ 416 ≡ 31；31×9 ≡ 279 ≡ 4</code></pre><p>所以 <code>m = 4</code>，还原成功，验证 <code>D(E(M)) = M</code>。</p><p><b>要点：</b>① d 由 <code>e·d ≡ 1 mod φ(n)</code> 求出，不是随便选；② 计算 <code>c^d mod n</code> 必须用平方取幂，直接算 9^27 会溢出且易错；③ 每一步都取模，中间结果才小。</p></div><div class="qa"><div class="q">例 3　按 Exercise 6 的设定：p = 11、q = 7，明文 M = 101₂。求 n、e、d，加密得 C（用二进制表示），并说明解密公式。</div><p><b>第一步，算 n 与 φ：</b><code>n = 11 × 7 = 77</code>；<code>φ(n) = 10 × 6 = 60</code>。</p><p><b>第二步，选 e：</b>必须与 60 互质。取 <b>e = 7</b>（gcd(7,60)=1）。（也可以取 13、17 等；题目未指定时选一个互质的并说明即可。）</p><p><b>第三步，求 d：</b>解 <code>7d ≡ 1 (mod 60)</code>。<code>7 × 43 = 301 = 5×60 + 1</code>，故 <b>d = 43</b>。</p><p><b>第四步，明文转为整数：</b><code>M = 101₂ = 5</code>。</p><p><b>第五步，加密：</b><code>C = M^e mod n = 5^7 mod 77</code>。先算 <code>5^2=25</code>、<code>5^4 ≡ 625 mod 77 = 625 − 8×77 = 625 − 616 = 9</code>、<code>5^7 = 5^4 × 5^2 × 5 ≡ 9 × 25 × 5 = 1125</code>，<code>1125 mod 77</code>：<code>77 × 14 = 1078</code>，余 <b>47</b>。</p><p><b>第六步，写成二进制：</b><code>47 = 32 + 8 + 4 + 2 + 1 = 101111₂</code>。密文 <b>C = 101111₂</b>。</p><p><b>解密公式：</b><code>M = C^d mod n = 47^43 mod 77</code>，结果应回到 5。由 RSA 的正确性（<code>M^(ed) ≡ M mod n</code>，因为 <code>ed ≡ 1 mod φ(n)</code>）可保证这一点。</p><p>注意 e 与 d 的选择：e = 19 会得到 d = 19（e = d，违反反对称约束）；e = 29 也一样。这类「e 与 d 相等」的取值在真实系统中必须排除。</p></div><div class="qa"><div class="q">例 4　用一次性密码本的 XOR 规则加密 M = 1011，密钥 K = 0110，并验证解密。</div><p><b>加密：</b>逐位异或：</p><pre><code>M: 1 0 1 1
+K: 0 1 1 0
+C: 1 1 0 1</code></pre><p>计算过程：<code>1⊕0=1</code>、<code>0⊕1=1</code>、<code>1⊕1=0</code>、<code>1⊕0=1</code>，得 <b>C = 1101</b>。</p><p><b>解密：</b>再做一次同一个异或：</p><pre><code>C: 1 1 0 1
+K: 0 1 1 0
+M: 1 0 1 1</code></pre><p>回到 1011，验证 <code>(M ⊕ K) ⊕ K = M</code>。</p><p><b>为什么完美：</b>若 K 是真正随机且只用一次，那么对任何候选明文 <code>M'</code>，都存在唯一密钥 <code>K' = C ⊕ M'</code>。攻击者看到 C 之后，所有明文都同样可能，等于零信息。</p><p><b>但条件苛刻：</b>密钥必须与明文等长、真随机、绝不复用、安全分发。少一条就退化——例如两份消息用同一密钥，则 <code>C1 ⊕ C2 = M1 ⊕ M2</code>，密钥被消掉，明文之间的异或直接泄漏。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用明文、算法、密钥、密文四个词，写出一句话描述一次加密过程。</li><li>替换密码与置换密码的区别是什么？各举一个课件的例子。</li><li>为什么说「安全应当依赖密钥的保密，而不是算法的保密」？这条原则带来什么好处？</li><li>RSA：p = 13、q = 17，取 e = 5，求 n、φ(n) 与 d。</li><li>一次性密码本的四个条件是什么？为什么「密钥重用」是致命的？</li><li>HTTPS 保护了什么？它<b>不</b>保证什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 「用加密算法 E 与密钥 K，把明文 M 变换成密文 <code>C = E(M, K)</code>；接收方用解密算法 D 与同一（或配对的）密钥恢复 <code>M = D(C, K)</code>，并满足 <code>D(E(M)) = M</code>。」这句里四个要素齐备，且说明了「往返一致」。</p><p><b>2.</b> 替换密码：符号被换掉，位置不变（Caesar 把 a 变 d；ROT13；同音替换；Alberti 多表盘）。置换密码：符号不变，位置被重排（ADFGVX 的列置换；Enigma 的转子置乱）。判据：看字母本身变了没有。</p><p><b>3.</b> 因为算法一旦公开，若安全性依赖算法保密，系统立刻崩溃；而算法很难长期保密（会被逆向、被论文公开、被标准化）。依赖密钥则不同：算法可以公开接受检验，安全只需管好一个短字符串。好处是：开源实现可以安全、可以被审计、可以标准化互通，且换密钥即可「换锁不换门」。</p><p><b>4.</b> <code>n = 13 × 17 = 221</code>；<code>φ(n) = 12 × 16 = 192</code>；<code>gcd(5, 192) = 1</code> ✓。求 d：解 <code>5d ≡ 1 (mod 192)</code>。<code>5 × 77 = 385 = 2×192 + 1</code>，故 <b>d = 77</b>。公钥 (221, 5)，私钥 (221, 77)。</p><p><b>5.</b> 四个条件：真随机、长度 ≥ 明文、绝不复用、绝对保密。密钥重用致命的原因：两份密文 <code>C1 = M1 ⊕ K</code>、<code>C2 = M2 ⊕ K</code>，异或得 <code>C1 ⊕ C2 = M1 ⊕ M2</code>——密钥被消掉，明文之间的关系直接暴露，可用语言统计进一步还原。</p><p><b>6.</b> 保护：传输中的数据（机密性）、传输数据的完整性、服务器身份（通过证书）。不保证：网站本身可信（钓鱼站也能用 HTTPS）、终端设备安全（设备中了木马，加密通道也救不了）、数据在服务器上如何被使用。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><table><tr><th>考点</th><th>要点</th></tr><tr><td>四个术语</td><td>明文、密文、算法、密钥；<code>D(E(M)) = M</code></td></tr><tr><td>设计原则</td><td>安全依赖密钥，不依赖算法保密；密钥 ≠ 密码</td></tr><tr><td>隐写 vs 加密</td><td>隐写藏「存在」，加密藏「内容」；LSB 与藏头诗的例子</td></tr><tr><td>替换 vs 置换</td><td>符号变 / 位置变；Caesar、ROT13、同音、多表 对 ADFGVX、Enigma</td></tr><tr><td>Enigma</td><td>3–5 个转子、26 字母、10 根插线、158×10^18 设置；弱点是从不加密成自身、密码本泄露；Turing 与 Ultra</td></tr><tr><td>OTP</td><td>XOR、四个条件、完美保密的理由、密钥重用的后果</td></tr><tr><td>AES</td><td>分组密码、128/192/256 位密钥、多轮、最后一轮跳过 MixColumns</td></tr><tr><td>RSA</td><td><code>n=pq</code>、<code>φ=(p−1)(q−1)</code>、<code>ed≡1 mod φ</code>、<code>c=m^e mod n</code>、<code>m=c^d mod n</code></td></tr><tr><td>约束</td><td>e 与 φ 互质、e≠d、e 常用 65537、d 不能太小（Wiener）</td></tr><tr><td>混合加密</td><td>公钥建立会话密钥，对称保护数据；HTTPS 是标准案例</td></tr><tr><td>三种场景</td><td>at rest / in transit / E2EE，各自的保护范围与局限</td></tr></table><div class="callout exam"><b>必考</b>必考：加密四术语与 <code>D(E(M))=M</code>、替换与置换的区分、OTP 四条件与 XOR 运算、AES 参数、RSA 五步计算、对称与非对称的对照、HTTPS/全盘加密/E2EE 的边界。</div><div class="callout warn"><b>易错 1</b>把「密钥」当「密码」。密码熵低、给人记；密钥是随机值、给机器用。</div><div class="callout warn"><b>易错 2</b>RSA 求 d 时用 φ(n) 之外的值，或忘了 e 必须与 φ(n) 互质。若 gcd(e, φ) ≠ 1，模逆不存在，题目就无解——这本身是判据。</div><div class="callout warn"><b>易错 3</b>算 <code>c^d mod n</code> 时先算完整幂再取模。必须每步取模，或用平方取幂，否则数字爆炸。</div><div class="callout warn"><b>易错 4</b>以为「用了 AES/HTTPS 就安全」。算法之外还有密钥管理、身份验证、终端安全，缺一不可。</div><div class="callout tip"><b>进阶</b>① 模逆可用扩展欧几里得算法系统求解，比试错快；② RSA 的 n 若能被分解，私钥即失效——这就是「大整数分解难」的意义；③ 椭圆曲线密码（ECC）用更短的密钥达到同等强度，是现代替代方案；④ 数字签名用私钥签、公钥验，方向与加密相反。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s59">方法清单</h2><h3 id="s60">用 RSA 做一次加密（六步）</h3><ol class="steps"><li>选两个素数 p、q，算 <code>n = p × q</code></li><li>算 <code>φ(n) = (p−1)(q−1)</code></li><li>选 e：与 φ(n) 互质，且 1 &lt; e &lt; φ(n)</li><li>求 d：解 <code>e·d ≡ 1 (mod φ(n))</code>（扩展欧几里得或试算）</li><li>把明文转成整数 m（小于 n），算 <code>c = m^e mod n</code></li><li>验算：算 <code>c^d mod n</code> 应等于 m</li></ol><h3 id="s61">算模幂 <code>a^b mod n</code>（三步）</h3><ol class="steps"><li>把指数 b 写成二进制（或 2 的幂之和）</li><li>逐次平方并取模，得到 <code>a^1, a^2, a^4, a^8 …</code></li><li>把对应位的幂相乘，每乘一次取一次模</li></ol><h3 id="s62">判断该用哪种加密（三问）</h3><ul class="checklist"><li>要保护的数据量大吗？（大 → 对称，如 AES）</li><li>双方事先能安全共享密钥吗？（不能 → 用非对称交换会话密钥）</li><li>需要证明「是谁发的」吗？（需要 → 数字签名，用私钥签）</li></ul><h3 id="s63">检查一个「加密方案」是否真的安全（四查）</h3><ul class="checklist"><li>密钥怎么生成？是否真随机、长度足够？</li><li>密钥怎么分发与保管？是否会被日志、备份泄漏？</li><li>算法与实现是否有认证（防篡改）？</li><li>终端是否可信？解锁状态下加密是否还起作用？</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p2–p4</td><td>六个关键问题、数字信息的重要性与风险、信息安全的定义与三个目的（技术/流程/人）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p5–p6</td><td>加密的定义与四术语、加密的六处用途、静止与传输两种保护</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p7–p11</td><td>隐写术的词源、埃及头发加密、图像 LSB 签名、藏头诗与 Alice 的例子</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p12–p13</td><td>E(M)=C、D(C)=M、D(E(M))=M、术语表、安全不依赖算法保密</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p14–p16</td><td>密钥的定义与三种作用、密钥 ≠ 密码、为什么需要密钥、对称与非对称的定义</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p17–p19</td><td>替换密码的定义、Caesar 移 3 位、ROT13、同音替换（E 的四个选项）、多字替换（希腊字母、Huffman）、多表替换（Alberti 盘 1467）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p20–p23</td><td>置换密码的定义、ADFGVX 与二维表、转子机（Enigma/Lorenz）、Enigma 的 Scherbius 与结构、158×10^18 与两个弱点、Turing 与 Ultra</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p24–p27</td><td>OTP 的定义与四个条件、Vernam 与 1919 专利、XOR 定义与自反性、加解密公式、两条规则与完美保密</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p28–p32</td><td>AES 的参数（分组、密钥长度）、轮结构与 R=14 跳过 MixColumns、AES 的五处用途、at rest 与 in transit、优缺点与密钥管理</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p33–p40</td><td>非对称的公私钥、三个用处与限定、RSA 的历史（1978 / Cocks 1973）、p=5,q=11 的完整五步与加解密算例、e 与 d 的四条约束（含 Wiener 攻击与 65537）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p41–p45</td><td>为什么不全用公钥（性能）与混合加密、对称/非对称对照表、HTTPS 与 TLS 的三项保障及限定、全盘加密（BitLocker/FileVault）与局限、E2EE 的流程与局限</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p46–p47</td><td>加密不能解决的四个问题与「需要互补机制」的结论</td></tr><tr><td>Week10- Data Encryption/Exercise6.pdf</td><td>第 1–3 题</td><td>对称与非对称的定义、Alice 用公钥给 Bob 发消息的流程、p=11,q=7、M=101₂ 的密钥生成/加密/解密（本讲例 3 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>模逆的扩展欧几里得求法、平方取幂的分步过程、e 与 d 相等的反例（e=19 时 d=19）、密钥重用导致 <code>C1⊕C2 = M1⊕M2</code> 的推导、ECC 作为现代替代，均为理解性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w9-information-retrieval.html">← Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a class="next" href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

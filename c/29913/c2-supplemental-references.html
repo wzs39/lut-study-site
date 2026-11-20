@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 讲 · Supplemental Task 与参考资料使用 · 29913</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BH60A7400 Climate.Now 气候</a> / <a href="part-1.html">第 1 章 课程结构与 Essay Task</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">2.1 两份任务书并列存在</a><a class="toc-l3" href="#s3">2.2 「五题全答」意味着什么</a><a class="toc-l3" href="#s4">2.3 「至少一条独特引用」的三个限定</a><a class="toc-l3" href="#s5">2.4 来源类型与证据强度</a><a class="toc-l3" href="#s6">2.5 LUT Harvard 的基本形态</a><a class="toc-l3" href="#s7">2.6 把引用嵌进论证：三步法</a><a class="toc-l3" href="#s8">2.7 文内引用与文末条目的对应关系</a><a class="toc-l3" href="#s9">2.8 与 AI 的交界</a><a class="toc-l3" href="#s10">2.9 一份四题引用规划表</a><a class="toc-l2" href="#s11">引用工作的逐项检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="c1-course-essay-task.html">第 1 讲 · 课程结构与 Essay Task 要求</a><a class="toc-l3" href="c2-supplemental-references.html">▸ 第 2 讲 · Supplemental Task 与参考资料使用</a><a href="c3-ai-disclosure.html">第 3 讲 · AI 使用声明与学术诚信操作流程</a></div></aside><article><h1>第 2 讲 · Supplemental Task 与参考资料使用</h1><p class="lead">The Supplemental Task and Working with References <span class="badge mute">29913</span> <span class="badge mute">第 2 / 3 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 课程结构与 Essay Task</a></p><p class="src">原始文件：<code>2_Climate.now MOOC and Essay Task/2_Climate.now Essay Task Instructions and Submission Tool/intro/files/Climate.now_Supplemental Task.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>同一份任务书旁边还挂着一份 Supplemental Task。它看起来和 essay 几乎一样——同样的五道题、同样的双重视角、同样的半页到一页。但它缺了两块关键内容：一是引用要求，二是评分表。第 2 讲先把两份任务书的差异逐条对齐，再把「一条能站住的引用」讲成可执行的流程。</p><p>这一讲解决的是这门课最容易被低估的能力：找来源、判断来源、把来源放进论证、把条目排成表。评分表里引用项独占 3 分，四题各一条引用是最低配置；引用做得好坏，直接决定你能不能进 3 分档。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>指出 Supplemental Task 与 Essay Task 的三处实质差异（题量、引用条款、评分表）</li><li>解释「至少一条独特引用」的三个限定，并据此规划四题来源</li><li>按证据强度选择来源类型，而不是遇到什么用什么</li><li>把一条来源拆成「文内引用 + 文末条目」两部分，并保证两者对应</li><li>按「断言 → 来源 → 判断」三步把引用嵌入论证</li><li>识别有引无录、有录无引、网页缺访问日期这三类典型失分</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 两份任务书并列存在</h3><p>Essay Task 所在页面下还附了一份 Climate.now Supplemental Task。两份文件的题面高度重合：同样要求从个人视角与课程所学的角度回答，同样要求涉及地点时写明地点，同样建议每题半页到一整页。</p><p>差别集中在三处，而且都是硬差别：</p><table><tr><th>项目</th><th>Essay Task</th><th>Supplemental Task</th></tr><tr><td>题量</td><td>五题答四题</td><td>五题全答（Answer the following five questions）</td></tr><tr><td>引用要求</td><td>每题至少一条独特外部引用；文末 LUT Harvard 参考文献表</td><td>题面未出现引用条款，也未要求参考文献表</td></tr><tr><td>评分</td><td>附两个 0–3 评分表，合计 15 分</td><td>未附评分表</td></tr><tr><td>第 1 题的工具</td><td>给出生活方式测试以计算碳足迹</td><td>未给该工具，只要求反思碳足迹</td></tr><tr><td>第 4 题的措辞</td><td>近期或正在进行的倡议</td><td>地方倡议（未限定「近期或正在进行」）</td></tr></table><p>必须说明边界：源文件没有交代这两份任务的关系——哪个是必做、哪个是补充、各自占多少分，都没有写。所以只能确认两份文件同时存在且要求不同，不能推断「Supplemental 可以替代 Essay」。实际该做哪一份，以课程页或教师说明为准。</p><div class="callout warn"><b>易错</b>拿到 Supplemental 的题面就按它写：题量是五题全答而不是四题，且题面没有引用条款。若课程实际评的是 Essay Task，这份答案会同时缺一题额度与全部引用分。动笔前先确认评的是哪一份。</div><h3 id="s3">2.2 「五题全答」意味着什么</h3><p>Essay 是四题，每题半页到一页，总量约二到四页；Supplemental 是五题全答，同样每题半页到一页，总量约二点五到五页。工作量差别不只在多一题，还在「不能靠选题规避自己的弱项」——五题里必然有一两题你不熟悉（比如不投资的人写第 5 题，租房的人写第 2 题的屋顶光伏）。</p><p>应对方式是换角度而不是换题：不投资就写储蓄与消费结构里的排放密集项；租房就写社区采购、绿电合同与需求响应。题目问的是「你所在社区」与「你的判断」，不是「你是否拥有产权」。</p><h3 id="s4">2.3 「至少一条独特引用」的三个限定</h3><p>这条要求由三个词构成，每个词都是一个独立约束：</p><ul><li><b>至少一条（at least one）</b>：下限，不是上限。一条能支撑核心断言的外部来源是及格线；若一段里有三个不同事实，一条来源撑不住。</li><li><b>独特（unique）</b>：不能四题共用同一条。四道题讲四件事，来源也应各自对应；把一篇综述在四题里各引一次，形式上满足、实质上不满足。</li><li><b>排除 MOOC（excluding any citation of the MOOC materials）</b>：课程材料不算这条要求。你可以提课程内容，但不能把它当作那条强制引用。</li></ul><p>设计意图很清楚：这三个词合起来，等于要求「四题、四组独立的外部证据」。它把「读课程」升级成「用课程加外部证据回答具体问题」。</p><h3 id="s5">2.4 来源类型与证据强度</h3><p>任务书鼓励尝试不同参考文献类型，并举例期刊论文、报告、网站。这三个词不是随意列举，它们分别对应三种可信度与三种写作功能：</p><table><tr><th>类型</th><th>典型来源</th><th>适合支撑什么</th><th>注意</th></tr><tr><td>期刊论文</td><td>同行评审的研究论文</td><td>机制、因果、效果的比较</td><td>注意样本与地域，别把别处的结论直接套到本地</td></tr><tr><td>报告</td><td>政府、机构、国际组织的评估与统计</td><td>区域现状、政策目标、行业数据</td><td>注意发布年份与统计口径</td></tr><tr><td>网站</td><td>市政页、机构说明页、项目主页</td><td>本地项目是否存在、具体做法</td><td>必须记访问日期，内容会变</td></tr></table><div class="callout tip"><b>拓展</b>以下为背景说明，不是任务规定：一般把证据强度粗略排成「同行评审研究 > 官方统计与评估报告 > 机构网站 > 新闻与博客」。写学术短文时，核心断言尽量压在前两类上，网站用来补本地事实。这条排序是通识，不是本课评分标准。</div><h3 id="s6">2.5 LUT Harvard 的基本形态</h3><p>任务书只写了一句「遵循 LUT Harvard 体例」，并指向学校的引用指南。这份任务书本身给了一个可参考的实例——AI 使用政策文件里那条参考文献：文内用括号写作者与年份，文末条目按「作者. (年份) 标题. 出版方. 可获取地址 (访问日期: …)」的顺序排列。</p><p>由此可以确认本课期待的形态是作者—年份制：正文里给出「谁、哪一年」，文末给完整条目。至于标点、斜体、页码等细节，以学校引用指南为准，不要凭记忆套用别的体例。</p><div class="callout tip"><b>拓展</b>以下为体例通识：Harvard 属于作者—年份（author-date）家族，与数字编号制（如 IEEE 的 [1]）不同。作者—年份制的好处是读者在正文里就能看到证据的新旧；代价是同一作者同年多篇时需要加 a/b 区分。具体规则以学校指南为准。</div><h3 id="s7">2.6 把引用嵌进论证：三步法</h3><p>引用最常见的错误不是格式，而是位置：句子说完结论，末尾挂一个来源，读者看不出这条来源支撑的是哪一句。正确做法是三步：</p><ol class="steps"><li>先写断言：一句话说清你要读者相信什么（例：本地冬季供热是排放主项）</li><li>紧跟来源：把「谁说、哪一年、什么范围」放进同一句或下一句（例：某年某机构的区域评估指出……）</li><li>再给你的判断：说明这条证据在你的论证里承担什么（例：因此冬季替代方案是该区域可行性的关键约束）</li></ol><p>三步法的检验很简单：把引用删掉，句子是否还站得住？如果删掉后毫无影响，说明这条引用是装饰；如果删掉后句子变成无根据的断言，说明引用到位了。</p><h3 id="s8">2.7 文内引用与文末条目的对应关系</h3><p>这是一条机械但致命的规则：文内出现的每一个作者—年份，文末必须有一条完整条目；文末的每一条，正文里必须至少被引用一次。两边数量应当相等。</p><p>三类典型失分：</p><ul><li><b>有引无录：</b>正文写了 (Author, 2021)，文末没有这条 —— 引用分通常掉到 1 分档；</li><li><b>有录无引：</b>文末列了五条，正文只用了三条 —— 说明来源是凑的，同样掉档；</li><li><b>网页缺访问日期：</b>网站内容会变，缺访问日期等于无法核实 —— 属于「没有以有意义的方式遵循体例」。</li></ul><p>检查方法：写完先数正文里的引用次数，再数文末条目数，最后逐条划线对应。五分钟能做完，能救回一到两分。</p><h3 id="s9">2.8 与 AI 的交界</h3><p>第 1 讲的评分表 0 分档写着「检测到不当使用 AI 生成的参考文献」。这一条与第 3 讲的披露政策是同一件事的两面：AI 可以用来帮你理解概念，但它编出来的文献不能进你的参考文献表。</p><p>判断标准很硬：这条文献你能不能独立找到——有作者、有标题、有出版方、能打开、内容与你的断言对得上。四项缺一项，就不要写进去。第 3 讲会给完整的核查流程。</p><h3 id="s10">2.9 一份四题引用规划表</h3><p>把上面所有规则压成一张表，动笔前填完它，引用项基本不会掉档：</p><table><tr><th>题号</th><th>核心断言</th><th>来源类型</th><th>文内引用</th><th>文末条目状态</th></tr><tr><td>第 1 题</td><td>我的排放主要来自交通</td><td>报告（区域统计）</td><td>(机构, 年份)</td><td>未完成</td></tr><tr><td>第 2 题</td><td>本地可再生占比与潜力</td><td>报告或期刊</td><td>(作者, 年份)</td><td>未完成</td></tr><tr><td>第 3 题</td><td>本地主要气候压力与有效策略</td><td>期刊 + 市政页</td><td>(作者, 年份)</td><td>未完成</td></tr><tr><td>第 4 题</td><td>本地项目与其挑战</td><td>项目主页 + 报道</td><td>(机构, 年份)</td><td>未完成</td></tr></table><p>这张表有两个作用：一是保证四题来源不重复（unique 要求），二是提前暴露「某一题找不到可核实来源」的问题——那时应当换一个断言，而不是硬编一条来源。</p><div class="callout idea" data-ext="c2-supplemental-references-0"><b>技巧</b><p><code>at least one unique citation</code> 由三个独立约束组成：至少一条是下限，独特禁止四题共用同一篇，排除 MOOC 则让课程材料不能充当强制引用。三者合起来其实要求“四题、四组独立外部证据”，把学习从复述升级为用证据回答具体问题。</p><p>引用最容易错在位置而非格式。用“断言 → 来源 → 判断”三步：先写“本地冬季供热是排放主项”，紧跟机构与年份，再说明它为何决定可行性。检验方法很硬——删掉引用后句子若仍成立，那条来源就是装饰；若变成无根据断言，才算承重到位。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>supplemental task</td><td>补充任务</td><td>A second task sheet covering all five questions, without citation rules or a rubric.</td></tr><tr><td>supplementary task</td><td>补充任务（另一种拼写）</td><td>The word used in the rubric column heading; same family of task.</td></tr><tr><td>five questions</td><td>五题全答</td><td>The supplemental version asks for all five, not four.</td></tr><tr><td>reference type</td><td>参考文献类型</td><td>Journal articles, reports and websites, as suggested by the task.</td></tr><tr><td>journal article</td><td>期刊论文</td><td>Peer-reviewed research; strongest for mechanism and effect claims.</td></tr><tr><td>report</td><td>报告</td><td>Assessments and statistics by authorities or organisations; check year and scope.</td></tr><tr><td>website</td><td>网站</td><td>Useful for local facts; always record the access date.</td></tr><tr><td>in-text citation</td><td>文内引用</td><td>Author and year inside the sentence that needs the evidence.</td></tr><tr><td>reference entry</td><td>文末条目</td><td>The full record in the reference list, matching an in-text citation.</td></tr><tr><td>accessed date</td><td>访问日期</td><td>The date you opened a web source; required because web pages change.</td></tr><tr><td>author-date</td><td>作者—年份制</td><td>The family Harvard belongs to; the reader sees evidence age in the text.</td></tr><tr><td>evidence hierarchy</td><td>证据层级</td><td>Peer-reviewed research above official reports above websites above news.</td></tr><tr><td>citation density</td><td>引用密度</td><td>How many sources support how many claims; one source cannot carry three facts.</td></tr><tr><td>plagiarism risk</td><td>抄袭风险</td><td>Copying course text without quotation marks is still plagiarism here.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　为一条断言配一条可核实的引用</div><p><b>情形：</b>第 3 题你要写「本地冬季供热是排放主项，因此替代方案决定可行性」，需要一条来源。</p><p><b>步骤：</b>① 明确断言的类型——这是本地事实加机制推断，不是全球机制，所以优先找本地或国家层面的报告；② 检索两个关键词组合（地名 + 区域供热／排放清单），先看发布方是谁；③ 打开来源后确认三件事：年份、统计范围（是全市还是全省）、数字口径（终端能耗还是排放）；④ 写文内引用时把范围带进去，例如「某年某机构的区域评估显示，该市终端能耗中供热占比最高」；⑤ 文末条目补齐作者、年份、标题、出版方、可获取地址与访问日期；⑥ 回读原句，确认删掉引用后句子确实站不住。</p><p><b>为什么先定类型：</b>断言是本地事实，就该用本地或国家报告；用一篇讨论全球平均值的期刊论文来支撑本地数字，属于「来源与断言不对位」，评分时会被看作笼统。</p><p><b>失败处理：</b>若找不到本地数据，就把断言降级为有条件表述（例如「在寒冷地区，供热通常是终端能耗的主要部分，本地情况需以市政数据核实」），并引用能支撑这个一般性表述的来源——不要为了保住原句而编数字。</p></div><div class="qa"><div class="q">例 2　五选四的选题决策</div><p><b>情形：</b>五题都能写，但你只有两周时间，且需要每题一条可核实的外部来源。</p><p><b>决策维度：</b>① 你手上有多少本地证据（住址、通勤、账单、社区项目）；② 题目所需来源是否容易找到且可核实；③ 该题与课程内容的贴合度（能否用上课程里的概念）；④ 该题是否与你的学科背景相关（成果第二条要求迁移）。</p><p><b>示例判断：</b>若你有真实的电费与通勤数据、且本地有公开的区域能源统计，第 1、2 题的证据成本最低；若你所在城市刚发布气候适应规划，第 3 题反而最容易写出具体性；若你对投资完全陌生，第 5 题的证据成本最高，可以放弃。</p><p><b>结论形式：</b>写下「选 1、2、3、4，放弃 5，理由是第 5 题需要个人投资数据而我无法给出可核实来源」。这个理由本身就符合学术写作的要求：说明取舍依据，而不是掩饰弱项。</p></div><div class="qa"><div class="q">例 3　引用自查：从 1 分档救回 3 分档</div><p><b>情形：</b>初稿四题各引一条，但其中两条是同一篇综述；文末列了六条，正文只出现四条；三条网页条目没有访问日期。</p><p><b>问题定位：</b>① 两题共用一条 → 违反 unique；② 有录无引两条 → 对应关系断裂；③ 缺访问日期 → 未按体例。三项合起来通常落在 1 分档。</p><p><b>修复顺序：</b>先解决 unique（为其中一题换一条来源，优先换成能支撑该题本地断言的报告）；再删掉未被引用的两条，或把它们真的用进正文；最后给网页条目补访问日期，并核对每条的作者、年份、标题、出版方是否齐全。</p><p><b>复核：</b>数正文引用数（应为 4 条以上）、数文末条目数（应等于被引条目数）、逐条划线对应。修完再自评：四题来源各不相同、格式统一、可核实 —— 这是 3 分档的形状。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出 Supplemental Task 与 Essay Task 的三处实质差异。</li><li>「每题至少一条独特引用」里的三个词各限制了什么？各举一个违反的例子。</li><li>把「本地冬季供热是排放主项」这条断言按三步法写成一句带引用的话（括号处标出所用来源）。</li><li>文内引用与文末条目应当满足什么数量关系？三类典型失分分别是什么？</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> ① 题量：Essay 五选四，Supplemental 五题全答；② 引用：Essay 要求每题至少一条外部独特引用并有 LUT Harvard 参考文献表，Supplemental 题面无引用条款；③ 评分：Essay 附两个 0–3 评分表合计 15 分，Supplemental 未附评分表。另有细节差异：Supplemental 未给碳足迹计算工具，第 4 题未限定「近期或正在进行」。</p><p><b>2.</b> 「至少一条」是下限而非上限，一条来源撑不住三个不同事实；「独特」禁止四题共用同一条来源（如同一篇综述四题各引一次）；「排除 MOOC」使课程材料不能充当这条强制引用。</p><p><b>3.</b> 示范：「在寒冷地区，供热往往占终端能耗的最大份额（机构, 年份），因此冬季替代方案是该区域 100% 可再生可行性的关键约束。」前半句是断言，括号是来源，后半句是判断。删掉括号后前半句变成无根据断言，说明引用到位。</p><p><b>4.</b> 数量应相等：正文每个作者—年份在文末有且只有一条条目，文末每条至少被正文引用一次。三类失分：有引无录、有录无引、网页缺访问日期。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>两份任务书的差异（四选五 vs 五题全答、有无引用条款、有无评分表）；「每题至少一条独特外部引用」的三个限定；文内引用与文末条目一一对应；LUT Harvard 的作者—年份形态。</div><div class="callout warn"><b>易错</b>① 拿 Supplemental 的题面按四题写；② 同一篇综述在四题里各引一次当作「每题都有引用」；③ 引用课程材料充当强制引用；④ 网页条目缺访问日期；⑤ 文末列了未被引用的条目凑数。</div><div class="callout tip"><b>进阶</b>把引用当论证工具而不是合规动作：每条来源都在回答「读者凭什么信这一句」。能做到这一点时，四题四条来源就够；做不到时，列十条也救不回引用分。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">引用工作的逐项检查</h2><ul class="checklist"><li>已确认本次评的是 Essay Task 还是 Supplemental Task</li><li>若评 Essay：四题各有至少一条来源，四题来源互不相同</li><li>若评 Supplemental：五题全答，且自行判断是否需要补引用</li><li>每条来源都能回答三问：谁发的、哪一年、覆盖什么范围</li><li>核心断言压在同研究报告上，本地事实用官方或机构来源</li><li>每条来源在正文里有明确的承重位置（删掉后句子站不住）</li><li>正文引用数等于文末条目数，逐条划线对应</li><li>所有网页条目都写访问日期</li><li>参考文献表按 LUT Harvard 排列，作者、年份、标题、出版方齐全</li><li>没有任何条目是你无法独立打开核实的（尤其 AI 给出的条目）</li><li>已删掉「列了但没引」的条目</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Climate.now_Supplemental Task.pdf</td><td>p1 首段</td><td>五题全答、个人视角与课程所学、地点声明、半页到一页建议、无字数上限</td></tr><tr><td>Climate.now_Supplemental Task.pdf</td><td>p1 题目 1–5</td><td>与 Essay 同题但措辞略有差异：第 1 题未给碳足迹工具，第 4 题未限定「近期或正在进行」</td></tr><tr><td>Climate.now_Supplemental Task.pdf</td><td>全篇</td><td>题面不含引用条款、不含 LUT Harvard 要求、不含评分表——与 Essay Task 的三处实质差异</td></tr><tr><td>Climate.now_Essay Task.pdf</td><td>p1 第 2 段</td><td>每题至少一条独特引用、不含 MOOC 引用、来源类型多样、文末参考文献表、LUT Harvard</td></tr><tr><td>Climate.now_Essay Task.pdf</td><td>p2 评分表「citations and references」</td><td>引用 0–3 四档；0 分档含 AI 生成的参考文献</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p2 示例段</td><td>作者—年份式文内引用与文末条目的实际写法，作为 LUT Harvard 形态的参考实例</td></tr><tr><td>（拓展）证据层级与 Harvard 家族</td><td>—</td><td>证据强度排序、作者—年份制的优劣，属背景通识，已在正文用拓展标注</td></tr><tr><td>（跳过）Trailblazer 2020.jpg</td><td>—</td><td>极地夜空的课程宣传图，无可读文字，不含政策或任务信息，未从中提取事实</td></tr></table></section><div class="lnav"><a class="prev" href="c1-course-essay-task.html">← 第 1 讲 · 课程结构与 Essay Task 要求</a><a class="next" href="c3-ai-disclosure.html">第 3 讲 · AI 使用声明与学术诚信操作流程 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

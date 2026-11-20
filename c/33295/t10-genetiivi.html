@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Tunti 9（上）· 属格与所有格 · 33295</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ96 芬兰语1</a> / <a href="part-4.html">第 4 章 属格、个人信息与复习</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">10.1 芬兰语的 15 个格与属格的位置</a><a class="toc-l3" href="#s3">10.2 属格的基本构成：加 -n</a><a class="toc-l3" href="#s4">10.3 以辅音结尾的词：先补 -i- 再加 -n</a><a class="toc-l3" href="#s5">10.4 属格里的辅音交替</a><a class="toc-l3" href="#s6">10.5 人称代词的属格：书面一套、口语一套</a><a class="toc-l3" href="#s7">10.6 所有格后缀：书面语的双重标记</a><a class="toc-l3" href="#s8">10.7 属格的四种典型用法</a><a class="toc-l3" href="#s9">10.8 课后填空：把主格改成属格</a><a class="toc-l3" href="#s10">10.9 本讲错误清单</a><a class="toc-l2" href="#s11">造属格的四步</a><a class="toc-l3" href="#s12">属格自查清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-tervehdykset.html">Tunti 1 · 问候、姓名与告别</a><a href="t2-aakkoset.html">Tunti 2 · 字母、发音与拼读</a><a href="t3-miten-menee.html">Tunti 3 · 近况问答与元音和谐</a><a href="t4-numerot.html">Tunti 4 · 数字与部分格</a><a href="t5-maat.html">Tunti 5 · 国家、国籍与语言</a><a href="t6-verbit.html">Tunti 6 · 人称代词与第一类动词</a><a href="t7-negatiivi.html">Tunti 7 · 否定式与辅音交替</a><a href="t8-opiskelu.html">Tunti 8 · 学习、工作与 -ko 问句</a><a href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构</a><a class="toc-l3" href="t10-genetiivi.html">▸ Tunti 9（上）· 属格与所有格</a><a href="t11-henkilotiedot.html">Tunti 9–10 · 个人信息与咖啡厅场景</a><a href="t12-kertaus.html">Kertaus · 复习、考试与文化</a><a href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表</a></div></aside><article><h1>Tunti 9（上）· 属格与所有格</h1><p class="lead">The Genitive Case and Possessive Suffixes <span class="badge mute">33295</span> <span class="badge mute">第 10 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 属格、个人信息与复习</a></p><p class="src">原始文件：<code>10_Tunti 9/1_Genetiivi.pdf</code> <code>10_Tunti 9/2_Fill the word in the text in genitive.docx</code> <code>15_Kokeet_Exams/3_Finnish 1_2024.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第十讲讲芬兰语 15 个格中最“有用”的一个：<b>genetiivi</b>（属格，genitive）。它表示“所属”——<code>Timon salkku</code>（Timo 的公文包）、<code>minun tietokoneeni</code>（我的电脑）。课件用一句话点明：芬兰语有 15 个名词格，属格是其中之一，而且它也适用于代词。</p><p>属格的重要性在于：它第一次让你能把<b>两个名词连起来</b>。前面九讲都在讲“一个词怎么变”，这一讲开始讲“词与词怎么连”：<code>Ellin mies</code>、<code>Matin tyttöystävä</code>、<code>Ullan kämppiksen nimi</code>。第九讲课文里的那些 <code>Ellin</code>、<code>Ullan</code>，到这里才正式解释。</p><p>学完本讲你能够：</p><ul class="checklist"><li>用 -n 构成绝大多数名词的属格（kissa → kissan）</li><li>处理以辅音结尾的名字，补 -i- 再加 -n（Jasmin → Jasminin）</li><li>说出属格里的四组辅音交替（kk:k、pp:p、tt:t、k:脱落）</li><li>背出六个人称代词的属格形式，并区分书面与口语两套</li><li>在所有格后缀 -ni/-si/-mme/-nne/-nsa 与属格代词之间做选择</li><li>回答 Kenen …? 类问题，并在句子里正确使用人名属格</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">10.1 芬兰语的 15 个格与属格的位置</h3><p>课件开篇说“we have 15 noun cases”。把 15 个格列全，能帮你把前面九讲学过的后缀放进同一张地图：</p><table><tr><th>格</th><th>后缀</th><th>基本意义</th><th>例句</th></tr><tr><td>nominatiivi（主格）</td><td>无</td><td>主语、词典形</td><td>kissa</td></tr><tr><td>genetiivi（属格）</td><td>-n</td><td>所属</td><td>kissan</td></tr><tr><td>partitiivi（部分格）</td><td>-a/-ä、-ta/-tä</td><td>部分、不定量</td><td>kissaa</td></tr><tr><td>essiivi（样格）</td><td>-na/-nä</td><td>作为</td><td>opettajana</td></tr><tr><td>translatiivi（转化格）</td><td>-ksi</td><td>变成</td><td>opettajaksi</td></tr><tr><td>inessiivi（在内格）</td><td>-ssa/-ssä</td><td>在……里</td><td>talossa</td></tr><tr><td>elatiivi（从内格）</td><td>-sta/-stä</td><td>从……里</td><td>talosta</td></tr><tr><td>illatiivi（入内格）</td><td>-Vn / -hVn</td><td>进入……</td><td>taloon</td></tr><tr><td>adessiivi（在上格）</td><td>-lla/-llä</td><td>在……上；有</td><td>pöydällä</td></tr><tr><td>ablatiivi（从上面格）</td><td>-lta/-ltä</td><td>从……上</td><td>pöydältä</td></tr><tr><td>allatiivi（向上面格）</td><td>-lle</td><td>到……上；给</td><td>pöydälle</td></tr><tr><td>abessiivi（缺格）</td><td>-tta/-ttä</td><td>没有……</td><td>rahatta</td></tr><tr><td>komitatiivi（伴随格）</td><td>-ne-</td><td>带着……</td><td>lapsineen</td></tr><tr><td>instruktiivi（工具格）</td><td>-n</td><td>用……（复数）</td><td>omin käsin</td></tr><tr><td>akkusatiivi（宾格）</td><td>同 nominatiivi 或 genetiivi</td><td>完整宾语</td><td>kirja / kirjan</td></tr></table><p>本讲只处理第二行（genetiivi）。它与其他格的关系值得注意：<b>属格与宾格的形式常常相同</b>（<code>kirjan</code> 既是“书的”也是“把书（整体）”），这一点在第七讲“否定句宾语用 partitive”时已经间接出现过。</p><p>英文表述：Finnish has 15 noun cases; the genitive is formed with <i>-n</i> and expresses possession, and it also serves as the total-object case for many nouns.</p><h3 id="s3">10.2 属格的基本构成：加 -n</h3><table><tr><th>主格</th><th>属格</th><th>说明</th></tr><tr><td>kissa（猫）</td><td>kissan</td><td>元音结尾，直接加 n</td></tr><tr><td>talo（房子）</td><td>talon</td><td>同上</td></tr><tr><td>tyttö（女孩）</td><td>tytön</td><td>同上，注意 ö</td></tr><tr><td>Ella（人名）</td><td>Ellan</td><td>人名同样加 n</td></tr><tr><td>Mikko（人名）</td><td>Mikon</td><td>人名同样加 n</td></tr></table><p>规则简单到几乎不需要记：<b>以元音结尾的词，直接加 -n</b>。这也是为什么属格是芬兰语里“最容易造对”的格——只要词干正确，后缀永远是一个 n。</p><p>英文表述：For vowel-final words the genitive is simply the stem plus <i>-n</i>: <i>kissa → kissan</i>, <i>Ella → Ellan</i>.</p><div class="callout warn"><b>不要加 -en 或 -in</b><code>kissaan</code> ✗、<code>kissin</code> ✗、<code>kissaen</code> ✗ —— 属格只有一个 n，不是英语的 s，也不是德语的 -es。</div><h3 id="s4">10.3 以辅音结尾的词：先补 -i- 再加 -n</h3><p>芬兰语本土词很少以辅音结尾，但<b>名字</b>经常是（Jasmin、Eliot、Sam）。这类词要在词尾先加 <code>-i-</code>，再加 <code>-n</code>：</p><table><tr><th>主格</th><th>属格</th><th>步骤</th></tr><tr><td>Jasmin</td><td>Jasminin</td><td>Jasmin + i + n</td></tr><tr><td>Eliot</td><td>Eliotin</td><td>Eliot + i + n</td></tr><tr><td>Sam</td><td>Samin</td><td>Sam + i + n</td></tr></table><p>为什么补 i？因为芬兰语的音节结构不允许“辅音 + n”直接相连（除了少数例外）。<code>-i-</code> 起到“过渡元音”的作用，让词尾变成合法的 CV 结构。</p><p>英文表述：Consonant-final names take an epenthetic <i>-i-</i> before the genitive <i>-n</i>: <i>Jasmin → Jasminin</i>.</p><div class="callout tip"><b>判断口诀</b>看最后一个字母：元音 → 直接加 n；辅音 → 先加 i 再加 n。只有这两条，没有第三种情况。</div><h3 id="s5">10.4 属格里的辅音交替</h3><p>课件明确写出：“some words containing K, P or T may also change a bit (this is called consonant gradation)”。这是第七讲否定词干里那条规则的“名词版本”：</p><table><tr><th>强级（主格）</th><th>弱级（属格）</th><th>交替</th><th>说明</th></tr><tr><td>kukka（花）</td><td>kukan</td><td>kk : k</td><td>长辅音变短</td></tr><tr><td>kuppi（杯子）</td><td>kupin</td><td>pp : p</td><td>同上</td></tr><tr><td>tyttö（女孩）</td><td>tytön</td><td>tt : t</td><td>同上</td></tr><tr><td>jalka（腿）</td><td>jalan</td><td>k : 脱落</td><td>k 直接消失</td></tr><tr><td>pöytä（桌子）</td><td>pöydän</td><td>t : d</td><td>t 变 d</td></tr><tr><td>silta（桥）</td><td>sillan</td><td>lt : ll</td><td>同化</td></tr></table><p>规律：<b>属格是“弱级”形式</b>。也就是说，加 -n 会让音节封闭，从而触发弱化。这与第七讲 <code>katua → kadun</code> 完全同源——只是那里是动词，这里是名词。</p><p>英文表述：The genitive triggers the weak grade of consonant gradation: <i>kukka → kukan</i> (kk : k), <i>kuppi → kupin</i> (pp : p), <i>tyttö → tytön</i> (tt : t).</p><div class="callout exam"><b>必考</b>三组双写辅音的弱化（kk : k、pp : p、tt : t）是必考项。看到 <code>kukka</code> 要立刻想到 <code>kukan</code>，看到 <code>tyttö</code> 要立刻想到 <code>tytön</code>。</div><h3 id="s6">10.5 人称代词的属格：书面一套、口语一套</h3><table><tr><th>人称</th><th>书面属格</th><th>口语属格</th><th>例句</th></tr><tr><td>minä</td><td>minun</td><td>mun</td><td>Minun tietokone on uusi.</td></tr><tr><td>sinä</td><td>sinun</td><td>sun</td><td>Sinun kirja on painava.</td></tr><tr><td>hän</td><td>hänen</td><td>sen</td><td>Hänen nimensä on Liisa.</td></tr><tr><td>me</td><td>meidän</td><td>meiän</td><td>Meidän luokka on kylmä.</td></tr><tr><td>te</td><td>teidän</td><td>teiän</td><td>Teidän opettaja on mukava.</td></tr><tr><td>he</td><td>heidän</td><td>heiän / niiden</td><td>Heidän talo on iso.</td></tr></table><p>这六个形式必须整组背，因为它们与名词属格一样是 -n 结尾，但词干变化不规则：<code>minä → minu-</code>、<code>sinä → sinu-</code>、<code>hän → häne-</code>、<code>me → meidä-</code>、<code>te → teidä-</code>、<code>he → heidä-</code>。</p><p>英文表述：Personal pronouns have their own genitive forms: <i>minun, sinun, hänen, meidän, teidän, heidän</i>; colloquial Finnish shortens them to <i>mun, sun, sen, meiän, teiän, heiän/niiden</i>.</p><div class="callout warn"><b>hän 的属格不是 hänen 之外的形式</b><code>hänen</code> 才是“他/她的”，口语用 <code>sen</code>（因为 hän 在口语里被 se 取代）。写成 <code>hänin</code> 或 <code>hännen</code> 都是错的。</div><h3 id="s7">10.6 所有格后缀：书面语的双重标记</h3><p>课件提到“in formal or written language a possessive suffix might be added to the noun”。也就是说，书面语里除了属格代词，名词上还可以再加一个后缀：</p><table><tr><th>人称</th><th>后缀</th><th>书面例句</th><th>对照（不加后缀）</th></tr><tr><td>minä</td><td>-ni</td><td>Minun tietokoneeni on uusi.</td><td>Minun tietokone on uusi.</td></tr><tr><td>sinä</td><td>-si</td><td>Sinun kirjasi on painava.</td><td>Sinun kirja on painava.</td></tr><tr><td>hän</td><td>-nsa / -nsä</td><td>Hänen nimensä on Liisa.</td><td>Hänen nimi on Liisa.</td></tr><tr><td>me</td><td>-mme</td><td>Meidän luokkamme on kylmä.</td><td>Meidän luokka on kylmä.</td></tr><tr><td>te</td><td>-nne</td><td>Teidän opettajanne on mukava.</td><td>Teidän opettaja on mukava.</td></tr><tr><td>he</td><td>-nsa / -nsä</td><td>Heidän talonsa on iso.</td><td>Heidän talo on iso.</td></tr></table><p>两种写法都正确：<code>Minun tietokone on uusi</code>（口语/中性）与 <code>Minun tietokoneeni on uusi</code>（正式书面）。<b>但不能只写 <code>tietokoneeni</code> 而完全不加 <code>minun</code></b>——第一、二人称在书面语里通常两者并存；第三人称则可以只用后缀（<code>Hänen nimensä</code> 或 <code>nimensä</code>）。</p><p>英文表述：Written Finnish may add a possessive suffix (<i>-ni, -si, -mme, -nne, -nsa/-nsä</i>) to the noun in addition to the genitive pronoun; both <i>minun tietokone</i> and <i>minun tietokoneeni</i> are acceptable.</p><div class="callout warn"><b>不要三重标记</b><code>Minun minun tietokoneeni</code> ✗、<code>minun tietokoneeni minun</code> ✗。属格代词与后缀是“同一信息的两处标记”，最多各出现一次。</div><h3 id="s8">10.7 属格的四种典型用法</h3><table><tr><th>用法</th><th>例句</th><th>说明</th></tr><tr><td>所属</td><td>Tämä salkku on Timon.</td><td>这个公文包是 Timo 的</td></tr><tr><td>名词 + 名词</td><td>Ellin mies on Mikko.</td><td>Elli 的丈夫是 Mikko</td></tr><tr><td>Kenen? 问句</td><td>Kenen tämä koira on?</td><td>这只狗是谁的</td></tr><tr><td>与 kanssa 连用</td><td>Minä asun Annan kanssa.</td><td>我和 Anna 一起住</td></tr></table><p><code>kanssa</code>（和……一起）要求前面的名词用属格：<code>Annan kanssa</code>、<code>sinun kanssa</code>。第九讲 TEKSTI 2 的第 3 问 <code>Kenen kanssa Ulla asuu?</code> 就是这一结构。</p><p>注意第一例：<code>Tämä salkku on Timon.</code> 句末的 <code>Timon</code> 独立使用（后面没有名词），仍然用属格——属格不依赖后面的名词存在。</p><h3 id="s9">10.8 课后填空：把主格改成属格</h3><p>课件 <code>Fill the word in the text in genitive</code> 的六个空，正好覆盖本讲全部规则：</p><table><tr><th>原词</th><th>应填</th><th>依据</th></tr><tr><td>kuka</td><td>Kenen</td><td>kuka 的属格是不规则形式</td></tr><tr><td>minä</td><td>minun</td><td>代词属格</td></tr><tr><td>sinä</td><td>sinun</td><td>代词属格</td></tr><tr><td>Pete</td><td>Peten</td><td>元音结尾 + n</td></tr><tr><td>Simo</td><td>Simon</td><td>元音结尾 + n</td></tr><tr><td>isä</td><td>isän</td><td>元音结尾 + n</td></tr></table><p>整段的意思是：“这是谁（<code>Kenen</code>）的狗？是我的（<code>minun</code>）。抱歉，我不知道它是你的（<code>sinun</code>）。我以为是 Pete 的（<code>Peten</code>）或 Simo 的（<code>Simon</code>）。没关系。说实话，它原本是爸爸的（<code>isän</code>）狗。”</p><div class="callout exam"><b>必考</b>笔试卷的属格题（10 分）把“选词 + 变属格”合并：<code>Minun vaimo on Heli</code>、<code>Kenen tyttöystävä Anna on?</code>、<code>Onko tämä sinun kirja?</code>。判断依据永远是“这个位置需要'谁的'”，然后按两条构成法变形。</div><h3 id="s10">10.9 本讲错误清单</h3><ul><li>元音结尾却写成 <code>kissin</code> / <code>kissaan</code></li><li>辅音结尾漏 i：<code>Jasminn</code> ✗（应为 <code>Jasminin</code>）</li><li>双写辅音未弱化：<code>kukkan</code> ✗、<code>kuppin</code> ✗、<code>tyttön</code> ✗</li><li>代词属格写成 <code>minä</code> 原形（<code>minä tietokone</code> ✗）</li><li>同时用代词与后缀造成三重标记</li><li><code>kanssa</code> 前用主格（<code>Anna kanssa</code> ✗，应为 <code>Annan kanssa</code>）</li></ul><div class="callout idea" data-ext="t10-genetiivi-0"><b>常见误解</b><p>属格只有一个 <code>-n</code>：元音结尾直接加（<code>kissa→kissan</code>、<code>Ella→Ellan</code>），辅音结尾先补 <code>-i-</code> 再加（<code>Jasmin→Jasminin</code>、<code>Sam→Samin</code>）。写成 <code>kissin</code> 或 <code>Jasminn</code> 都错。第三类变化是辅音交替：加 -n 让音节封闭，触发弱级——<code>kukka→kukan</code>(kk:k)、<code>kuppi→kupin</code>(pp:p)、<code>tyttö→tytön</code>(tt:t)、<code>jalka→jalan</code>(k:脱落)、<code>pöytä→pöydän</code>(t:d)，与第七讲否定词干同源。代词属格不规则需整组背：<code>minun, sinun, hänen, meidän, teidän, heidän</code>，口语缩成 <code>mun/sun/sen</code>。书面语可在名词上再加所有格后缀 <code>-ni/-si/-nsa/-mme/-nne</code>（<code>Minun tietokoneeni</code>），但不要三重标记。<code>kanssa</code> 前的名词必须用属格：<code>Annan kanssa</code>，不是 <code>Anna kanssa</code>；第九讲的 <code>Ellin mies</code> 到这里才有了规则。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / Finnish</th><th>中文</th><th>English 说明 / 例句</th></tr><tr><td>genetiivi</td><td>属格</td><td>Formed with <i>-n</i>: <i>kissa → kissan</i>.</td></tr><tr><td>omistus</td><td>所属、拥有</td><td><i>Timon salkku</i> = Timo's briefcase.</td></tr><tr><td>minun</td><td>我的</td><td>Genitive of <i>minä</i>; colloquially <i>mun</i>.</td></tr><tr><td>sinun</td><td>你的</td><td>Genitive of <i>sinä</i>; colloquially <i>sun</i>.</td></tr><tr><td>hänen</td><td>他/她的</td><td>Genitive of <i>hän</i>; colloquially <i>sen</i>.</td></tr><tr><td>meidän</td><td>我们的</td><td>Genitive of <i>me</i>; colloquially <i>meiän</i>.</td></tr><tr><td>teidän</td><td>你们的</td><td>Genitive of <i>te</i>; colloquially <i>teiän</i>.</td></tr><tr><td>heidän</td><td>他们的</td><td>Genitive of <i>he</i>; colloquially <i>heiän / niiden</i>.</td></tr><tr><td>kenen</td><td>谁的</td><td>Genitive of <i>kuka</i>.</td></tr><tr><td>possessiivisuffiksi</td><td>所有格后缀</td><td><i>-ni, -si, -mme, -nne, -nsa/-nsä</i>.</td></tr><tr><td>tietokoneeni</td><td>我的电脑</td><td><i>minun tietokoneeni</i> (written style).</td></tr><tr><td>kirjasi</td><td>你的书</td><td><i>sinun kirjasi</i>.</td></tr><tr><td>luokkamme</td><td>我们的教室</td><td><i>meidän luokkamme</i>.</td></tr><tr><td>salkku</td><td>公文包</td><td><i>Tämä salkku on Timon.</i></td></tr><tr><td>kanssa</td><td>和……一起</td><td>Takes a genitive: <i>Annan kanssa</i>.</td></tr><tr><td>astevaihtelu</td><td>辅音交替</td><td><i>kukka → kukan</i> (kk : k).</td></tr><tr><td>jalka → jalan</td><td>腿</td><td>k disappears in the weak grade.</td></tr><tr><td>pöytä → pöydän</td><td>桌子</td><td>t : d gradation.</td></tr><tr><td>sijamuoto</td><td>格</td><td>Finnish has 15 noun cases.</td></tr><tr><td>omistusliite</td><td>所有格附着成分</td><td>Another name for the possessive suffix.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把五个名词改成属格</div><p><code>kissa → kissan</code>（元音结尾 + n）</p><p><code>kukka → kukan</code>（kk : k 弱化）</p><p><code>kuppi → kupin</code>（pp : p 弱化）</p><p><code>tyttö → tytön</code>（tt : t 弱化）</p><p><code>pöytä → pöydän</code>（t : d 弱化）</p><p><b>要点：</b>先判断词尾是元音还是辅音，再判断有没有双写辅音需要弱化。两步都做对，属格就不会错。</p></div><div class="qa"><div class="q">例 2　处理辅音结尾的名字</div><p><b>Jasmin</b> → <code>Jasminin</code>：末尾是 n（辅音），先加 i 再加 n。</p><p><b>Eliot</b> → <code>Eliotin</code>：末尾是 t，同样加 i 再加 n。</p><p><b>Sam</b> → <code>Samin</code>：末尾是 m，加 i 再加 n。</p><p><b>对照：</b><code>Ella → Ellan</code>（元音结尾，不加 i）。所以“加不加 i”只看最后一个字母是不是元音。</p></div><div class="qa"><div class="q">例 3　课后填空六空全解</div><p><code>Kenen tämä koira on?</code>（<code>kuka</code> → <code>Kenen</code>，疑问词属格）</p><p><code>Se on minun.</code>（<code>minä</code> → <code>minun</code>）</p><p><code>Anteeksi, en tiennyt, että se on sinun.</code>（<code>sinä</code> → <code>sinun</code>）</p><p><code>Luulin, että se on Peten tai Simon.</code>（<code>Pete → Peten</code>、<code>Simo → Simon</code>）</p><p><code>Jos totta puhutaan, se on alkujaan isän koira.</code>（<code>isä → isän</code>，这里后面有名词 <code>koira</code>，所以是“名词 + 属格”结构）</p></div><div class="qa"><div class="q">例 4　代词与后缀的三种合法写法</div><p><b>口语：</b><code>Mun tietokone on uusi.</code>（mun，无后缀）</p><p><b>中性书面：</b><code>Minun tietokone on uusi.</code>（minun，无后缀）</p><p><b>正式书面：</b><code>Minun tietokoneeni on uusi.</code>（minun + -ni）</p><p><b>不可接受：</b><code>Mun tietokoneeni</code>（口语代词 + 书面后缀，语体混搭）、<code>Minun minun tietokoneeni</code>（三重标记）。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出属格：<code>talo</code>、<code>kukka</code>、<code>tyttö</code>、<code>Jasmin</code>、<code>Eliot</code>。</li><li>填空：<code>______ (kuka) tämä laukku on?</code>；<code>Se on ______ (minä).</code></li><li>把“Elli 的丈夫是 Mikko”写成芬兰语（用属格）。</li><li>把 <code>Minun kirja on painava.</code> 改成正式书面写法（加所有格后缀）。</li><li>改错：<code>Kukkan on kaunis. Minä asun Anna kanssa.</code></li><li>翻译：我和我的室友住在一起，她的名字是 Liisa。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>talon</code>、<code>kukan</code>（kk : k）、<code>tytön</code>（tt : t）、<code>Jasminin</code>（辅音 + i + n）、<code>Eliotin</code>。</p><p><b>2.</b> <code>Kenen tämä laukku on?</code>；<code>Se on minun.</code>（<code>kuka</code> 的属格是 <code>kenen</code>，不规则。）</p><p><b>3.</b> <code>Ellin mies on Mikko.</code>（<code>Elli → Ellin</code>；人名 + 属格修饰后面的名词。）</p><p><b>4.</b> <code>Minun kirjani on painava.</code>（<code>kirja + -ni</code>，注意 kirja 以 a 结尾，加 -ni 不变形。）</p><p><b>5.</b> 两处：<code>Kukan on kaunis.</code>（kk : k）；<code>Minä asun Annan kanssa.</code>（kanssa 要求属格）。</p><p><b>6.</b> <code>Minä asun minun kämppikseni kanssa. Hänen nimensä on Liisa.</code>（或口语版 <code>Mä asun mun kämppiksen kanssa. Sen nimi on Liisa.</code>）</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>属格 -n 的两条构成法；四组辅音交替（kk:k、pp:p、tt:t、k 脱落）；六个代词属格；所有格后缀五个；<code>Kenen …?</code> 与 <code>… kanssa</code> 两个句型。</div><div class="callout warn"><b>易错 1</b><b>双写辅音不弱化</b>：<code>kukkan</code>、<code>kuppin</code>、<code>tyttön</code>。属格永远取弱级，长辅音必须变短。</div><div class="callout warn"><b>易错 2</b><b>辅音结尾漏 i</b>：<code>Jasminn</code>、<code>Eliotn</code>。凡是名字以辅音结尾，先补 i。</div><div class="callout warn"><b>易错 3</b><b>代词用主格</b>：<code>minä tietokone</code>、<code>sinä kirja</code>。所属必须用属格 <code>minun</code> / <code>sinun</code>。</div><div class="callout tip"><b>进阶</b>属格与宾格同形这件事值得单独记：<code>Ostan kirjan</code>（我买这本书，整体宾语）与 <code>Kirjan nimi on …</code>（这本书的名字）用的是同一个形式。判断靠句法位置，不靠词形。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">造属格的四步</h2><ol class="steps"><li>找词干（去掉主格词尾，注意 i → e 等变化）</li><li>看最后一个字母：元音 → 直接加 n；辅音 → 先加 i 再加 n</li><li>检查双写辅音是否需要弱化（kk:k、pp:p、tt:t）</li><li>放入句中，确认后面是否还有名词（属格修饰名词或独立使用都可以）</li></ol><h3 id="s12">属格自查清单</h3><ul class="checklist"><li>是不是“谁的”这个位置（若是，才用属格）</li><li>代词是否用 minun / sinun / hänen / meidän / teidän / heidän</li><li>书面语里是否两处都标（代词 + 后缀）或只标代词，不要三重</li><li>kanssa 前的名词是否已变属格</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p2</td><td>15 个格与属格的定义；kissa → kissan、Ella → Ellan</td></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p3</td><td>辅音结尾补 -i-（Jasmin → Jasminin）；kk:k、pp:p、tt:t 三组交替</td></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p4</td><td>六个代词属格与三个例句（tietokone、kirja、luokka）</td></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p5</td><td>口语属格 mun / sun / meiän / teiän / heiän / niiden</td></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p6</td><td>所有格后缀 -ni / -si / -mme 与正式书面例句</td></tr><tr><td>10_Tunti 9/2_Fill the word in the text in genitive.docx</td><td>全篇</td><td>六个填空（kuka、minä、sinä、Pete、Simo、isä）</td></tr><tr><td>15_Kokeet_Exams/3_Finnish 1_2024.docx</td><td>属格题（10 分）</td><td>五个句子：vaimo、nimi、tyttöystävä、kirja、kotimaa 的属格</td></tr><tr><td>（跳过）</td><td>—</td><td>课件 p5 的口语形式在正文里只作对照，考试不要求写口语；本讲标注语体但不作为考点</td></tr><tr><td>（拓展）</td><td>—</td><td>10.1 的 15 格全表在课件里只有一句“we have 15 noun cases”，此处补全名称与后缀以便定位；10.7 的 kanssa 用法取自第九讲 TEKSTI 2 的第 3 问</td></tr></table></section><div class="lnav"><a class="prev" href="t9-perhe.html">← Tunti 9 · 家庭、朋友与「有」结构</a><a class="next" href="t11-henkilotiedot.html">Tunti 9–10 · 个人信息与咖啡厅场景 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

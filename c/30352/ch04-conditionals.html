@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>④ 条件分支与 match-case · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-2.html">第 2 章 字符串与流程控制</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、为什么需要分支</a><a class="toc-l2" href="#s3">二、布尔表达式：比较运算符</a><a class="toc-l3" href="#s4">2.1 六种比较</a><a class="toc-l3" href="#s5">2.2 链式比较</a><a class="toc-l3" href="#s6">2.3 字符串比较</a><a class="toc-l3" href="#s7">2.4 浮点比较</a><a class="toc-l2" href="#s8">三、逻辑运算符</a><a class="toc-l3" href="#s9">3.1 and / or / not</a><a class="toc-l3" href="#s10">3.2 短路求值</a><a class="toc-l2" href="#s11">四、if 语句与缩进</a><a class="toc-l3" href="#s12">4.1 语法骨架</a><a class="toc-l3" href="#s13">4.2 缩进是语法，不是风格</a><a class="toc-l3" href="#s14">4.3 块在哪里结束</a><a class="toc-l2" href="#s15">五、if-else：二选一</a><a class="toc-l2" href="#s16">六、if-elif-else：多选一</a><a class="toc-l3" href="#s17">6.1 结构与执行规则</a><a class="toc-l3" href="#s18">6.2 顺序决定正确性</a><a class="toc-l3" href="#s19">6.3 一个完整的业务例子：运费</a><a class="toc-l2" href="#s20">七、match-case：值匹配的更整齐写法</a><a class="toc-l3" href="#s21">7.1 语法</a><a class="toc-l3" href="#s22">7.2 一个 case 匹配多个值</a><a class="toc-l3" href="#s23">7.3 完整例子：博物馆开放时间</a><a class="toc-l3" href="#s24">7.4 match 与 elif 链怎么选</a><a class="toc-l2" href="#s25">八、常见错误清单</a><a class="toc-l2" href="#s26">操作清单</a><a class="toc-l3" href="#s27">写 if 之前</a><a class="toc-l3" href="#s28">缩进与语法自检</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a class="toc-l3" href="ch04-conditionals.html">▸ ④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>④ 条件分支与 match-case</h1><p class="lead">Conditionals, if-elif-else and match-case <span class="badge mute">30352</span> <span class="badge mute">第 4 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 字符串与流程控制</a></p><p class="src">原始文件：<code>if.pdf</code> <code>if_else.pdf</code> <code>match_case.pdf</code> <code>09_Chapter 3_1_Chapter 3 Code Examples_Example1.py</code> <code>09_Chapter 3_1_Chapter 3 Code Examples_Example8.py</code> <code>09_Chapter 3_1_Chapter 3 Code Examples_Example10.py</code> <code>09_Chapter 3_1_Chapter 3 Code Examples_Kiasma_open.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前三讲的程序是一条直线：从上到下，每行都执行。这一讲让程序第一次出现「分岔」——根据数据的真假决定走哪条路，其余路径直接跳过。这是控制结构（control structure）的起点，也是后面循环、函数里所有判断的基础。</p><p>上一讲把文本切开、拼好、印出去；这一讲用比较和逻辑运算把文本与数字变成 <code>True</code> / <code>False</code>，再交给 <code>if</code> 决定去留。下一讲用同样的布尔表达式控制循环。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>写出 <code>== != &lt; &gt; &lt;= &gt;=</code> 六种比较，并解释链式比较 <code>x &lt; y &lt; 15</code></li><li>用 <code>and</code> / <code>or</code> / <code>not</code> 组合条件，并说明短路求值的影响</li><li>写出缩进正确的 <code>if</code> / <code>if-else</code> / <code>if-elif-else</code>，并解释块的边界</li><li>根据取值范围设计互斥、顺序正确的 <code>elif</code> 链</li><li>用 <code>match-case</code> 改写长 <code>elif</code> 链，并用 <code>case _</code> 兜底</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、为什么需要分支</h2><p>到目前为止，程序只有顺序结构：第 1 行、第 2 行……全部执行（if.pdf p2）。但现实充满选择：穿什么取决于天气，吃什么取决于忌口。程序也一样，需要「满足条件才做」。</p><p>控制结构（control structure）让执行顺序依赖数据。写法极其简单：</p><pre><code>age = 20
+if age &gt;= 18:
+    print("You are an adult.")
+else:
+    print("You are a minor.")</code></pre><p>读法：<code>if</code> 后面是条件，条件为真执行缩进的那一块；<code>else</code> 后面是条件为假时执行的那一块。条件本身是一个<b>布尔表达式</b>（boolean expression），值只能是 <code>True</code> 或 <code>False</code>。</p><h2 id="s3">二、布尔表达式：比较运算符</h2><h3 id="s4">2.1 六种比较</h3><table><tr><th>运算符</th><th>含义</th><th>例子（x = 5, y = 10）</th><th>结果</th></tr><tr><td><code>==</code></td><td>等于</td><td><code>x == y</code></td><td><code>False</code></td></tr><tr><td><code>!=</code></td><td>不等于</td><td><code>x != y</code></td><td><code>True</code></td></tr><tr><td><code>&gt;</code></td><td>大于</td><td><code>x &gt; y</code></td><td><code>False</code></td></tr><tr><td><code>&lt;</code></td><td>小于</td><td><code>x &lt; y</code></td><td><code>True</code></td></tr><tr><td><code>&gt;=</code></td><td>大于等于</td><td><code>x &gt;= y</code></td><td><code>False</code></td></tr><tr><td><code>&lt;=</code></td><td>小于等于</td><td><code>x &lt;= y</code></td><td><code>True</code></td></tr></table><p><code>==</code> 是比较，<code>=</code> 是赋值，这两个符号永远不要写混。<code>x = y</code> 不会返回真假，它会把 y 的值塞进 x，然后 <code>if x = y:</code> 直接是语法错误。</p><h3 id="s5">2.2 链式比较</h3><p>数学里的 <code>0 &lt; x &lt; 10</code> 在 Python 里可以直接写，等价于 <code>0 &lt; x and x &lt; 10</code>，而且中间那个 x 只计算一次：</p><pre><code>x = 5
+y = 10
+print(x &lt; y &lt; 15)
+print(0 &lt;= x &lt;= 5)</code></pre><pre><code>True
+True</code></pre><h3 id="s6">2.3 字符串比较</h3><p>字符串按字符的编码逐位比较，本质上就是字典序（lexicographic order）。规则有三条：从左往右逐字符比，第一个不同的字符决定大小；前缀更短的更小（<code>"ab" &lt; "abc"</code>）；大写字母排在小写字母前面（编码 65 起 vs 97 起）。</p><pre><code>string1 = "hello"
+string2 = "world"
+print(string1 == string2)
+print(string1 &lt; string2)
+print("Hello" &lt; "hello")
+print("apple" &lt; "banana")</code></pre><pre><code>False
+True
+True
+True</code></pre><p>字符串不能和数字比大小（Example2 的最后一行）：</p><pre><code>print("banana" &gt; 5)</code></pre><pre><code>TypeError: '&gt;' not supported between instances of 'str' and 'int'
+</code></pre><p>原因是两种类型没有定义比较规则。想比「长度」必须先取 <code>len()</code>：<code>len("banana") &lt; 5</code> 是 <code>False</code>。</p><h3 id="s7">2.4 浮点比较</h3><p>浮点数在内存中是近似值（第 1 讲的数据类型、Extra reading 都提过），所以下面这行看起来该真、其实为假：</p><pre><code>print(0.1 + 0.2)
+print(0.1 + 0.2 == 0.3)</code></pre><pre><code>0.30000000000000004
+False</code></pre><p>判断两个浮点数「相等」要允许误差：<code>abs(a - b) &lt; 1e-9</code>，或先把两边都 <code>round(a, 5)</code> 再比。</p><h2 id="s8">三、逻辑运算符</h2><h3 id="s9">3.1 and / or / not</h3><table><tr><th>写法</th><th>含义</th><th>为真的条件</th></tr><tr><td><code>a and b</code></td><td>并且</td><td>a、b 都为真</td></tr><tr><td><code>a or b</code></td><td>或者</td><td>至少一个为真</td></tr><tr><td><code>not a</code></td><td>取反</td><td>a 为假</td></tr></table><pre><code>a = True
+b = False
+print("a and b:", a and b)
+print("a or b:", a or b)
+print("not a:", not a)
+print("not False:", not False)</code></pre><pre><code>a and b: False
+a or b: True
+not a: False
+not False: True</code></pre><p>优先级从高到低是 <code>not</code> → <code>and</code> → <code>or</code>，比较运算符又高于它们。所以 <code>not a and b</code> 等于 <code>(not a) and b</code>；<code>a == 1 or b == 2 and c == 3</code> 等于 <code>(a == 1) or ((b == 2) and (c == 3))</code>。条件一复杂就加括号，读代码的人会感谢你。</p><h3 id="s10">3.2 短路求值</h3><p><code>and</code> 左侧为假时右边根本不看；<code>or</code> 左侧为真时右边也根本不看。这叫短路（short-circuit），Example4 用一个未定义的变量演示了它：</p><pre><code>a = True
+b = False
+# c 未定义
+
+print(a or c)   # True：左边已真，不再看 c
+print(b and c)  # False：左边已假，不再看 c
+
+# 下面两行会报 NameError，因为真的去看了 c
+# print(b or c)
+# print(a and c)</code></pre><p>这解释了两件实用的事：一是 <code>if x != 0 and 10 / x > 2:</code> 不必担心除零，因为 <code>x != 0</code> 为假时右边被跳过；二是「先判断再访问」的写法是安全的。反过来，如果短路掩盖了本应暴露的错误，调试时会更难——这也是为什么 Example4 把会报错的两行注释掉而不是删掉。</p><div class="callout warn"><b>and / or 返回的是操作数，不是 True/False</b>Python 里 <code>True and "x"</code> 得 <code>"x"</code>，<code>False or "y"</code> 得 <code>"y"</code>，<code>0 or 5</code> 得 5。放在 <code>if</code> 里结果一样（非空串、非零数都当真），但如果把表达式结果直接赋给变量，拿到的是那个操作数。初学阶段建议条件里只放比较与逻辑运算，别依赖这个特性。</div><h2 id="s11">四、if 语句与缩进</h2><h3 id="s12">4.1 语法骨架</h3><p>基本语法（if.pdf p3）：<code>if</code> 关键字 → 条件 → 冒号 → 换行 + 缩进的块。</p><pre><code>temperature = 20
+if temperature &gt; 15:
+    print("It's warm outside!")</code></pre><p>冒号表示「下面开始是这个 if 的块」。块内的行必须比 <code>if</code> 多缩进（通常 4 个空格），块在缩进退回时结束（if.pdf p6）。</p><h3 id="s13">4.2 缩进是语法，不是风格</h3><p>别的语言用花括号 <code>{}</code> 划块，缩进只是好看；Python 直接用缩进定义块（if.pdf p4）。漏缩进会被判为「期望一个缩进块」：</p><pre><code>if 5 &gt; 2:
+print("Five is greater than two!")</code></pre><pre><code>IndentationError: expected an indented block after 'if' statement on line 1</code></pre><p>同一个块内缩进量必须完全一致（Example6）。下面这段第一行缩进 1 个空格、第二行缩进 8 个，Python 无法判断它们是否属于同一块：</p><pre><code>if 5 &gt; 2:
+ print("Five is greater than two!")
+        print("Five is greater than two!")</code></pre><pre><code>IndentationError: unexpected indent</code></pre><p>还有两条实务规则：<b>不要混用空格与 Tab</b>——不同编辑器对 Tab 的宽度解释不同，切编辑器就会出错；IDLE 会在你回车时自动补上缩进，省事但也容易让人忘记检查层级。</p><h3 id="s14">4.3 块在哪里结束</h3><p>缩进退回的那一行不属于 if 的块（Example7）：</p><pre><code>i = 10
+
+if i &gt; 15:
+    print("variable i is less than 15")
+print("I am NOT in if")</code></pre><pre><code>I am NOT in if</code></pre><p>条件为假，块内那行被跳过；没有缩进的 <code>print("I am NOT in if")</code> 与 if 无关，照常执行。顺带一提，示例里那句提示文字写反了（i 是 10，条件 <code>i &gt; 15</code> 为假），这类「注释与代码不一致」的 bug 比语法错误更难发现——读代码时以代码为准。</p><h2 id="s15">五、if-else：二选一</h2><p>写法（if_else.pdf p2）：条件为真走第一块，为假走 <code>else</code> 块，两块必有一块执行。</p><pre><code>a = int(input("Enter an integer: "))
+b = int(input("Enter another integer: "))
+
+if a &gt; b:
+    print("The largest integer is", a)
+else:
+    print("The largest integer is", b)</code></pre><p>输入 <code>7</code> 与 <code>3</code>，输出 <code>The largest integer is 7</code>。注意 <code>input()</code> 返回字符串，必须 <code>int()</code> 之后再比，否则比的是字典序（<code>"10" &lt; "9"</code> 为真）。</p><h2 id="s16">六、if-elif-else：多选一</h2><h3 id="s17">6.1 结构与执行规则</h3><p><code>elif</code> 是 else if 的缩写（if_else.pdf p4–p5）。执行顺序是从上往下逐个检查，<b>第一个为真的块执行完，整个链条就结束</b>，后面的 <code>elif</code> / <code>else</code> 全部跳过。</p><table><tr><th>规则</th><th>说明</th></tr><tr><td>只有一个块执行</td><td>哪怕多个条件同时为真，也只走最上面那个</td></tr><tr><td>最多一个 else</td><td>每个 if 链最多一个 else，且必须放最后</td></tr><tr><td>elif 可以有多个</td><td>想排几个排几个，顺序即优先级</td></tr><tr><td>else 可以省略</td><td>不需要兜底时省略，什么都不做</td></tr><tr><td>条件互斥靠你保证</td><td>Python 不会替你检查区间是否重叠</td></tr></table><h3 id="s18">6.2 顺序决定正确性</h3><p>成绩等级的例子（if_else.pdf p6）是经典：</p><pre><code>score = 85
+
+if score &gt;= 90:
+    grade = 5
+elif score &gt;= 80:
+    grade = 4
+elif score &gt;= 70:
+    grade = 3
+elif score &gt;= 60:
+    grade = 2
+elif score &gt;= 50:
+    grade = 1
+else:
+    grade = 0
+
+print("Grade:", grade)</code></pre><pre><code>Grade: 4</code></pre><p>为什么能从大到小这么写？因为 85 已经满足了 <code>&gt;= 80</code>，不会再往下看。如果把顺序写反（先判 <code>&gt;= 50</code>），85 会命中第一条，直接得 1 分——这就是条件链最常见的逻辑错误：<b>范围宽的放前面，后面的永远轮不到</b>。</p><p>规则总结：判断区间时，要么按「从大到小」写 <code>&gt;=</code>，要么按「从小到大」写 <code>&lt;</code> 并让每条上界收紧，总之让条件互斥且覆盖全集。</p><h3 id="s19">6.3 一个完整的业务例子：运费</h3><p>Example10 把订单金额映射到运费档位，结构与本讲完全一致：</p><pre><code>order_value = float(input("Enter the total order value in EUR: "))
+
+if order_value &gt;= 100:
+    shipping_cost = 0
+elif order_value &gt;= 50:
+    shipping_cost = 5
+elif order_value &gt;= 20:
+    shipping_cost = 10
+else:
+    shipping_cost = 15
+
+print("The shipping cost for your order is " + str(round(shipping_cost, 2)) + " EUR.")</code></pre><p>输入 <code>63.5</code>，输出 <code>The shipping cost for your order is 5 EUR.</code>。三个要点：<code>float()</code> 而不是 <code>int()</code>（金额有小数）；<code>str()</code> 把数字拼进字符串；边界值 100、50、20 都归入「较便宜」的一档，因为用的是 <code>&gt;=</code>。</p><h2 id="s20">七、match-case：值匹配的更整齐写法</h2><h3 id="s21">7.1 语法</h3><p><code>match-case</code> 是 Python 3.10 引入的（match_case.pdf p2），作用类似 C / Java 的 <code>switch</code>，用来替代一长串「同一个变量反复比较」的 <code>elif</code>。</p><pre><code>status_code = 404
+
+match status_code:
+    case 200:
+        print("OK")
+    case 404:
+        print("Not Found")
+    case 500:
+        print("Internal Server Error")
+    case _:
+        print("Unknown status code")</code></pre><pre><code>Not Found</code></pre><p>下划线 <code>_</code> 是通配符（wildcard），兜住所有没匹配上的值（match_case.pdf p3）。它等价于 <code>else</code>，但只能出现一次且习惯放最后。</p><h3 id="s22">7.2 一个 case 匹配多个值</h3><p>用竖线 <code>|</code> 把多个候选写在一起（match_case.pdf p4）：</p><pre><code>fruit = "banana"
+
+match fruit:
+    case "apple" | "banana" | "orange":
+        print("This is a common fruit.")
+    case _:
+        print("This is not a common fruit.")</code></pre><pre><code>This is a common fruit.</code></pre><p>可以匹配数字、字符串、布尔值。注意<code> | </code>是「或」，不是正则里的管道，两侧只能是字面量或模式，不能写表达式。</p><h3 id="s23">7.3 完整例子：博物馆开放时间</h3><p>Kiasma_open.py 是课程给的完整练习：给定星期几，输出开放时间。</p><pre><code>day = input("Give a day (Mon/Tue/Wed/Thu/Fri/Sat/Sun): ")
+
+match day:
+    case "Mon":
+        print("Closed")
+    case "Tue" | "Fri":
+        print("Open 10-20")
+    case "Wed" | "Thu":
+        print("Open 10-18")
+    case "Sat" | "Sun":
+        print("Open 10-17")
+    case _:
+        print("There is no such day")</code></pre><p>输入 <code>Wed</code> 输出 <code>Open 10-18</code>；输入 <code>mon</code>（小写）输出 <code>There is no such day</code>——<code>match</code> 是精确匹配，大小写敏感，所以用户输入最好先规范成 <code>day.strip().capitalize()</code> 或统一转小写后比较。</p><h3 id="s24">7.4 match 与 elif 链怎么选</h3><table><tr><th>场景</th><th>推荐写法</th></tr><tr><td>同一个变量与若干固定值比较</td><td><code>match-case</code>，一眼看出分支表</td></tr><tr><td>比较范围（<code>&gt;=</code>、<code>&lt;</code>）</td><td><code>if-elif</code>，match 不适合区间</td></tr><tr><td>条件涉及多个变量</td><td><code>if-elif</code></td></tr><tr><td>需要兜底分支</td><td>两者都行：<code>case _</code> 或 <code>else</code></td></tr></table><p>功能上 match 并不比 elif 强，它换来的是可读性；所以考试里两种写法都要会读、会改。</p><div class="callout warn"><b>case 后面写裸变量名会「捕获」一切</b><code>case day:</code> 不是「当值等于变量 day 时」，而是「新建一个叫 day 的变量并匹配任何值」，于是后面的 case 永远轮不到。要比较变量，写 <code>case "Mon":</code> 这样的字面量，或先把候选值放进常量。<code>_</code> 是唯一安全的通配符。</div><h2 id="s25">八、常见错误清单</h2><div class="callout warn"><b>把 == 写成 =</b><code>if x = 5:</code> 是语法错误；<code>if x = 5</code> 想表达的「判断相等」应写 <code>==</code>。反过来 <code>x == 5</code> 单独一行只是算了个真假然后丢掉，不报错，也很难发现。</div><div class="callout warn"><b>漏冒号</b><code>if x &gt; 5</code> 后面没有冒号，报 <code>SyntaxError: expected ':'</code>。冒号是块的开场白，<code>if</code> / <code>elif</code> / <code>else</code> / <code>for</code> / <code>while</code> / <code>def</code> 全都要。</div><div class="callout warn"><b>elif 顺序反了</b>区间判断从宽到窄、从上到下必须单调；写成 <code>&gt;= 50</code> 在前，高分也会掉进低档。写完用边界值（49、50、89、90）各测一遍。</div><div class="callout warn"><b>把非空字符串当条件</b><code>if "no":</code> 恒为真，因为非空字符串为真。判断用户回答要写 <code>if answer == "no":</code>，不能只写字符串本身。</div><div class="callout tip"><b>先画决策表再写代码</b>把输入区间与期望输出列成两列，检查是否覆盖全集、是否重叠；然后照表写 elif，顺序自然正确。这比写完再调试快得多。</div><div class="callout idea" data-ext="ch04-conditionals-0"><b>推导补充</b><p><code>if-elif-else</code> 里<strong>顺序即正确性</strong>：第一个为真的分支执行完，整条链就结束。成绩若先判 <code>&gt;= 50</code>，85 会命中第一条得 1；所以要么从大到小写 <code>&gt;=</code>，要么从小到大收紧上界。互斥与覆盖全集要自己保证，Python 不检查重叠。浮点别直接比相等：<code>0.1 + 0.2 == 0.3</code> 为 False。</p></div><div class="callout tip" data-ext="ch04-conditionals-1"><b>常见误解</b><p>缩进是<strong>语法</strong>不是风格：漏缩进抛 IndentationError，同块缩进量必须一致，别混用空格与 Tab。<code>=</code> 是赋值，<code>==</code> 才是比较。短路能防除零——<code>if x != 0 and 10/x &gt; 2</code> 在 x 为 0 时右边不算。但 <code>and</code>／<code>or</code> 返回操作数：<code>True and "x"</code> 得 <code>"x"</code>，赋给变量时别当成布尔值。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>control structure</td><td>控制结构</td><td>if, for and while change the order of execution.</td></tr><tr><td>boolean expression</td><td>布尔表达式</td><td>An expression that evaluates to True or False.</td></tr><tr><td>comparison operator</td><td>比较运算符</td><td>==, !=, &lt;, >, &lt;=, >=.</td></tr><tr><td>chained comparison</td><td>链式比较</td><td>0 &lt;= x &lt;= 5 means 0 &lt;= x and x &lt;= 5.</td></tr><tr><td>logical operator</td><td>逻辑运算符</td><td>and, or, not.</td></tr><tr><td>short-circuit</td><td>短路求值</td><td>or stops at the first true operand; and stops at the first false one.</td></tr><tr><td>indentation</td><td>缩进</td><td>Indentation defines the block in Python.</td></tr><tr><td>block</td><td>代码块</td><td>The indented statements controlled by if.</td></tr><tr><td>elif</td><td>否则如果</td><td>Short for else if; checked only if the previous conditions failed.</td></tr><tr><td>match-case</td><td>模式匹配语句</td><td>Introduced in Python 3.10; an alternative to long elif chains.</td></tr><tr><td>wildcard</td><td>通配符</td><td>case _ catches every value that did not match.</td></tr><tr><td>lexicographic order</td><td>字典序</td><td>"Hello" &lt; "hello" because uppercase letters come first.</td></tr><tr><td>mutually exclusive</td><td>互斥的</td><td>Only one branch of an if-elif chain can run.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　输入一个整数，输出它是正数、零还是负数，并额外输出它的绝对值。</div><p>思路：先按「大于 0 / 等于 0 / 其余」三分支；绝对值用 <code>abs()</code>（第 2 讲的内置函数），不要手写两遍分支。</p><pre><code>num = int(input("Enter a number: "))
+
+if num &gt; 0:
+    print("Positive number")
+elif num == 0:
+    print("Zero")
+else:
+    print("Negative number")
+
+print("Absolute value:", abs(num))</code></pre><p>输入 <code>-7</code>，输出：</p><pre><code>Negative number
+Absolute value: 7</code></pre><p>解释：三个分支互斥且覆盖全部整数；<code>abs()</code> 让「求绝对值」不必再写一个 if。注意这里用 <code>int()</code>，若允许小数要改 <code>float()</code>，但那样 <code>num == 0</code> 就要写成 <code>abs(num) &lt; 1e-9</code>。</p></div><div class="qa"><div class="q">例 2　输入年份，判断是否闰年。</div><p>规则：能被 4 整除，但不能被 100 整除；或者能被 400 整除。把「或者」直接翻译成 <code>or</code>，把「但是」翻译成 <code>and not</code>。</p><pre><code>year = int(input("Enter a year: "))
+
+if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+    print(year, "is a leap year")
+else:
+    print(year, "is not a leap year")</code></pre><p>输入 <code>1900</code> → <code>1900 is not a leap year</code>；输入 <code>2000</code> → <code>2000 is a leap year</code>（被 400 整除）；输入 <code>2024</code> → 闰年。</p><p>解释：括号不能省。<code>and</code> 优先级高于 <code>or</code>，这里刚好符合预期，但写清楚括号能让读者一眼确认分组。测试时至少覆盖 1900（例外）、2000（400 的例外之例外）、2024（普通闰年）、2023（普通平年）四个边界。</p></div><div class="qa"><div class="q">例 3　用 <code>match-case</code> 实现一个简易计算器：输入运算符与两个数，输出结果。</div><p>思路：用 <code>case "+"</code> 等字面量分支；除零要在分支里单独判，避免 <code>ZeroDivisionError</code>（第 11 讲会系统处理异常）。</p><pre><code>op = input("Operator (+ - * /): ")
+a = float(input("First number: "))
+b = float(input("Second number: "))
+
+match op:
+    case "+":
+        print(a + b)
+    case "-":
+        print(a - b)
+    case "*":
+        print(a * b)
+    case "/":
+        if b == 0:
+            print("Cannot divide by zero")
+        else:
+            print(a / b)
+    case _:
+        print("Unknown operator")</code></pre><p>输入 <code>*</code>、<code>3</code>、<code>4</code> 输出 <code>12.0</code>；输入 <code>/</code>、<code>1</code>、<code>0</code> 输出 <code>Cannot divide by zero</code>。</p><p>解释：<code>match</code> 只负责「选哪个运算符」，除数是否为零是分支内的二级判断——这种「外层匹配 + 内层条件」的嵌套在菜单类程序里非常常见。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>输入三个整数，按从大到小输出（先比较再交换，不要用 <code>sorted</code>）。</li><li>输入百分制成绩，按 90/80/70/60/50 输出 5/4/3/2/1/0 等级，并处理「输入不在 0–100」的情况。</li><li>输入一个字符，判断它是大写字母、小写字母、数字还是其他（提示：可以用比较，也可以查第 2 讲的字符串方法）。</li><li>用 <code>match-case</code> 把 Kiasma 例子改成「输入小写也认」的版本。</li><li>输入 BMI 的两个分量（体重 kg、身高 m），按 <code>&lt;18.5</code> / <code>18.5–24.9</code> / <code>25–29.9</code> / <code>&gt;=30</code> 输出四档结论。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 三个数排序的经典写法是三次两两交换：先让 <code>a &gt;= b</code>（否则交换），再让 <code>a &gt;= c</code>，最后让 <code>b &gt;= c</code>。交换用 <code>a, b = b, a</code>（第 8 讲元组解包），本讲范围内也可用临时变量 <code>t = a; a = b; b = t</code>。</p><p><b>2.</b> 先判合法性再判等级：<code>if score &lt; 0 or score &gt; 100: print("Invalid")</code>，否则接原来的 elif 链。这正是「先做守卫判断（guard clause）」的思路，比把非法值塞进等级链更清晰。</p><p><b>3.</b> 用链式比较最直观：<code>if "A" &lt;= ch &lt;= "Z": ... elif "a" &lt;= ch &lt;= "z": ... elif "0" &lt;= ch &lt;= "9": ...</code>。也可以用 <code>ch.isupper() / ch.islower() / ch.isdigit()</code>（第 2 讲字符串方法）。注意 <code>isdigit()</code> 对空串返回 False。</p><p><b>4.</b> 在读入后统一大小写：<code>day = input(...).strip().capitalize()</code>，这样 <code>mon</code>、<code>MON</code>、<code>" Mon "</code> 都变成 <code>Mon</code>，match 分支不用改。<code>capitalize()</code> 只把首字母大写、其余小写，正好匹配 <code>Mon</code> 形式。</p><p><b>5.</b> <code>bmi = weight / height ** 2</code>，然后四档 elif，注意边界：<code>&lt;18.5</code>、<code>&lt;25</code>、<code>&lt;30</code>、其余。用「上界递增」的写法保证互斥：<code>if bmi &lt; 18.5: ... elif bmi &lt; 25: ...</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b><code>if-elif-else</code> 的执行顺序与「只执行一个块」；缩进定义块；字符串比较的字典序；<code>and</code>/<code>or</code> 的短路；<code>match-case</code> 与 <code>case _</code>。</div><div class="callout warn"><b>易错 1　elif 顺序导致区间失效</b>85 分被 <code>&gt;= 50</code> 先截住就得 1 分。写完拿边界值 49/50/59/60/89/90 走一遍。</div><div class="callout warn"><b>易错 2　漏冒号与缩进错误</b><code>IndentationError</code> 分两种：<code>expected an indented block</code>（该缩进没缩进）与 <code>unexpected indent</code>（不该缩进却缩了）。看错误行号，往上找它所属的 <code>if</code>。</div><div class="callout warn"><b>易错 3　input 没转换就比大小</b><code>input()</code> 返回字符串，<code>"9" &gt; "10"</code> 为真。比较数字前必须 <code>int()</code> / <code>float()</code>。</div><div class="callout tip"><b>进阶</b>浮点相等用 <code>abs(a - b) &lt; 1e-9</code>；<code>match</code> 里裸变量名是捕获而非比较；<code>and</code>/<code>or</code> 返回操作数而非布尔值。这三点是判断题与改错题的常客。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s26">操作清单</h2><h3 id="s27">写 if 之前</h3><ol class="steps"><li>把条件写成一句能判真假的话，例如「年龄大于等于 18」→ <code>age &gt;= 18</code></li><li>确认参与比较的两边类型一致：数字比数字、字符串比字符串</li><li>列出所有分支，检查是否互斥、是否覆盖全部情况</li><li>确定顺序：区间判断从宽到窄或从窄到宽，只能选一个方向</li><li>写完用边界值各测一次</li></ol><h3 id="s28">缩进与语法自检</h3><ul class="checklist"><li>每个 <code>if</code> / <code>elif</code> / <code>else</code> 行末都有冒号</li><li>同一块内缩进量完全一致，没有混用 Tab 与空格</li><li>块的结束靠缩进退回，退回后的语句不属于 if</li><li><code>==</code> 用于比较，<code>=</code> 只用于赋值</li><li>条件里没有写「永远为真」的非空字符串</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>if.pdf</td><td>p2–p6</td><td>控制结构动机、<code>if</code> 语法、冒号、缩进定义块、缩进错误、Tab 与空格、块结束</td></tr><tr><td>if_else.pdf</td><td>p2–p7</td><td><code>if-else</code> 二选一、<code>elif</code> 链、成绩等级例子、单块执行规则</td></tr><tr><td>match_case.pdf</td><td>p2–p4</td><td><code>match-case</code> 起源（3.10）、<code>case _</code>、<code>|</code> 多值匹配</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example1.py</td><td>全文</td><td>六种比较与链式比较的正例</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example2.py</td><td>全文</td><td>字符串比较、大写在前、<code>str</code> 与 <code>int</code> 不可比</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example3.py</td><td>全文</td><td>逻辑运算组合与括号</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example4.py</td><td>全文</td><td>短路求值与未定义变量</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example5.py–Example7.py</td><td>全文</td><td>条件为假不执行、缩进不一致、块结束</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example8.py</td><td>全文</td><td>取两个数的较大者</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Example10.py</td><td>全文</td><td>运费分档、<code>float()</code> 与 <code>str()</code> 拼接</td></tr><tr><td>09_Chapter 3_1_Chapter 3 Code Examples_Kiasma_open.py</td><td>全文</td><td><code>match-case</code> 完整程序、<code>|</code> 分支、兜底</td></tr></table><p><b>跳过项：</b>Moodle 第 3 章的考核说明、作业截止页属于行政信息，不构成知识点，已按第 1 讲的课程结构说明处理；纯截图页（无文字）不单列页码。</p><p><b>拓展项：</b>浮点相等判断、<code>and</code>/<code>or</code> 返回操作数、<code>match</code> 中裸变量名的捕获语义、守卫判断（guard clause）写法，都是在原知识点边界上补的常见坑，未引入新语法考点。</p></section><div class="lnav"><a class="prev" href="ch03-strings-comments.html">← ③ 注释、字符串与输出控制</a><a class="next" href="ch05-loops.html">⑤ 循环与迭代 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

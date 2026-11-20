@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 7 · 数据压缩：RLE、Huffman、无损与有损 · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-3.html">第 3 章 数字编码与压缩</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、数据为什么这么大</a><a class="toc-l2" href="#s3">二、压缩是什么</a><a class="toc-l3" href="#s4">2.1 定义</a><a class="toc-l3" href="#s5">2.2 压缩不是编码</a><a class="toc-l2" href="#s6">三、冗余：压缩的基础</a><a class="toc-l3" href="#s7">3.1 定义</a><a class="toc-l3" href="#s8">3.2 最简单的例子</a><a class="toc-l3" href="#s9">3.3 游程编码（RLE）</a><a class="toc-l3" href="#s10">3.4 RLE 什么时候好用</a><a class="toc-l2" href="#s11">四、不同数据的冗余不同</a><a class="toc-l2" href="#s12">五、两大类：无损与有损</a><a class="toc-l3" href="#s13">5.1 判据</a><a class="toc-l3" href="#s14">5.2 无损压缩</a><a class="toc-l3" href="#s15">5.3 无损的例子与适用</a><a class="toc-l3" href="#s16">5.4 有损压缩</a><a class="toc-l3" href="#s17">5.5 为什么会接受损失</a><a class="toc-l3" href="#s18">5.6 对照表</a><a class="toc-l2" href="#s19">六、压缩比与大小缩减</a><a class="toc-l3" href="#s20">6.1 压缩比</a><a class="toc-l3" href="#s21">6.2 大小缩减百分比</a><a class="toc-l2" href="#s22">七、无损压缩为什么能成立</a><a class="toc-l3" href="#s23">7.1 字典压缩</a><a class="toc-l2" href="#s24">八、Huffman 编码</a><a class="toc-l3" href="#s25">8.1 变长码的核心思想</a><a class="toc-l3" href="#s26">8.2 四步流程</a><a class="toc-l3" href="#s27">8.3 完整算例：abracadabra</a><a class="toc-l3" href="#s28">8.4 前缀性质</a><a class="toc-l3" href="#s29">8.5 变长码为什么有用</a><a class="toc-l2" href="#s30">九、文本的无损压缩</a><a class="toc-l2" href="#s31">十、图像压缩</a><a class="toc-l3" href="#s32">10.1 为什么图像可以压缩</a><a class="toc-l3" href="#s33">10.2 PNG（无损）</a><a class="toc-l3" href="#s34">10.3 有损图像压缩的理由</a><a class="toc-l3" href="#s35">10.4 JPEG</a><a class="toc-l3" href="#s36">10.5 质量与体积的权衡</a><a class="toc-l2" href="#s37">十一、音频压缩</a><a class="toc-l3" href="#s38">11.1 为什么音频可以压缩</a><a class="toc-l3" href="#s39">11.2 MP3（有损）</a><a class="toc-l3" href="#s40">11.3 FLAC（无损）</a><a class="toc-l2" href="#s41">十二、视频压缩</a><a class="toc-l3" href="#s42">12.1 为什么难</a><a class="toc-l3" href="#s43">12.2 两种冗余</a><a class="toc-l3" href="#s44">12.3 概念流程</a><a class="toc-l3" href="#s45">12.4 常见编解码器</a><a class="toc-l2" href="#s46">十三、按数据类型选方法</a><a class="toc-l2" href="#s47">十四、为什么不只用一种</a><a class="toc-l2" href="#s48">十五、压缩在信息处理流水线中的位置</a><a class="toc-l2" href="#s49">十六、解压与不可逆</a><a class="toc-l2" href="#s50">十七、本章小结</a><a class="toc-l2" href="#s51">方法清单</a><a class="toc-l3" href="#s52">判断该用哪类压缩（三问）</a><a class="toc-l3" href="#s53">做 RLE（三步）</a><a class="toc-l3" href="#s54">建 Huffman 码（五步）</a><a class="toc-l3" href="#s55">算压缩指标（两式）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a class="toc-l3" href="w7-data-compression.html">▸ Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 7 · 数据压缩：RLE、Huffman、无损与有损</h1><p class="lead">Data Compression <span class="badge mute">86</span> <span class="badge mute">第 7 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 数字编码与压缩</a></p><p class="src">原始文件：<code>Week7- Data Compression/Lecture7.pdf</code> <code>Week7- Data Compression/Exercise 4.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前三讲把文本、图像、音视频都变成了字节，结果是「文件大得离谱」：一张 1080p 图 5.93 MiB、一秒 CD 音频 176 KB、一秒 1080p 视频 187 MB。这一讲就是对这些数据做减法：能不能用更少的位表示同一份信息？</p><p>压缩的全部依据是<b>冗余</b>（redundancy）——数据里有重复的、可预测的、人感知不到的部分。不同的冗余要用不同的方法：重复的用 RLE，反复出现的模式用字典，符号频率不均的用 Huffman 变长码，人感知不到的细节直接丢掉（有损）。</p><p>本讲要建立两个判断力：一是「这段数据有哪种冗余，该用哪类方法」；二是「这个场景能不能接受有损」。前者是技术判断，后者是需求判断，两者都要能说清理由。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说明压缩与编码的区别，并用冗余解释为什么压缩可行</li><li>对给定序列做 RLE 编码，并判断 RLE 在什么数据上失效</li><li>区分无损与有损压缩，各举三个格式并说明适用场景</li><li>计算压缩比与大小缩减百分比，并区分这两个指标</li><li>按四步建 Huffman 树、读出码字、计算平均码长并与定长编码对比</li><li>解释前缀性质为什么使变长码可以无歧义解码</li><li>说明视频的空间冗余与时间冗余分别指什么</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、数据为什么这么大</h2><p>课件开篇回顾前几讲的三组数字，把问题的规模摆出来：</p><table><tr><th>数据类型</th><th>配置</th><th>原始数据量</th></tr><tr><td>图像</td><td>1920 × 1080、24 位 RGB</td><td>约 5.93 MiB</td></tr><tr><td>音频</td><td>44.1 kHz、16 位、立体声</td><td>约 176.4 KB 每秒</td></tr><tr><td>视频</td><td>1920 × 1080、24 位 RGB、30 fps</td><td>约 177 MB 每秒</td></tr></table><p>课件在下面写了一句：原始数字数据可能需要大量存储。这就是压缩要解决的问题：<b>能不能用更少的位表示同一份信息？</b></p><h2 id="s3">二、压缩是什么</h2><h3 id="s4">2.1 定义</h3><p>数据压缩减少表示信息所需的数据量：</p><pre><code>原始数据 → 压缩 → 更小的数据</code></pre><p>目标是「用更少的位，同时保留所需的信息」（"Use fewer bits while preserving the required information"）。注意「所需」二字：保留多少信息，由应用决定——这就埋下了无损与有损的分岔。</p><h3 id="s5">2.2 压缩不是编码</h3><table><tr><th>概念</th><th>做什么</th><th>例子</th></tr><tr><td>编码 Encoding</td><td>把信息表示成某种数字形式</td><td><code>128 → 10000000</code></td></tr><tr><td>压缩 Compression</td><td>减少表示信息所需的数据量</td><td>大文件 → 小文件</td></tr></table><p>课件的关键句：<b>编码决定数据怎样表示，压缩着眼于减少需要多少数据</b>。两者正交：同一份编码可以压缩也可以不压缩；同一种压缩可用于不同的编码。</p><h2 id="s6">三、冗余：压缩的基础</h2><h3 id="s7">3.1 定义</h3><p>许多数据集含有冗余。冗余的意思是：<b>某些信息是重复的，或者可以用更高效的方式表示</b>。压缩就是去利用这种冗余。</p><pre><code>冗余 / 低效的表示 → 压缩 → 更紧凑的表示</code></pre><h3 id="s8">3.2 最简单的例子</h3><p>课件给的例子极简：</p><pre><code>AAAAAAAAAAAAAAAAAAAA</code></pre><p>把 20 个 A 一个个存起来是低效的。可以改写成 <b>20 × A</b>——把重复的信息用更紧凑的方式表达。</p><h3 id="s9">3.3 游程编码（RLE）</h3><p>这个朴素的想法就是<b>游程编码</b>（Run-Length Encoding，RLE）：</p><pre><code>AAAAAABBBCCCC → 6A 3B 4C</code></pre><p>不再逐字符存，而是存「值 + 重复次数」。课件把它概括为 value + repetition count。</p><h3 id="s10">3.4 RLE 什么时候好用</h3><p>RLE 在数据含<b>长段重复值</b>时效果好：</p><pre><code>AAAAAAAAAAAAAAAA
+BBBBBBBBBBBB</code></pre><p>在数据频繁变化时会变差：</p><pre><code>ABACDBACDABACD</code></pre><p>为什么变差？因为每个字符只出现一次，编码成 <code>1A 1B 1A 1C …</code> 反而<b>变长</b>了：本来 1 个字符，编码后要 2 个符号。</p><p>课件的结论句值得抄下来：<b>一种压缩方法与数据结构的假设相符时才有效</b>（"A compression method works well when its assumptions match the structure of the data"）。这句话是所有压缩选择的判据。</p><h2 id="s11">四、不同数据的冗余不同</h2><table><tr><th>数据类型</th><th>可能的冗余</th></tr><tr><td>文本 Text</td><td>重复的符号与模式</td></tr><tr><td>图像 Image</td><td>相邻像素值相近</td></tr><tr><td>音频 Audio</td><td>统计上可预测的模式</td></tr><tr><td>视频 Video</td><td>帧与帧之间的相似信息</td></tr></table><p>因为冗余的形态不同，<b>不同数据类型需要不同的压缩技术</b>。这也是为什么格式那么多：PNG 针对图像的空间相关，FLAC 针对音频的线性预测，H.264 针对帧间相似。</p><h2 id="s12">五、两大类：无损与有损</h2><h3 id="s13">5.1 判据</h3><p>课件把压缩分成两大类，判据只有一个问题：<b>能不能精确还原原始数据？</b></p><pre><code>数据压缩 ├── 无损压缩 Lossless
+         └── 有损压缩 Lossy</code></pre><h3 id="s14">5.2 无损压缩</h3><p>无损压缩：原始数据可以被<b>精确</b>恢复。关键性质是「不丢失任何信息」。流程是：原始 → 压缩 → 压缩数据 → 解压 → 原始（完全一致）。</p><h3 id="s15">5.3 无损的例子与适用</h3><p>常见格式：ZIP、PNG、FLAC。适用场合是「每一位都重要」的数据：</p><span class="chip">文本文档</span> <span class="chip">源代码</span> <span class="chip">电子表格</span> <span class="chip">部分科研数据</span> <span class="chip">归档数据</span><h3 id="s16">5.4 有损压缩</h3><p>有损压缩：重建出来的数据与原数据<b>不完全相同</b>。关键性质是「丢弃了一部分信息」。流程是：原始 → 压缩 → 压缩数据 → 解压 → 近似。</p><h3 id="s17">5.5 为什么会接受损失</h3><p>课件给的理由是「并非所有信息同等重要」：</p><ul><li>小的视觉差异可能很难被察觉</li><li>某些声音人耳可能听不到</li><li>某些细节的感知重要性很低</li></ul><p>正因为可以丢，有损压缩能取得<b>大得多</b>的体积缩减。</p><h3 id="s18">5.6 对照表</h3><table><tr><th>对照项</th><th>无损 Lossless</th><th>有损 Lossy</th></tr><tr><td>能否精确还原？</td><td>能</td><td>不能</td></tr><tr><td>是否丢弃信息？</td><td>不丢</td><td>丢</td></tr><tr><td>压缩潜力</td><td>通常较低</td><td>通常更高</td></tr><tr><td>典型用途</td><td>文本、源代码、归档</td><td>照片、音频、视频</td></tr><tr><td>例子</td><td>ZIP、PNG、FLAC</td><td>JPEG、MP3、多数视频编解码器</td></tr></table><h2 id="s19">六、压缩比与大小缩减</h2><h3 id="s20">6.1 压缩比</h3><p>压缩比把原始大小与压缩后大小相比：</p><p><b><code>压缩比 = 原始大小 / 压缩后大小</code></b></p><pre><code>原始 80 MB，压缩后 20 MB
+80 / 20 = 4  → 压缩比 4:1</code></pre><p>课件还补了另一个说法：压缩后的文件是原始大小的 <code>20 / 80 = 25%</code>。</p><h3 id="s21">6.2 大小缩减百分比</h3><p>这两个指标不能混：</p><p><b><code>大小缩减 = 1 − 压缩后 / 原始</code></b></p><pre><code>100 MB → 25 MB
+压缩比 = 4:1
+大小缩减 = 1 − 25/100 = 75%</code></pre><p>也就是说，原来的 75% 被去掉了。压缩比 4:1 与缩减 75% 是同一件事的两种说法；但「压缩比 4:1」不能读成「缩减 4 倍」，那是错的。</p><div class="callout warn"><b>别混指标</b>压缩比 4:1 ≠ 缩减 4 倍。压缩比是「原始 ÷ 压缩后」，缩减是「1 − 压缩后 ÷ 原始」。前者是无量纲比值，后者是百分比。</div><h2 id="s22">七、无损压缩为什么能成立</h2><p>无损压缩利用的是模式与冗余。课件的例子：</p><pre><code>ABABABABABABABAB</code></pre><p>不必逐符号独立存储，压缩方法可以抓住这个重复的模式。关键在于：<b>压缩后的表示仍然含有足够的信息，能精确重建原始数据</b>。这句话是无损的定义，也是它的可行性证明——只要压缩是可逆的映射，就无损。</p><h3 id="s23">7.1 字典压缩</h3><p>另一个基本思路是用「重复模式的字典」。设文件里反复出现：</p><pre><code>information processing
+information processing
+information processing</code></pre><p>不必反复存整句，可以给它一个更短的引用：</p><pre><code>1 → "information processing"
+然后：1 1 1</code></pre><p>课件指出真实算法是这一思想的高级版本：<b>LZ77、LZ78、LZW</b>。它们被用在不同压缩系统与文件格式里（ZIP、GIF、PNG 的一部分都用过这一族思想）。</p><p>课件明确说「你只需要理解：重复的模式可以被更紧凑的表示替代」。所以考试不会要求你手写 LZW 的字典更新过程，但要能说清「字典 = 把长串换成短编号」。</p><h2 id="s24">八、Huffman 编码</h2><h3 id="s25">8.1 变长码的核心思想</h3><p>Huffman 编码使用<b>变长码</b>：</p><ul><li>频繁出现的字符给<b>短</b>码</li><li>罕见出现的字符给<b>长</b>码</li></ul><p>道理很直白：如果 A 出现一百万次、C 只出现一次，那给 A 分配 1 位、C 分配 5 位，总位数会显著减少。定长编码的问题正是「对罕用符号也付同样的代价」。</p><h3 id="s26">8.2 四步流程</h3><ol class="steps"><li>第 1 步：统计频率——数每个字符出现多少次</li><li>第 2 步：自底向上建 Huffman 树——每次取频率最低的两个节点合成一个父节点，重复直到只剩一棵树</li><li>第 3 步：分配二进制码——左分支写 0，右分支写 1</li><li>第 4 步：读出每个字符的最终码字（从根到叶的路径）</li></ol><h3 id="s27">8.3 完整算例：abracadabra</h3><p>课件用 <code>X = abracadabra</code> 示范。先统计频率：</p><table><tr><th>字符</th><th>a</th><th>b</th><th>r</th><th>c</th><th>d</th></tr><tr><td>出现次数</td><td>5</td><td>2</td><td>2</td><td>1</td><td>1</td></tr></table><p>合计 11 个字符，与单词长度一致。</p><p>建树过程（每次取最小的两个合并，父节点频率为二者之和）：</p><ol class="steps"><li>取最小的两个频率 1 与 1（c 与 d）→ 合并成 2</li><li>此时有 a(5)、b(2)、r(2)、c+d(2)，取 2 与 2（b 与 r）→ 合并成 4</li><li>此时有 a(5)、c+d(2)、b+r(4)，取 2 与 4 → 合并成 6</li><li>最后 a(5) 与 6 → 合并成根 11</li></ol><p>每次必须取「当前两个最小值」，这是 Huffman 算法的硬规则，取错会得到更差的码。遇到并列（例如三个 2）时，选哪一个会影响「哪个符号得到哪个码字」，但不会改变<b>每个码字的长度</b>，因此平均码长不变。下面按能复现课件码字的合并顺序继续。</p><p>按「左 0 右 1」读路径，得到码字：</p><table><tr><th>字符</th><th>码字</th><th>位数</th><th>出现次数</th><th>贡献位数</th></tr><tr><td>a</td><td>0</td><td>1</td><td>5</td><td>5</td></tr><tr><td>b</td><td>110</td><td>3</td><td>2</td><td>6</td></tr><tr><td>r</td><td>111</td><td>3</td><td>2</td><td>6</td></tr><tr><td>c</td><td>100</td><td>3</td><td>1</td><td>3</td></tr><tr><td>d</td><td>101</td><td>3</td><td>1</td><td>3</td></tr></table><p>总位数 <code>5 + 6 + 6 + 3 + 3 = 23</code> 位，编码 11 个字符。平均每题：</p><p><b><code>23 / 11 ≈ 2.1 位/字符</code></b></p><p>若用定长编码：5 个不同符号需要 <code>⌈log₂5⌉ = 3</code> 位，11 个字符共 33 位。于是压缩比：</p><p><b><code>3 / 2.1 ≈ 1.4</code></b></p><p>全文编码（课件给的那串）是 <code>01101110100010101101110</code>，共 23 位，可以逐段核对：a=0、b=110、r=111、a=0、c=100、a=0、d=101、a=0、b=110、r=111、a=0。</p><h3 id="s28">8.4 前缀性质</h3><p>课件专门解释了「为什么这很巧妙」：看这些码字 0、110、100——<b>没有任何一个码字是另一个码字的前缀</b>。这叫前缀性质（Prefix Property）。</p><p>它保证解码无歧义：从左往右读，一旦读到的位串与某个码字完全相等，就可以立即输出该字符并继续，不需要回头。若允许一个码字是另一个的前缀（例如 A=0、B=01），那么读到 0 时无法判断是 A 还是 B 的开头。</p><h3 id="s29">8.5 变长码为什么有用</h3><p>课件的例子：</p><pre><code>A A A A A B C</code></pre><p>若每个符号用 8 位：<code>7 × 8 = 56</code> 位。若频繁符号用更短的码，需要的位可能更少。课件的原话是「具体编码方案更复杂，但基本思想很简单：给常见的模式更少的位，给罕见的模式更多的位」。</p><h2 id="s30">九、文本的无损压缩</h2><p>文本常含统计冗余：某些字母出现更频繁、某些词与模式重复、某些字符序列很常见。无损压缩可以利用这些模式。</p><p>为什么文本必须无损？因为<b>一个小的改动会改变意思</b>：<code>cat</code> 与 <code>bat</code> 只差一个字母，含义完全不同。所以文本通常要求精确恢复。</p><h2 id="s31">十、图像压缩</h2><h3 id="s32">10.1 为什么图像可以压缩</h3><p>图像常含冗余。课件举的例子是一大片天空：许多像素值相近。</p><pre><code>120 121 120 119
+121 120 120 121
+120 120 119 120</code></pre><p>相邻像素高度相关，压缩可以利用这种模式（例如只存「与左边像素的差值」）。</p><h3 id="s33">10.2 PNG（无损）</h3><p>PNG 是支持无损压缩的常见图像格式，在需要保留精确像素值时有用。典型应用：示意图、屏幕截图、图形、边缘锐利的图像、需要透明通道的图像。</p><p>课件特意补了一句：<b>PNG 压缩并不意味着图像质量下降</b>。这句话回应了一个常见误解——很多人以为「压缩 = 变糊」，其实无损压缩只是换了一种更紧凑的写法。</p><h3 id="s34">10.3 有损图像压缩的理由</h3><p>照片含巨量视觉信息，而人的感知并不对每个细节一视同仁。有损压缩可以：去除不重要的信息、简化图像信息、得到小得多的文件。</p><h3 id="s35">10.4 JPEG</h3><p>JPEG 是广泛使用的有损图像压缩格式，典型用于照片、网页图像、相机图像。它能显著缩小体积，但重建出的图像与原图不完全相同。</p><p>课件给了一个概念流程：原图 → 变换/分析 → 丢弃不重要信息 → 编码 → 压缩图。注意「丢弃」发生在编码之前，是有意为之。</p><h3 id="s36">10.5 质量与体积的权衡</h3><p>课件写得很直接：<b>有损压缩越激进 → 文件越小 → 质量损失越大</b>。压缩过头会出现：</p><ul><li>块状伪影（block-like artifacts）</li><li>细节丢失</li><li>边缘模糊</li><li>颜色失真</li></ul><p>所以压缩是「文件大小」与「质量」之间的权衡（trade-off），没有免费的午餐。</p><h2 id="s37">十一、音频压缩</h2><h3 id="s38">11.1 为什么音频可以压缩</h3><p>数字音频含有「感知上不那么重要」的模式与信息：某些频率人耳听不到、某些声音会被更响的声音掩蔽（masking）、音频信号本身也有可预测的模式。有损音频压缩利用的正是听觉特性。</p><h3 id="s39">11.2 MP3（有损）</h3><p>MP3 是著名的有损音频格式。目标是「缩小文件，同时维持可接受的听感质量」。概念流程：原始音频 → 分析 → 丢弃感知上不重要的信息 → 编码 → 压缩音频。</p><h3 id="s40">11.3 FLAC（无损）</h3><p>FLAC 是常见的无损音频格式：原始样本可以被精确恢复。流程是「原始 → 压缩 → 压缩音频 → 解压 → 原始音频」，两头完全一致。</p><p>所以音频两条路并存：要存档、要再编辑，用 FLAC；要分发、要省流量，用 MP3/AAC。</p><h2 id="s41">十二、视频压缩</h2><h3 id="s42">12.1 为什么难</h3><p>视频含很多帧，每帧可能上百万像素，原始数据极大（第 6 讲算过：1080p 30 fps 每秒约 187 MB）。</p><h3 id="s43">12.2 两种冗余</h3><table><tr><th>冗余类型</th><th>含义</th><th>例子</th></tr><tr><td>空间冗余（spatial）</td><td>同一帧内相邻像素相似</td><td>一面白墙、一片天空</td></tr><tr><td>时间冗余（temporal）</td><td>帧与帧之间相似</td><td>镜头不动，只有人物在动</td></tr></table><p>视频压缩可以同时利用这两种冗余，所以压缩比能做到几十到几百倍。</p><h3 id="s44">12.3 概念流程</h3><p>课件的简化思路非常清晰：</p><pre><code>帧 1 → 存完整信息
+帧 2 → 只存重要的变化
+帧 3 → 只存重要的变化</code></pre><p>不去独立存每一帧，而是利用帧之间的相似性。这与 RLE 的思路在精神上一致：<b>把重复的部分省掉，只记差异</b>。</p><h3 id="s45">12.4 常见编解码器</h3><p>常见视频编码标准：H.264 / AVC、H.265 / HEVC、AV1、VP9。课件明确说内部算法不会细讲，只要求知道「codec 用压缩技术更高效地表示视频」。</p><h2 id="s46">十三、按数据类型选方法</h2><table><tr><th>数据</th><th>常见压缩方式</th></tr><tr><td>文本</td><td>无损</td></tr><tr><td>源代码</td><td>无损</td></tr><tr><td>文档</td><td>无损</td></tr><tr><td>照片</td><td>常为有损</td></tr><tr><td>图形（graphics）</td><td>常为无损</td></tr><tr><td>音频</td><td>无损或有损</td></tr><tr><td>视频</td><td>通常有损</td></tr></table><p>课件还列了影响选择的因素：数据类型、所需质量、是否需要精确恢复、存储限制、传输要求。</p><h2 id="s47">十四、为什么不只用一种</h2><p>课件用两个反问把权衡讲透：</p><p><b>为什么不总是用无损？</b>因为对某些应用，无损压缩减得不够多，而有损能减得多得多。</p><p><b>为什么不总是用有损？</b>因为有些信息必须精确恢复（源代码、账目、归档）。</p><p>结论：<b>压缩是应用相关的</b>（compression is application-dependent）。这句话是本章的答题总纲。</p><h2 id="s48">十五、压缩在信息处理流水线中的位置</h2><pre><code>真实信息 → 采样 → 量化 → 编码 → 数字数据 → 压缩 → 更小的数据 → 存储/传输</code></pre><h2 id="s49">十六、解压与不可逆</h2><p>压缩都有对应的解压过程。对无损压缩：</p><p><code>恢复的数据 = 原始数据</code></p><p>对有损压缩：</p><p><code>恢复的数据 ≈ 原始数据</code></p><p>课件加了一句关键提醒：<b>有损压缩是不可逆的</b>（"Lossy compression is irreversible"）。已经被丢掉的细节无法通过再次解压找回来。所以「把 JPEG 再存一次 JPEG」会继续掉质量，这叫「代际损失」。</p><h2 id="s50">十七、本章小结</h2><p>课件最后总结了三句话：数据压缩减少表示信息所需的数据量；分无损与有损两类；无损精确还原，有损以部分信息换取更大的体积缩减。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>data compression</td><td>数据压缩</td><td>Reducing the amount of data needed to represent information.</td></tr><tr><td>redundancy</td><td>冗余</td><td>Repeated or predictable information that compression can exploit.</td></tr><tr><td>run-length encoding (RLE)</td><td>游程编码</td><td>Storing value plus repetition count, e.g. AAAAAABBBCCCC → 6A 3B 4C.</td></tr><tr><td>lossless compression</td><td>无损压缩</td><td>The original data is recovered exactly; no information is lost.</td></tr><tr><td>lossy compression</td><td>有损压缩</td><td>The reconstructed data is an approximation; some information is discarded.</td></tr><tr><td>compression ratio</td><td>压缩比</td><td>Original size divided by compressed size, e.g. 80/20 = 4:1.</td></tr><tr><td>size reduction</td><td>大小缩减</td><td>1 − compressed/original, expressed as a percentage.</td></tr><tr><td>dictionary compression</td><td>字典压缩</td><td>Replacing repeated patterns with short references; LZ77, LZ78, LZW.</td></tr><tr><td>Huffman coding</td><td>霍夫曼编码</td><td>Variable-length codes: frequent symbols get short codes, rare symbols long codes.</td></tr><tr><td>prefix property</td><td>前缀性质</td><td>No code is a prefix of another code, so decoding is unambiguous.</td></tr><tr><td>variable-length code</td><td>变长码</td><td>Different symbols occupy different numbers of bits.</td></tr><tr><td>spatial redundancy</td><td>空间冗余</td><td>Similar information within one frame or image.</td></tr><tr><td>temporal redundancy</td><td>时间冗余</td><td>Similar information between consecutive frames.</td></tr><tr><td>codec</td><td>编解码器</td><td>A standard that compresses and decompresses a media stream, e.g. H.264.</td></tr><tr><td>irreversible</td><td>不可逆</td><td>Lossy compression cannot restore the discarded information.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把 <code>AAAAABBBCCCCDDDDDD</code> 用 RLE 编码（写成 (count, symbol)），并说明它为什么有效。</div><p>从左往右数每段的长度：<code>AAAAA</code> 5 个、<code>BBB</code> 3 个、<code>CCCC</code> 4 个、<code>DDDDDD</code> 6 个。</p><p>编码结果：<b>(5, A)(3, B)(4, C)(6, D)</b>，也可写成 <code>5A 3B 4C 6D</code>。</p><p><b>为什么有效：</b>原始序列 18 个字符，每字符 1 字节 = 18 字节；RLE 只用 4 组「计数 + 符号」，若计数用 1 字节、符号用 1 字节，共 8 字节，压缩比约 <code>18:8 = 2.25:1</code>。</p><p><b>前提条件：</b>数据必须有<b>长游程</b>（同一值连续出现多次）。这正是 Exercise 4 第 2 题的结构。</p><p><b>反向验证：</b>按 <code>5A</code> 展开得 AAAAA，<code>3B</code> 得 BBB，<code>4C</code> 得 CCCC，<code>6D</code> 得 DDDDDD，拼起来与原串一致，说明无损。</p><p>若能重排（lossy 场景）还可进一步压，例如把相同字母聚在一起——但那就改变了数据本身，不再是无损压缩。</p></div><div class="qa"><div class="q">例 2　一个文件原始 800 KB，压缩后 200 KB。求压缩比与大小缩减百分比。</div><p><b>压缩比：</b><code>800 / 200 = 4</code>，即 <b>4:1</b>。</p><p><b>压缩后占比：</b><code>200 / 800 = 25%</code>，即只剩原来的四分之一。</p><p><b>大小缩减：</b><code>1 − 200/800 = 1 − 0.25 = 0.75</code>，即 <b>75%</b>。</p><p>三者说的是同一件事：原始 800 的 25% 被留下，75% 被去掉，比值 4:1。</p><p><b>常见错误：</b>把「4:1」读成「缩减 4 倍」或「缩减 400%」。正确的说法是「缩减到四分之一」或「缩减 75%」。若题目问「被压缩掉多少」，答 600 KB 或 75%。</p></div><div class="qa"><div class="q">例 3　给定频率 A 60、U 30、T 6、Y 3、L 1，建 Huffman 树、给出码字、算平均码长，并与定长编码对比。</div><p><b>第一步，排序：</b>L(1)、Y(3)、T(6)、U(30)、A(60)。</p><p><b>第二步，逐步合并（每次取两个最小值）：</b></p><ol class="steps"><li>L(1) + Y(3) = 4</li><li>T(6) + 4 = 10</li><li>U(30) + 10 = 40</li><li>A(60) + 40 = 100</li></ol><p><b>第三步，按「左 0 右 1」读码字：</b></p><table><tr><th>符号</th><th>频率</th><th>码字</th><th>位数</th></tr><tr><td>A</td><td>60</td><td>0</td><td>1</td></tr><tr><td>U</td><td>30</td><td>10</td><td>2</td></tr><tr><td>T</td><td>6</td><td>110</td><td>3</td></tr><tr><td>Y</td><td>3</td><td>1110</td><td>4</td></tr><tr><td>L</td><td>1</td><td>1111</td><td>4</td></tr></table><p><b>第四步，算平均码长：</b></p><p><code>(60×1 + 30×2 + 6×3 + 3×4 + 1×4) / 100 = (60 + 60 + 18 + 12 + 4) / 100 = 154 / 100</code> = <b>1.54 位/符号</b>。</p><p><b>第五步，与定长对比：</b>5 个符号的定长码需要 <code>⌈log₂5⌉ = 3</code> 位。所以节省比例 <code>1 − 1.54/3 ≈ 48.7%</code>，压缩比约 <code>3 / 1.54 ≈ 1.95:1</code>。</p><p>检验前缀性质：码字是 0、10、110、1110、1111。逐个检查「是否有某个码字以另一个码字开头」——以 0 开头的只有 0 自己；以 1 开头的是 10、110、1110、1111，而 1、11、111 都不是码字，1110 也不是 1111 的前缀。因此没有任何码字是另一个码字的前缀，解码唯一。</p></div><div class="qa"><div class="q">例 4　判断下列场景该选无损还是有损，并说明理由：源代码、手机相册里的旅行照片、医院 CT 影像、在线视频网站。</div><p><b>源代码 → 无损。</b>一个字符之差就改变程序语义，必须精确恢复；代码体积本来也不大，压缩收益不是首要。</p><p><b>旅行照片 → 有损（JPEG）。</b>人眼对细微高频细节不敏感，适度丢弃几乎看不出差别，而换来的体积缩小是十倍量级，对存储与分享都很关键。若要长期存档或后期调色，则应保留一份无损/RAW 版本——这说明「同一内容在不同用途下可有不同选择」。</p><p><b>医院 CT 影像 → 无损。</b>影像用于诊断，任何细节都可能是病灶；法规与责任也要求可追溯的精确数据。</p><p><b>在线视频 → 有损（H.264/H.265/AV1）。</b>未压缩视频每秒上百 MB，网络无法承载；有损压缩利用空间与时间冗余，能把码率降到几 Mbps，同时保持可接受画质。</p><p>通用判据三步：① 丢失细节会不会改变结论？② 人是否感知得到损失？③ 存储与传输的约束有多硬？三步都指向「不能丢」就选无损。就选无损。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把 <code>ABACDBACDABACD</code> 用 RLE 编码，并解释为什么这种方法在这里效果差。</li><li>一个文件从 100 MB 压缩到 25 MB，求压缩比与大小缩减百分比。</li><li>写出课件 abracadabra 一例的码表（a、b、r、c、d），并算平均码长。</li><li>一张 800 × 600、8 位灰度图原始为 480 000 字节，压到 60 000 字节，求压缩比与缩减比例。</li><li>为什么文本文档几乎总是用无损压缩？举一个反例说明「小改动改变含义」。</li><li>视频的空间冗余与时间冗余各指什么？各举一个具体例子。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 每段长度都是 1：<code>1A 1B 1A 1C 1D 1B 1A 1C 1D 1A 1B 1A 1C 1D</code>。原始 14 个字符，编码后 14 组 = 28 个符号，<b>反而变长约一倍</b>。原因是没有长游程，与 RLE 的假设（值会连续重复）不符。</p><p><b>2.</b> 压缩比 <code>100 / 25 = 4</code>，即 <b>4:1</b>；缩减 <code>1 − 25/100 = 75%</code>。若问「被去掉多少」，答案是 75 MB。</p><p><b>3.</b> a → 0（1 位，5 次，5 位）；b → 110（3 位，2 次，6 位）；r → 111（3 位，2 次，6 位）；c → 100（3 位，1 次，3 位）；d → 101（3 位，1 次，3 位）。总 23 位。平均 <code>23 / 11 ≈ 2.09 ≈ 2.1</code> 位/字符。定长需 3 位，压缩比 <code>3 / 2.1 ≈ 1.4</code>。</p><p><b>4.</b> 压缩比 <code>480 000 / 60 000 = 8</code>，即 <b>8:1</b>；缩减 <code>1 − 60 000/480 000 = 87.5%</code>。对 8 位灰度图，8:1 通常只有无损压缩（如 PNG 用于大片同色区域）才可能达到；若是照片，多半是 JPEG 有损。</p><p><b>5.</b> 因为文本里一个字符的改变就改变含义：<code>cat</code> 与 <code>bat</code> 只差一位；<code>if x &gt; 0</code> 写成 <code>if x &gt;= 0</code> 逻辑就变了；金额 <code>1000</code> 与 <code>100</code> 差一个 0。所以文本必须可精确恢复。</p><p><b>6.</b> 空间冗余 = 同一帧（或同一张图）内相邻像素相似，例如一片天空、一面白墙、纯色背景。时间冗余 = 相邻帧之间相似，例如固定机位的访谈，背景不动只有人物口型在变。视频压缩同时利用两者，因此压缩比可以远高于单张图像。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① 冗余的概念与三类例子；② RLE 的编码与失效条件；③ 无损/有损的判据、格式与适用场景；④ 压缩比与大小缩减的计算；⑤ Huffman 四步与平均码长；⑥ 前缀性质；⑦ 空间冗余与时间冗余。</div><div class="callout warn"><b>易错 1</b>把压缩比与缩减混为一谈。4:1 对应缩减 75%，不是 400%。</div><div class="callout warn"><b>易错 2</b>Huffman 建树时不取「两个最小值」。取错会得到更长的平均码长，题目会判错。</div><div class="callout warn"><b>易错 3</b>平均码长用「位数之和 ÷ 符号种类数」。分母必须是<b>总出现次数</b>（本例 100 或 11），不是 5。</div><div class="callout warn"><b>易错 4</b>以为 PNG 压缩会掉画质。PNG 是无损，压缩只改变写法，不改变像素值。</div><div class="callout tip"><b>进阶</b>① 平均码长的另一个算法：把每层内部节点的频率相加再除以总频率（Huffman 的等价性质）；② 有损压缩不可逆，反复存 JPEG 会产生代际损失；③ 「压缩比」与「码率」是两种表达，视频常用码率（Mbps）；④ 字典压缩与 Huffman 可以叠加使用（ZIP 就是先用 LZ 再用 Huffman）。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s51">方法清单</h2><h3 id="s52">判断该用哪类压缩（三问）</h3><ol class="steps"><li>这段数据有没有重复/可预测的结构？（有 → 可用 RLE / 字典 / Huffman）</li><li>丢掉一部分信息会不会改变结论或功能？（会 → 必须无损）</li><li>体积约束有多硬？（很硬且可容忍感知损失 → 有损）</li></ol><h3 id="s53">做 RLE（三步）</h3><ol class="steps"><li>从左往右扫描，找出连续相同值的游程</li><li>每组写成（计数, 值）</li><li>与原串长度比较：若组数 × 2 ≥ 原长度，说明此法不适用</li></ol><h3 id="s54">建 Huffman 码（五步）</h3><ol class="steps"><li>统计每个符号的出现次数</li><li>把每个符号当作一个叶子节点，按频率排序</li><li>反复取两个最小频率合成父节点，直到只剩一个根</li><li>从根出发，左分支记 0、右分支记 1，读出每个叶子的码字</li><li>算平均码长：<code>Σ(频率 × 码长) / 总频率</code>，并与定长 <code>⌈log₂n⌉</code> 对比</li></ol><h3 id="s55">算压缩指标（两式）</h3><ul class="checklist"><li>压缩比 = 原始 / 压缩后（写成 n:1）</li><li>大小缩减 = 1 − 压缩后 / 原始（写成百分比）</li><li>两者互相换算：缩减 = 1 − 1/压缩比</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p2–p5</td><td>七个关键问题、三类原始数据量的回顾、压缩的定义与目标（用更少的位保留所需信息）</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p6–p11</td><td>压缩 ≠ 编码、冗余的定义、AAAA…=20×A 的例子、RLE 与 6A 3B 4C、RLE 的适用与失效、四类数据的冗余对照</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p12–p17</td><td>无损/有损的分类与判据、无损的定义与流程、ZIP/PNG/FLAC 及适用数据、有损的定义、为什么接受损失、六项对照表</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p18–p19</td><td>压缩比 80/20=4:1、压缩后占 25%、大小缩减公式与 100→25 的算例</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p20–p22</td><td>无损为什么可行（可精确重建）、ABAB… 的例子、字典压缩与 information processing 的例子、LZ77/LZ78/LZW</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p23–p28</td><td>Huffman 的变长码思想、四步流程、abracadabra 的频率与建树、码表与 23 位编码串、平均 2.1 位与压缩比 1.4、前缀性质、7×8=56 位的对比</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p29–p35</td><td>文本的统计冗余与必须无损的理由（cat≠bat）、图像冗余（天空邻域像素）、PNG 与适用场景、有损图像压缩的理由、JPEG 概念流程、质量权衡与四类伪影</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p36–p42</td><td>音频为何可压缩（掩蔽、听不到的频率）、MP3 的目标与流程、FLAC 的无损往返、视频为何难存、空间与时间冗余、只存变化的概念、H.264/H.265/AV1/VP9</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf</td><td>p43–p48</td><td>按数据类型选压缩方式的表、为什么不能只用一种、压缩在流水线中的位置、解压与不可逆、三条总结</td></tr><tr><td>Week7- Data Compression/Exercise 4.pdf</td><td>第 1–4 题</td><td>无损与有损的区别与适用、AAAAABBBCCCCDDDDDD 的 RLE、800 KB→200 KB 的比值与缩减、为什么图像音频视频常用有损</td></tr><tr><td>Week7- Data Compression/Exercise 4.pdf</td><td>第 5 题</td><td>A 60 / U 30 / T 6 / Y 3 / L 1 的 Huffman 建树、码字、平均码长与定长对比（本讲例 3 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>并列最小值对码字分配的影响、平均码长的「内部节点频率和」速算法、代际损失、码率（Mbps）表达、LZ 与 Huffman 叠加使用，均为理解性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w6-audio-and-video.html">← Week 6 · 音频与视频表示：采样率、位深、帧率</a><a class="next" href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 1 · 信息、数据、算法、程序与 AI · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-1.html">第 1 章 计算机与信息处理导论</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、先看清这门课：定位、安排与考核</a><a class="toc-l3" href="#s3">1.1 课程定位</a><a class="toc-l3" href="#s4">1.2 五条课程目标</a><a class="toc-l3" href="#s5">1.3 教学形式与考核</a><a class="toc-l3" href="#s6">1.4 十四周路线图</a><a class="toc-l3" href="#s7">1.5 联系方式与提问规范</a><a class="toc-l2" href="#s8">二、什么是信息，什么是信息处理</a><a class="toc-l3" href="#s9">2.1 信息无处不在</a><a class="toc-l3" href="#s10">2.2 信息处理的三段式</a><a class="toc-l3" href="#s11">2.3 日常系统的输入、处理、输出</a><a class="toc-l3" href="#s12">2.4 一个反问：计算器算不算信息处理系统</a><a class="toc-l2" href="#s13">三、计算机怎样表示信息</a><a class="toc-l3" href="#s14">3.1 只有 0 和 1</a><a class="toc-l3" href="#s15">3.2 位与组合数</a><a class="toc-l3" href="#s16">3.3 编码：字符怎样变成 0 和 1</a><a class="toc-l3" href="#s17">3.4 四个「同一件事」</a><a class="toc-l3" href="#s18">3.5 数据与信息的区别</a><a class="toc-l3" href="#s19">3.6 计算机对数据能做的九件事</a><a class="toc-l2" href="#s20">四、算法：把「做什么」写成有限步</a><a class="toc-l3" href="#s21">4.1 定义</a><a class="toc-l3" href="#s22">4.2 例：找最大值</a><a class="toc-l3" href="#s23">4.3 算法与程序的区别</a><a class="toc-l2" href="#s24">五、数据结构：把数据摆成好用的形状</a><a class="toc-l3" href="#s25">5.1 为什么需要数据结构</a><a class="toc-l3" href="#s26">5.2 八种基本结构</a><a class="toc-l3" href="#s27">5.3 定义与核心问题</a><a class="toc-l3" href="#s28">5.4 一句被引用无数次的话</a><a class="toc-l2" href="#s29">六、从传统编程到 AI</a><a class="toc-l3" href="#s30">6.1 规则驱动的传统编程</a><a class="toc-l3" href="#s31">6.2 数据驱动的机器学习</a><a class="toc-l3" href="#s32">6.3 AI 的三根支柱</a><a class="toc-l3" href="#s33">6.4 ChatGPT 为什么显得聪明</a><a class="toc-l2" href="#s34">七、第一天活动：拆解一个 APP</a><a class="toc-l3" href="#s35">7.1 它使用哪些数据</a><a class="toc-l3" href="#s36">7.2 它处理哪些信息</a><a class="toc-l3" href="#s37">7.3 它可能用哪些算法</a><a class="toc-l3" href="#s38">7.4 它可能用哪些数据结构</a><a class="toc-l3" href="#s39">7.5 AI 可能出现在哪里</a><a class="toc-l2" href="#s40">八、贯穿全课的三问</a><a class="toc-l2" href="#s41">方法清单</a><a class="toc-l3" href="#s42">拆解任意一个信息系统（答题模板）</a><a class="toc-l3" href="#s43">判断数据还是信息（三步）</a><a class="toc-l3" href="#s44">算位数与取值数（四步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a class="toc-l3" href="w1-introduction.html">▸ Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 1 · 信息、数据、算法、程序与 AI</h1><p class="lead">Introduction: Information, Data, Algorithms and AI <span class="badge mute">86</span> <span class="badge mute">第 1 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 计算机与信息处理导论</a></p><p class="src">原始文件：<code>Week1- Introduction/Lecture_0.pdf</code> <code>Week1- Introduction/Lecture_1.pdf</code> <code>General/Timetable.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是整门课的第一讲，也是全课的世界观：计算机到底在处理什么。答案不是「数字」，而是<b>信息</b>——文字、照片、音乐、地图位置、传感器读数、银行流水，全都被转成 0 和 1 之后才进入机器。这一讲把「信息处理」拆成输入、处理、输出三段，再把「处理」拆成算法与数据结构，最后说明今天的 AI 为什么仍然是同一条流水线上的产物。</p><p>课件本身由两份文件组成：<code>Lecture_0.pdf</code> 讲课程行政信息（教师、联系方式、目标、考核、14 周安排），<code>Lecture_1.pdf</code> 讲技术内容（信息、数据、二进制、算法、数据结构、程序、AI）。两份合起来才是完整的第 1 周，所以本讲把它们并成一讲。</p><p>本讲是后面所有内容的地基：Week 2 讲数制，就是在回答「0 和 1 怎么表达数」；Week 3 到 Week 7 讲编码与压缩，就是在回答「文字、图像、声音怎么变成 0 和 1」；Week 10、Week 11 讲加密与逻辑，是在回答「这些 0 和 1 怎么保护、怎么判断」。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用「输入 → 处理 → 输出」描述任意一个日常信息系统，并指出三段各是什么</li><li>区分数据（data）与信息（information），并说明处理如何把前者变成后者</li><li>解释为什么计算机用二进制，以及 n 位能表示 2^n 种不同取值</li><li>说明「编码」的含义：字符 A 为什么是 65、为什么是 01000001</li><li>给出算法的定义，并把「找最大值」写成有限步的算法</li><li>区分算法与程序，说明「算法 + 数据结构 = 程序」的含义</li><li>说明传统编程与机器学习的差别，以及数据、模型、算力三要素</li><li>按课件给出的考核比例算出自己需要拿到多少分才能通过</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、先看清这门课：定位、安排与考核</h2><h3 id="s3">1.1 课程定位</h3><p>课件把课程名写作 Foundations of Information Processing（信息处理基础），简称 FoIP。课程描述的原意是：系统介绍信息处理的基本概念、方法与技术，内容包括<b>信息的表示与编码</b>、<b>文本与数据处理</b>、<b>多媒体信息处理</b>、<b>信息检索</b>与<b>基本信息安全</b>。课程把理论与动手结合，目标是让学生理解信息在计算机系统中如何被表示与处理，掌握数据与多媒体处理的基本技能，并建立信息安全与数据隐私意识。</p><p>课程描述还明确写了后续衔接：本课为数据结构、数据库系统、人工智能导论等后续课程做准备。这句话解释了为什么第 1 讲就要讲算法与数据结构——它们是后面几门课的共同语言。</p><h3 id="s4">1.2 五条课程目标</h3><p>课件列出了学完本课后应达到的五点，可以逐条对应到后面的周次：</p><table><tr><th>目标</th><th>含义</th><th>主要落在哪几讲</th></tr><tr><td>1. 理解信息的概念、类型与表示</td><td>知道信息是什么、有哪些类型、在计算机里怎么表示</td><td>Week 1、Week 2</td></tr><tr><td>2. 掌握文本、数据与多媒体处理技术</td><td>会做编码、采样、量化、压缩的计算与判断</td><td>Week 3–Week 7</td></tr><tr><td>3. 会使用基本的数据分析与信息处理工具</td><td>能动手处理真实文件与数据</td><td>Week 7–Week 9</td></tr><tr><td>4. 应用信息检索方法，具备安全意识</td><td>会建索引、会算 precision/recall、懂加密</td><td>Week 9–Week 10</td></tr><tr><td>5. 完成小型信息处理项目</td><td>团队协作与问题求解</td><td>课程项目（project）</td></tr></table><h3 id="s5">1.3 教学形式与考核</h3><p>课程有三种活动：<b>讲座</b>（Lectures，面授讲理论）、<b>习题课</b>（Tutorial / Exercise Sessions，讨论与动手）、<b>团队项目</b>（Team Project，培养协作与实践能力）。课件统计的任务量是讲座 14 次、习题课 14 次。</p><p>考核权重是本节最该记住的一张表：</p><table><tr><th>考核项</th><th>权重</th><th>说明</th></tr><tr><td>作业与练习（Assignments and Exercises）</td><td>35%</td><td>每周一份 Exercise，按截止日期在 Moodle 提交 PDF</td></tr><tr><td>项目（Project）</td><td>15%</td><td>团队项目</td></tr><tr><td>考试（Exam）</td><td>50%</td><td>权重最大，且另有单科下限</td></tr><tr><td>出勤（Attendance）</td><td>5 分（bonus）</td><td>额外加分，不计入 100% 的分母</td></tr></table><p>通过条件写得非常具体：<b>总分 ≥ 50 分，并且考试 ≥ 25 分</b>（"You pass when total &gt;= 50 pts and Exam&gt;=25 pts"）。这条规则的含义是：作业做得再好，考试低于 25 分也不能通过；反过来，考试刚过 25 分而作业全交，总分也可能刚好过线。所以两条线都要守。</p><p>等级换算（0–5 分制）如下，注意 50 分是及格线而不是 60 分：</p><table><tr><th>总分</th><th>等级</th><th>备注</th></tr><tr><td>90–100</td><td>5</td><td>优秀</td></tr><tr><td>80–89</td><td>4</td><td>良好</td></tr><tr><td>70–79</td><td>3</td><td>中等</td></tr><tr><td>60–69</td><td>2</td><td>合格</td></tr><tr><td>50–59</td><td>1</td><td>最低通过档</td></tr><tr><td>0–49</td><td>0</td><td>不通过</td></tr></table><div class="callout tip"><b>算一算自己的通过线</b>作业 35 + 项目 15 = 50 分是「平时分」，考试 50 分。若平时分拿满 50，考试只要 0 分总分也够 50——但考试单科下限 25 分不满足，仍然不通过。反过来，考试 25 分、平时分 25 分，总分 50 且考试达标，刚好通过。这就是「双门槛」的意思。</div><h3 id="s6">1.4 十四周路线图</h3><p>课件给出的周次安排与课件文件本身的编号并不完全一致（课件在 Week 8 之后调整过顺序），以实际拿到的讲义文件为准，下表按<b>文件实际内容</b>对齐：</p><table><tr><th>周次</th><th>课件写的主题</th><th>实际讲义文件内容</th></tr><tr><td>Week 1</td><td>Introduction</td><td>课程介绍 + 信息与信息处理总览</td></tr><tr><td>Week 2</td><td>Number Systems</td><td>数制、位置记数法、进制转换、二进制算术</td></tr><tr><td>Week 3</td><td>Data Encoding</td><td>有符号数表示、补码、溢出、小数、IEEE 754</td></tr><tr><td>Week 4</td><td>Information Storage and Data Representation</td><td>字符与文本编码（ASCII、Unicode、UTF-8）</td></tr><tr><td>Week 5</td><td>Multimedia Information</td><td>图像表示（采样、量化、编码、RGB、栅格与矢量）</td></tr><tr><td>Week 6</td><td>Data Structure</td><td>音频与视频表示（采样率、位深、帧率、数据量）</td></tr><tr><td>Week 7</td><td>Data Compression</td><td>数据压缩（RLE、字典、Huffman、有损与无损）</td></tr><tr><td>Week 8</td><td>Assignments</td><td>信息存储与文件表示（存储层次、介质、文件格式、元数据）</td></tr><tr><td>Week 9</td><td>Data Encryption</td><td>信息检索（布尔检索、倒排索引、TF-IDF、precision/recall）</td></tr><tr><td>Week 10</td><td>Algorithm</td><td>数据加密（古典密码、OTP、AES、RSA）</td></tr><tr><td>Week 11</td><td>Logic</td><td>逻辑与信息处理（命题逻辑、真值表、等价律）</td></tr><tr><td>Week 12–14</td><td>Data collection / Data processing / Review</td><td>本次讲义未取得对应课件，缺口在第 12 讲说明</td></tr></table><p>课件原始安排里 Week 12 是数据采集、Week 13 是数据处理、Week 14 是复习。这三周的课件不在本次抽取的文件里，因此本讲义不虚构其内容；复习讲（第 12 讲）只整合已有 11 周的知识点，不新增考点。</p><h3 id="s7">1.5 联系方式与提问规范</h3><p>课件对邮件有硬性规定，属于会被扣分的那种细节：邮件主题<b>必须包含 HDD5020</b>；正文必须写明课程名称、你的正式姓名（Official Name）、学号（Student No）；需要约见（meeting setup）只能通过邮件。教师邮箱是 <code>zhangshouhua@hebut.edu.cn</code>。</p><p>这条规定背后的道理与后面 Week 9 的信息检索一致：一封主题只有 "help" 的邮件，在几百封邮件里无法被检索到；主题里带课程代码、正文带学号，等于给邮件建了索引。</p><h2 id="s8">二、什么是信息，什么是信息处理</h2><h3 id="s9">2.1 信息无处不在</h3><p>课件用一串并列的例子开场：短信、照片与视频、音乐、地图与 GPS 位置、传感器测量值、金融交易、社交媒体帖子、科研数据。随后抛出问题：这些东西有什么共同点？</p><p>答案是课件自己给的那句话：它们<b>都能被计算机表示、存储、传输和处理</b>。这句话是本讲的核心。共同点不是「都是数字」，因为它们原本都不是数字；共同点是「都能被转成数字」。</p><h3 id="s10">2.2 信息处理的三段式</h3><p>信息处理（information processing）被定义为：信息的收集、表示、存储、传输、变换与分析。课件把它画成一条最简流水线：</p><pre><code>信息 → 输入 → 处理 → 输出</code></pre><p>紧接着给出一个学生最熟悉的例子：学生答案 → 计算机 → 评分 → 分数。四步对应四件事：学生答案被录入（输入），程序按规则判分（处理），分数被显示（输出），而这个分数已经是一条<b>信息</b>而不是原始数据。</p><h3 id="s11">2.3 日常系统的输入、处理、输出</h3><p>课件用一张表把六个常见应用的 IPO 拆开，这张表值得抄下来，因为它示范了「如何把一句模糊的产品描述变成可分析的模型」：</p><table><tr><th>应用</th><th>输入</th><th>处理</th><th>输出</th></tr><tr><td>搜索引擎</td><td>查询词</td><td>检索 + 排序</td><td>结果列表</td></tr><tr><td>导航</td><td>当前位置 + 目的地</td><td>路线计算</td><td>路线</td></tr><tr><td>网上购物</td><td>用户 + 商品</td><td>推荐</td><td>商品列表</td></tr><tr><td>银行</td><td>交易请求</td><td>校验</td><td>交易结果</td></tr><tr><td>天气应用</td><td>传感器数据</td><td>预测</td><td>天气预报</td></tr><tr><td>AI 聊天机器人</td><td>提示词（prompt）</td><td>模型推理</td><td>回答</td></tr></table><p>课件在这张表下面写了一句总结：<b>计算本质上就是处理信息</b>（"Computing is fundamentally about processing information"）。这句话把「计算机科学」与「信息处理」划了等号。</p><h3 id="s12">2.4 一个反问：计算器算不算信息处理系统</h3><p>课件用 <code>25 × 36</code> 提问：输入 25×36，输出 900，中间发生了什么？这个问题的价值在于逼你想清楚「处理」不是魔法：计算器内部要把十进制转成二进制、查乘法表或做移位加法、再把结果转回十进制显示。第 2 讲就会把这些步骤全部走一遍。</p><p>所以计算器当然是信息处理系统，而且是一个把「数制转换」这件事做到看不见的系统。</p><h2 id="s13">三、计算机怎样表示信息</h2><h3 id="s14">3.1 只有 0 和 1</h3><p>计算机只认得两种状态：<b>开（ON）= 1</b>、<b>关（OFF）= 0</b>。课件给的理由是工程性的：电子器件能可靠地区分两种状态。</p><p>这个理由值得展开，因为「为什么不用十进制」是经典的第一问。要在电路里区分十种电压等级，需要极精确的基准与误差容限；区分「高」「低」两个区间则容忍度极大，抗噪声、抗温度漂移、抗器件老化。可靠性的收益远大于「一个符号能表示更多」的便利。这个取舍在 Week 2 讲二进制算术时会再次出现：二进制虽然写起来长，但加法规则只有四条，硬件极简单。</p><h3 id="s15">3.2 位与组合数</h3><p><b>位</b>（bit，binary digit）是数字信息的最小单位，取值 0 或 1。位数与可能取值数的关系是本节第一个公式：</p><p><b><code>n 位 → 2^n 种不同取值</code></b></p><table><tr><th>位数 n</th><th>可能取值数 2^n</th><th>直观说法</th></tr><tr><td>1</td><td>2</td><td>两种状态</td></tr><tr><td>2</td><td>4</td><td>四种组合</td></tr><tr><td>3</td><td>8</td><td>八种组合</td></tr><tr><td>8</td><td>256</td><td>正好是一个字节能表示的灰度数</td></tr><tr><td>16</td><td>65 536</td><td>CD 音质的量化级数</td></tr><tr><td>24</td><td>16 777 216</td><td>RGB 真彩色数</td></tr><tr><td>32</td><td>约 4.29 × 10^9</td><td>32 位无符号整数的上限量级</td></tr></table><p>这条公式在整门课里反复出现：Week 2 讲字节与字长，Week 3 讲补码范围与 IEEE 754，Week 4 讲 7 位 ASCII 的 128 个字符，Week 5 讲 8 位灰度的 256 级与 24 位 RGB 的 1 677 万色，Week 6 讲 16 位音频的 65 536 级。记住它，后面每一讲都只是换场景。</p><h3 id="s16">3.3 编码：字符怎样变成 0 和 1</h3><p>课件问：文本怎样变成 0 和 1？它先指出一个常见误解——计算机并不直接存储字母 "A" 的<b>形状</b>。它存的是一套<b>编码</b>（encoding）规则下的编号。以 ASCII 为例：</p><pre><code>A → 65 → 01000001
+B → 66 → 01000010</code></pre><p>三步各自是一次「换一种表示」：字形 A 换成人能读的编号 65，65 换成二进制 01000001。第 4 讲会把中间的 65 叫做<b>码位</b>（code point），把 01000001 叫做<b>字节</b>，并强调这两者不是一回事。</p><p>这也解释了同一串 0 和 1 为什么会有歧义：<code>01000001</code> 按 ASCII 解读是字母 A，按无符号整数解读是 65，按某个图像格式的某个字段解读可能是别的意思。Week 8 讲文件格式时会专门讲这一点。</p><h3 id="s17">3.4 四个「同一件事」</h3><p>课件用四行并列把这条路走完，这是全课最重要的一页：</p><table><tr><th>信息类型</th><th>转换链</th><th>后面在哪讲</th></tr><tr><td>文本</td><td>文本 → 数字 → 二进制</td><td>Week 4 字符编码</td></tr><tr><td>图像</td><td>图像 → 数字 → 二进制</td><td>Week 5 图像表示</td></tr><tr><td>音频</td><td>音频 → 数字 → 二进制</td><td>Week 6 音频表示</td></tr><tr><td>视频</td><td>视频 → 数字 → 二进制</td><td>Week 6 视频表示</td></tr></table><p>课件在下面写了一句解释：计算机之所以能处理不同类型的信息，是因为把它们都表示成了<b>数据</b>。注意这里的用词——是「表示成数据」，不是「理解」。计算机不理解一张照片的内容，它只是处理一堆数字。</p><h3 id="s18">3.5 数据与信息的区别</h3><p>这是本讲最容易考、也最容易混淆的一对概念。课件的定义很短：</p><table><tr><th>概念</th><th>英文定义</th><th>中文解释</th><th>课件例子</th></tr><tr><td>数据</td><td>Raw observations or values.</td><td>未经解释的原始观测值或符号</td><td><code>160, 174, 165, 164, 169</code>；<code>dog, cat, rabbit, hamster, parrot</code></td></tr><tr><td>信息</td><td>Data interpreted in a meaningful context.</td><td>放进有意义的语境之后的数据</td><td>「某学生的身高是 165 cm」</td></tr></table><p>判据只有一条：<b>有没有语境</b>。<code>165</code> 单独出现是数据，因为不知道是身高、体重、分数还是价格；一旦说「这是 Alice 的身高，单位厘米」，它就是信息。课件在两者之间画了一个箭头，标着 processing——处理就是加语境、做解释、做计算的那一步。</p><div class="callout warn"><b>常见错误</b>不要把「数据量大」当成「信息多」。一万条没有标注的传感器读数只是数据；一条带时间、位置、单位、阈值的读数才是信息。Week 9 讲信息检索时，这个区别会变成「文档里有查询词 ≠ 文档相关」。</div><h3 id="s19">3.6 计算机对数据能做的九件事</h3><p>课件列了九个动词，它们构成了「处理」的全集，也是后面每一讲的操作清单：</p><span class="chip">store</span> <span class="chip">search</span> <span class="chip">sort</span> <span class="chip">compare</span> <span class="chip">calculate</span> <span class="chip">transform</span> <span class="chip">analyze</span> <span class="chip">visualize</span> <span class="chip">learn</span><p>用中文对应：存储、检索、排序、比较、计算、变换、分析、可视化、学习。课件随后用一张学生成绩表把这些动词落地：</p><pre><code>Alice   85
+Bob     72
+Carol   91
+David   64</code></pre><p>对这张表，计算机可以算平均分、找最大值、按分数排序、筛出及格的人、生成统计量、画成图。课件紧接着提出关键问题：<b>计算机怎么知道要做这些？</b>——这正是下一节「算法」要回答的。</p><h2 id="s20">四、算法：把「做什么」写成有限步</h2><h3 id="s21">4.1 定义</h3><p>课件的定义是：算法是解决一个问题或完成一次计算的<b>有限、且每一步都有明确定义的步骤序列</b>（"a finite sequence of well-defined steps for solving a problem or performing a computation"）。</p><p>定义里有三个词都是判据，缺一不可：<b>有限</b>（必须终止，不能无限循环）、<b>明确定义</b>（每一步都能被机械执行，不含「适当调整」这种模糊指令）、<b>步骤序列</b>（有先后顺序）。</p><h3 id="s22">4.2 例：找最大值</h3><p>课件给的例子是：输入 <code>8, 3, 12, 5, 9</code>，找出最大的数。它的写法非常朴素：</p><ol class="steps"><li>假定第一个数 8 是当前最大值</li><li>与 3 比较：3 不大于 8，最大值不变</li><li>与 12 比较：12 大于 8，最大值改为 12</li><li>与 5 比较：不大于 12，最大值不变</li><li>与 9 比较：不大于 12，最大值不变</li><li>输出 12</li></ol><p>这个算法只需要一次遍历，比较次数是 <code>n − 1</code>（5 个数比较 4 次）。它也是后面所有「扫描一遍就够」的算法的原型：Week 9 的检索、Week 11 的条件判断都用同样的骨架。</p><p>注意算法必须能处理边界：如果输入是空的呢？如果所有数相同呢？课件没写，但一个合格的算法应当交代。这类「课件没写、考试会问」的补全属于拓展，不改变原知识点。</p><h3 id="s23">4.3 算法与程序的区别</h3><p>课件用一张链式图区分两者：</p><pre><code>问题 → 算法 → Python / Java / C++ / … → 程序 → 计算机</code></pre><table><tr><th>概念</th><th>是什么</th><th>例子</th></tr><tr><td>算法（algorithm）</td><td>解决问题的过程，与语言无关</td><td>「逐个比较，保留较大者」</td></tr><tr><td>程序（program）</td><td>算法在某种编程语言中的实现</td><td><code>max(nums)</code> 或一段 for 循环</td></tr></table><p>判据：算法可以口述、可以画流程图、可以用伪代码写，同一算法可以有无数个程序实现。反过来，一段程序必定对应某个算法（哪怕作者没意识到）。</p><h2 id="s24">五、数据结构：把数据摆成好用的形状</h2><h3 id="s25">5.1 为什么需要数据结构</h3><p>课件的理由是：<b>不同的组织方式会让不同的操作变快</b>。同一批数据，用数组存和用哈希表存，查找的代价完全不同。</p><h3 id="s26">5.2 八种基本结构</h3><p>课件列了八种，这里按「解决什么形状的问题」分组，便于记忆：</p><table><tr><th>结构</th><th>中文</th><th>典型形状/用途</th></tr><tr><td>Array</td><td>数组</td><td>连续排列、按下标随机访问</td></tr><tr><td>Linked List</td><td>链表</td><td>节点用指针串起来、插入删除便宜</td></tr><tr><td>Stack</td><td>栈</td><td>后进先出（LIFO），如撤销操作</td></tr><tr><td>Queue</td><td>队列</td><td>先进先出（FIFO），如打印任务排队</td></tr><tr><td>Tree</td><td>树</td><td>层次结构，如目录、分类</td></tr><tr><td>Heap</td><td>堆</td><td>快速取最小/最大，如优先队列</td></tr><tr><td>Hash Table</td><td>哈希表</td><td>按键快速查找，平均常数时间</td></tr><tr><td>Graph</td><td>图</td><td>点与边的关系，如路网、社交网络</td></tr></table><h3 id="s27">5.3 定义与核心问题</h3><p>课件给的定义是：数据结构是<b>有系统地组织与访问数据的方式</b>（"a systematic way of organizing and accessing data"）。定义里有两个动词：organize（组织）与 access（访问）。只组织不访问没有意义，访问方式决定了组织的形状。</p><p>课件把核心问题写成一句话：<b>应当怎样组织数据，才能使各种操作高效完成？</b>注意它问的是「操作」，不是「存储」——数据结构是为操作服务的。</p><h3 id="s28">5.4 一句被引用无数次的话</h3><p>课件引用了一个著名等式，并配了一个例子：</p><p><b><code>算法 + 数据结构 = 程序</code></b></p><pre><code>问题 → 数据 → 数据结构 + 算法 → 程序</code></pre><p>例子：在两个城市之间找一条路 = 图（数据结构）+ 最短路径算法 = 导航系统。这个例子把第 1 讲的三块内容（问题、数据、程序）串成了一条线，也是 Week 9 讲倒排索引时的同一思路。</p><h2 id="s29">六、从传统编程到 AI</h2><h3 id="s30">6.1 规则驱动的传统编程</h3><p>传统编程的模式是：<b>规则 + 数据 → 程序 → 输出</b>。课件给的例子是一段判定及格与否的逻辑：</p><pre><code>IF score &gt;= 50 THEN pass
+ELSE fail</code></pre><p>关键在于最后那句：<b>规则由程序员定义</b>。要判定「什么样的作文是优秀的」，程序员得先把标准写成 if-else，而这件事往往做不到。</p><h3 id="s31">6.2 数据驱动的机器学习</h3><p>机器学习换了一个方向：不再逐条写规则，而是给<b>数据 + 学习算法</b>，让它产出一个<b>模型</b>：</p><pre><code>数据 + 学习算法 → 模型
+新数据 → 训练好的模型 → 预测</code></pre><p>这个转向的意义是：人负责给例子，机器负责找规律。代价是模型的行为不再能逐行读懂，也不保证在所有输入上都对。</p><h3 id="s32">6.3 AI 的三根支柱</h3><p>课件把现代 AI 的基础归为三样：</p><table><tr><th>支柱</th><th>作用</th><th>缺了会怎样</th></tr><tr><td>数据（Data）</td><td>提供例子与信息</td><td>没有样本，学不到规律</td></tr><tr><td>模型（Models）</td><td>学习模式、做预测或生成</td><td>没有容量，规律表达不出来</td></tr><tr><td>算力（Compute）</td><td>提供训练与推理所需资源</td><td>训练跑不完，模型做不大</td></tr></table><h3 id="s33">6.4 ChatGPT 为什么显得聪明</h3><p>课件给了一个刻意简化的视角：海量数据 + 大模型 + 巨大算力 → 训练 → 训练好的模型 → 提示词 → 回答。并在下面写了一句很重要的澄清：</p><div class="callout warn"><b>必须澄清的误解</b>AI 模型不是「装了全人类知识的数据库」。它从训练数据里学到的是<b>模式与关系</b>（"learn patterns and relationships from training data"）。所以它会一本正经地编造不存在的引用——那不是「查不到」，而是「按模式生成」。</div><h2 id="s34">七、第一天活动：拆解一个 APP</h2><p>课件留了一个课堂活动：选一个 APP（Google Maps、YouTube、Spotify、Instagram、ChatGPT、网上银行、外卖），回答五个问题——它用什么数据？处理什么信息？可能用什么算法？什么数据结构有用？哪里可能有 AI？</p><p>然后以 Google Maps 为范例，给了四张清单。这四张清单是本讲的「样板答案」，也是考试里「分析一个系统」类题目的答题模板。</p><h3 id="s35">7.1 它使用哪些数据</h3><ul><li>地图数据（map data）：道路、路口、建筑、地址</li><li>位置数据（location data）：用户的 GPS 位置</li><li>交通数据（traffic data）：当前车速与拥堵情况</li><li>公共交通数据：公交、火车、地铁路线与时刻表</li><li>商业数据：餐厅、商店、酒店、营业时间、评价</li><li>历史数据：历史交通模式与通行时间</li><li>用户生成数据：事故上报、封路报告</li></ul><h3 id="s36">7.2 它处理哪些信息</h3><ul><li>当前位置、目的地</li><li>道路距离、通行时间</li><li>交通状况、可行路线</li><li>公共交通换乘方案</li><li>预计到达时间（ETA）</li><li>封路与事故</li></ul><h3 id="s37">7.3 它可能用哪些算法</h3><table><tr><th>算法族</th><th>课件举例</th><th>解决什么</th></tr><tr><td>最短路径</td><td>Dijkstra、A*（A-star）</td><td>在路网里找代价最小的路径</td></tr><tr><td>图算法</td><td>遍历、连通性分析</td><td>发现与分析路线</td></tr><tr><td>路径规划（routing）</td><td>按距离/时间/拥堵选路</td><td>在多个候选路线中选合适的</td></tr><tr><td>搜索与排序</td><td>检索 + 排序</td><td>找地点并按相关性排序</td></tr><tr><td>预测算法</td><td>交通与时间预测</td><td>估计未来路况与到达时间</td></tr></table><h3 id="s38">7.4 它可能用哪些数据结构</h3><table><tr><th>结构</th><th>可能的用途</th></tr><tr><td>图（Graph）</td><td>表示道路与路口</td></tr><tr><td>哈希表（Hash table）</td><td>地点、地址、场所的快速查找</td></tr><tr><td>堆 / 优先队列（Heap / Priority queue）</td><td>高效取出「下一个最近的 / 代价最低的」节点</td></tr><tr><td>数组 / 列表（Array / List）</td><td>存位置序列、路线、数据序列</td></tr><tr><td>树（Tree）</td><td>表示层次信息，如分类目录</td></tr><tr><td>字典树（Trie）</td><td>地名与地址的搜索补全（autocomplete）</td></tr></table><p>「堆」这一行值得特别注意：Dijkstra 算法每次要取出当前距离最小的未访问节点，用堆可以做到对数代价。这就是「数据结构让操作变快」的具体证据，而不是一句空话。</p><h3 id="s39">7.5 AI 可能出现在哪里</h3><ul><li>交通预测：预测未来路况</li><li>ETA 预测：预测一段行程要多久</li><li>路线推荐：按学到的模式与当前状况推荐路线</li><li>地点推荐：推荐餐厅、商店</li><li>图像 / 街景分析：识别物体、路牌、建筑</li><li>地址与地点理解：帮助解释用户查询与位置</li></ul><h2 id="s40">八、贯穿全课的三问</h2><p>课件在最后给出课程哲学：整门课反复问三个问题。</p><ol class="steps"><li>问题是什么？（What is the problem?）</li><li>信息怎么表示？（How can we represent the information?）</li><li>怎么高效处理它？（How can we process it efficiently?）</li></ol><p>这三问对应三次抽象：第一问把杂乱的需求收敛成一个明确任务；第二问问的是编码与数据结构；第三问问的是算法与复杂度。课件最后的总结页把六个关键词与六个问题一一对应，可以直接当成本课的目录：</p><table><tr><th>关键词</th><th>对应的问题</th><th>本课在哪讲</th></tr><tr><td>信息（Information）</td><td>计算机在处理什么？</td><td>Week 1</td></tr><tr><td>数据（Data）</td><td>信息怎样被表示？</td><td>Week 2–Week 6</td></tr><tr><td>算法（Algorithms）</td><td>我们怎样解决问题？</td><td>Week 1、Week 7、Week 9</td></tr><tr><td>数据结构（Data Structures）</td><td>怎样高效组织数据？</td><td>Week 1、Week 8、Week 9</td></tr><tr><td>程序（Programs）</td><td>怎样实现解法？</td><td>Week 1、Week 11</td></tr><tr><td>AI</td><td>机器怎样从数据中学习？</td><td>Week 1、Week 9</td></tr></table></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>information processing</td><td>信息处理</td><td>The collection, representation, storage, transmission, transformation and analysis of information.</td></tr><tr><td>data</td><td>数据</td><td>Raw observations or values, e.g. 160, 174, 165.</td></tr><tr><td>information</td><td>信息</td><td>Data interpreted in a meaningful context, e.g. "the student is 165 cm tall".</td></tr><tr><td>bit</td><td>位（比特）</td><td>The smallest unit of digital information; 0 or 1.</td></tr><tr><td>binary</td><td>二进制</td><td>Base-2 notation using only the digits 0 and 1.</td></tr><tr><td>encoding</td><td>编码</td><td>A rule that maps symbols to numbers and then to binary, e.g. A → 65 → 01000001.</td></tr><tr><td>input–process–output</td><td>输入—处理—输出</td><td>The three-stage model of any information-processing system.</td></tr><tr><td>algorithm</td><td>算法</td><td>A finite sequence of well-defined steps for solving a problem.</td></tr><tr><td>data structure</td><td>数据结构</td><td>A systematic way of organizing and accessing data.</td></tr><tr><td>program</td><td>程序</td><td>An implementation of an algorithm in a programming language.</td></tr><tr><td>machine learning</td><td>机器学习</td><td>Data + learning algorithm → model; the model learns patterns instead of being told rules.</td></tr><tr><td>model</td><td>模型</td><td>A trained artefact that maps new inputs to predictions or outputs.</td></tr><tr><td>compute</td><td>算力</td><td>The computational resources needed for training and inference.</td></tr><tr><td>redundancy</td><td>冗余</td><td>Repeated or predictable information that later allows compression.</td></tr><tr><td>word length</td><td>字长</td><td>The number of bits a machine handles as one word, usually a multiple of 8.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　8 位、16 位、32 位分别能表示多少种不同取值？32 位无符号整数最大是多少？</div><p>用公式 <code>2^n</code>：</p><p><b>8 位：</b><code>2^8 = 256</code> 种，编号 0–255。这就是一个字节能表示的灰度级数。</p><p><b>16 位：</b><code>2^16 = 65 536</code> 种，编号 0–65 535。这是 CD 音质的量化级数。</p><p><b>32 位：</b><code>2^32 = 4 294 967 296</code> 种。若编号从 0 开始，最大值是 <code>2^32 − 1 = 4 294 967 295 ≈ 4.29 × 10^9</code>。</p><p>解题套路固定三步：① 数清位数 n；② 算 2^n 得到「有多少种」；③ 若问「最大值」再减 1（因为 0 占掉一个编号）。</p></div><div class="qa"><div class="q">例 2　对 <code>8, 3, 12, 5, 9</code> 用课件的算法找最大值，数一数一共比较了几次；若数据有 1 000 个，需要几次？</div><p>按「假定首个为最大，然后逐个比较」执行：</p><table><tr><th>步骤</th><th>当前最大值</th><th>比较对象</th><th>比较结果</th></tr><tr><td>1</td><td>8</td><td>—</td><td>初始化</td></tr><tr><td>2</td><td>8</td><td>3</td><td>3 &lt; 8，不变</td></tr><tr><td>3</td><td>12</td><td>12</td><td>12 &gt; 8，更新为 12</td></tr><tr><td>4</td><td>12</td><td>5</td><td>5 &lt; 12，不变</td></tr><tr><td>5</td><td>12</td><td>9</td><td>9 &lt; 12，不变</td></tr></table><p><b>比较次数：</b>第一个数只做初始化、不参与比较，剩下 4 个数各比较一次，共 <code>n − 1 = 4</code> 次。</p><p><b>推广：</b>1 000 个数需要 <code>1 000 − 1 = 999</code> 次比较。一般地，这个算法的时间代价与 n 成正比，记作 O(n)。</p><p>注意「更新」动作只在 12 那一步发生一次，更新次数不影响复杂度结论——复杂度看的是比较这种主导操作。</p></div><div class="qa"><div class="q">例 3　判断下列各项是数据还是信息，并说明理由：<br>（a）<code>160, 174, 165, 164, 169</code>　（b）<code>dog, cat, rabbit, hamster, parrot</code>　（c）这个五人小组里最高的人 174 cm　（d）<code>01000001</code></div><p><b>（a）数据。</b>五个数没有任何标注，不知道是身高、体重还是考试分数，缺语境。</p><p><b>（b）数据。</b>五个动物名同样是原始取值。要注意：「能读懂的单词」不等于「信息」，判据是语境而不是可读性。</p><p><b>（c）信息。</b>它给出了对象（五人小组）、属性（身高）、结论（最高者 174 cm），语境完整，可以直接支撑决策。</p><p><b>（d）数据。</b>而且是有歧义的数据：按 ASCII 是字母 A，按无符号整数是 65。Week 4 与 Week 8 会反复用到这个例子。</p><p>通用思路：先问「有没有说明它是什么」，再问「能不能直接拿来决策」。两问都否 → 数据；有一问为是 → 信息。</p></div><div class="qa"><div class="q">例 4　把「学生成绩管理系统」按「数据 → 数据结构 + 算法 → 程序」拆开。</div><p><b>第一步：找数据。</b>学生姓名、学号、若干次作业分数、考试分数。</p><p><b>第二步：选数据结构。</b>要按学号快速查人 → 哈希表（键为学号）；要按分数排序输出 → 数组；要按班级分组 → 树或哈希表套数组。</p><p><b>第三步：配算法。</b>求平均 → 一次求和再除 n（O(n)）；找最高分 → 例 2 的扫描；排序 → 比较排序（O(n log n)）；筛及格 → 条件过滤（O(n)）。</p><p><b>第四步：写程序。</b>用某种语言实现上述结构与算法，输入输出对齐 IPO 三段。</p><p>这一步一步正是「算法 + 数据结构 = 程序」的展开。答题时按这四步写，比直接背结论得分高。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用「输入 → 处理 → 输出」描述图书馆借书系统，并指出哪一步是「处理」。</li><li>4 位、10 位、12 位分别能表示多少种不同取值？各自最大编号是多少？</li><li>把「找最小值」写成有限步算法，并给出 6 个数时需要比较几次。</li><li>给出三个例子：一个是数据，一个是由它变成的信息，一个是有歧义的字节串，并说明理由。</li><li>用自己的话说明「算法」与「程序」的区别，各举一例。</li><li>Google Maps 里「取出下一个最近的节点」为什么适合用堆？换成无序数组会慢在哪里？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 输入：读者证号 + 图书条码；处理：校验证是否有效、书是否在架、额度是否够，写借阅记录并改状态；输出：借阅成功/失败的提示与新到期日。「处理」是中间那一串校验与状态更新，不是扫码动作本身。</p><p><b>2.</b> <code>2^4 = 16</code>，编号 0–15；<code>2^10 = 1024</code>，编号 0–1023；<code>2^12 = 4096</code>，编号 0–4095。若是有符号数，范围会变成 <code>[-2^(n−1), 2^(n−1) − 1]</code>，Week 3 细讲。</p><p><b>3.</b> 假定第一个为最小，逐个与「当前最小值」比较，更小则更新，最后输出。6 个数比较 5 次；n 个数比较 n − 1 次。</p><p><b>4.</b> 数据：<code>37.2, 37.5, 36.9</code>；信息：这是三人体温，均未超过 37.5 ℃ 的发热线；歧义字节：<code>01000010</code> 既可是字母 B，也可是整数 66。</p><p><b>5.</b> 算法是步骤描述（「逐个比较、保留较大者」），可以口述、与语言无关；程序是它在某语言里的实现（一段 for 循环）。同一算法可有 Python、Java 两版程序；但一段能跑的程序必然对应某个算法。</p><p><b>6.</b> Dijkstra 每扩展一步都要取出「当前距离最小的未访问节点」。堆（优先队列）取出最小值的代价是 O(log n)；无序数组每次要扫一遍找最小，代价 O(n)，而这样的取出要重复 n 次，总代价从 O(n log n) 退化到 O(n^2)。路网节点可达百万级，差别就是秒与分钟。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① <code>2^n</code> 与「最大值 = 2^n − 1」；② 数据与信息的区分（给例子判，给例子造）；③ 算法定义里的「有限」「明确定义」；④ IPO 三段拆解任意系统；⑤ 算法与程序的差别；⑥ 「算法 + 数据结构 = 程序」。</div><div class="callout warn"><b>易错 1</b>把「能读懂的单词」当成信息。<code>dog, cat, rabbit</code> 是数据，因为缺语境；判据是语境，不是可读性。</div><div class="callout warn"><b>易错 2</b>问「多少种取值」答 <code>2^n − 1</code>，问「最大值」答 <code>2^n</code>，两者互换。记法：种数不减，编号从 0 起所以最大值减 1。</div><div class="callout warn"><b>易错 3</b>把 AI 说成「数据库」或「搜索引擎」。课件的原话是模型学的是<b>模式与关系</b>，不是存了全部知识。</div><div class="callout tip"><b>进阶</b>「为什么用二进制」不要只答「因为只有 0 和 1」，要答到<b>可靠性</b>：两种状态容差大、抗噪声、电路简单（Week 2 会看到二进制加法只有四条规则）。另外可以准备一句：二进制与八进制、十六进制的互换是「三位一组、四位一组」，Week 2 会算。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s41">方法清单</h2><h3 id="s42">拆解任意一个信息系统（答题模板）</h3><ol class="steps"><li>写出系统名，一句话说清它给谁解决什么问题</li><li>列输入：用户给什么、传感器给什么、系统自己带什么（地图、历史数据）</li><li>列处理：校验 → 计算 → 排序/筛选 → 生成结果</li><li>列输出：直接给用户看的东西（结果、路线、分数、预报）</li><li>指出算法：哪一步是「找最优」「排序」「预测」</li><li>指出数据结构：哪一步需要「快速查找」「按序取出」「表示关系」</li><li>指出 AI：哪一步是「从数据学出来的」，而不是写死的规则</li></ol><h3 id="s43">判断数据还是信息（三步）</h3><ol class="steps"><li>问：它有没有说明「这是什么」？（对象、属性、单位）</li><li>问：它能不能直接支撑一个决定？</li><li>两问皆否 → 数据；有一问为是 → 信息</li><li>若两者都不是，检查是不是「有歧义的字节串」，那属于编码问题，参阅 Week 4</li></ol><h3 id="s44">算位数与取值数（四步）</h3><ol class="steps"><li>数清位数 n（8 位、16 位、24 位、32 位）</li><li>算 <code>2^n</code> 得到取值种数</li><li>若问编号范围：0 到 <code>2^n − 1</code></li><li>若是有符号数：改用 <code>[−2^(n−1), 2^(n−1) − 1]</code>（Week 3）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week1- Introduction/Lecture_0.pdf</td><td>p1–p3</td><td>课程名、教师、邮箱与邮件规范（主题含 HDD5020、正文写课程名/姓名/学号、约见只走邮件）</td></tr><tr><td>Week1- Introduction/Lecture_0.pdf</td><td>p4–p6</td><td>课程描述、五条课程目标、三种教学活动（讲座/习题课/团队项目）</td></tr><tr><td>Week1- Introduction/Lecture_0.pdf</td><td>p7</td><td>考核权重（作业 35%、项目 15%、考试 50%、出勤 5 分 bonus）、通过条件（总分 ≥ 50 且考试 ≥ 25）、0–5 等级换算</td></tr><tr><td>Week1- Introduction/Lecture_0.pdf</td><td>p8–p9</td><td>十四周安排表、课程材料在 Moodle</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p2–p7</td><td>信息无处不在、信息处理定义、IPO 流水线、六个日常系统的 IPO 表、计算器之问</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p8–p11</td><td>二进制与 ON/OFF、bit 与 2^n、ASCII 编码 A→65→01000001、文本/图像/音频/视频四条转换链</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p12–p14</td><td>数据与信息的定义与例子、计算机对数据的九种操作、学生成绩表</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p15–p19</td><td>算法定义、找最大值例、算法与程序的链式图、八种数据结构、数据结构的定义与核心问题、算法 + 数据结构 = 程序</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p20–p23</td><td>传统编程（规则 + 数据）、机器学习（数据 + 学习算法 → 模型）、AI 三要素、ChatGPT 的简化视角</td></tr><tr><td>Week1- Introduction/Lecture_1.pdf</td><td>p24–p31</td><td>第一天活动五问、Google Maps 的数据/处理/算法/结构/AI 五张清单、课程三问与总结页</td></tr><tr><td>（跳过）General/Timetable.html</td><td>全文</td><td>只有一个跳转到 TimeEdit 的外链，无可抽取的课程内容；周次信息已由 Lecture_0 p8 覆盖</td></tr><tr><td>（跳过）_info 系列 HTML</td><td>全文</td><td>Moodle 页面外壳（导航、登录信息）、公告为空、Q&A 仅一条锁定的 "Course Exam" 帖、Feedback 为问卷，均无知识内容</td></tr><tr><td>（补充）</td><td>—</td><td>「为什么用二进制」的可靠性论证、算法边界情形（空输入、全相同）、Dijkstra 使用堆的代价对比属于衔接性拓展，课件只给结论</td></tr></table></section><div class="lnav"><span></span><a class="next" href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

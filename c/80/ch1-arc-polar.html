@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 1 章 · 弧长、旋转曲面与极坐标 · 80</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4020 工程数学 II</a> / <a href="part-1.html">第 1 章 参数曲线与极坐标</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节在整门课中的位置</a><a class="toc-l3" href="#s2">2.1 弧长：从一条小弦开始</a><a class="toc-l3" href="#s3">2.2 参数曲线的弧长公式</a><a class="toc-l3" href="#s4">2.3 例：一条摆线型曲线的弧长</a><a class="toc-l3" href="#s5">2.4 例：星形线的弧长</a><a class="toc-l3" href="#s6">2.5 旋转曲面的面积</a><a class="toc-l3" href="#s7">2.6 例：球面面积</a><a class="toc-l3" href="#s8">2.7 例：偏心圆的旋转面</a><a class="toc-l3" href="#s9">2.8 例：一般曲线的旋转面</a><a class="toc-l3" href="#s10">2.9 极坐标系：极点、极轴与有向距离</a><a class="toc-l3" href="#s11">2.10 极坐标与直角坐标的互化</a><a class="toc-l3" href="#s12">2.11 极坐标的两个特性：角度不唯一、距离可为负</a><a class="toc-l3" href="#s13">2.12 极坐标作图：五类常见点集</a><a class="toc-l3" href="#s14">2.13 极坐标方程化直角坐标：五道标准题</a><a class="toc-l3" href="#s15">2.14 例：由直角坐标方程反求极坐标方程</a><a class="toc-l3" href="#s16">2.15 极坐标方程识别曲线</a><a class="toc-l3" href="#s17">2.16 极坐标下的面积</a><a class="toc-l3" href="#s18">2.17 极坐标下的弧长</a><a class="toc-l3" href="#s19">2.18 例：心形线的周长</a><a class="toc-l3" href="#s20">2.19 常见误解</a><a class="toc-l2" href="#s21">方法与检查清单</a><a class="toc-l3" href="#s22">算弧长的标准流程</a><a class="toc-l3" href="#s23">算旋转曲面面积的流程</a><a class="toc-l3" href="#s24">极坐标题的检查项</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch1-parametric-curves.html">第 1 章 · 平面曲线与参数方程</a><a class="toc-l3" href="ch1-arc-polar.html">▸ 第 1 章 · 弧长、旋转曲面与极坐标</a><a href="ch2-cyl-spherical.html">第 2 章 · 柱坐标与球坐标</a><a href="ch2-matrices.html">第 2 章 · 矩阵、特殊矩阵与几何变换</a><a href="ch3-determinant-inverse.html">第 3 章 · 行列式、伴随矩阵与逆矩阵</a><a href="ch3-gaussian-elimination.html">第 3 章 · 线性方程组与高斯消元</a><a href="ch3-eigenvalues-cramer.html">第 3 章 · 特征值与克拉默法则</a><a href="ch4-vectors-dot-product.html">第 4 章 · 向量、点积与两个不等式</a></div></aside><article><h1>第 1 章 · 弧长、旋转曲面与极坐标</h1><p class="lead">Arc Length, Surface Area of Revolution and Polar Coordinates <span class="badge mute">80</span> <span class="badge mute">第 2 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 参数曲线与极坐标</a></p><p class="src">原始文件：<code>Topic 1/EMII_Week1_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>上一讲把曲线写成了参数方程，并会求斜率与切线。本节把这个工具用到两个「累积量」上：曲线的长度，以及曲线绕轴旋转扫出的曲面面积。这两个量的共同点是——都被切成无数小段，每段贡献一个可以用勾股定理算出的微小量，累加就是积分。</p><p>随后本节把坐标系从直角换成极坐标 (r, θ)。坐标一换，曲线方程变了，弧长与面积的微元也跟着变（多出一个 r 因子），但「切小段、累加」的思路完全不变。这是本课程反复出现的方法论：<b>换坐标系只是换描述，不换思想</b>。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出直角坐标与参数方程两种形式下的弧长公式，并解释 <code>ds = √(dx² + dy²)</code> 的来源</li><li>在弧长积分中把 <code>x′² + y′²</code> 化简成完全平方，避免根号带来的绝对值陷阱</li><li>写出绕 x 轴与绕 y 轴旋转的曲面面积公式，并说明半径为什么必须取绝对值</li><li>在极坐标与直角坐标之间互相转换，包括处理负距离与角度多值性</li><li>用 <code>A = ½∫r² dθ</code> 与 <code>L = ∫√(r² + r′²) dθ</code> 求极坐标曲线的面积与弧长</li></ul><p>与前后讲的衔接：本节的弧长微元在下一章会以「体积微元」的形式再次出现；极坐标则是柱坐标 (r, θ, z) 与球坐标 (ρ, φ, θ) 的直接来源。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 弧长：从一条小弦开始</h3><p>设曲线是 <code>y = f(x)</code>，要求在 a ≤ x ≤ b 上的弧长。在曲线上取一小段，横坐标增加 dx、纵坐标增加 dy，这一小段近似为直线，长度记为 ds。由勾股定理：</p><p><code>ds² ≈ dx² + dy²</code></p><p>两边同除 dx²，并让 dx → 0 取极限，得到精确的微分关系：</p><p><code>(ds/dx)² = 1 + (dy/dx)²</code>，即 <b><code>ds = √(1 + (dy/dx)²) dx</code></b></p><p>把所有这些小段沿着 x 从 a 累加到 b，就得到弧长：</p><p><b><code>L = ∫[a, b] √(1 + f′(x)²) dx</code></b></p><p>这一步的严格性来自「折线长度在分割加细时的极限」：每一小段用弦长代替弧长，误差是比 dx 更高阶的无穷小，累加后消失。理解这一点，后面换坐标系时就不会怀疑公式的正确性。</p><h3 id="s3">2.2 参数曲线的弧长公式</h3><p>对参数曲线 <code>x = f(t), y = g(t)</code>，把小段用 t 的增量表示：<code>dx = f′(t) dt</code>、<code>dy = g′(t) dt</code>，于是</p><p><code>ds² = (f′(t)² + g′(t)²) dt²</code>，即 <b><code>ds = √(f′(t)² + g′(t)²) dt</code></b></p><p>从 t₁ 积到 t₂：</p><p><b><code>L = ∫[t₁, t₂] √((dx/dt)² + (dy/dt)²) dt</code></b></p><p>这个公式比直角坐标形式更好用，因为它对「竖直切线」也成立：<code>y = f(x)</code> 的写法在竖直处 dy/dx 无穷大，而参数式里 <code>f′ = 0</code> 只是让根号内少了一项，积分照常进行。这就是为什么算弧长前要先把曲线参数化。</p><div class="callout tip"><b>先化简，再积分</b>根号内的 <code>x′² + y′²</code> 几乎总能化简成完全平方（用 <code>1 − cos t = 2sin²(t/2)</code>、<code>cos² + sin² = 1</code>、<code>1 + tan² = sec²</code> 等恒等式）。不化简直接积分，绝大多数题目积不出来。</div><h3 id="s4">2.3 例：一条摆线型曲线的弧长</h3><p>课件例：求 <code>x = 2t − sin 2t</code>、<code>y = 2sin²t</code> 在 0 ≤ t ≤ π 上的弧长。</p><p><b>第一步，求导。</b><code>dx/dt = 2 − 2cos 2t</code>；<code>dy/dt = 4 sin t cos t = 2 sin 2t</code>。</p><p><b>第二步，算平方和。</b></p><p><code>x′² + y′² = (2 − 2cos 2t)² + (2 sin 2t)² = 4[(1 − cos 2t)² + sin²2t]</code></p><p>括号内展开：<code>(1 − cos 2t)² + sin²2t = 1 − 2cos 2t + cos²2t + sin²2t = 2 − 2cos 2t</code>，所以</p><p><code>x′² + y′² = 4(2 − 2cos 2t) = 8(1 − cos 2t) = 16 sin²t</code></p><p><b>第三步，开方。</b>在 0 ≤ t ≤ π 上 <code>sin t ≥ 0</code>，故 <code>√(x′² + y′²) = 4 sin t</code>，不必加绝对值。</p><p><b>第四步，积分。</b><code>L = ∫[0, π] 4 sin t dt = [−4 cos t]₀^π = 4 + 4 = 8</code>。</p><p>答案 8 个单位，与课件一致。第三步的符号判断是整道题的关键：若不检查 <code>sin t</code> 的符号直接写成 ±4 sin t，积分会得出 −8。</p><h3 id="s5">2.4 例：星形线的弧长</h3><p>课件 Task 2：求星形线 <code>x = 2cos³t</code>、<code>y = 2sin³t</code> 在 0 ≤ t ≤ π/2 上的弧长。</p><p><code>dx/dt = −6cos²t sin t</code>，<code>dy/dt = 6sin²t cos t</code>。</p><p><code>x′² + y′² = 36cos⁴t sin²t + 36sin⁴t cos²t = 36 sin²t cos²t (cos²t + sin²t) = 36 sin²t cos²t</code></p><p>在第一象限 <code>sin t cos t ≥ 0</code>，故 <code>√(x′² + y′²) = 6 sin t cos t = 3 sin 2t</code>。</p><p><code>L = ∫[0, π/2] 3 sin 2t dt = [−3cos 2t/2]₀^{π/2} = 3/2 + 3/2 = 3</code>。</p><p>答案是 3 个单位，与课件一致。整条星形线（四段）弧长为 12，而外接圆半径为 2、周长为 4π ≈ 12.57——星形线略短于外接圆，这个对比可以帮助判断结果是否合理。</p><h3 id="s6">2.5 旋转曲面的面积</h3><p>把曲线绕 x 轴旋转，曲线上的一小段 ds 扫出一个圆台的侧面。圆台侧面积等于「母线长 × 平均周长」，当 ds 很小时平均半径就是 |y|，所以微元面积是 <code>2π|y| ds</code>。累加得</p><p><b><code>A = ∫ 2π|y| ds</code></b></p><p>写成显式形式有两种。对 <code>y = f(x)</code>：</p><p><code>A = ∫[a, b] 2π|y| √(1 + (dy/dx)²) dx</code></p><p>对参数曲线：</p><p><b><code>A = 2π ∫[t₁, t₂] |y(t)| √(x′(t)² + y′(t)²) dt</code></b></p><p>绕 y 轴旋转时，半径换成到 y 轴的距离 |x|，弧长微元不变：</p><p><b><code>A = 2π ∫ |x| ds</code></b></p><p>绝对值不能省：半径是长度，必须非负。若忘了绝对值，曲线位于旋转轴另一侧（y &lt; 0）的那一段会把面积算成负数，与另一侧相互抵消。</p><h3 id="s7">2.6 例：球面面积</h3><p>课件例：把圆 <code>x = cos t, y = sin t</code> 绕 x 轴旋转，求曲面面积。</p><p><b>关键一步是选对区间。</b>整个球面可以由上半圆（0 ≤ t ≤ π）旋转得到：上半圆绕 x 轴转一圈，已经把整个球面扫出来了。若用 0 ≤ t ≤ 2π 的整圆，同一张球面会被扫两遍，面积翻倍。</p><p><code>x′ = −sin t</code>，<code>y′ = cos t</code>，<code>x′² + y′² = 1</code>，故 <code>ds = dt</code>。</p><p><code>A = 2π ∫[0, π] sin t · 1 dt = 2π[−cos t]₀^π = 2π(1 + 1) = 4π</code>。</p><p>这正是单位球的表面积 <code>4πr²</code>（r = 1），结果自洽。</p><h3 id="s8">2.7 例：偏心圆的旋转面</h3><p>课件 Task 3a：把圆心在 (0, 1)、半径为 1 的圆绕 x 轴旋转，求曲面面积，答案 4π²。</p><p>参数化：<code>x = cos t</code>，<code>y = 1 + sin t</code>，0 ≤ t ≤ 2π。这里必须用整圈：圆不再关于 x 轴对称，只取半圈会漏掉一半曲面。</p><p><code>ds = dt</code>；<code>A = 2π ∫[0, 2π] |1 + sin t| dt</code>。因为 <code>1 + sin t ≥ 0</code>，绝对值可以去掉：</p><p><code>A = 2π ∫[0, 2π] (1 + sin t) dt = 2π(2π + 0) = 4π²</code>。</p><p>几何解释：这是环面的一种临界情形——圆与旋转轴相切，中间的空洞收缩为零，于是「周长 2π」乘上「圆心走过的路程 2π」正好是 4π²。用巴普斯定理（面积 = 曲线长 × 形心走过的路程）验算比积分更快。</p><h3 id="s9">2.8 例：一般曲线的旋转面</h3><p>课件 Task 3b：<code>x = t³ − 3t</code>，<code>y = 3t²</code>，0 ≤ t ≤ 1，绕 x 轴旋转。</p><p><code>x′ = 3t² − 3 = 3(t² − 1)</code>，<code>y′ = 6t</code>，于是</p><p><code>x′² + y′² = 9(t² − 1)² + 36t² = 9(t⁴ − 2t² + 1 + 4t²) = 9(t² + 1)²</code></p><p>开方得 <code>√(x′² + y′²) = 3(t² + 1)</code>（t ≥ 0 时为正）。于是</p><p><code>A = 2π ∫[0, 1] 3t² · 3(t² + 1) dt = 18π ∫[0, 1] (t⁴ + t²) dt = 18π(1/5 + 1/3) = 18π · 8/15 = 48π/5</code></p><p>与课件答案 48π/5 一致。这道题的技巧在于 <code>9(t² + 1)²</code> 这个完全平方——出题人把 <code>x′² + y′²</code> 设计成可开方的形式，见到这种结构要立刻想到「配方后开根」。</p><h3 id="s10">2.9 极坐标系：极点、极轴与有向距离</h3><p>极坐标系有一个原点（称为<b>极点</b>，pole）O，以及一条从 O 水平向右的射线（称为<b>极轴</b>，polar axis）。平面上任一点 P 的位置由一对数 [r, θ] 确定：</p><ul><li><b>r</b> 是从 O 到 P 的<b>有向距离</b>（directed distance），可以为负；</li><li><b>θ</b> 是从极轴转到射线 OP 的<b>有向角</b>，逆时针为正。</li></ul><p>与直角坐标不同，极坐标的一对数是「距离 + 方向」，这使它特别适合描述具有旋转对称性的对象：圆、心形线、玫瑰线、螺线。</p><h3 id="s11">2.10 极坐标与直角坐标的互化</h3><p>把极坐标对应的直角三角形投影到 x、y 轴上，立刻得到：</p><p><b><code>x = r cos θ</code>，<code>y = r sin θ</code></b></p><p>反向：由 <code>r² = x² + y²</code> 得 <code>r = ±√(x² + y²)</code>；由 <code>tan θ = y/x</code> 得 <code>θ = tan⁻¹(y/x)</code>，但<b>必须按象限修正</b>——<code>tan⁻¹</code> 的值域只有 (−π/2, π/2)，落在第二、三象限的点要加 π。</p><p>所以工程上更安全的写法是 <code>atan2(y, x)</code>，它自动处理象限与零值。考试若要求手算，就画图定位象限再定角。</p><h3 id="s12">2.11 极坐标的两个特性：角度不唯一、距离可为负</h3><p><b>角度不唯一。</b>同一个点 (3, π/3) 还可以写成 [3, π/3 + 2π]、[3, π/3 − 2π]、[3, π/3 + 4π]……即 <code>[r, θ] = [r, θ + 2kπ]</code>，k ∈ ℤ。</p><p><b>距离可为负。</b>负的 r 表示「沿相反方向量取一段正的距离」：<code>[−2, π/4] = [2, π/4 + π] = [2, 5π/4]</code>。这与「角度加 π」完全等价，因为 5π/4 与 π/4 的方向正好相反。</p><p>这两个特性使极坐标方程常常「一个方程画出多个分支」，读图时必须把所有 (r, θ) 组合都想一遍。</p><h3 id="s13">2.12 极坐标作图：五类常见点集</h3><p>课件 Task 4a 要求画出满足下列条件的点集，这五个小问覆盖了极坐标作图的全部套路：</p><table><tr><th>条件</th><th>图形</th><th>理由</th></tr><tr><td>1 ≤ r ≤ 2，0 ≤ θ ≤ π/2</td><td>第一象限内的四分之一圆环</td><td>距离被限制在两条圆弧之间，角度被限制在两条坐标轴之间</td></tr><tr><td>−1 ≤ r ≤ 2，θ = π/4</td><td>沿直线方向 θ = π/4 的线段，从反方向 1 单位处到正方向 2 单位处</td><td>角度固定为一条直线方向，r 从 −1 变到 2 时点沿这条直线滑动并跨过极点</td></tr><tr><td>r ≤ 0，θ = π/3</td><td>方向为 4π/3 的射线（θ = π/3 的反向射线，不含极点右侧部分）</td><td>负距离把方向翻转 π，图形落在第三象限方向</td></tr><tr><td>−π/4 ≤ θ ≤ π/4（r 不受限）</td><td>左右两个对顶的 90° 扇形，合起来是 |y| ≤ |x| 的区域</td><td>允许负 r 等于给每个角度再补一个 θ + π，于是两个扇形都出现</td></tr><tr><td>0 ≤ r ≤ 1（θ 不受限）</td><td>以极点为圆心的闭单位圆盘</td><td>角度不受限，距离不超过 1</td></tr></table><p>作图时最稳的办法不是「想」，而是「代」：给 r 取几个值、给 θ 取几个值，各代一组算出直角坐标点，点出来再连线。</p><h3 id="s14">2.13 极坐标方程化直角坐标：五道标准题</h3><p>课件 Task 4b 给出五个极坐标方程，要求写成直角坐标形式。方法只有一个：把 <code>r cos θ</code> 换 <code>x</code>、<code>r sin θ</code> 换 <code>y</code>、<code>r²</code> 换 <code>x² + y²</code>；必要时先两边乘 r。</p><table><tr><th>极坐标方程</th><th>代数处理</th><th>直角坐标方程</th></tr><tr><td><code>r cos θ = 1</code></td><td>直接替换</td><td><code>x = 1</code>（竖直线）</td></tr><tr><td><code>r² cos θ sin θ = 3</code></td><td><code>(r cos θ)(r sin θ) = 3</code></td><td><code>xy = 3</code>（双曲线）</td></tr><tr><td><code>r²cos²θ − r²sin²θ = 1</code></td><td>分别为 x² 与 y²</td><td><code>x² − y² = 1</code>（双曲线）</td></tr><tr><td><code>r = 1 + r cos θ</code></td><td><code>r = 1 + x</code>，两边平方</td><td><code>y² − 2x − 1 = 0</code>（抛物线）</td></tr><tr><td><code>r = 1 − 2r cos θ</code></td><td><code>r = 1 − 2x</code>，两边平方后整理</td><td><code>y² − 3x² + 4x − 1 = 0</code>（双曲线）</td></tr></table><p>第四、五题的隐患在于「两边平方」：平方会引入增根。这里两边都是非负量（r ≥ 0 且 1 + x ≥ 0），所以只要补上相应定义域即可，结果与课件一致。</p><h3 id="s15">2.14 例：由直角坐标方程反求极坐标方程</h3><p>课件例：求圆 <code>x² + (y − 2)² = 4</code> 的极坐标方程。</p><p>展开：<code>x² + y² − 4y + 4 = 4</code>，即 <code>x² + y² − 4y = 0</code>。代入 <code>x² + y² = r²</code>、<code>y = r sin θ</code>：</p><p><code>r² − 4r sin θ = 0</code>，即 <code>r(r − 4 sin θ) = 0</code>。</p><p>得 <code>r = 0</code> 或 <code>r = 4 sin θ</code>。前者只是极点一个点，已被后者在 θ = 0 时包含，所以极坐标方程为 <b><code>r = 4 sin θ</code></b>。</p><p>结论有一般性：<code>r = 2a cos θ</code> 是圆心 (a, 0)、半径 |a| 的圆；<code>r = 2a sin θ</code> 是圆心 (0, a)、半径 |a| 的圆。两者都过极点，前者在极点处与 y 轴相切，后者与极轴相切。</p><h3 id="s16">2.15 极坐标方程识别曲线</h3><p>课件 Task 4c 要求把四个极坐标方程化为直角坐标并指认曲线，这四个结果是必背的「原型」：</p><table><tr><th>极坐标方程</th><th>化简过程</th><th>曲线</th></tr><tr><td><code>r = 2 sec θ</code></td><td><code>r cos θ = 2</code></td><td><code>x = 2</code>：过 x = 2 的竖直线</td></tr><tr><td><code>r = 4 cos θ</code></td><td>两边乘 r：<code>r² = 4r cos θ</code> → <code>x² + y² = 4x</code> → <code>(x − 2)² + y² = 4</code></td><td>圆心 (2, 0)、半径 2 的圆</td></tr><tr><td><code>r = 2/(sin θ − cos θ)</code></td><td><code>r sin θ − r cos θ = 2</code> → <code>y − x = 2</code></td><td><code>y = x + 2</code>：斜率 1、y 截距 2 的直线</td></tr><tr><td><code>r = 1/(1 − sin θ)</code></td><td><code>r − r sin θ = 1</code> → <code>r = 1 + y</code>，平方得 <code>x² + y² = (1 + y)²</code> → <code>x² = 2y + 1</code></td><td><code>y = x²/2 − 1/2</code>：开口向上的抛物线</td></tr></table><p>这四个例子的共同技巧是「乘 r」或「移项后平方」。凡分母出现 <code>sin θ − cos θ</code> 这类组合，先把分母乘到左边，立刻看出是一次式（直线）。</p><h3 id="s17">2.16 极坐标下的面积</h3><p>把区域切成以极点为顶点的小扇形。角度从 θ 增到 θ + dθ 时，扇形的两条边长都是 r、夹角 dθ，其面积是整圆面积的 <code>dθ/2π</code> 倍：</p><p><code>dA = ½ r² dθ</code></p><p>于是由曲线 <code>r = f(θ)</code> 与两条射线 θ = α、θ = β（α &lt; β）围成的区域面积为</p><p><b><code>A = ½ ∫[α, β] r(θ)² dθ</code></b></p><p>注意这里积的是 <b>r²</b>，不是 r；那个 ½ 来自扇形面积公式，不是从别处凑出来的。</p><h3 id="s18">2.17 极坐标下的弧长</h3><p>极坐标下的微元三角形：一边是径向的 dr，一边是切向的 <code>r dθ</code>，两者垂直，所以</p><p><code>ds² = dr² + (r dθ)²</code>，即 <b><code>ds = √(r² + (dr/dθ)²) dθ</code></b></p><p>积分得 <b><code>L = ∫[α, β] √(r² + r′²) dθ</code></b>。</p><p>这个公式与参数式完全一致：把 <code>x = r cos θ</code>、<code>y = r sin θ</code> 代入 <code>√(x′² + y′²)</code> 化简，正好得到 <code>√(r² + r′²)</code>。两条路殊途同归，可以用它验算。</p><h3 id="s19">2.18 例：心形线的周长</h3><p>课件 Task：求心形线 <code>r = a(1 + cos θ)</code>（a &gt; 0）的周长，已知 θ 从 −π 到 π 恰好描出曲线一次，答案 8a。</p><p><code>r′ = −a sin θ</code>，于是</p><p><code>r² + r′² = a²[(1 + cos θ)² + sin²θ] = a²[1 + 2cos θ + cos²θ + sin²θ] = a²(2 + 2cos θ)</code></p><p>用半角公式 <code>1 + cos θ = 2cos²(θ/2)</code>：</p><p><code>r² + r′² = 4a²cos²(θ/2)</code>，故 <code>√(r² + r′²) = 2a|cos(θ/2)|</code>。</p><p>在 −π ≤ θ ≤ π 上，<code>θ/2 ∈ [−π/2, π/2]</code>，<code>cos(θ/2) ≥ 0</code>，绝对值可去掉：</p><p><code>L = ∫[−π, π] 2a cos(θ/2) dθ = 2a · [2 sin(θ/2)]_{−π}^{π} = 2a · (2 + 2) = 8a</code>。</p><p>结果 8a 与课件一致。心形线的周长与圆一样「干净」，这也是它常被用作考题的原因。</p><h3 id="s20">2.19 常见误解</h3><ul><li><b>旋转面积漏掉绝对值</b>：绕 x 轴时半径是 |y|，绕 y 轴时是 |x|。曲线跨过旋转轴时，不加绝对值会得到负数或相互抵消的结果。</li><li><b>旋转面用整圈参数</b>：单位圆绕 x 轴若用 0 ≤ t ≤ 2π，球面被扫两遍，答案变成 8π。判据是「曲线绕轴转一圈是否已经覆盖整个曲面」。</li><li><b>弧长开方不看符号</b>：<code>√(16sin²t)</code> 是 <code>4|sin t|</code>，不是 <code>4 sin t</code>，要按积分区间判断 sin t 的符号。</li><li><b>极坐标面积少写 ½</b>：扇形面积是 <code>½r²dθ</code>，忘记 ½ 会让答案翻倍。</li><li><b>把 <code>r = 4cos θ</code> 当成半径 4 的圆</b>：它是直径 4、半径 2 的圆，圆心在 (2, 0)。系数 2a 才是直径。</li><li><b>互化时忘记象限</b>：<code>θ = tan⁻¹(y/x)</code> 只给出主值，第二、三象限的点必须加 π。</li></ul></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>arc length</td><td>弧长</td><td>L = ∫ √(x′² + y′²) dt for a parametric curve.</td></tr><tr><td>arc length element</td><td>弧长微元</td><td>ds = √(dx² + dy²); the length of an infinitesimal piece of the curve.</td></tr><tr><td>surface area of revolution</td><td>旋转曲面面积</td><td>A = 2π ∫ |y| ds when rotating about the x-axis.</td></tr><tr><td>radius of revolution</td><td>旋转半径</td><td>The distance from the curve to the axis, always taken as an absolute value.</td></tr><tr><td>torus</td><td>环面</td><td>The surface swept by rotating a circle about an axis lying in its plane.</td></tr><tr><td>polar coordinates</td><td>极坐标</td><td>A point is given as [r, θ] with x = r cos θ, y = r sin θ.</td></tr><tr><td>pole</td><td>极点</td><td>The origin O of the polar coordinate system.</td></tr><tr><td>polar axis</td><td>极轴</td><td>The ray from O pointing horizontally to the right; angles are measured from it.</td></tr><tr><td>directed distance</td><td>有向距离</td><td>r may be negative; a negative r means the distance is measured in the opposite direction.</td></tr><tr><td>cardioid</td><td>心形线</td><td>r = a(1 + cos θ); its total perimeter is 8a.</td></tr><tr><td>astroid</td><td>星形线</td><td>x = 2cos³t, y = 2sin³t; one quadrant has arc length 3 when the radius is 2.</td></tr><tr><td>sector area</td><td>扇形面积</td><td>dA = ½ r² dθ in polar coordinates.</td></tr><tr><td>convert to Cartesian</td><td>化为直角坐标</td><td>Replace r cos θ by x, r sin θ by y and r² by x² + y².</td></tr><tr><td>non-uniqueness of polar coordinates</td><td>极坐标不唯一</td><td>[r, θ] = [r, θ + 2kπ]; also [−r, θ] = [r, θ + π].</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　求曲线 <code>x = 2t − sin 2t</code>、<code>y = 2sin²t</code>（0 ≤ t ≤ π）的弧长。</div><p><b>求导。</b><code>dx/dt = 2 − 2cos 2t</code>；<code>dy/dt = 2 · 2 sin t cos t = 2 sin 2t</code>。</p><p><b>平方和。</b><code>x′² + y′² = 4(1 − cos 2t)² + 4sin²2t = 4[(1 − cos 2t)² + sin²2t]</code>。</p><p>括号内展开：<code>1 − 2cos 2t + cos²2t + sin²2t = 2 − 2cos 2t</code>，故 <code>x′² + y′² = 4(2 − 2cos 2t) = 16sin²t</code>。</p><p><b>开方。</b>0 ≤ t ≤ π 时 <code>sin t ≥ 0</code>，取 <code>4 sin t</code>。</p><p><b>积分。</b><code>L = ∫[0, π] 4 sin t dt = 8</code>。</p><p><b>点评。</b>「配方、开方、判符号」三步就是参数弧长的标准流程。若区间改成 0 ≤ t ≤ 2π，则必须写 <code>4|sin t|</code> 并分段积分，结果仍是 16（因为曲线把同一形状走了两遍）。</p></div><div class="qa"><div class="q">例 2　求星形线 <code>x = 2cos³t</code>、<code>y = 2sin³t</code> 在 0 ≤ t ≤ π/2 上的弧长。</div><p><b>求导。</b><code>dx/dt = −6cos²t sin t</code>，<code>dy/dt = 6sin²t cos t</code>。</p><p><b>平方和。</b><code>x′² + y′² = 36cos⁴t sin²t + 36sin⁴t cos²t = 36sin²t cos²t(cos²t + sin²t) = 36sin²t cos²t</code>。</p><p><b>开方。</b>第一象限内 <code>sin t cos t ≥ 0</code>，取 <code>6 sin t cos t = 3 sin 2t</code>。</p><p><b>积分。</b><code>L = ∫[0, π/2] 3 sin 2t dt = [−(3/2)cos 2t]₀^{π/2} = 3/2 + 3/2 = 3</code>。</p><p><b>验算。</b>四段合计 12；外接圆半径 2、周长 4π ≈ 12.57，星形线略短，合理。</p></div><div class="qa"><div class="q">例 3　把 <code>r = 4cos θ</code> 化为直角坐标方程，并求它所围区域的面积。</div><p><b>化直角坐标。</b>两边乘 r：<code>r² = 4r cos θ</code>。代入 <code>r² = x² + y²</code>、<code>r cos θ = x</code> 得 <code>x² + y² = 4x</code>，配方得 <code>(x − 2)² + y² = 4</code>：圆心 (2, 0)、半径 2 的圆。</p><p><b>极坐标求面积。</b>θ 从 −π/2 到 π/2 描出整个圆：<code>A = ½∫[−π/2, π/2] 16cos²θ dθ = 8∫[−π/2, π/2] cos²θ dθ</code>。</p><p>用 <code>cos²θ = (1 + cos 2θ)/2</code>：<code>A = 8 · (1/2)(π) = 4π</code>。</p><p><b>验算。</b>半径 2 的圆面积是 <code>π·2² = 4π</code>，一致。这也说明极坐标面积公式中的 ½ 是正确的。</p></div><div class="qa"><div class="q">例 4　求心形线 <code>r = a(1 + cos θ)</code>（a &gt; 0，−π ≤ θ ≤ π）的周长。</div><p><b>求导。</b><code>r′ = −a sin θ</code>，故 <code>r² + r′² = a²[(1 + cos θ)² + sin²θ] = a²(2 + 2cos θ)</code>。</p><p><b>半角化简。</b><code>1 + cos θ = 2cos²(θ/2)</code>，故 <code>r² + r′² = 4a²cos²(θ/2)</code>，<code>√(r² + r′²) = 2a|cos(θ/2)|</code>。</p><p><b>去绝对值。</b><code>θ/2 ∈ [−π/2, π/2]</code>，余弦非负，直接取 <code>2a cos(θ/2)</code>。</p><p><b>积分。</b><code>L = 2a∫[−π, π] cos(θ/2) dθ = 2a[2 sin(θ/2)]_{−π}^{π} = 2a(2 + 2) = 8a</code>。</p><p><b>点评。</b>若区间改成 0 ≤ θ ≤ 2π，心形线会被描两遍，答案变成 16a。题目特意声明「从 −π 到 π 恰好描出一次」，就是为了堵住这个错误。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>x = t², y = t³</code> 在 0 ≤ t ≤ 1 上的弧长。</li><li>求曲线 <code>x = cos t + t sin t, y = sin t − t cos t</code>（0 ≤ t ≤ π/2）的弧长。</li><li>把 <code>y = x²</code>（0 ≤ x ≤ 1）绕 x 轴旋转，写出曲面面积的积分式。</li><li>把极坐标方程 <code>r = 2sin θ</code> 化为直角坐标方程，并说明它是什么曲线。</li><li>求心形线 <code>r = 1 + sin θ</code> 围成的面积。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>x′ = 2t</code>，<code>y′ = 3t²</code>，<code>x′² + y′² = 4t² + 9t⁴ = t²(4 + 9t²)</code>。t ≥ 0 时开方得 <code>t√(4 + 9t²)</code>。令 <code>u = 4 + 9t²</code>、<code>du = 18t dt</code>：<code>L = (1/18)∫[4, 13] √u du = (1/27)(13√13 − 8) ≈ 1.44</code>。</p><p><b>2.</b> <code>x′ = −sin t + sin t + t cos t = t cos t</code>，<code>y′ = cos t − cos t + t sin t = t sin t</code>，故 <code>x′² + y′² = t²</code>，<code>ds = t dt</code>（t ≥ 0）。<code>L = ∫[0, π/2] t dt = π²/8 ≈ 1.234</code>。</p><p><b>3.</b> <code>dy/dx = 2x</code>，<code>ds = √(1 + 4x²) dx</code>，半径 <code>|y| = x²</code>，故 <code>A = 2π∫[0, 1] x²√(1 + 4x²) dx</code>。用 <code>2x = tan u</code> 换元可直接算出闭式，考试中写出这个积分式并注明半径取 |y| 即可得主要步骤分。</p><p><b>4.</b> 两边乘 r：<code>r² = 2r sin θ</code> → <code>x² + y² = 2y</code> → <code>x² + (y − 1)² = 1</code>，圆心 (0, 1)、半径 1 的圆，在极点与极轴相切。</p><p><b>5.</b> <code>A = ½∫[0, 2π] (1 + sin θ)² dθ = ½∫(1 + 2sin θ + sin²θ) dθ</code>。sin θ 的积分为 0，sin²θ 的平均值为 ½，故 <code>A = ½(2π + π) = 3π/2</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>参数曲线弧长、旋转曲面面积、极坐标与直角坐标互化、极坐标面积与弧长四大块，几乎每次考试各出一道。心形线周长 8a、单位球面积 4π 这类经典结论要能直接写出。</div><div class="callout warn"><b>易错一：根号开方丢绝对值</b><code>√(x′² + y′²)</code> 开出来是绝对值，必须按积分区间判断符号；不判断就写正号，会在某些区间得出负数。</div><div class="callout warn"><b>易错二：旋转面的半径与区间</b>绕 x 轴用 |y|、绕 y 轴用 |x|；区间要选「只扫一遍」的那一段，整圆绕轴会把曲面算两遍。</div><div class="callout warn"><b>易错三：极坐标面积漏 ½ 或漏平方</b>公式是 <code>½∫r²dθ</code>，两个都容易漏。可用「圆 r = 2cos θ 的面积应为 4π」自检。</div><div class="callout tip"><b>进阶：用特例验算</b>算完弧长或面积，先代入一个已知特例：单位圆周长 2π、摆线一拱 8a、球面积 4πr²。特例对不上，说明公式或区间选错了，比重新积一遍更省时间。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s21">方法与检查清单</h2><h3 id="s22">算弧长的标准流程</h3><ol class="steps"><li>写出参数方程，明确参数区间 [t₁, t₂]</li><li>分别求 x′、y′</li><li>算 <code>x′² + y′²</code>，用恒等式化简（半角公式最常用）</li><li>开方，按区间判断符号，必要时分段</li><li>积分，检查结果是否为正、量纲是否为长度</li><li>用特例验算：单位圆 2π、摆线一拱 8a、星形线四段 12</li></ol><h3 id="s23">算旋转曲面面积的流程</h3><ol class="steps"><li>确认旋转轴（x 轴还是 y 轴），确定半径是 |y| 还是 |x|</li><li>选一段能且只能扫出整个曲面的参数区间</li><li>算 <code>ds = √(x′² + y′²) dt</code></li><li>写出 <code>A = 2π∫ 半径 · ds</code>，代入并化简</li><li>检查：结果为正、量级合理（球面积 4πr² 可作参照）</li></ol><h3 id="s24">极坐标题的检查项</h3><ul class="checklist"><li>互化时 <code>r cos θ → x</code>、<code>r sin θ → y</code>、<code>r² → x² + y²</code> 有没有写错</li><li>出现负 r 时是否换成了 <code>θ + π</code> 的正距离表示</li><li>面积是否写了 ½，是否积的是 r²</li><li>弧长是否用了 <code>√(r² + r′²)</code>，而不是只积 r</li><li>曲线是否被重复描出（影响面积与弧长是否为倍数）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码 / 位置</th><th>覆盖的知识点</th></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p4–p6</td><td>弧长微元 ds 的推导、直角坐标与参数形式的弧长公式</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p7</td><td>例：x = 2t − sin 2t, y = 2sin²t 的弧长 = 8</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p8</td><td>Task 2：星形线弧长 = 3</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p9–p10</td><td>绕 x 轴与绕 y 轴的旋转曲面面积公式</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p11–p12</td><td>例：单位圆绕 x 轴得球面 4π</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p13–p14</td><td>Task 3a（4π²）与 Task 3b（48π/5）</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p15–p17</td><td>极坐标定义、互化公式、角度多值性与负距离</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p18–p23</td><td>Task 4a 作图、Task 4b 化直角坐标、圆的极坐标方程、Task 4c 识别曲线</td></tr><tr><td>Topic 1/EMII_Week1_Lecture2.pdf</td><td>p24–p26</td><td>极坐标面积公式、极坐标弧长公式、心形线周长 8a</td></tr><tr><td>（跳过）_info_*.html.txt</td><td>全篇</td><td>Moodle 快照（登录页、公告、问卷、Quiz 入口），无讲义内容</td></tr><tr><td>（跳过）Topic 1/Lecture 2.html</td><td>全篇</td><td>抽取结果为 Moodle 登录页，无正文</td></tr><tr><td>（拓展）</td><td>—</td><td>2.7 用「周长 × 形心路程」的几何解释验算 4π²，属方法性补充；2.19 的六条误解为错误归纳，均不新增考点</td></tr></table></section><div class="lnav"><a class="prev" href="ch1-parametric-curves.html">← 第 1 章 · 平面曲线与参数方程</a><a class="next" href="ch2-cyl-spherical.html">第 2 章 · 柱坐标与球坐标 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

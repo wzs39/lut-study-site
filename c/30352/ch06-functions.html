@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑥ 函数与参数传递 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-3.html">第 3 章 函数与面向对象</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、函数是什么，为什么要用</a><a class="toc-l3" href="#s3">1.1 内置函数与自定义函数</a><a class="toc-l2" href="#s4">二、用 def 定义函数</a><a class="toc-l3" href="#s5">2.1 骨架的五个部分</a><a class="toc-l3" href="#s6">2.2 一个最小可运行函数</a><a class="toc-l2" href="#s7">三、return：函数唯一的出口</a><a class="toc-l3" href="#s8">3.1 return 结束执行并交回一个值</a><a class="toc-l3" href="#s9">3.2 return 与 print 不是一回事</a><a class="toc-l3" href="#s10">3.3 没有 return 的函数返回 None</a><a class="toc-l2" href="#s11">四、调用函数：把值送进去</a><a class="toc-l2" href="#s12">五、参数：位置、数量、顺序</a><a class="toc-l3" href="#s13">5.1 按位置对应</a><a class="toc-l3" href="#s14">5.2 为什么必须用参数，而不是靠外面的变量</a><a class="toc-l3" href="#s15">5.3 默认参数</a><a class="toc-l2" href="#s16">六、作用域：函数里的名字是独立的</a><a class="toc-l3" href="#s17">6.1 局部变量</a><a class="toc-l3" href="#s18">6.2 值传递：改参数不影响外面的不可变对象</a><a class="toc-l3" href="#s19">6.3 例外：传入可变对象时会被改到</a><a class="toc-l2" href="#s20">七、从需求到函数：设计五问</a><a class="toc-l2" href="#s21">八、用函数组织一个完整程序</a><a class="toc-l2" href="#s22">九、常见错误与调试</a><a class="toc-l2" href="#s23">操作清单</a><a class="toc-l3" href="#s24">写函数之前，先回答五个问题</a><a class="toc-l3" href="#s25">写完之后的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a class="toc-l3" href="ch06-functions.html">▸ ⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑥ 函数与参数传递</h1><p class="lead">Functions, Parameters and Scope <span class="badge mute">30352</span> <span class="badge mute">第 6 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 函数与面向对象</a></p><p class="src">原始文件：<code>What_is_ a_funtion.pdf</code> <code>Self_defined_functions.pdf</code> <code>Parameters.pdf</code> <code>Example_writing_a_function.pdf</code> <code>Mutable_vs _immutable .pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前五讲的代码都是「一条一条往下写」。程序一变长，重复的片段就会出现，改一处要改十处。这一讲把代码打包成函数：给名字、留入口（参数）、留出口（返回值），以后随时调用。</p><p>循环与函数是这门课的两根支柱：循环解决「重复」，函数解决「复用与结构」。后面第 7 讲的类、第 9 讲的文件处理、第 12 讲的项目作业，都是「若干函数 + 一个主流程」的形态。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 <code>def</code> 写出带参数、带返回值的函数，并解释五个组成部分</li><li>说清 <code>return</code> 与 <code>print</code> 的区别，知道没有 return 时函数返回 <code>None</code></li><li>按位置正确传参，解释为什么参数个数与顺序都不能错</li><li>用默认参数给可选参数设默认值，并避开「可变默认参数」陷阱</li><li>解释局部变量的独立性，以及为什么列表传进函数会被改到</li><li>按「定名称 → 定输入 → 定输出 → 定判定 → 定累加」五步设计一个函数</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、函数是什么，为什么要用</h2><p>课件给的定义很短：函数是一个「小程序」，专门完成某一件事（What is a function p2）。它把一段代码打包、起名字、留出入口（参数）与出口（返回值），以后在程序任何地方都能再叫它一次。</p><p>用函数有三层收益：</p><ul><li>结构：把长程序切成若干块，每块只做一件事，读代码时不必一次装进脑子；</li><li>复用：定义一次，调用无数次，改一处就全改；</li><li>协作：把一组函数写成一个库（library），别人 <code>import</code> 就能用——这正是第 10 讲「模块」的由来。</li></ul><p>课件还提到一个特殊情形：函数可以调用自己，叫递归（recursion）。这门课不深入递归，但要知道它是函数机制自然允许的。</p><h3 id="s3">1.1 内置函数与自定义函数</h3><p>前几讲一直在用<b>内置函数</b>（built-in functions）：<code>print()</code>、<code>input()</code>、<code>len()</code>、<code>int()</code>、<code>float()</code>、<code>str()</code>、<code>round()</code>、<code>range()</code>。它们随 Python 一起装好，不用导入就能用。</p><p>这门课的重点是<b>自定义函数</b>（user-defined functions）：为了解决自己的问题而写的函数（What is a function p5）。两者用法完全一样——都是「给输入、拿输出」。</p><p>课件的 <code>round()</code> 例子值得细看（p4）：它接受两个输入，第一个是要处理的数，第二个是保留几位小数，<b>顺序不能反</b>。</p><pre><code>print(round(3.14159, 2))
+print(round(6.7, 0))
+print(round(3.14159))</code></pre><pre><code>3.14
+7.0
+3</code></pre><p><code>round(6.7, 0)</code> 得 <code>7.0</code> 而不是 <code>7</code>：只要给了第二个参数，返回类型就是 float。这提醒我们：<b>函数的返回值有类型</b>，用之前要知道拿到的是什么。</p><h2 id="s4">二、用 def 定义函数</h2><h3 id="s5">2.1 骨架的五个部分</h3><p>定义函数的语法（Self-defined functions p2–p5）可以拆成五块：</p><pre><code>def function_name(parameters):
+    # function body
+    return result</code></pre><table><tr><th>部分</th><th>作用</th><th>规则</th></tr><tr><td><code>def</code></td><td>声明「这里开始定义一个函数」</td><td>关键字，不能拼错</td></tr><tr><td><code>function_name</code></td><td>函数的名字</td><td>小写、用下划线分词，描述它做什么</td></tr><tr><td><code>(parameters)</code></td><td>参数列表，函数的输入</td><td>逗号分隔；没有参数也要写一对空括号</td></tr><tr><td><code>:</code></td><td>函数头结束，函数体开始</td><td>漏了就是 SyntaxError</td></tr><tr><td>缩进的函数体</td><td>函数真正执行的代码</td><td>整块必须比 def 多缩进</td></tr><tr><td><code>return result</code></td><td>把结果交回调用者</td><td>可以没有，也可以在中间提前返回</td></tr></table><p>命名规范与变量一致：只能字母、数字、下划线，不能有空格，不能以数字开头；习惯全小写 + 下划线（<code>count_vowels</code>），而不是 <code>CountVowels</code> 或 <code>cv</code>。名字要让人只看名字就知道它做什么。</p><h3 id="s6">2.2 一个最小可运行函数</h3><pre><code>def greet(name):
+    message = "Hello, " + name + "!"
+    return message
+
+result = greet("Alice")
+print(result)</code></pre><pre><code>Hello, Alice!</code></pre><p>三行代码里发生了三次「跨边界」：调用时 <code>"Alice"</code> 被复制给参数 <code>name</code>；函数体算出一个新字符串；<code>return</code> 把它交给调用处，赋给 <code>result</code>。函数内部的 <code>message</code> 在外面看不见（下一节讲作用域）。</p><h2 id="s7">三、return：函数唯一的出口</h2><h3 id="s8">3.1 return 结束执行并交回一个值</h3><p><code>return</code> 做两件事：立刻结束函数的执行；把后面的表达式作为返回值交给调用者（p6）。<code>return</code> 之后的语句永远不会执行。</p><pre><code>def check(n):
+    if n &lt; 0:
+        return "negative"
+    return "non-negative"
+
+print(check(-5))
+print(check(0))</code></pre><pre><code>negative
+non-negative</code></pre><p>一个函数里可以有多条 <code>return</code>，但每次调用只会执行其中一条——上面就是「负数提前返回」的写法，避免了层层嵌套的 if。这种提前返回叫守卫式写法（guard clause），第 4 讲已经用过同样的思路。</p><h3 id="s9">3.2 return 与 print 不是一回事</h3><p>这是本章最容易混的一点（p6）：<code>print()</code> 只是把文字显示到屏幕上，<b>不产生值</b>；<code>return</code> 才把值交回给调用者。</p><pre><code>def add_print(a, b):
+    print(a + b)
+
+def add_return(a, b):
+    return a + b
+
+x = add_print(2, 3)
+y = add_return(2, 3)
+print("x is", x)
+print("y is", y)</code></pre><pre><code>5
+x is None
+y is 5</code></pre><p><code>add_print</code> 把 5 打在屏幕上，但它的返回值是 <code>None</code>，所以 <code>x</code> 拿到的是 <code>None</code>。CodeGrade 的反馈里那句 <code>The function should return a value</code>（CG Guide）对应的就是这个错误：该 return 的地方写了 print。</p><h3 id="s10">3.3 没有 return 的函数返回 None</h3><p>如果函数体里根本没有 <code>return</code>，Python 会在函数结束时自动返回 <code>None</code>（none.py）。<code>None</code> 是第 1 讲介绍过的「空值」类型，表示「没有值」。</p><pre><code>def show(word):
+    print(word)
+
+value = show("Cat")
+print("value is", value)</code></pre><pre><code>Cat
+value is None</code></pre><p>反过来，<code>return</code> 不带表达式也返回 <code>None</code>，常用于「提前结束、不返回东西」的场景：</p><pre><code>def divide(a, b):
+    if b != 0:
+        return a / b
+
+result = divide(10, 0)
+if result is None:
+    print("Error: Division by zero!")
+else:
+    print(result)</code></pre><pre><code>Error: Division by zero!</code></pre><p>注意判断用的是 <code>is None</code> 而不是 <code>== None</code>：<code>None</code> 是单例对象，<code>is</code> 比较的是「是不是同一个对象」，语义更准确。</p><div class="callout warn"><b>忘写 return 是最常见的丢分点</b>函数算出了结果却只用 print 显示，调用处拿到 None，后续计算全错。写完函数先问自己：<b>调用者需要这个值吗？</b> 需要就 return。</div><h2 id="s11">四、调用函数：把值送进去</h2><p>定义只是「写好一份说明书」，真正执行要调用（call）：写函数名加括号，括号里给实参（p7）。</p><pre><code>def fun(p):
+    return p * 2
+
+x = 66
+y = fun(x)
+print(y)</code></pre><pre><code>132</code></pre><p>调用时发生的事：实参 <code>x</code> 的值被<b>复制</b>给形参 <code>p</code>；函数体用 <code>p</code> 算出结果；<code>return</code> 把结果交回；赋值语句把它存进 <code>y</code>。整条链上 <code>x</code> 本身没有被改动。</p><p>函数必须先定义、后调用。把调用写在 <code>def</code> 之前会抛 <code>NameError: name 'fun' is not defined</code>——Python 从上往下执行，定义也是一个「执行动作」。</p><h2 id="s12">五、参数：位置、数量、顺序</h2><h3 id="s13">5.1 按位置对应</h3><p>参数按<b>位置</b>一一对应（Parameters p2）：第一个实参给第一个形参，第二个给第二个。<b>数量和顺序都不能错</b>。</p><pre><code>def describe(name, age):
+    return name + " is " + str(age) + " years old"
+
+print(describe("Alice", 30))
+print(describe(30, "Alice"))</code></pre><pre><code>Alice is 30 years old
+30 is Alice years old</code></pre><p>第二个调用不报错，但语义完全错了——这正是「顺序有意义」的意思。参数个数不对则会直接抛 <code>TypeError</code>：</p><pre><code>def describe(name, age):
+    return name + " is " + str(age) + " years old"
+
+print(describe("Alice"))</code></pre><pre><code>TypeError: describe() missing 1 required positional argument: 'age' </code></pre><h3 id="s14">5.2 为什么必须用参数，而不是靠外面的变量</h3><p>课件强调：函数需要的所有「外部信息」都必须通过参数传进来（Parameters p4）。这样做换来三件事——函数独立（不偷偷依赖全局状态）、可复用（换个输入就能用）、可测试（给定输入就能验证输出）。</p><p>反面例子：函数直接读一个全局变量 <code>PI</code> 或 <code>tax_rate</code>，换一个场景就得改函数体。写成 <code>def total(price, tax_rate)</code>，函数就能在任何地方用。</p><h3 id="s15">5.3 默认参数</h3><p>默认参数（default parameter）让某个参数「可以不传」，不传时用预先写好的值（Parameters p5）：</p><pre><code>def greet(name, greeting="Hello"):
+    return greeting + ", " + name + "!"
+
+print(greet("Alice", "Hi"))
+print(greet("Bob"))</code></pre><pre><code>Hi, Alice!
+Hello, Bob!</code></pre><p>两条规则：第一，有默认值的参数必须放在<b>没有默认值</b>的参数<b>后面</b>，写成 <code>def f(a=1, b)</code> 是语法错误；第二，默认值只在<b>定义时求值一次</b>，之后每次调用共用同一个对象。</p><div class="callout warn"><b>可变默认参数是经典陷阱</b><code>def add_item(x, box=[])</code> 里的 <code>[]</code> 只创建一次，所有调用共用同一个列表：<code>add_item(1)</code> 得 <code>[1]</code>，再调 <code>add_item(2)</code> 得 <code>[1, 2]</code>。正确写法是把默认值设为 <code>None</code>，进了函数再判断：<code>if box is None: box = []</code>。</div><pre><code>def add_item(x, box=[]):
+    box.append(x)
+    return box
+
+print(add_item(1))
+print(add_item(2))</code></pre><pre><code>[1]
+[1, 2]</code></pre><h2 id="s16">六、作用域：函数里的名字是独立的</h2><h3 id="s17">6.1 局部变量</h3><p>函数体内定义的变量与参数都是<b>局部</b>的（local）：只在这个函数里存在，函数返回就消失，别的函数看不到（Parameters p3）。所以两个函数各有一个 <code>n</code> 互不干扰。</p><pre><code>def f1():
+    n = 1
+    return n
+
+def f2():
+    n = 2
+    return n
+
+print(f1(), f2())</code></pre><pre><code>1 2</code></pre><p>如果函数里给一个「外面已有」的变量赋值，Python 会把它当成新的局部变量，外面的同名变量不变。想改外面的变量得用 <code>global</code>，但这门课不建议这么做——用参数传入、用 return 传出，才是可维护的写法。</p><h3 id="s18">6.2 值传递：改参数不影响外面的不可变对象</h3><p>add_one.py 是课件给出的追踪练习：</p><pre><code>def add_one(nr):
+    nr = nr + 1
+    x = 2 * nr
+    return x
+
+x = 10
+y = 7
+print("returned:", add_one(y))
+print("x and y now:", x, y)</code></pre><pre><code>returned: 16
+x and y now: 10 7</code></pre><p>为什么 <code>y</code> 仍是 7？因为 <code>y</code> 的值被复制给 <code>nr</code>，函数里改的是副本。同理函数里的局部变量 <code>x</code> 与外面的 <code>x</code> 是两个不同的名字，互不影响。</p><h3 id="s19">6.3 例外：传入可变对象时会被改到</h3><p>列表、字典是可变对象（mutable），传参时复制的是「指向同一个对象的引用」而不是内容。函数里改元素，外面的列表跟着变（list_parameter.py）：</p><pre><code>def modify_parameter(my_list):
+    my_list[2] = 33
+    A = my_list
+    A[0] = 1000
+
+original_list = [1, 2, 3]
+print("Before:", original_list)
+modify_parameter(original_list)
+print("After:", original_list)</code></pre><pre><code>Before: [1, 2, 3]
+After: [1000, 2, 33]</code></pre><p>第 8 讲会系统讲列表，这里先记住结论：<b>不可变对象（数字、字符串、元组）传进函数，外面不变；可变对象（列表、字典、集合）传进去，函数里的修改会反映到外面。</b></p><h2 id="s20">七、从需求到函数：设计五问</h2><p>课件用一个具体的题示范设计流程（Example: writing a function p2）：写一个函数，返回字符串里元音字母的个数。动笔之前先回答五个问题：</p><ol class="steps"><li>函数叫什么名字？→ <code>count_vowels</code>（动词 + 名词，说明它做什么）</li><li>参数是什么？→ 一个字符串 <code>s</code></li><li>返回什么？→ 一个整数（个数），不是打印</li><li>怎么判断一个字符是不是元音？→ <code>ch.lower() in "aeiou"</code></li><li>怎么数？→ 计数器初值 0，命中就 +1；用不用循环？→ 要遍历每个字符，用 <code>for</code></li></ol><pre><code>def count_vowels(s):
+    count = 0
+    for ch in s.lower():
+        if ch in "aeiou":
+            count = count + 1
+    return count
+
+print(count_vowels("Programming is fun"))</code></pre><pre><code>5</code></pre><p>这五个问题就是「通用解题思路」：<b>定名称 → 定输入 → 定输出 → 定判定条件 → 定累加方式</b>。换成「统计及格人数」「数出单词个数」都是同一套问法。</p><h2 id="s21">八、用函数组织一个完整程序</h2><p>课件的 example_with_menu.py 把「面积计算器」拆成五个函数：一个打印菜单并读选择，三个算面积，一个算平方根；主程序是一个 <code>while</code> 循环，按选择调用对应函数。</p><pre><code>def print_menu():
+    """Print the menu and return the user's choice."""
+    print("\nCompute the area of:")
+    print("1) a circle")
+    print("2) a rectangle")
+    print("3) a triangle")
+    print("4) quit")
+    return int(input("Enter your choice: "))
+
+def circle_area(r):
+    return 3.14159 * r ** 2
+
+def rectangle_area(w, h):
+    return w * h
+
+def triangle_area(a, b, c):
+    s = (a + b + c) / 2
+    return (s * (s - a) * (s - b) * (s - c)) ** 0.5
+
+choice = print_menu()
+if choice == 1:
+    r = float(input("Radius: "))
+    print("Area:", round(circle_area(r), 2))
+elif choice == 2:
+    w = float(input("Width: "))
+    h = float(input("Height: "))
+    print("Area:", round(rectangle_area(w, h), 2))
+elif choice == 3:
+    a = float(input("Side 1: "))
+    b = float(input("Side 2: "))
+    c = float(input("Side 3: "))
+    print("Area:", round(triangle_area(a, b, c), 2))
+else:
+    print("Bye!")</code></pre><p>结构上的三个要点：每个函数只做一件事（单一职责）；菜单函数既打印又返回选择，把「读输入」与「决定流程」分开；主程序只负责调度，不写计算细节。三角形面积用海伦公式（Heron's formula）：半周长 <code>s = (a+b+c)/2</code>，面积 <code>√(s(s−a)(s−b)(s−c))</code>，开方用 <code>** 0.5</code>。</p><div class="callout tip"><b>docstring 放在函数第一行</b>每个函数开头写一句 <code>"""Returns the area of a circle."""</code>，既是注释又能被 <code>help()</code> 读出来（第 3 讲）。项目作业里评分的可读性就看这个。</div><h2 id="s22">九、常见错误与调试</h2><div class="callout warn"><b>print 当 return 用</b>屏幕上有输出、调用处拿到 None。凡是题目要求「返回」，就只能 <code>return</code>；要同时看结果，在调用处 print 返回值。</div><div class="callout warn"><b>参数个数不对</b><code>TypeError: f() takes 2 positional arguments but 3 were given</code>。数一遍 <code>def</code> 括号里的参数与调用括号里的值。</div><div class="callout warn"><b>UnboundLocalError</b>函数里既用又给某个变量赋值时，Python 把它当局部变量，于是「用」的那一步发现它还没赋值。解决办法：把值作为参数传进来，或在函数内先初始化。</div><div class="callout warn"><b>只在函数里改了不可变参数，以为外面会变</b><code>def inc(n): n = n + 1</code> 改的是副本。要「改到外面」，得 <code>return</code> 新值并让调用处重新赋值：<code>x = inc(x)</code>。</div><div class="callout idea" data-ext="ch06-functions-0"><b>常见误解</b><p><code>print()</code> 只把文字显示在屏幕，<strong>不产生值</strong>；<code>return</code> 才交回值。函数只 print 不 return，调用处拿到 None（CodeGrade 报 <em>The function should return a value</em> 就是这个错）。另一个陷阱是<strong>可变默认参数</strong>：<code>box=[]</code> 只在定义时创建一次，多次调用共用；正确写法是默认 None，进函数再 <code>if box is None: box = []</code>。</p></div><div class="callout tip" data-ext="ch06-functions-1"><b>推导补充</b><p>参数传递的差别来自可变性：不可变对象（数字、字符串）传进函数，改的是副本，外面不变；可变对象（列表、字典）传的是引用，改元素会反映到外面。由此推出设计原则——外部信息用参数传进来，别偷读全局变量，函数才独立可复用。判断 None 用 <code>is None</code> 而非 <code>== None</code>；函数必须先定义后调用。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>function</td><td>函数</td><td>A named block of code that performs one task.</td></tr><tr><td>def</td><td>定义函数的关键字</td><td>def area(r): starts a function definition.</td></tr><tr><td>parameter</td><td>形参</td><td>A variable listed in the parentheses of the definition.</td></tr><tr><td>argument</td><td>实参</td><td>The value passed in when the function is called.</td></tr><tr><td>function body</td><td>函数体</td><td>The indented statements inside the function.</td></tr><tr><td>return</td><td>返回</td><td>Sends a value back to the caller and ends the function.</td></tr><tr><td>None</td><td>空值</td><td>The value a function returns when it has no return statement.</td></tr><tr><td>function call</td><td>函数调用</td><td>greet("Bob") executes the function.</td></tr><tr><td>scope</td><td>作用域</td><td>Variables inside a function are local to it.</td></tr><tr><td>local variable</td><td>局部变量</td><td>A variable that exists only inside the function.</td></tr><tr><td>default parameter</td><td>默认参数</td><td>def greet(name, greeting="Hello") can be called with one argument.</td></tr><tr><td>mutable object</td><td>可变对象</td><td>A list passed to a function can be modified inside it.</td></tr><tr><td>docstring</td><td>文档字符串</td><td>A string on the first line of a function, read by help().</td></tr><tr><td>recursion</td><td>递归</td><td>A function that calls itself.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写函数 <code>count_vowels(s)</code> 返回元音个数，并解释每一行的作用。</div><p>先按设计五问定好名称、输入、输出、判定、累加，再写代码。</p><pre><code>def count_vowels(s):
+    count = 0                  # 计数器：初值 0
+    for ch in s.lower():       # 遍历每个字符，统一转小写
+        if ch in "aeiou":      # 判定：是不是元音
+            count = count + 1  # 命中就 +1
+    return count               # 把结果交回调用者
+
+print(count_vowels("Programming is fun"))
+print(count_vowels("XYZ"))</code></pre><p>输出：</p><pre><code>5
+0</code></pre><p>解释：<code>s.lower()</code> 让大小写都算；<code>ch in "aeiou"</code> 是子串判断，比写六个 <code>or</code> 简洁；<code>return</code> 放在循环<b>外面</b>，循环结束后才返回总数——若缩进到循环里，函数会在第一个字符处就返回。</p></div><div class="qa"><div class="q">例 2　追踪 add_one 的执行，说明为什么 y 没有被改成 8。</div><p>先写出预期的中间值，再运行验证。函数：<code>nr = nr + 1</code>，<code>return 2 * nr</code>；调用 <code>add_one(7)</code>。</p><pre><code>def add_one(nr):
+    nr = nr + 1
+    x = 2 * nr
+    return x
+
+x = 10
+y = 7
+print("returned:", add_one(y))
+print("x and y now:", x, y)</code></pre><p>输出：</p><pre><code>returned: 16
+x and y now: 10 7</code></pre><p>逐步追踪：调用把 <code>y</code> 的值 7 <b>复制</b>给 <code>nr</code>；<code>nr</code> 变成 8；<code>x</code>（局部）是 16；返回 16。外面的 <code>y</code> 从未被赋值过，所以仍是 7；外面的 <code>x</code> 也是 10，因为函数里的 <code>x</code> 是另一个局部名字。</p></div><div class="qa"><div class="q">例 3　写 <code>is_prime(n)</code> 返回布尔值，并用它打印 20 以内的质数。</div><p>关键设计决策：返回 <code>True</code> / <code>False</code>，而不是打印「是质数」——这样调用者可以拿它做别的判断。</p><pre><code>def is_prime(n):
+    if n &lt; 2:
+        return False
+    for d in range(2, n):
+        if n % d == 0:
+            return False
+    return True
+
+for n in range(2, 21):
+    if is_prime(n):
+        print(n, end=" ")</code></pre><p>输出：</p><pre><code>2 3 5 7 11 13 17 19</code></pre><p>解释：<code>n &lt; 2</code> 与「找到因子」两处都提前 <code>return False</code>，函数立刻结束；只有全部试完都没找到因子，才走到最后的 <code>return True</code>。把「判定」写成返回布尔值的函数，是让代码可复用的关键一步。</p></div><div class="qa"><div class="q">例 4　用两个函数改写面积计算器：<code>circle_area(r)</code> 与 <code>triangle_area(a,b,c)</code>，并在主程序里调用。</div><p>函数只负责算，主程序负责读输入与打印，职责分开。</p><pre><code>def circle_area(r):
+    return 3.14159 * r ** 2
+
+def triangle_area(a, b, c):
+    s = (a + b + c) / 2
+    return (s * (s - a) * (s - b) * (s - c)) ** 0.5
+
+r = float(input("Radius: "))
+print("Circle area:", round(circle_area(r), 2))
+
+a = float(input("Side 1: "))
+b = float(input("Side 2: "))
+c = float(input("Side 3: "))
+print("Triangle area:", round(triangle_area(a, b, c), 2))</code></pre><p>输入 <code>2</code>、<code>3</code>、<code>4</code>、<code>5</code>，输出：</p><pre><code>Circle area: 12.57
+Triangle area: 6.0</code></pre><p>解释：圆面积 3.14159×4 = 12.56636 → 12.57；三角形三边 3、4、5 是直角三角形，面积 6，海伦公式给出 <code>s=6</code>、<code>6×3×2×1=36</code>、开方得 6。若三边构不成三角形（如 1、2、10），<code>s−a</code> 会为负，开方得到复数——真实程序应先校验三边关系。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写 <code>max_of_three(a, b, c)</code>，返回三者中的最大值（不许用 <code>max()</code>）。</li><li>写 <code>count_char(s, ch)</code>，返回 <code>ch</code> 在 <code>s</code> 中出现的次数（不许用 <code>count()</code>）。</li><li>写 <code>is_even(n)</code> 返回布尔值；再写一段代码，用它打印 1–10 中的偶数。</li><li>写 <code>to_celsius(f)</code> 把华氏温度转成摄氏温度（公式 C = (F − 32) × 5 / 9），返回保留一位小数的值。</li><li>把第 5 讲的「反复读成绩、输出平均分与及格人数」改写成函数 <code>average(scores)</code>，参数是一个分数列表。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 先假设 <code>a</code> 最大，再依次比较：<code>best = a</code>；<code>if b &gt; best: best = b</code>；<code>if c &gt; best: best = c</code>；<code>return best</code>。这是「找极值」模式，初值必须是<b>列表里真实存在的元素</b>，不能写 0（全负数时出错）。</p><p><b>2.</b> <code>count = 0</code>，<code>for c in s: if c == ch: count += 1</code>，<code>return count</code>。若 <code>ch</code> 长度大于 1，这个写法按字符比会永远不相等——要按子串计数得用 <code>s.count(ch)</code> 或滑动窗口，题目限定单字符才有上面的简单解。</p><p><b>3.</b> <code>def is_even(n): return n % 2 == 0</code>。函数体只有一行时，返回的就是这个布尔表达式，不必写 if。调用处：<code>for i in range(1, 11): if is_even(i): print(i, end=" ")</code>。</p><p><b>4.</b> <code>return round((f - 32) * 5 / 9, 1)</code>。注意运算顺序：先减再乘除；写成 <code>f - 32 * 5 / 9</code> 会因为乘除优先而算错。</p><p><b>5.</b> <code>def average(scores): if not scores: return None</code>（空列表要单独处理，否则 <code>sum/0</code> 报 ZeroDivisionError），否则 <code>return sum(scores) / len(scores)</code>。及格人数另写一个函数 <code>count_passed(scores)</code>，每个函数只做一件事。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b><code>def</code> 定义、<code>return</code> 与 <code>print</code> 的区别、参数按位置传递、无 return 时得 <code>None</code>、局部变量的独立性。</div><div class="callout warn"><b>易错 1　该 return 却 print</b>CodeGrade 的 <code>The function should return a value</code> 就是这个。看到题目写「返回」，第一反应写 <code>return</code>。</div><div class="callout warn"><b>易错 2　默认参数位置与可变默认值</b><code>def f(a=1, b)</code> 是语法错误；<code>def f(box=[])</code> 会让所有调用共享同一个列表，必须改用 <code>None</code> 哨兵。</div><div class="callout warn"><b>易错 3　把列表参数当成副本</b>函数里 <code>my_list[0] = 1000</code> 会改到外面的列表。想保留原数据，调用前先 <code>L[:]</code> 复制（第 8 讲）或 <code>list(L)</code>。</div><div class="callout tip"><b>进阶</b>递归写法（函数调用自己）在阶乘、斐波那契里常见，但必须有终止条件；另外记住 <code>return</code> 一次只能返回一个对象，要返回多个值请用元组（第 8 讲）。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s23">操作清单</h2><h3 id="s24">写函数之前，先回答五个问题</h3><ol class="steps"><li>函数叫什么名字？用动词开头、全小写下划线</li><li>参数有哪些？每个参数的类型与含义写清楚</li><li>返回什么？一个值还是多个值，类型是什么</li><li>判定的条件是什么？写成布尔表达式</li><li>要不要循环？需要累积就用「计数器/累加器 + 循环」模板</li></ol><h3 id="s25">写完之后的检查</h3><ul class="checklist"><li>每个要「返回」的路径都写了 <code>return</code></li><li>调用时参数个数、顺序与定义一致</li><li>函数里没有偷偷依赖全局变量</li><li>默认参数只用于「可选」的尾部参数，且没有用可变对象</li><li>函数体只做一件事，超过 20 行就该考虑拆开</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>What_is_ a_funtion.pdf</td><td>p2–p5</td><td>函数的定义与动机、复用/结构化/库、递归提及、内置函数与自定义函数、round() 两参数示例</td></tr><tr><td>Self_defined_functions.pdf</td><td>p2–p7</td><td><code>def</code> 五个组成部分、命名规范、函数体缩进、<code>return</code> 结束执行、return ≠ print、调用方式</td></tr><tr><td>Parameters.pdf</td><td>p2–p5</td><td>按位置传参、参数数量与顺序、局部变量独立、值复制、为什么必须用参数、默认参数</td></tr><tr><td>Example_writing_a_function.pdf</td><td>p2</td><td>元音计数题的设计五问：命名、参数、返回、判定、计数、是否需要循环</td></tr><tr><td>Mutable_vs _immutable .pdf</td><td>p2–p8</td><td>可变/不可变类型、<code>B = A</code> 指向同一对象、列表参数会被函数改到（list_parameter.py）</td></tr><tr><td>add_one.py</td><td>全文</td><td>值复制追踪：函数内改参数不影响外部变量</td></tr><tr><td>greeting.py</td><td>全文</td><td>默认参数的调用方式</td></tr><tr><td>none.py / returning_none.py</td><td>全文</td><td>无 return 返回 None、用 is None 判断</td></tr><tr><td>example_with_menu.py</td><td>全文</td><td>用多个函数组织菜单程序、docstring、海伦公式</td></tr></table><p><b>跳过项：</b>课件中只给出文件名而无正文的截图页（Example1.py 等）已按代码文件内容吸收到正文与示例；Moodle 的作业说明与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b>可变默认参数陷阱、<code>is None</code> 判断、函数必须先定义后调用、UnboundLocalError 的成因，都是围绕原知识点的边界补充，不引入新语法考点。</p></section><div class="lnav"><a class="prev" href="ch05-loops.html">← ⑤ 循环与迭代</a><a class="next" href="ch07-classes.html">⑦ 类与对象入门 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

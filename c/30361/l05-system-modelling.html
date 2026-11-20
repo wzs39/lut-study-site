@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 5 讲 · 系统建模与 UML · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-2.html">第 2 章 需求、建模与架构</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">5.1 系统建模是什么</a><a class="toc-l3" href="#s3">5.2 四个建模视角</a><a class="toc-l3" href="#s4">5.3 为什么要 UML</a><a class="toc-l3" href="#s5">5.4 两类 UML 图</a><a class="toc-l3" href="#s6">5.5 模型的三类用途与正确性要求</a><a class="toc-l3" href="#s7">5.6 系统边界与上下文模型</a><a class="toc-l3" href="#s8">5.7 交互模型</a><a class="toc-l3" href="#s9">5.8 结构模型与类图</a><a class="toc-l3" href="#s10">5.9 行为模型：数据驱动与事件驱动</a><a class="toc-l3" href="#s11">5.10 模型驱动工程 MDE</a><a class="toc-l2" href="#s12">建模的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a class="toc-l3" href="l05-system-modelling.html">▸ 第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 5 讲 · 系统建模与 UML</h1><p class="lead">System Modeling and UML <span class="badge mute">30361</span> <span class="badge mute">第 5 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 需求、建模与架构</a></p><p class="src">原始文件：<code>12_Week 6/1_SE - Lecture 5 - 2026.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>需求讲完「要什么」，建模讲「怎么把它说清楚」。系统建模是用抽象模型从不同视角描述系统，今天几乎都用 UML 表示。这一讲给出四个视角（外部、交互、结构、行为）、五类常用图，以及一种把模型变成代码的激进思路——模型驱动工程（MDE/MDA）。</p><p>与前后衔接：本讲的用例图与顺序图是第 4 讲需求表达工具的具体化；类图与状态图为第 6 讲的体系结构设计与第 7 讲的测试提供输入；第 13 讲的项目要求「用例图 + 用例表」，正是本讲的直接应用。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出系统建模的定义与建模的三种用途（讨论、文档化、代码生成），并指出各用途对模型正确性/完整性的要求</li><li>区分四个建模视角，并为给定问题选出合适的视角</li><li>为给定场景画/描述用例图与顺序图，写清参与者、边界与消息顺序</li><li>用类图表达类、关联与泛化，并说明泛化如何帮助管理复杂性</li><li>用状态机描述一个对象对事件的响应，区分状态、事件与迁移</li><li>解释 MDE 与 MDA 的差别，说出 CIM/PIM/PSM 三层模型及 MDA 采用受限的三个原因</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">5.1 系统建模是什么</h3><p>课件定义：“System modeling is the process of developing abstract models of a system, with each model presenting a different view or perspective of that system.”（开发系统的抽象模型，每个模型呈现该系统的一个不同视图或视角。）</p><p>课件补充：今天「系统建模」几乎等于「用某种图形符号表示系统」，而这些符号几乎都基于 UML（Unified Modeling Language）。建模的作用是帮助分析人员理解系统功能，并作为与客户沟通的工具。</p><p>模型有两种对象：</p><table><tr><th>模型对象</th><th>用途</th><th>阶段</th></tr><tr><td>现有系统的模型 models of the existing system</td><td>澄清现有系统做什么，作为讨论其优缺点的基础，进而引出新系统需求</td><td>需求工程</td></tr><tr><td>新系统的模型 models of the new system</td><td>向其他干系人解释拟议需求；用于讨论设计方案、记录实现</td><td>需求工程与设计</td></tr><tr><td>可生成实现的模型</td><td>在模型驱动工程中，可从模型生成完整或部分的系统实现</td><td>设计到实现</td></tr></table><h3 id="s3">5.2 四个建模视角</h3><table><tr><th>视角</th><th>英文</th><th>建什么</th><th>常用图</th></tr><tr><td>外部视角</td><td>external perspective</td><td>系统的上下文或环境</td><td>上下文模型（系统边界图）</td></tr><tr><td>交互视角</td><td>interaction perspective</td><td>系统与环境之间、或系统构件之间的交互</td><td>用例图、顺序图</td></tr><tr><td>结构视角</td><td>structural perspective</td><td>系统的组织，或系统所处理数据的结构</td><td>类图、构件图</td></tr><tr><td>行为视角</td><td>behavioral perspective</td><td>系统的动态行为及对事件的响应</td><td>活动图、状态图</td></tr></table><div class="callout tip"><b>记忆方法</b>四视角可以对应四个问句：它和谁相邻（外部）、它和谁说话（交互）、它由什么组成（结构）、它随时间怎么变（行为）。</div><h3 id="s4">5.3 为什么要 UML</h3><p>课件先讲动机：软件工程师不断寻求自动化生产软件、提升质量、降低成本与上市时间的技术，包括构件技术、可视化编程、模式与框架，以及管理系统规模与复杂度的手段。</p><p>另一类问题是要解决反复出现的架构难题：物理分布、并发、复制、安全、负载均衡、容错。课件指出，为万维网开发虽然简化了一些事情，却<b>加剧</b>了这些架构难题。UML 正是为回应这些需求而设计的。</p><p>UML 设计的六个主要目标（给干系人提供）：</p><ol><li>可立即使用、富有表现力的可视化建模语言，以便开发并交换有意义的模型；</li><li>可扩展、可特化的机制，用于扩展核心概念；</li><li>独立于特定编程语言与开发过程的通道；</li><li>理解建模语言的形式基础；</li><li>对更高层开发概念（协作、框架、模式、构件）的支持；</li><li>整合最佳实践的基础。</li></ol><p>为什么 UML 图这么多？课件解释：因为我们从许多不同视角看系统，而开发中有许多角色不同的干系人——分析师、设计者、编码者、测试者、QA、客户、技术文档作者。每种角色关心不同的视图。</p><h3 id="s5">5.4 两类 UML 图</h3><table><tr><th>类别</th><th>英文</th><th>定义</th><th>包含</th></tr><tr><td>结构图</td><td>structure diagrams</td><td>展示系统及其各部分在不同抽象与实现层次上的静态结构，以及它们之间的关系；表达系统的有意义概念，可含抽象概念、现实世界概念与实现概念</td><td>类图、构件图、部署图、对象图、包图</td></tr><tr><td>行为图</td><td>behavior diagrams</td><td>展示系统中对象的动态行为，可描述为随时间发生的一系列系统变化</td><td>活动图、用例图、顺序图、状态图、通信图</td></tr></table><p>课件重点介绍五类图：</p><table><tr><th>图</th><th>英文</th><th>展示什么</th></tr><tr><td>活动图</td><td>activity diagrams</td><td>一个过程或数据处理中涉及的活动（可用于业务流程建模）</td></tr><tr><td>用例图</td><td>use case diagrams</td><td>系统与其环境之间的交互</td></tr><tr><td>顺序图</td><td>sequence diagrams</td><td>参与者与系统之间、系统构件之间的交互（含时间顺序）</td></tr><tr><td>类图</td><td>class diagrams</td><td>系统中的对象类以及类之间的关联</td></tr><tr><td>状态图</td><td>state diagrams</td><td>系统如何对内部与外部事件作出反应</td></tr></table><h3 id="s6">5.5 模型的三类用途与正确性要求</h3><p>这是本节最容易被简化、但考试很爱考的一张对照：</p><table><tr><th>用途</th><th>对模型的要求</th><th>原因</th></tr><tr><td>促进对现有或拟议系统的讨论</td><td><b>不完整、不正确也可以</b></td><td>模型的角色是支持讨论，争论过程本身产生价值</td></tr><tr><td>记录现有系统</td><td>应准确表示系统，但<b>不必完整</b></td><td>文档化的目的是让人理解关键结构，不是穷举</td></tr><tr><td>作为可生成实现的详细系统描述</td><td><b>必须既正确又完整</b></td><td>生成器不会替你补全缺失的语义</td></tr></table><p>一句话记法：<b>讨论可以错，文档要准，生成要全</b>。</p><h3 id="s7">5.6 系统边界与上下文模型</h3><p>系统边界（system boundary）用来界定什么在系统内、什么在系统外；上下文模型展示被使用或依赖于本系统的其他系统。关键判断是：<b>边界的位置对系统需求有深刻影响</b>。</p><p>课件还给出一个很「社会学」的提醒：确定系统边界是<b>政治判断</b>（political judgment）——可能存在压力，要求把边界划得使某个部门的 influence 或 workload 增大或减小。这一点在答题时可以显著提升深度：边界不是技术事实，而是组织权力的投影。</p><p>上下文模型的局限：它只展示环境中的其他系统，<b>不展示本系统在环境中如何被使用</b>。要展示后者，需要<b>过程模型</b>（process model）——过程模型揭示被开发的系统如何在更广的业务流程中被使用，可用 UML 活动图来定义业务流程模型。</p><h3 id="s8">5.7 交互模型</h3><p>课件给出三条理由：建模<b>用户交互</b>有助于识别用户需求；建模<b>系统与系统交互</b>能暴露可能出现的通信问题；建模<b>构件交互</b>帮助判断拟议的系统结构是否可能交付所需的性能与可靠性。工具是用例图与顺序图。</p><p><b>用例建模</b>：用例最初用于支持需求获取，后被纳入 UML。每个用例代表一个涉及与系统外部交互的<b>离散任务</b>；参与者（actor）可以是人，也可以是其他系统；用例既用图给出概览，也用更详细的文本形式描述。图中要画出<b>系统边界</b>，参与者位于边界之外。</p><p><b>顺序图</b>：UML 的一部分，用于建模参与者与系统内对象之间的交互；展示某个用例或用例实例中发生的交互<b>顺序</b>。参与者与对象列在图的顶部，并从它们向下画虚线（生命线）；对象之间的交互用带注释的箭头表示。</p><div class="callout warn"><b>易错</b>用例图<b>不表达顺序</b>，顺序图才表达顺序。把「先登录再下单」画进用例图是常见错误；正确做法是用例图只画参与者与用例的关联，顺序用顺序图或活动图表达。</div><h3 id="s9">5.8 结构模型与类图</h3><p>结构模型展示系统的组织：由哪些构件组成、构件之间什么关系。它可以是<b>静态模型</b>（展示设计时的结构），也可以是<b>动态模型</b>（展示运行时的组织）。结构模型通常在讨论与设计体系结构时创建。</p><p>类图用于面向对象的系统建模：展示系统中的类以及类之间的<b>关联</b>（association）。对象类可理解为一类系统对象的通用定义；关联是类之间的链接，表明它们之间存在某种关系。在早期建模中，对象通常代表现实世界中的事物（患者、处方、医生）。</p><p><b>泛化（generalization）</b>是管理复杂性的日常技术：我们不必学习遇到的每个实体的细节，而是把它们归入更一般的类，学习这些类的特征，从而推断同类成员具有某些共同特征。类图中的泛化用空心三角箭头指向父类。</p><h3 id="s10">5.9 行为模型：数据驱动与事件驱动</h3><p>行为模型是系统执行时动态行为的模型，展示系统响应环境刺激时「发生了什么」或「应该发生什么」。刺激有两类：<b>数据</b>（到达并需被处理的数据）与<b>事件</b>（触发系统处理的事件，事件可能带数据，也可能不带）。</p><table><tr><th>类型</th><th>适用系统</th><th>建模方式</th><th>例子</th></tr><tr><td>数据驱动建模 data-driven modeling</td><td>以数据处理为主、外部事件处理较少的业务系统</td><td>展示处理输入数据并生成输出的动作序列；适合在需求分析中展示端到端处理</td><td>工资结算、保单生成</td></tr><tr><td>事件驱动建模 event-driven modeling</td><td>实时系统，数据处理极少</td><td>基于「系统有有限个状态、事件可引起状态迁移」的假设</td><td>电话交换机：摘机 → 拨号音</td></tr></table><p><b>状态机模型</b>：建模系统对外部与内部事件的响应行为；展示系统对刺激的响应，常用于实时系统建模；把<b>系统状态画成节点、事件画成节点之间的弧</b>；事件发生时，系统从一个状态迁移到另一个状态。UML 中的状态图（statecharts）是状态机模型的表示法。</p><h3 id="s11">5.10 模型驱动工程 MDE</h3><p>MDE 是一种开发方式：<b>模型而非程序</b>是开发过程的主要产出；在硬件/软件平台上执行的程序由模型<b>自动生成</b>。支持者认为这提升了软件工程的抽象层次，使工程师不必再关心编程语言细节或执行平台的具体特性。</p><p><b>MDA</b>（Model-Driven Architecture）是更一般的 MDE 的前身：一种以模型为中心的软件设计与实现方法，使用 UML 模型的一个子集描述系统；在不同抽象层次上创建模型，理论上可以从高层的<b>平台无关模型</b>生成可工作程序而无需人工干预。</p><p>三层模型（必须能区分）：</p><table><tr><th>模型</th><th>英文</th><th>描述什么</th><th>别名/说明</th></tr><tr><td>计算无关模型</td><td>CIM（computation independent model）</td><td>系统中重要的领域抽象</td><td>也称领域模型 domain model</td></tr><tr><td>平台无关模型</td><td>PIM（platform independent model）</td><td>系统的运行方式，不涉及实现</td><td>通常用 UML 描述静态结构与对内外事件的响应</td></tr><tr><td>平台相关模型</td><td>PSM（platform specific model）</td><td>由 PIM 转换而来，针对每个应用平台各有一份</td><td>理论上可有多层 PSM，每层增加平台相关细节</td></tr></table><p>MDA 采用受限的三个原因：需要专门工具支持在层次间转换模型；工具可得性有限，组织可能需要改造与定制工具以适配自身环境；对于用 MDA 开发的长寿命系统，公司不愿自建工具，也不愿依赖可能倒闭的小公司。</p><p>MDA 与敏捷的关系：MDA 的开发者声称它支持迭代开发，因而可用于敏捷；但「大量前期建模」与敏捷宣言的基本理念矛盾，敏捷开发者对 MDE 感到不适。课件给出一个条件性结论：<b>若转换能完全自动化、能从 PIM 生成完整程序，那么原则上 MDA 可用于敏捷过程，因为不再需要单独编码</b>。</p><div class="callout idea" data-ext="l05-system-modelling-0"><b>常见误解</b><p>UML 图多，是因为视角与角色多，不是画得越全越好。四个视角可记成四问：它和谁相邻（外部）、和谁说话（交互）、由什么组成（结构）、随时间怎么变（行为）。决定图该多精确的，是模型的用途：用于讨论时不必完整甚至可暂不正确，争论本身有价值；用于记录现有系统要准但不必全；用于生成实现则必须既正确又完整，因为生成器不会补缺失语义。一句话是讨论可错、文档要准、生成要全。系统边界位置会深刻影响需求，界定它其实是政治判断。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>system modeling</td><td>系统建模</td><td>Developing abstract models, each presenting a different view of the system.</td></tr><tr><td>UML</td><td>统一建模语言</td><td>A standard graphical notation; structure diagrams and behaviour diagrams.</td></tr><tr><td>context model</td><td>上下文模型</td><td>Shows the other systems in the environment of the system being developed.</td></tr><tr><td>process model</td><td>过程模型（业务）</td><td>Shows how the system is used in broader business processes; often an activity diagram.</td></tr><tr><td>system boundary</td><td>系统边界</td><td>Defines what is inside and outside the system; a political judgment.</td></tr><tr><td>use case diagram</td><td>用例图</td><td>Shows interactions between a system and its environment; actors outside the boundary.</td></tr><tr><td>sequence diagram</td><td>顺序图</td><td>Shows the sequence of interactions among actors and objects during a use case.</td></tr><tr><td>class diagram</td><td>类图</td><td>Shows object classes and the associations between them.</td></tr><tr><td>association</td><td>关联</td><td>A link between classes indicating some relationship.</td></tr><tr><td>generalization</td><td>泛化</td><td>Placing entities into more general classes to manage complexity.</td></tr><tr><td>state machine model</td><td>状态机模型</td><td>States as nodes, events as arcs; a statechart in UML.</td></tr><tr><td>data-driven modeling</td><td>数据驱动建模</td><td>Models the sequence of actions processing input data into output.</td></tr><tr><td>event-driven modeling</td><td>事件驱动建模</td><td>Models how the system responds to external and internal events.</td></tr><tr><td>model-driven engineering</td><td>模型驱动工程</td><td>Models, not programs, are the principal outputs; programs are generated.</td></tr><tr><td>MDA</td><td>模型驱动架构</td><td>Model-focused design using a subset of UML; CIM, PIM, PSM.</td></tr><tr><td>PIM</td><td>平台无关模型</td><td>Models the operation of the system without reference to its implementation.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　为问题选视角与图</div><p>情境：某团队要做一个「图书馆自助借还」系统。四个问题：① 系统要与学校的统一身份认证、短信网关、财务系统对接，接口边界在哪？② 学生借书时，系统与自助机、后台服务之间按什么顺序交互？③ 系统里有哪些主要对象，它们之间什么关系？④ 一本书从「在架」到「借出」再到「丢失赔偿」，状态如何变化？请为每个问题选视角与图。</p><p><b>分析：</b>逐题抓关键词——「边界/对接」是外部视角；「按什么顺序」是交互视角；「有哪些对象/关系」是结构视角；「状态如何变化」是行为视角。</p><p>① <b>外部视角 + 上下文模型</b>：画出系统边界，边界外放统一身份认证、短信网关、财务系统，标注数据流向。注意课件提醒：边界位置是政治判断，若把「短信通知」划进系统内，就要承担短信失败的责任。</p><p>② <b>交互视角 + 顺序图</b>：参与者「学生」、对象「自助机界面」「借阅服务」「库存服务」「通知服务」，按时间顺序画消息：扫码 → 校验身份 → 查询可借 → 创建借阅记录 → 更新库存 → 发送凭条。</p><p>③ <b>结构视角 + 类图</b>：Book、Copy（馆藏副本）、Loan、Member、Fine；关联：Member 1—* Loan，Loan *—1 Copy，Copy *—1 Book。</p><p>④ <b>行为视角 + 状态图</b>：状态 InShelf、OnLoan、Overdue、Lost、Damaged；事件 borrow、return、renew、reportLost、payFine；迁移带守卫条件（如 renew 仅在未逾期时允许）。</p><p><b>检查：</b>四个模型是否互相矛盾？例如类图里 Copy 有状态字段，状态图的状态集合必须与之一致——这是一致性检查的典型做法。</p></div><div class="qa"><div class="q">例 2　写一个用例与顺序图</div><p>情境：在线课程平台，学生可以「申请延期提交作业」。请写一个用例表，并描述对应的顺序图。</p><p><b>用例表：</b>ID：UC-7；名称与版本：申请作业延期，v1；参与者：学生（主要）、教师（次要）；前置条件：学生已登录、已选修该课程、作业未截止或截止未超过 7 天；描述：学生在作业页点击「申请延期」→ 选择新截止日期并填写理由 → 提交；系统校验新日期不超过课程结束日 → 生成申请单并通知教师；异常：新日期超过课程结束日则拒绝并提示；理由为空则拒绝；同一作业已有待审申请则提示不可重复提交；结果：生成一条状态为「待审」的延期申请，教师收到通知；其他需求：需网络连接；通知在 30 秒内送达。</p><p><b>顺序图：</b>顶部列 Student、AssignmentPage、ExtensionService、NotificationService、Teacher。消息顺序：① Student → AssignmentPage：requestExtension(newDate, reason)；② AssignmentPage → ExtensionService：validate(newDate, reason)；③ ExtensionService → ExtensionService：checkCourseEnd(newDate)（自调用，表示内部校验）；④ ExtensionService → AssignmentPage：OK / Error；⑤ AssignmentPage → ExtensionService：createRequest()；⑥ ExtensionService → NotificationService：notify(teacher, requestId)；⑦ NotificationService → Teacher：sendNotification()。</p><p><b>要点：</b>顺序图只画「成功路径」不够，专业做法是用 alt 片段画异常分支（校验失败时直接返回错误，不创建申请）。</p></div><div class="qa"><div class="q">例 3　泛化与状态机的一致性</div><p>情境：某停车场系统有 Vehicle、Car、Truck、Motorcycle 四类对象；车位有 Free、Occupied、Reserved、OutOfService 四个状态。请说明类图中的泛化关系，并写出一个状态迁移表（至少 5 条迁移）。</p><p><b>泛化：</b>Car、Truck、Motorcycle 都泛化为 Vehicle；Vehicle 拥有公共属性（车牌、入场时间）与公共操作（assignSpace、calculateFee），子类特化费率计算（Truck 按轴数、Motorcycle 按次）。这样费率规则变化时只改子类，不改公共逻辑——这正是「管理复杂性」的含义。</p><p><b>状态迁移表：</b></p><table><tr><th>当前状态</th><th>事件</th><th>守卫条件</th><th>下一状态</th><th>动作</th></tr><tr><td>Free</td><td>reserve</td><td>会员预约</td><td>Reserved</td><td>锁定车位 15 分钟</td></tr><tr><td>Reserved</td><td>arrive</td><td>15 分钟内</td><td>Occupied</td><td>开始计费</td></tr><tr><td>Reserved</td><td>timeout</td><td>超过 15 分钟</td><td>Free</td><td>释放并通知</td></tr><tr><td>Occupied</td><td>leave</td><td>费用已结清</td><td>Free</td><td>结束计费、抬杆</td></tr><tr><td>Occupied</td><td>markFault</td><td>设备故障</td><td>OutOfService</td><td>停止计费并派单</td></tr><tr><td>OutOfService</td><td>repairDone</td><td>维修完成</td><td>Free</td><td>恢复可用</td></tr></table><p><b>检查：</b>是否有「不可达状态」或「无法退出的状态」？OutOfService 必须有出口（repairDone），否则车位永久失效——这是状态机建模的常见缺陷。</p></div><div class="qa"><div class="q">例 4　CIM/PIM/PSM 分层</div><p>情境：某保险公司要用 MDA 生成理赔系统。请分别举例说明 CIM、PIM、PSM 三层的内容，并说明为什么该公司可能最终放弃 MDA。</p><p><b>CIM：</b>「理赔案件」「保单」「受益人」「免赔额」等领域概念及其业务规则（如「同一事故 24 小时内仅可立案一次」）。这是业务人员能读懂的领域模型。</p><p><b>PIM：</b>用 UML 描述系统静态结构与行为——ClaimService 的接口、Claim 的状态机（Submitted → UnderReview → Approved/Rejected → Paid），不涉及 Java 还是 C#、不涉及数据库类型。</p><p><b>PSM：</b>针对 Java EE 平台生成 ClaimServiceBean、JPA 实体、消息队列配置；若还要支持 .NET 平台，则另有一份 PSM。</p><p><b>为什么可能放弃：</b>① 需要专门的模型转换工具，且要定制到公司环境；② 工具供应商多为小公司，长寿命系统不愿依赖；③ 生成的代码在性能与可维护性上未必达标，最后仍需手写；④ 保险业规则频繁变化，维护模型的成本可能高于维护代码。这正是课件所说「工具可得性有限 + 组织不愿依赖小公司」的现实版本。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>系统建模的四个视角是什么？各举一个 UML 图。</li><li>判断：用于讨论的模型必须完整且正确。（对/错，说明理由）</li><li>上下文模型与过程模型的区别是什么？为什么需要过程模型？</li><li>用例图能否表达「先登录再下单」的顺序？如果不能，应改用什么图？</li><li>写出状态图中「状态」「事件」「迁移」的定义，并说明守卫条件（guard）的作用。</li><li>MDE 与 MDA 的关系是什么？CIM、PIM、PSM 各描述什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 外部（上下文模型/系统边界图）、交互（用例图、顺序图）、结构（类图）、行为（状态图、活动图）。</p><p><b>2.</b> 错。课件明确：作为讨论手段时，模型不完整、不正确也可以，因为其作用是支持讨论；只有作为「可生成实现的详细描述」时才必须既正确又完整。</p><p><b>3.</b> 上下文模型只展示环境中的其他系统，不展示本系统如何被使用；过程模型展示系统在更广业务流程中的使用方式（常用活动图），因此能揭示跨系统的业务顺序与职责边界。</p><p><b>4.</b> 不能。用例图只表达参与者与用例的关联，不表达时序；时序用顺序图（或活动图）表达。</p><p><b>5.</b> 状态是系统在某一时刻的情形；事件是触发处理的外部或内部刺激；迁移是事件导致的从一状态到另一状态的变化。守卫条件是对迁移是否允许的布尔约束（如「仅当未逾期」），使同一事件在不同条件下走向不同状态。</p><p><b>6.</b> MDA 是 MDE 的前身与一个具体流派：MDE 泛指以模型为主要产出、自动生成程序；MDA 特指用 UML 子集 + CIM/PIM/PSM 分层转换。CIM 描述领域抽象，PIM 描述与平台无关的运行方式，PSM 描述特定平台上的实现细节。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>系统建模定义、四视角、五类图的分工、模型三类用途与正确性要求、系统边界（含政治判断）、用例与顺序图的区别、类图关联与泛化、状态机三要素、MDE/MDA 与 CIM/PIM/PSM。</div><div class="callout warn"><b>易错 1</b>把用例图当流程图用。用例图不表达顺序与分支。</div><div class="callout warn"><b>易错 2</b>认为「模型越完整越好」。完整性要求取决于用途：讨论用模型追求「够用」，代码生成用模型才追求「完整」。</div><div class="callout warn"><b>易错 3</b>把上下文模型与过程模型混为一谈。前者答「系统与谁相邻」，后者答「系统在业务流程中怎么被用」。</div><div class="callout warn"><b>易错 4</b>MDA 三层顺序写反。记法：CIM（业务）→ PIM（逻辑）→ PSM（平台），越往下越具体。</div><div class="callout tip"><b>进阶</b>能指出「UML 图多」的根本原因不是语言冗余，而是干系人角色多样；并举例说明同一系统对分析师（用例）、编码者（类图）、测试者（状态图）需要不同视图。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s12">建模的清单</h2><ol class="steps"><li>明确建模目的：讨论 / 文档化 / 生成代码（决定正确性与完整性要求）</li><li>选视角：外部 → 交互 → 结构 → 行为</li><li>画系统边界，并把边界外的系统/角色列全（注意边界的组织含义）</li><li>用用例图列出参与者与离散任务，每个用例配一张表（前置、异常、结果）</li><li>用顺序图表达关键用例的时序，务必画异常分支（alt）</li><li>用类图表达对象、关联与泛化，标注多重性</li><li>用状态图表达对象生命周期，检查不可达状态与无出口状态</li><li>做一致性检查：图与图之间的名称、状态、关系必须对得上</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p3–p6</td><td>学习目标、系统建模定义、现有/新系统模型、四个视角</td></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p7–p13</td><td>UML 的动机与设计目标、干系人角色、结构图与行为图</td></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p14–p17</td><td>五类图、模型三类用途与正确性要求、系统边界与政治判断、过程模型</td></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p18–p23</td><td>交互模型、用例建模、顺序图、结构模型、类图与关联、泛化</td></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p24–p27</td><td>行为模型、数据驱动与事件驱动、状态机模型</td></tr><tr><td>12_Week 6/1_SE - Lecture 5 - 2026.pdf</td><td>p28–p32</td><td>MDE、MDA、CIM/PIM/PSM、MDA 采用受限的原因、与敏捷的关系</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>UML 图清单中的构件图/部署图/对象图/包图按 UML 标准补足；课件只列五类重点图</td></tr></table></section><div class="lnav"><a class="prev" href="l04-requirements-engineering.html">← 第 4 讲 · 需求工程</a><a class="next" href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

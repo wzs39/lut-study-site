@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 5 章 · 模拟卷与题型 · 62</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-5.html">第 5 章 模拟卷与题型</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">8.1 试卷结构与评分规则</a><a class="toc-l3" href="#s3">8.2 公式表里有什么（以及为什么够用）</a><a class="toc-l3" href="#s4">8.3 第 1 题：分部积分与反函数导数</a><a class="toc-l3" href="#s5">8.4 第 2 题：有理函数积分与平均值</a><a class="toc-l3" href="#s6">8.5 第 3 题：牛顿冷却与运动学</a><a class="toc-l3" href="#s7">8.6 第 4 题：三个极限与函数分析</a><a class="toc-l3" href="#s8">8.7 第 5 题：药物浓度模型与切线法线</a><a class="toc-l3" href="#s9">8.8 第 6 题：间断点、可导条件与二阶初值问题</a><a class="toc-l3" href="#s10">8.9 题型分布与章节映射</a><a class="toc-l3" href="#s11">8.10 答题顺序与时间分配</a><a class="toc-l3" href="#s12">8.11 六类高频失分点</a><a class="toc-l2" href="#s13">考场清单</a><a class="toc-l3" href="#s14">开卷三分钟</a><a class="toc-l3" href="#s15">每题的书写模板（四行）</a><a class="toc-l3" href="#s16">交卷前检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a href="t2-limits-continuity.html">第 1 章 · 极限与连续性</a><a href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a href="t5-inverse-exp-log.html">第 3 章 · 反函数、指数与对数</a><a href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法</a><a class="toc-l3" href="mock-exam-and-question-types.html">▸ 第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 5 章 · 模拟卷与题型</h1><p class="lead">Mock Exam and Question Types <span class="badge mute">62</span> <span class="badge mute">第 8 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 模拟卷与题型</a></p><p class="src">原始文件：<code>General/MockExam.pdf</code> <code>General/MockExam_answers.pdf</code> <code>General/General Course Information.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是全课程的收束讲。前面七讲按 Topic 推进，本讲换成「考试视角」：把官方模拟卷（MockExam.pdf）与官方答案（MockExam_answers.pdf）逐题拆开，说明每道题考的是哪一讲的哪个知识点、评分点在哪里、常见失分是什么。</p><p>模拟卷的结构很稳定：总分 60，六道题等分（每题 10 分），全部必答；不允许使用计算器，考场提供公式表；评分要求「写出所用公式、代入过程与中间步骤」，只写最终答案不给分。因此本讲不仅给答案，更给「应该写成什么样的解题过程」。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>在无计算器条件下写出精确形式的答案（含 e、ln、√、π）</li><li>把六道模拟题的解法压缩成可复用的模板</li><li>识别每道题背后的章节与考点，遇到同型题能立刻定位方法</li><li>按评分要求组织解题过程（公式 → 代换 → 中间步骤 → 结论）</li><li>判断哪些题必须先做、哪些可以最后收尾，合理分配时间</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">8.1 试卷结构与评分规则</h3><p>官方模拟卷的抬头写得很明确：总分 60 分；不允许使用计算器（Calculators are not allowed）；解答必须包含所用公式、代换与中间步骤（Solutions must include the applied formulas, substitutions, and intermediate steps），只提交最终答案不可接受；全卷六题，全部必答，每题等分。</p><p>这四条规则直接决定答题策略：</p><ul><li><b>无计算器</b>：答案写精确式，例如 <code>10ln(3/2)/ln2</code> 而不是 <code>5.85</code>；特殊值（<code>sin(π/6) = 1/2</code>、<code>ln1 = 0</code>、<code>e⁰ = 1</code>）必须脱口而出</li><li><b>要写公式</b>：每道积分题第一行就写「用分部积分 <code>∫u dv = uv − ∫v du</code>」或「用部分分式」</li><li><b>要写代换</b>：换元题必须写明 <code>u = …</code>、<code>du = …</code>，定积分换元还要写「<code>x = a → u = …</code>」</li><li><b>要写中间步骤</b>：即使心算得出结果，也要把关键的一两行写出来，否则按「只有答案」处理</li></ul><p>六道题的分值分布与考点（按官方答案顺序）：第 1 题—分部积分 + 反函数导数；第 2 题—有理函数积分 + 平均值；第 3 题—牛顿冷却 + 运动学判断；第 4 题—重要极限 + 定义域值域 + 无穷远极限；第 5 题—一阶线性微分方程（广义指数模型）+ 切线与法线；第 6 题—可去间断 + 可导条件 + 二阶初值问题。可以看出：<b>六道题几乎覆盖了全部七个 Topic</b>，每题内部又各有「计算 + 概念」两部分。</p><h3 id="s3">8.2 公式表里有什么（以及为什么够用）</h3><p>模拟卷附了一张「List of Potentially Useful Formulas」，内容按主题排列，可以视为本课程的官方公式清单：</p><table><tr><th>公式组</th><th>主要内容</th><th>对应讲次</th></tr><tr><td>坐标与直线</td><td>距离、中点、斜率、垂直条件 <code>m₁m₂ = −1</code>、点斜式、圆</td><td>第 1 讲</td></tr><tr><td>函数基础</td><td>奇偶性、复合、sgn、Heaviside、求根公式、代数恒等式</td><td>第 1 讲</td></tr><tr><td>三角</td><td>弧度换算、平方关系、周期与奇偶、诱导公式、和角、倍角、积化和差、特殊值表</td><td>第 1、3 讲</td></tr><tr><td>极限</td><td>夹逼、<code>sinθ/θ</code>、<code>(cosθ−1)/θ</code>、<code>ln x/xᵃ</code>、<code>xᵃ/eˣ</code>、洛必达、渐近线判据、连续性、可导性、左右导数</td><td>第 2、6 讲</td></tr><tr><td>求导</td><td>四则与链式法则、基本导数表（含 <code>|x|</code>、六个三角函数、<code>aˣ</code>、<code>log_a x</code>）</td><td>第 3、5 讲</td></tr><tr><td>积分</td><td>幂函数、<code>f′/f</code>、<code>1/x</code>、<code>e^{kx}</code>、<code>a^{kx}</code>、四个三角积分、反三角积分、双曲、分部积分、换元、三角代换、有理函数公式、部分分式、配方</td><td>第 4、6、7 讲</td></tr><tr><td>模型</td><td>指数增长/衰减、广义模型、logistic 模型、位置-速度-加速度</td><td>第 4、5 讲</td></tr><tr><td>求和</td><td><code>Σk² = n(n+1)(2n+1)/6</code>、几何级数、定积分定义、FTC</td><td>第 6、7 讲</td></tr></table><div class="callout tip"><b>公式表不是「免背卡」</b>公式表给的是形式，不给「什么时候用」。例如它列了三种三角代换，但不会告诉你「看到 <code>√(16−x²)</code> 要用 <code>4sinθ</code>」；它列了部分分式的四种形式，但不会提醒你「先做除法」。判断力必须自己带进考场。</div><h3 id="s4">8.3 第 1 题：分部积分与反函数导数</h3><p><b>(a) 求 <code>∫eˣ sin x dx</code></b>。这是「循环型」分部积分：两次分部后原积分重现，移项解出。</p><p>第一次：取 <code>u = eˣ</code>、<code>dv = sin x dx</code>，则 <code>du = eˣdx</code>、<code>v = −cos x</code>：</p><p><code>I = −eˣcos x + ∫eˣcos x dx</code>。</p><p>第二次（对 <code>∫eˣcos x dx</code>）：取 <code>u = eˣ</code>、<code>dv = cos x dx</code>，<code>v = sin x</code>：</p><p><code>∫eˣcos x dx = eˣsin x − ∫eˣsin x dx = eˣsin x − I</code>。</p><p>代回：<code>I = −eˣcos x + eˣsin x − I</code>，故 <code>2I = eˣ(sin x − cos x)</code>，</p><p><b><code>I = (1/2)eˣ(sin x − cos x) + C</code></b>，与官方答案一致。</p><p><b>(b) 证明 <code>f(x) = x³ + x − 9</code> 可逆，并求 <code>(f⁻¹)′(1)</code></b>。</p><p>先证一一对应：<code>f′(x) = 3x² + 1 &gt; 0</code> 对一切实数成立，故 f 在 ℝ 上严格递增，从而是一一对应，反函数存在。</p><p>再用反函数导数公式 <code>(f⁻¹)′(y) = 1/f′(x)</code>，其中 <code>y = f(x)</code>。要求 <code>(f⁻¹)′(1)</code>，先找 x 使 <code>f(x) = 1</code>：</p><p><code>x³ + x − 9 = 1 ⟺ x³ + x = 10</code>，试 <code>x = 2</code>：<code>8 + 2 = 10</code> ✓（严格递增保证解唯一）。</p><p>于是 <code>(f⁻¹)′(1) = 1/f′(2) = 1/(3·4 + 1) = 1/13</code>，与官方答案一致。</p><div class="callout warn"><b>评分点</b>第 (b) 问必须出现三句话：①「<code>f′ &gt; 0</code>，故严格递增」；②「故一一对应，反函数存在」；③「解 <code>f(x) = 1</code> 得 <code>x = 2</code>」。少任何一句都会扣过程分，即便最后的 1/13 对了。</div><h3 id="s5">8.4 第 2 题：有理函数积分与平均值</h3><p><b>(a) 求 <code>∫(x³ − 5x² + 4x + 8)/(x² − 6x + 9)dx</code></b>。分母是 <code>(x−3)²</code>，属于「重复线性因子」。</p><p>第一步除法（因为分子次数 3 ≥ 分母次数 2）：设商 <code>x + 1</code>，则 <code>(x+1)(x²−6x+9) = x³ − 5x² + 3x + 9</code>，与原分子相减得余式 <code>x − 1</code>。故</p><p><code>(x³−5x²+4x+8)/(x²−6x+9) = x + 1 + (x−1)/(x−3)²</code>。</p><p>第二步把余式拆成重复因子的两块：<code>(x−1)/(x−3)² = (x−3+2)/(x−3)² = 1/(x−3) + 2/(x−3)²</code>。</p><p>第三步逐项积分：<code>∫(x+1)dx = x²/2 + x</code>；<code>∫dx/(x−3) = ln|x−3|</code>；<code>∫2(x−3)^{−2}dx = −2/(x−3)</code>。故</p><p><b><code>= x²/2 + x + ln|x−3| − 2/(x−3) + C</code></b>，与官方答案一致。</p><p><b>(b) 求 <code>f(x) = 3x − x²</code> 在 <code>[0, 6]</code> 上的平均值</b>。</p><p><code>f̄ = (1/(6−0))∫₀⁶(3x − x²)dx = (1/6)[3x²/2 − x³/3]₀⁶ = (1/6)(54 − 72) = −3</code>。</p><p>平均值为负是允许的：函数在 <code>[0, 3]</code> 为正、在 <code>[3, 6]</code> 为负，且负的部分更大（有向面积之和为 −18）。</p><div class="callout warn"><b>易错</b>(a) 若忘记先做除法，直接对分母配方后硬拆，会得到错误的形式；(b) 若把 <code>[0, 6]</code> 误读为 <code>[0, 3]</code>（只取正的部分），会算出 3/2 而不是 −3。</div><h3 id="s6">8.5 第 3 题：牛顿冷却与运动学</h3><p><b>(a) 面包从 200 ℃ 烤箱取出，房间 20 ℃，10 分钟后降到 110 ℃，问到 80 ℃ 还需多久（给精确答案）</b>。</p><p>设 <code>T(t) = 20 + 180e^{kt}</code>（环境 20、初值 200，故 <code>y₀ − a = 180</code>）。</p><p>由 <code>T(10) = 110</code>：<code>90 = 180e^{10k}</code>，故 <code>e^{10k} = 1/2</code>，<code>k = −ln2/10</code>。</p><p>令 <code>T = 80</code>：<code>60 = 180e^{kt}</code>，即 <code>e^{kt} = 1/3</code>，<code>t = 10ln3/ln2</code>（从取出时刻算起）。</p><p>题目问「还需多久」，故答案为 <b><code>10ln3/ln2 − 10 = 10ln(3/2)/ln2</code></b> 分钟，与官方答案一致；数值约 5.85 分钟。</p><p><b>(b) <code>x(t) = t³ − 6t² + 1</code>，判断 t = 3 时加速还是减速</b>。</p><p><code>v = 3t² − 12t</code>，<code>a = 6t − 12</code>；<code>v(3) = 27 − 36 = −9</code>，<code>a(3) = 18 − 12 = 6</code>。</p><p>v 与 a 异号（负、正），速率 |v| 在减小，故<b>减速</b>。官方答案只说「decelerating at t = 3」，过程分要求写出 v 与 a 的符号比较。</p><div class="callout tip"><b>「减速」的判据只有一句话</b>v 与 a 异号即减速。不要用「a &lt; 0」判断——本例 a = 6 &gt; 0 却仍是减速，因为速度方向为负。</div><h3 id="s7">8.6 第 4 题：三个极限与函数分析</h3><p><b>(a) <code>lim_{x→∞}(1 + 1/x)ˣ</code></b>。这是 <code>1^∞</code> 型。设 <code>y = (1+1/x)ˣ</code>，则 <code>ln y = x ln(1 + 1/x)</code>。</p><p>令 <code>u = 1/x → 0⁺</code>，则 <code>ln y = ln(1+u)/u → 1</code>（洛必达或标准极限），故 <code>y → e</code>。</p><p>这是标准极限 <code>lim(1+1/x)ˣ = e</code>，可直接引用公式表。</p><p><b>(b) 求 <code>g(x) = 12x/(x² + 9)</code> 的定义域与值域</b>。</p><p>定义域：分母 <code>x² + 9 &gt; 0</code> 恒成立，故为 <code>(−∞, ∞)</code>。</p><p>值域：求导 <code>g′ = [12(x²+9) − 12x·2x]/(x²+9)² = 12(9 − x²)/(x²+9)²</code>。临界点 <code>x = ±3</code>；<code>g(3) = 36/18 = 2</code>（最大），<code>g(−3) = −2</code>（最小）。</p><p>又 <code>x → ±∞</code> 时 <code>g → 0</code>，故值域为 <code>[−2, 2]</code>。官方答案一致。</p><p><b>(c) <code>lim_{x→∞}(x² + sin x)/(x² + cos x)</code></b>。分子分母同除 <code>x²</code>：</p><p><code>= (1 + sin x/x²)/(1 + cos x/x²)</code>。由夹逼（<code>|sin x| ≤ 1</code>）得 <code>sin x/x² → 0</code>、<code>cos x/x² → 0</code>，故极限为 <code>1/1 = 1</code>。</p><p>这题是「夹逼 + 分式」的组合：不能用洛必达（求导后仍在振荡，且分子分母并非同趋于 0 或 ∞ 的干净形式）。</p><h3 id="s8">8.7 第 5 题：药物浓度模型与切线法线</h3><p><b>(a) <code>dy/dt = a − by</code>，<code>a = 3</code>、<code>b = 1</code>，<code>y(0) = 0</code></b>。</p><p>这是广义模型 <code>dy/dt = k(y − A)</code> 的变体：把右边写成 <code>−1·(y − 3)</code>，即 <code>k = −1</code>、<code>A = 3</code>。由公式 <code>y = A + (y₀ − A)e^{kt}</code>：</p><p><code>y(t) = 3 + (0 − 3)e^{−t} = 3 − 3e^{−t}</code>。</p><p>（也可直接分离变量验证：<code>y′ = 3 − y</code>，<code>y(0) = 0</code>，<code>y ≡ 3</code> 是一个特解，通解 <code>y = 3 + Ce^{−t}</code>，代初值得 C = −3。）</p><p>(2) 极限浓度：<code>lim_{t→∞}y = 3</code>（<code>e^{−t} → 0</code>）。</p><p>(3) 达到一半（1.5）所需时间：<code>3 − 3e^{−t} = 1.5</code> → <code>e^{−t} = 1/2</code> → <code>t = ln2</code>。官方答案一致。</p><p><b>(b) 求 <code>y = (1 − x²)/(1 + x²)</code> 在 x = 1 处的切线与法线</b>。</p><p>切点：<code>y(1) = 0/2 = 0</code>，即 <code>(1, 0)</code>。</p><p>导数（商法则）：<code>y′ = [(−2x)(1+x²) − (1−x²)(2x)]/(1+x²)² = −4x/(1+x²)²</code>；在 <code>x = 1</code> 处 <code>y′ = −4/4 = −1</code>。</p><p>切线：<code>y = −1(x − 1) = 1 − x</code>；法线斜率 1，<code>y = 1·(x − 1) = x − 1</code>。与官方答案一致。</p><h3 id="s9">8.8 第 6 题：间断点、可导条件与二阶初值问题</h3><p><b>(a) <code>f(x) = (3x² − 15x − 18)/(x³ + 1)</code>，找出 x 轴上的间断点，并说明如何补充定义使之连续</b>。</p><p>分解：分子 <code>3(x² − 5x − 6) = 3(x−6)(x+1)</code>；分母 <code>x³+1 = (x+1)(x² − x + 1)</code>。</p><p>约去 <code>x+1</code> 得 <code>f(x) = 3(x−6)/(x² − x + 1)</code>（<code>x ≠ −1</code>）。分母 <code>x² − x + 1</code> 的判别式 <code>1 − 4 = −3 &lt; 0</code>，无实根，故唯一的间断点是 <code>x = −1</code>。</p><p>求极限：<code>lim_{x→−1}f(x) = 3(−7)/(1 + 1 + 1) = −21/3 = −7</code>。因此这是<b>可去间断</b>，重新定义 <code>f(−1) = −7</code> 即可使函数在 −1 处连续。官方答案一致。</p><p><b>(b) 求 a、b 使 <code>f(x) = ax + 1</code>（<code>x &lt; 1</code>）、<code>f(x) = bx² + x + 2</code>（<code>x ≥ 1</code>）在 x = 1 处可导</b>。</p><p>可导必连续，先写连续条件（左极限 = 右极限 = 函数值）：<code>a·1 + 1 = b·1 + 1 + 2</code>，即 <code>a + 1 = b + 3</code>，<code>a = b + 2</code>。</p><p>再写可导条件（左右导数相等）：左边导数 <code>a</code>；右边导数 <code>2bx + 1</code> 在 1 处为 <code>2b + 1</code>。故 <code>a = 2b + 1</code>。</p><p>联立：<code>b + 2 = 2b + 1</code> → <code>b = 1</code>，<code>a = 3</code>。官方答案 <code>a = 3, b = 1</code> ✓。</p><p><b>(c) <code>a(t) = 6t − cos t</code>，初速度 2、初始位置 0，求 <code>x(t)</code></b>。</p><p>第一次积分：<code>v(t) = 3t² − sin t + C₁</code>；由 <code>v(0) = 2</code> 得 <code>C₁ = 2</code>。</p><p>第二次积分：<code>x(t) = t³ + cos t + 2t + C₂</code>；由 <code>x(0) = 0</code> 得 <code>1 + C₂ = 0</code>，<code>C₂ = −1</code>。</p><p>故 <b><code>x(t) = t³ + 2t + cos t − 1</code></b>，与官方答案一致。</p><h3 id="s10">8.9 题型分布与章节映射</h3><table><tr><th>题号</th><th>考点</th><th>所属讲次</th><th>主要方法</th></tr><tr><td>1(a)</td><td>指数 × 三角的循环分部积分</td><td>第 7 讲</td><td>两次分部 + 移项</td></tr><tr><td>1(b)</td><td>反函数存在性与反函数导数</td><td>第 3、5 讲</td><td><code>f′ &gt; 0</code> + <code>1/f′(y)</code></td></tr><tr><td>2(a)</td><td>假分式 + 重复线性因子</td><td>第 1、7 讲</td><td>除法 + 拆项 + 对数</td></tr><tr><td>2(b)</td><td>定积分求平均值</td><td>第 7 讲</td><td>FTC + 代端点</td></tr><tr><td>3(a)</td><td>牛顿冷却（广义指数模型）</td><td>第 5 讲</td><td>求 k 再求 t，注意「还需」</td></tr><tr><td>3(b)</td><td>速度与加速度的符号</td><td>第 4 讲</td><td>v、a 异号即减速</td></tr><tr><td>4(a)</td><td><code>1^∞</code> 型极限</td><td>第 6 讲</td><td>取对数或标准极限</td></tr><tr><td>4(b)</td><td>有理函数的定义域与值域</td><td>第 1、4 讲</td><td>求导找极值 + 无穷远行为</td></tr><tr><td>4(c)</td><td>含振荡项的无穷远极限</td><td>第 2 讲</td><td>同除最高次 + 夹逼</td></tr><tr><td>5(a)</td><td>一阶线性微分方程 / 广义模型</td><td>第 5 讲</td><td>通解 + 初值 + 极限</td></tr><tr><td>5(b)</td><td>切线与法线</td><td>第 3 讲</td><td>商法则 + 点斜式</td></tr><tr><td>6(a)</td><td>可去间断与补充定义</td><td>第 1、2 讲</td><td>分解约分 + 极限</td></tr><tr><td>6(b)</td><td>分段函数的可导条件</td><td>第 2、3 讲</td><td>连续 + 左右导数相等</td></tr><tr><td>6(c)</td><td>二阶初值问题</td><td>第 4 讲</td><td>两次积分 + 两个常数</td></tr></table><p>观察这张表：六道大题共 14 个小问，其中积分类（1a、2a、2b）占 3 问、极限类（4a、4c）2 问、导数应用类（3b、5b、6b）3 问、模型类（3a、5a）2 问、函数与连续性（4b、6a）2 问、初值问题（6c）1 问、反函数（1b）1 问。也就是说，<b>第 7 讲的积分方法、第 4–5 讲的导数应用与模型、第 2 讲的极限各占约三分之一</b>，没有任何一讲可以放弃。</p><h3 id="s11">8.10 答题顺序与时间分配</h3><p>六题等分，因此理论上每题时间相同；但难度差异明显。建议的顺序是先扫一遍全卷，按「一眼能下手」排序：</p><ol><li>先做 4(b)、5(b)、6(c)、3(b) 这类「流程固定、计算量小」的小问，拿到基本分；</li><li>再做 2(b)、4(a)、4(c) 这类「一步到位」的极限与定积分；</li><li>然后做 6(a)、6(b)，注意写全「连续 + 可导」两条；</li><li>最后攻 1(a)、2(a)、5(a) 这类步骤多、容易算错的大题，留足检查时间。</li></ol><p>每题至少留一分钟检查三件事：符号（尤其负号与绝对值）、常数 C 或 C₁/C₂ 是否齐全、答案是否符合量纲或量级（如面积为正、浓度为 3 而不是 30）。</p><h3 id="s12">8.11 六类高频失分点</h3><ul><li><b>只写答案</b>：模拟卷明文规定不可接受，过程分至少占一半；</li><li><b>无计算器却写小数</b>：<code>10ln(3/2)/ln2</code> 写成 <code>5.85</code> 会被视为未经允许的近似；</li><li><b>忘记「还需多久」</b>：第 3(a) 题必须减去已经过的 10 分钟；</li><li><b>连续与可导混为一谈</b>：第 6(b) 题必须写两组方程，只写连续性只能得一半分；</li><li><b>反函数导数代错点</b>：第 1(b) 题要解 <code>f(x) = 1</code> 找原像，不能直接用 1；</li><li><b>模型常数未定</b>：第 5(a) 题必须先用 <code>y(0) = 0</code> 定出常数，再求极限与半值时间。</li></ul></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>mock exam</td><td>模拟卷</td><td>Six questions, 60 marks, equal weight, all compulsory.</td></tr><tr><td>marking scheme</td><td>评分规则</td><td>Formulas, substitutions and intermediate steps are required.</td></tr><tr><td>formula sheet</td><td>公式表</td><td>Provided in the exam; lists forms but not when to use them.</td></tr><tr><td>integration by parts</td><td>分部积分</td><td>∫u dv = uv − ∫v du; iterate twice for eˣsin x.</td></tr><tr><td>inverse function derivative</td><td>(f⁻¹)′</td><td>(f⁻¹)′(y) = 1/f′(x) with y = f(x); find the preimage first.</td></tr><tr><td>improper rational function</td><td>假分式</td><td>deg P ≥ deg Q; divide before decomposing.</td></tr><tr><td>repeated linear factor</td><td>重复线性因子</td><td>Produces terms A/(x−a) + B/(x−a)².</td></tr><tr><td>average value</td><td>平均值</td><td>f̄ = (1/(b−a))∫ₐᵇ f.</td></tr><tr><td>Newton cooling</td><td>牛顿冷却</td><td>T = a + (T₀ − a)e^{kt}; solve for k, then for t.</td></tr><tr><td>deceleration</td><td>减速</td><td>v and a have opposite signs.</td></tr><tr><td>one-to-the-infinity</td><td>1^∞ 型</td><td>Take logarithms; the limit equals e^L.</td></tr><tr><td>squeeze with oscillation</td><td>振荡夹逼</td><td>sin x/x² → 0 by boundedness times vanishing factor.</td></tr><tr><td>generalized exponential model</td><td>广义指数模型</td><td>dy/dt = a − by gives y = a/b + Ce^{−bt}.</td></tr><tr><td>removable discontinuity</td><td>可去间断</td><td>Factor, cancel, take the limit, then redefine f at that point.</td></tr><tr><td>differentiability condition</td><td>可导条件</td><td>Continuity plus equality of the one-sided derivatives.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（模拟卷第 1 题）　(a) 求 ∫eˣ sin x dx；(b) 证明 f(x) = x³ + x − 9 可逆并求 (f⁻¹)′(1)。</div><p>(a) <b>第一次分部</b>：<code>u = eˣ</code>、<code>dv = sin x dx</code> → <code>v = −cos x</code>：<code>I = −eˣcos x + ∫eˣcos x dx</code>。</p><p><b>第二次分部</b>：对后者取 <code>u = eˣ</code>、<code>dv = cos x dx</code> → <code>v = sin x</code>：<code>∫eˣcos x dx = eˣsin x − I</code>。</p><p>代回并移项：<code>I = −eˣcos x + eˣsin x − I</code> → <code>2I = eˣ(sin x − cos x)</code> → <code>I = (1/2)eˣ(sin x − cos x) + C</code>。</p><p>(b) <code>f′(x) = 3x² + 1 &gt; 0</code> ⟹ f 严格递增 ⟹ 一一对应 ⟹ 反函数存在。</p><p>解 <code>f(x) = 1</code>：<code>x³ + x = 10</code>，<code>x = 2</code>（唯一）。故 <code>(f⁻¹)′(1) = 1/f′(2) = 1/13</code>。</p><p><b>过程分要点：</b>分部积分要写出 <code>u</code>、<code>dv</code>、<code>v</code> 的选择；反函数题要写出「严格递增 ⟹ 可逆」这一句。</p></div><div class="qa"><div class="q">例 2（模拟卷第 2 题）　(a) 求 ∫(x³−5x²+4x+8)/(x²−6x+9)dx；(b) 求 3x−x² 在 [0,6] 上的平均值。</div><p>(a) 分母 <code>= (x−3)²</code>。除法：<code>(x+1)(x²−6x+9) = x³ − 5x² + 3x + 9</code>，余式 <code>x − 1</code>，故</p><p><code>= x + 1 + (x−1)/(x−3)²</code>；又 <code>(x−1)/(x−3)² = 1/(x−3) + 2/(x−3)²</code>。</p><p>积分：<code>x²/2 + x + ln|x−3| − 2/(x−3) + C</code>。</p><p>(b) <code>f̄ = (1/6)[3x²/2 − x³/3]₀⁶ = (1/6)(54 − 72) = −3</code>。</p><p><b>检验：</b>(a) 对结果求导应还原被积函数；(b) 平均值为负说明负面积更大，与 <code>3x−x²</code> 在 <code>[3,6]</code> 上为负的图形一致。</p></div><div class="qa"><div class="q">例 3（模拟卷第 3 题）　(a) 面包 200 ℃ → 110 ℃（10 分钟，室温 20 ℃），到 80 ℃ 还需多久？(b) x(t) = t³−6t²+1 在 t=3 时加速还是减速？</div><p>(a) <code>T = 20 + 180e^{kt}</code>；<code>T(10) = 110</code> → <code>e^{10k} = 1/2</code> → <code>k = −ln2/10</code>。</p><p><code>T = 80</code> → <code>e^{kt} = 1/3</code> → <code>t = 10ln3/ln2</code>（总时间）。还需 <code>10ln3/ln2 − 10 = 10ln(3/2)/ln2 ≈ 5.85</code> 分钟。</p><p>(b) <code>v = 3t² − 12t</code>、<code>a = 6t − 12</code>；<code>v(3) = −9</code>、<code>a(3) = 6</code>，异号，故减速。</p><p><b>失分点：</b>(a) 忘记减 10 分钟；(b) 用 a &gt; 0 判成加速。</p></div><div class="qa"><div class="q">例 4（模拟卷第 6 题）　(a) 求 f(x) = (3x²−15x−18)/(x³+1) 的间断点并补充定义；(b) 求 a、b 使分段函数在 x=1 可导；(c) 由 a(t)=6t−cos t、v(0)=2、x(0)=0 求 x(t)。</div><p>(a) 分子 <code>3(x−6)(x+1)</code>、分母 <code>(x+1)(x²−x+1)</code>；约分后 <code>3(x−6)/(x²−x+1)</code>，分母无实根，故唯一间断点 <code>x = −1</code>。</p><p>极限 <code>= 3(−7)/3 = −7</code>，故为可去间断，定义 <code>f(−1) = −7</code>。</p><p>(b) 连续：<code>a + 1 = b + 3</code>；可导：<code>a = 2b + 1</code>。解得 <code>a = 3</code>、<code>b = 1</code>。</p><p>(c) <code>v = 3t² − sin t + 2</code>（用 <code>v(0) = 2</code>）；<code>x = t³ + cos t + 2t − 1</code>（用 <code>x(0) = 0</code>）。</p><p><b>验证：</b><code>x′(t) = 3t² − sin t + 2 = v(t)</code> ✓；<code>v′(t) = 6t − cos t = a(t)</code> ✓；<code>x(0) = 1 − 1 = 0</code> ✓。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用分部积分求 <code>∫x² sin x dx</code>，并说明每一步的 <code>u</code> 与 <code>dv</code>。</li><li>求 <code>∫(x³ + 1)/(x² + 7x + 12) dx</code>（作业七第 5(c) 题）。</li><li>求 <code>∫dx/(1 − 6x + 9x²)</code>（作业七第 5(b) 题）。</li><li>求 <code>f(x) = √(2x − x²)</code> 在 <code>[0, 2]</code> 上的平均值（作业七第 1 题）。</li><li>求 <code>∫_{−1}^{2} sgn x dx</code> 与 <code>∫₀^{4π}|cos x| dx</code>（作业七第 2 题）。</li><li>某药物浓度满足 <code>dy/dt = 5 − 2y</code>、<code>y(0) = 0</code>，求 <code>y(t)</code>、极限浓度与达到一半浓度的时间。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>u = x²</code>、<code>dv = sin x dx</code> → <code>−x²cos x + 2∫x cos x dx</code>；再取 <code>u = x</code>、<code>dv = cos x dx</code> → <code>x sin x + cos x</code>。合并：<code>−x²cos x + 2x sin x + 2cos x + C</code>。</p><p><b>2.</b> 除法：<code>(x³+1)/(x²+7x+12) = x − 7 + (37x + 85)/((x+3)(x+4))</code>；部分分式得 <code>A = −26</code>、<code>B = 63</code>。故 <code>x²/2 − 7x − 26ln|x+3| + 63ln|x+4| + C</code>。</p><p><b>3.</b> <code>1 − 6x + 9x² = (3x−1)²</code>；令 <code>u = 3x−1</code>，<code>dx = du/3</code>，得 <code>(1/3)∫u^{−2}du = −1/(3u) = −1/(3(3x−1)) + C</code>。</p><p><b>4.</b> <code>√(2x−x²) = √(1 − (x−1)²)</code> 是圆心 (1,0)、半径 1 的上半圆，<code>∫₀² = π/2</code>，故平均值 <code>(1/2)(π/2) = π/4</code>。</p><p><b>5.</b> <code>∫_{−1}^{2}sgn x dx = ∫_{−1}^{0}(−1)dx + ∫₀²1dx = −1 + 2 = 1</code>；<code>|cos x|</code> 周期为 π 且 <code>∫₀^π|cos x| = 2</code>，故 <code>∫₀^{4π} = 4·2 = 8</code>。</p><p><b>6.</b> <code>y′ = −2(y − 2.5)</code>，故 <code>y = 2.5(1 − e^{−2t})</code>；极限浓度 2.5；一半为 1.25，由 <code>1 − e^{−2t} = 1/2</code> 得 <code>t = ln2/2</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>按模拟卷的分布，必考六大块：①分部积分（尤其循环型与多项式乘 eˣ/三角）；②有理函数积分（先除法 + 部分分式）；③平均值与 FTC；④牛顿冷却/广义指数模型（求 k、求时间、注意「还需」）；⑤运动学符号判断（加速/减速）；⑥分段函数的连续与可导条件（两组方程）。</div><div class="callout warn"><b>易错 1</b><b>省略步骤</b>。模拟卷明文规定「只写最终答案不可接受」，每道大题至少写出「用了什么公式 → 代换或变形 → 关键中间式 → 结论」四行。</div><div class="callout warn"><b>易错 2</b><b>把「还需多久」答成「总共多久」</b>。第 3(a) 题的标准答案是 <code>10ln(3/2)/ln2</code>，不是 <code>10ln3/ln2</code>。</div><div class="callout warn"><b>易错 3</b><b>可导条件只写连续</b>。第 6(b) 题必须写 <code>a + 1 = b + 3</code>（连续）与 <code>a = 2b + 1</code>（左右导数相等）两个方程。</div><div class="callout warn"><b>易错 4</b><b>用小数代替精确值</b>。无计算器考试中，<code>e</code>、<code>ln2</code>、<code>√2</code> 一律保留符号形式；只有在题目明确要求近似值时才写小数。</div><div class="callout tip"><b>进阶</b>把六道题改造成「模板卡」：每种题型记住一个起手式（分部积分写 u/dv、有理函数先除法、模型先写通解、分段函数先连续后可导），考场上看到同型题直接套起手式，能省下大量思考时间。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">考场清单</h2><h3 id="s14">开卷三分钟</h3><ol class="steps"><li>通读六题，标出「一眼能下手」的小问</li><li>把公式表按主题扫一遍，确认三角特殊值、积分公式、模型公式的位置</li><li>按「先易后难」排出做题顺序，给每道大题预留检查时间</li></ol><h3 id="s15">每题的书写模板（四行）</h3><ol class="steps"><li>第一行：写出所用的公式或方法名（分部积分、部分分式、FTC、牛顿冷却公式等）</li><li>第二行：写出关键代换或变形（<code>u = …</code>、除法结果、配方结果、通解形式）</li><li>第三行：写出中间计算式（至少一步）</li><li>第四行：结论（含常数 C、精确形式、必要的单位或判断词）</li></ol><h3 id="s16">交卷前检查</h3><ol class="steps"><li>符号：负号、绝对值、<code>±</code> 是否齐全</li><li>常数：不定积分的 C、二阶 IVP 的 C₁ 与 C₂、模型的初值常数</li><li>合理性：面积为正、浓度不超过极限值、减速/加速的判据用了 v 与 a 的符号</li><li>精确性：没有擅自把 <code>ln2</code>、<code>√2</code> 写成小数</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>General/MockExam.pdf</td><td>p1</td><td>第 1–4 题的题干：分部积分、反函数、有理函数、平均值、牛顿冷却、运动学、三个极限</td></tr><tr><td>General/MockExam.pdf</td><td>p2</td><td>第 5–6 题的题干：药物浓度模型、切线与法线、间断点、可导条件、二阶初值问题</td></tr><tr><td>General/MockExam.pdf</td><td>p3–p4</td><td>公式表：坐标与直线、函数基础、三角、极限、求导、积分、模型、求和</td></tr><tr><td>General/MockExam_answers.pdf</td><td>p1</td><td>官方答案：1/2eˣ(sin x − cos x)、1/13、x²/2 + x + ln|x−3| − 2/(x−3)、−3、10ln(3/2)/ln2、减速</td></tr><tr><td>General/MockExam_answers.pdf</td><td>p1</td><td>官方答案：e、[−2, 2]、1、3 − 3e^{−t}、极限 3、ln2、切线与法线、可去间断 f(−1) = −7、a = 3、b = 1、x(t) = t³ + 2t + cos t − 1</td></tr><tr><td>General/General Course Information.html</td><td>p1</td><td>考试规则：不允许计算器、提供公式表、参考书与历年试卷入口</td></tr><tr><td>Topic 7/EMI_7.pdf 与 Topic 7/EM_7_sol.pdf</td><td>p1–p3</td><td>作业七的题型与解法，用于补充练习（平均值、|cos|、sec⁵、部分分式）</td></tr><tr><td>（跳过）General/Mock exam.html 与 Mock exam_answer.html</td><td>—</td><td>Moodle 登录页快照，无正文；PDF 版本已覆盖全部内容</td></tr><tr><td>（拓展）</td><td>—</td><td>把六道题改造成模板卡、以及各题的评分链拆解，属于复习方法层面的补充，源文件只给题与答案</td></tr></table></section><div class="lnav"><a class="prev" href="t7-integration-techniques.html">← 第 4 章 · 微积分基本定理与积分方法</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

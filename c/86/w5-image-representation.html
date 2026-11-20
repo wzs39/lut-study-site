@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 5 · 图像表示：采样、量化、编码与 RGB · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-3.html">第 3 章 数字编码与压缩</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、从连续到离散：数字化的三步</a><a class="toc-l2" href="#s3">二、数字图像与像素</a><a class="toc-l3" href="#s4">2.1 数字图像的定义</a><a class="toc-l3" href="#s5">2.2 像素</a><a class="toc-l3" href="#s6">2.3 把图像看成一个二维矩阵</a><a class="toc-l2" href="#s7">三、采样：决定在哪里取点</a><a class="toc-l3" href="#s8">3.1 定义</a><a class="toc-l3" href="#s9">3.2 一个直观的想象</a><a class="toc-l3" href="#s10">3.3 采样与空间分辨率</a><a class="toc-l3" href="#s11">3.4 分辨率怎么写</a><a class="toc-l3" href="#s12">3.5 总像素数与百万像素</a><a class="toc-l3" href="#s13">3.6 分辨率高不等于画质好</a><a class="toc-l2" href="#s14">四、量化：决定每点多亮</a><a class="toc-l3" href="#s15">4.1 定义</a><a class="toc-l3" href="#s16">4.2 与采样的对照</a><a class="toc-l3" href="#s17">4.3 量化的样子</a><a class="toc-l3" href="#s18">4.4 灰度约定</a><a class="toc-l3" href="#s19">4.5 8 位灰度</a><a class="toc-l3" href="#s20">4.6 灰度图就是一张数字表</a><a class="toc-l2" href="#s21">五、编码：把值写成位</a><a class="toc-l2" href="#s22">六、彩色图像与 RGB</a><a class="toc-l3" href="#s23">6.1 RGB 模型</a><a class="toc-l3" href="#s24">6.2 关键颜色表</a><a class="toc-l3" href="#s25">6.3 24 位 RGB</a><a class="toc-l3" href="#s26">6.4 一共多少种颜色</a><a class="toc-l3" href="#s27">6.5 一个像素的二进制样子</a><a class="toc-l2" href="#s28">七、色深（color depth）</a><a class="toc-l3" href="#s29">7.1 定义</a><a class="toc-l3" href="#s30">7.2 「8 位」的含义取决于分配方式</a><a class="toc-l2" href="#s31">八、图像占多少数据</a><a class="toc-l3" href="#s32">8.1 公式</a><a class="toc-l3" href="#s33">8.2 算例一：1024 × 768 的 8 位灰度图</a><a class="toc-l3" href="#s34">8.3 算例二：1920 × 1080 的 24 位 RGB 图</a><a class="toc-l3" href="#s35">8.4 什么在决定数据量</a><a class="toc-l2" href="#s36">九、栅格图像（raster）</a><a class="toc-l3" href="#s37">9.1 定义与例子</a><a class="toc-l3" href="#s38">9.2 分辨率依赖与像素化</a><a class="toc-l3" href="#s39">9.3 优点与局限</a><a class="toc-l2" href="#s40">十、矢量图形（vector）</a><a class="toc-l3" href="#s41">10.1 定义</a><a class="toc-l3" href="#s42">10.2 栅格与矢量对照</a><a class="toc-l3" href="#s43">10.3 什么时候用哪种</a><a class="toc-l3" href="#s44">10.4 常见格式</a><a class="toc-l2" href="#s45">十一、完整流水线与三个概念的分工</a><a class="toc-l2" href="#s46">十二、课件小测（附答案）</a><a class="toc-l2" href="#s47">方法清单</a><a class="toc-l3" href="#s48">把一张图数字化（三步）</a><a class="toc-l3" href="#s49">算未压缩图像大小（四步）</a><a class="toc-l3" href="#s50">判断栅格还是矢量（两问）</a><a class="toc-l3" href="#s51">答题时的自查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a class="toc-l3" href="w5-image-representation.html">▸ Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 5 · 图像表示：采样、量化、编码与 RGB</h1><p class="lead">Image Representation <span class="badge mute">86</span> <span class="badge mute">第 5 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 数字编码与压缩</a></p><p class="src">原始文件：<code>Week5- Image Representation/Lecture5.pdf</code> <code>Week6- Audio and Video Representation/Exercise 3.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲把文字变成了字节。这一讲把「看得见的东西」变成字节：一张照片在内存里到底是什么？答案是三层——先采样（在哪取点）、再量化（每点取什么值）、最后编码（值怎么写位）。这三步与上一讲的「字符 → 码位 → 字节」是同一套思路，只是把「符号」换成了「亮度」。</p><p>本讲还要算清一件事：图像到底占多少空间。公式只有一条 <code>W × H × B / 8</code>（宽 × 高 × 每像素位数 ÷ 8），但它是后面所有多媒体计算题的母公式——第 6 讲的音频、视频，第 7 讲的压缩比，都从这条公式出发。</p><p>最后一块内容是栅格与矢量的分工：照片用栅格，logo 用矢量。这不是审美偏好，而是「信息本质不同」导致的必然选择：连续色调适合采样成像素，几何形状适合写成数学描述。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用「采样—量化—编码」三步说明任何图像怎样变成数字</li><li>区分采样（离散化位置）与量化（离散化取值）</li><li>计算分辨率给出的总像素数，并换算成百万像素（MP）</li><li>说明 8 位灰度为什么有 256 级、24 位 RGB 为什么有约 1 677 万色</li><li>用 <code>W × H × B / 8</code> 计算未压缩图像的字节数并换算单位</li><li>说明栅格与矢量的差别，并针对具体任务选择合适的一种</li><li>解释「色深」这个词在不同表示下含义为何不同</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、从连续到离散：数字化的三步</h2><p>课件开篇先立一个前提：现实世界的图像本来不是数字的。现实世界是<b>连续的</b>视觉信息，而计算机需要<b>离散</b>的数值数据。把连续信息转成离散数字数据的过程叫<b>数字化</b>（digitization）。</p><p>数字化的流水线固定为三步：</p><pre><code>现实场景 → 采样（Sampling）→ 量化（Quantization）→ 编码（Encoding）→ 二进制数据</code></pre><p>这三步各回答一个问题，课件在第 20 页把它们并列得非常清楚：</p><table><tr><th>步骤</th><th>回答的问题</th><th>输出</th></tr><tr><td>采样 Sampling</td><td>在哪里测量？（Where?）</td><td>像素网格</td></tr><tr><td>量化 Quantization</td><td>给它什么值？（What value?）</td><td>有限的数值集合</td></tr><tr><td>编码 Encoding</td><td>怎样用位表示？（How in bits?）</td><td>二进制数据</td></tr></table><p>记住这三问，后面讲音频与视频时你会发现它们一字不改地复用（第 6 讲：采样 = when、量化 = what value、编码 = how）。</p><h2 id="s3">二、数字图像与像素</h2><h3 id="s4">2.1 数字图像的定义</h3><p>课件定义：数字图像是视觉信息的<b>数值表示</b>。它由许多像素组成，每个像素带有数值信息，这些数值可以用位来表示：</p><pre><code>图像 → 像素 → 数值 → 二进制数据</code></pre><h3 id="s5">2.2 像素</h3><p>像素（pixel）= picture element（图像元素）。课件说它是<b>栅格图像的基本元素</b>：每个小方格代表一个像素，图像就是像素的二维排布，每个像素存一份数值信息。</p><h3 id="s6">2.3 把图像看成一个二维矩阵</h3><p>灰度图像可以直接写成矩阵。课件给了记号 <code>I(x, y)</code>：x 是水平位置，y 是垂直位置，<code>I(x, y)</code> 是该位置的像素值。</p><pre><code>100  120  135  150
+ 80   95  110  125
+ 50   70   90  105</code></pre><p>这个视角很重要：一旦图像变成矩阵，所有矩阵运算都能用在图像上（求平均做模糊、求差分做边缘检测、做直方图统计分布）。第 7 讲压缩时「相邻像素高度相关」这句话，指的就是矩阵里相邻元素数值接近。</p><h2 id="s7">三、采样：决定在哪里取点</h2><h3 id="s8">3.1 定义</h3><p>采样从连续信息中选取<b>离散位置</b>。它回答「在哪里测量」：把连续的空间信息变成离散的像素位置。</p><pre><code>连续图像 → 在离散位置测量 → 像素网格</code></pre><h3 id="s9">3.2 一个直观的想象</h3><p>把连续图像想成一整片颜色连续变化的区域，采样就是在上面盖一张网格，网格的每个交叉点成为一个像素位置。课件特别提醒一句：<b>每个像素记录的颜色/亮度值仍然是连续的</b>——采样只解决了「位置」，没解决「取值」。取值留给量化。</p><h3 id="s10">3.3 采样与空间分辨率</h3><p>采样点的数量决定<b>空间分辨率</b>（spatial resolution）：采样点越多，能表示的细节越多。课件用两组疏密不同的点阵对比：</p><pre><code>低采样：      •       •       •
+              •       •       •
+
+高采样：  • • • • • • • •
+          • • • • • • • •</code></pre><h3 id="s11">3.4 分辨率怎么写</h3><p>图像分辨率用像素数描述。课件给了四个常见值：</p><table><tr><th>分辨率</th><th>含义</th><th>常见场景</th></tr><tr><td>640 × 480</td><td>横向 640、纵向 480</td><td>早期视频、低清</td></tr><tr><td>1280 × 720</td><td>720p</td><td>标清视频</td></tr><tr><td>1920 × 1080</td><td>1080p（全高清）</td><td>主流视频、显示器</td></tr><tr><td>3840 × 2160</td><td>4K UHD</td><td>高清视频、专业显示</td></tr></table><p>注意写法是「宽 × 高」，不是「高 × 宽」。顺序反了不影响总像素数，但影响你对画面比例的判断。</p><h3 id="s12">3.5 总像素数与百万像素</h3><p>公式：</p><p><b><code>像素总数 = 宽 × 高</code></b></p><pre><code>1920 × 1080 = 2 073 600</code></pre><p>约 207 万像素，通常写作 <b>2.07 MP</b>（megapixel）。手机相机标称的「4800 万像素」，说的就是这个乘积。</p><h3 id="s13">3.6 分辨率高不等于画质好</h3><p>课件特意加了一句反直觉的提醒：更高分辨率通常能表示更多空间细节，但<b>高分辨率并不自动等于更好的画质</b>。画质还取决于：</p><span class="chip">镜头 lens</span> <span class="chip">传感器 sensor</span> <span class="chip">光照 lighting</span> <span class="chip">噪点 noise</span> <span class="chip">颜色表示 color representation</span> <span class="chip">图像处理 image processing</span><p>这句话在考试里常以「为什么 4800 万像素的手机照片不如 2400 万像素的单反」出现。答案是：像素数只是采样密度，量化精度、镜头解析力、噪声水平都会限制最终画质。</p><h2 id="s14">四、量化：决定每点多亮</h2><h3 id="s15">4.1 定义</h3><p>采样之后，每个像素仍然是一个连续量（例如某个亮度）。量化把连续值映射到<b>有限的离散值集合</b>。它回答「给它什么值」。</p><pre><code>连续亮度 → 量化 → 离散数值</code></pre><h3 id="s16">4.2 与采样的对照</h3><table><tr><th>过程</th><th>主要问题</th><th>例子</th></tr><tr><td>采样 Sampling</td><td>在哪里测量？</td><td>像素网格</td></tr><tr><td>量化 Quantization</td><td>给它什么值？</td><td>亮度 0–255</td></tr></table><p>一句话：<b>采样离散化位置，量化离散化取值</b>。这两个词在学生作业里最常被混，记住这句就不会错。</p><h3 id="s17">4.3 量化的样子</h3><p>假设亮度是 0 到 1 的连续量，量化把它切成有限档：</p><pre><code>0 ─────────────────────── 1
+0   1   2   3   4   5   6   7</code></pre><p>本来有无穷多个可能值，现在只用 8 个。档数越多，越接近原始连续值；档数越少，越容易出现「色带」（banding）。</p><h3 id="s18">4.4 灰度约定</h3><p>灰度图像表示亮度。课件给的约定是：<code>0 → 黑</code>、<code>255 → 白</code>，中间是各种灰。</p><pre><code>0        64       128       192       255
+黑                                白</code></pre><h3 id="s19">4.5 8 位灰度</h3><p>8 位像素有 <code>2^8 = 256</code> 种可能值，于是：</p><p><b>8 位灰度 → 256 个灰度级，范围 0–255</b></p><p>这个数字与第 4 讲的 ASCII（128 个字符）形成对照：位宽决定容量，7 位给 128、8 位给 256。</p><h3 id="s20">4.6 灰度图就是一张数字表</h3><p>课件给了第二个矩阵例子：</p><pre><code> 20   50   80
+100  130  160
+180  210  240</code></pre><p>所以「灰度图像本质上是一个二维数字数组」。这句话把图像处理与数组处理接上了：一张 8 位灰度图，就是 <code>height × width</code> 个 0–255 的整数。</p><h2 id="s21">五、编码：把值写成位</h2><p>量化之后我们有一堆离散数值。编码规定这些值怎样表示成数字数据。它回答「怎样用位表示」。</p><pre><code>量化值 → 编码 → 二进制数据</code></pre><p>课件给了一个最简单的例子：某像素值是 128，用 8 位二进制编码就是 <code>10000000</code>。</p><p>这个概念与上一讲的 ASCII 完全对应：一个是「字符 → 编号 → 字节」，一个是「亮度值 → 8 位二进制」。都是把有限集合里的元素映射到固定长度的位串。</p><h2 id="s22">六、彩色图像与 RGB</h2><h3 id="s23">6.1 RGB 模型</h3><p>课件问：计算机怎样表示颜色？常见方法是 RGB 彩色模型，RGB 分别是 Red、Green、Blue。一个颜色像素写成三元组 <code>(R, G, B)</code>。</p><p>为什么是这三种颜色？因为人眼视网膜有三类视锥细胞，分别对长、中、短波敏感。用三原色按比例叠加，就能「骗过」视觉系统产生任意颜色的感觉。这是感知层面的设计依据，不是物理上的唯一方案。</p><h3 id="s24">6.2 关键颜色表</h3><table><tr><th>颜色</th><th>R</th><th>G</th><th>B</th></tr><tr><td>黑 Black</td><td>0</td><td>0</td><td>0</td></tr><tr><td>红 Red</td><td>255</td><td>0</td><td>0</td></tr><tr><td>绿 Green</td><td>0</td><td>255</td><td>0</td></tr><tr><td>蓝 Blue</td><td>0</td><td>0</td><td>255</td></tr><tr><td>白 White</td><td>255</td><td>255</td><td>255</td></tr></table><p>这张表有两个可推的规律：三通道全 0 是黑，全满（255）是白；只点亮一个通道得纯色。所以「灰度」在三通道里是 R = G = B 的情形。</p><h3 id="s25">6.3 24 位 RGB</h3><p>常见表示给每个通道 8 位：</p><pre><code>8（R）+ 8（G）+ 8（B）= 24 位/像素 = 3 字节/像素</code></pre><h3 id="s26">6.4 一共多少种颜色</h3><p>每个通道有 <code>2^8 = 256</code> 种取值，三个通道组合：</p><p><b><code>256 × 256 × 256 = 256^3 = 16 777 216</code></b></p><p>约 1677 万色，这就是常说的「真彩色」（true color）。课件写作 approximately 16.7 million colors。</p><h3 id="s27">6.5 一个像素的二进制样子</h3><p>课件取 <code>RGB = (255, 128, 0)</code>：</p><pre><code>R = 255 → 11111111
+G = 128 → 10000000
+B =   0 → 00000000
+拼起来：11111111 10000000 00000000</code></pre><p>共 24 位 = 3 字节。这个颜色是橙色（红满、绿半、蓝无）。写十六进制就是 <code>FF8000</code>，网页 CSS 里常写成 <code>#ff8000</code>——这正是第 4 讲「十六进制是二进制的压缩写法」的实际用途。</p><h2 id="s28">七、色深（color depth）</h2><h3 id="s29">7.1 定义</h3><p>色深描述用多少位来表示像素信息。有了 n 位，可能取值数是 <code>2^n</code>：</p><table><tr><th>色深</th><th>可能取值数</th><th>典型含义</th></tr><tr><td>1 位</td><td>2</td><td>黑白二值（只有黑与白）</td></tr><tr><td>2 位</td><td>4</td><td>4 级灰度或 4 色</td></tr><tr><td>4 位</td><td>16</td><td>16 色</td></tr><tr><td>8 位</td><td>256</td><td>256 级灰度，或 256 色调色板</td></tr><tr><td>24 位</td><td>约 1677 万</td><td>RGB 真彩色（8+8+8）</td></tr></table><h3 id="s30">7.2 「8 位」的含义取决于分配方式</h3><p>这是本讲最容易答错的一个概念。课件专门提醒：<b>「8 位」的意思取决于位怎样分配</b>。</p><table><tr><th>说法</th><th>位怎么分</th><th>结果</th></tr><tr><td>8 位灰度</td><td>8 位全给亮度</td><td>256 级灰</td></tr><tr><td>24 位 RGB</td><td>8 位 × 3 个通道</td><td>约 1677 万色</td></tr><tr><td>8 位索引色</td><td>8 位作调色板下标</td><td>从一张调色板里挑 256 种颜色</td></tr></table><p>所以答题时要先问「这些位怎么分」。只说「8 位」而不说分配方式，是不完整的答案。</p><h2 id="s31">八、图像占多少数据</h2><h3 id="s32">8.1 公式</h3><p>对未压缩的栅格图像：</p><p><b><code>大小（位）= W × H × B</code></b>，其中 W 是宽、H 是高、B 是每像素位数。</p><p><b><code>大小（字节）= W × H × B / 8</code></b></p><h3 id="s33">8.2 算例一：1024 × 768 的 8 位灰度图</h3><pre><code>像素数：1024 × 768 = 786 432
+每像素：8 位 = 1 字节
+总字节：786 432 字节 ≈ 768 KiB</code></pre><p>注意 <code>786 432 / 1024 = 768</code>，正好 768 KiB——因为 1024 × 768 本身就是 2 的幂的乘积，除以 1024 后干净整除。这类题常故意选这种尺寸，算起来快。</p><h3 id="s34">8.3 算例二：1920 × 1080 的 24 位 RGB 图</h3><pre><code>像素数：1920 × 1080 = 2 073 600
+每像素字节：24 / 8 = 3
+总字节：2 073 600 × 3 = 6 220 800 字节
+换算：6 220 800 / (1024 × 1024) ≈ 5.93 MiB</code></pre><p>课件两次都加了一句提醒：<b>这是未压缩的原始像素数据</b>。真实文件通常更小，因为有压缩（第 7 讲）；也可能更大，因为有元数据与文件头。</p><h3 id="s35">8.4 什么在决定数据量</h3><p>课件给的比例关系：<b>数据量 ∝ 分辨率 × 色深</b>。因此数据量会在三种情况下增大：分辨率升高、每像素位数升高、通道数增多。</p><div class="callout tip"><b>单位别混</b><code>MiB = 1024 × 1024</code> 字节，<code>MB = 10^6</code> 字节。5.93 MiB 换成十进制 MB 是 6.22 MB，差 5%。第 4 章与第 6 章会反复用到这个差别，答题时看清题目给的是哪种单位。</div><h2 id="s36">九、栅格图像（raster）</h2><h3 id="s37">9.1 定义与例子</h3><p>栅格图像用像素网格表示图像：<code>图像 → 像素网格 → 像素值 → 二进制数据</code>。典型例子：照片、屏幕截图、扫描文档、数字绘画。</p><h3 id="s38">9.2 分辨率依赖与像素化</h3><p>栅格图像是<b>分辨率相关</b>的。放大到一定程度，单个像素变得可见，这种现象叫<b>像素化</b>（pixelation）。原因很直接：图像里只有那么多像素，放大只是把每个像素铺得更开，不会产生新细节。</p><h3 id="s39">9.3 优点与局限</h3><table><tr><th>优点</th><th>局限</th></tr><tr><td>适合照片</td><td>分辨率相关</td></tr><tr><td>能表示复杂颜色</td><td>放大会像素化</td></tr><tr><td>能表示细腻纹理</td><td>高分辨率图像占大量存储</td></tr><tr><td>保留像素级信息</td><td>—</td></tr></table><h2 id="s40">十、矢量图形（vector）</h2><h3 id="s41">10.1 定义</h3><p>矢量图像用<b>对象的数学描述</b>表示视觉信息。基本元素是点、线、曲线、圆、多边形。</p><p>课件的例子：一个圆由「圆心 (100, 100)、半径 50、颜色红」描述。图形由对象描述，而不是由一个个像素描述。</p><h3 id="s42">10.2 栅格与矢量对照</h3><table><tr><th>对照项</th><th>栅格 Raster</th><th>矢量 Vector</th></tr><tr><td>基本单位</td><td>像素</td><td>几何对象</td></tr><tr><td>表示方式</td><td>像素值</td><td>数学描述</td></tr><tr><td>分辨率相关</td><td>是</td><td>一般不是</td></tr><tr><td>照片</td><td>适合</td><td>通常不适合</td></tr><tr><td>logo / 图标</td><td>可用</td><td>常用</td></tr><tr><td>缩放</td><td>可能像素化</td><td>可平滑缩放</td></tr></table><p>课件加了一句关键说明：矢量图形之所以能平滑缩放，是因为它可以按需<b>重新计算</b>——放大两倍就是把半径改成 100 再画一遍，而不是把已有的点铺开。</p><h3 id="s43">10.3 什么时候用哪种</h3><table><tr><th>适合栅格</th><th>适合矢量</th></tr><tr><td>照片</td><td>logo</td></tr><tr><td>真实场景</td><td>图标</td></tr><tr><td>复杂纹理</td><td>示意图（diagrams）</td></tr><tr><td>屏幕截图</td><td>图表（charts）</td></tr><tr><td>扫描图像</td><td>简单插画</td></tr></table><p>课件的结论是：<b>合适的表示取决于视觉信息的类型</b>。判据只有一条——信息本身是「连续色调」还是「几何形状」。</p><h3 id="s44">10.4 常见格式</h3><table><tr><th>栅格格式</th><th>矢量格式</th></tr><tr><td>JPEG / JPG、PNG、GIF、BMP、TIFF</td><td>SVG、EPS</td></tr></table><p>课件补了一句：某些格式（如 PDF）既能含矢量图形，也能含其他内容。并强调：<b>文件格式规定图像数据怎样组织与存储</b>——格式与「表示方式」是两件事。</p><h2 id="s45">十一、完整流水线与三个概念的分工</h2><pre><code>现实场景 → 采样 → 量化 → 编码 → 二进制数据
+（像素网格） （像素值） （位）</code></pre><p>课件在最后一页把三个容易混的概念并列：</p><table><tr><th>概念</th><th>问的问题</th><th>例子</th></tr><tr><td>表示（representation）</td><td>视觉信息怎样被表示？</td><td>像素、RGB、灰度、矢量对象</td></tr><tr><td>编码（encoding）</td><td>这些值怎样数字化？</td><td>128 → 10000000</td></tr><tr><td>压缩（compression）</td><td>怎样减少数据量？</td><td>大数据 → 压缩 → 小数据</td></tr></table><p>这三层要分清：表示决定「用什么模型」，编码决定「怎么写位」，压缩决定「能不能更省」。第 7 讲整讲都在第三层。</p><h2 id="s46">十二、课件小测（附答案）</h2><ol><li>分辨率 800 × 600 的图像有多少像素？→ <code>800 × 600 = 480 000</code> 像素</li><li>8 位灰度的可能亮度级数？→ <code>2^8 = 256</code> 级，范围 0–255</li><li>800 × 600、8 位的灰度图需要多少原始数据？→ <code>800 × 600 × 8 / 8 = 480 000</code> 字节</li><li>照片 / 公司 logo / 截图 / 数学示意图分别用哪种？→ 栅格 / 矢量 / 栅格 / 矢量</li></ol></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>digitization</td><td>数字化</td><td>Converting continuous real-world information into discrete digital data.</td></tr><tr><td>sampling</td><td>采样</td><td>Selecting discrete positions; answers "where do we measure?".</td></tr><tr><td>quantization</td><td>量化</td><td>Mapping continuous values onto a finite set of discrete values; answers "what value?".</td></tr><tr><td>encoding</td><td>编码</td><td>Representing quantized values as bits, e.g. 128 → 10000000.</td></tr><tr><td>pixel</td><td>像素</td><td>Picture element, the basic unit of a raster image.</td></tr><tr><td>spatial resolution</td><td>空间分辨率</td><td>The number of sampling points, written width × height.</td></tr><tr><td>megapixel</td><td>百万像素</td><td>One million pixels; 1920 × 1080 ≈ 2.07 MP.</td></tr><tr><td>grayscale</td><td>灰度</td><td>Brightness only; 8-bit grayscale gives 256 levels from 0 (black) to 255 (white).</td></tr><tr><td>RGB</td><td>红绿蓝模型</td><td>A colour written as (R, G, B); 24-bit RGB uses 8 bits per channel.</td></tr><tr><td>colour depth</td><td>色深</td><td>Number of bits per pixel; 2^n possible values.</td></tr><tr><td>raster image</td><td>栅格图像</td><td>An image stored as a grid of pixels; resolution dependent.</td></tr><tr><td>pixelation</td><td>像素化</td><td>Visible individual pixels when a raster image is enlarged.</td></tr><tr><td>vector graphic</td><td>矢量图形</td><td>An image described by mathematical objects such as points, lines and curves.</td></tr><tr><td>resolution dependent</td><td>分辨率相关</td><td>Detail is fixed at creation time and cannot be recovered by zooming.</td></tr><tr><td>uncompressed size</td><td>未压缩数据量</td><td>W × H × B / 8 bytes for a raster image.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　算 800 × 600、8 位灰度图的未压缩数据量，再算同一尺寸 24 位 RGB 的数据量。</div><p><b>8 位灰度：</b><code>800 × 600 = 480 000</code> 像素，每像素 1 字节 → <b>480 000 字节</b>。</p><p>换算：<code>480 000 / 1024 ≈ 468.75 KiB</code>；换成十进制是 <code>480 kB</code>。</p><p><b>24 位 RGB：</b>每像素 3 字节 → <code>480 000 × 3 = 1 440 000</code> 字节 ≈ <b>1.37 MiB</b>。</p><p>比值正好 3 倍。这说明「同样的画面，彩色比灰度多 3 倍数据」——因为通道数从 1 变 3。凡是「彩色图是灰度图的几倍」的题，答案都是通道数之比。</p><p>答题时务必写清「未压缩」，否则严格说不成立：压缩后的文件可能小得多（第 7 讲）。</p></div><div class="qa"><div class="q">例 2　一张 4000 × 3000、24 位色的照片，未压缩时是多少 MB？（按 1 MB = 10^6 字节）</div><p><b>第一步，算像素数：</b><code>4000 × 3000 = 12 000 000</code> 像素，即 1200 万像素。</p><p><b>第二步，算每像素字节：</b><code>24 / 8 = 3</code> 字节。</p><p><b>第三步，相乘：</b><code>12 000 000 × 3 = 36 000 000</code> 字节。</p><p><b>第四步，换算：</b><code>36 000 000 / 10^6 =</code> <b>36 MB</b>。</p><p>这道题与 Exercise 3 第 6 题同型。注意题目若给「1 MB = 10^6 字节」，就不要用 1024 去除；若给 MiB，则用 <code>1024 × 1024</code>。单位口径错了，答案会差 4.8%。</p><p>补充判断：真实 JPEG 通常只有几 MB，说明压缩率可达十倍以上——这正是第 7 讲「有损压缩能大幅缩小」的证据。</p></div><div class="qa"><div class="q">例 3　一个像素 RGB = (255, 128, 0)，写出它的二进制、十六进制与字节数，并说明它是什么颜色。</div><p>三个通道分别转 8 位二进制：<code>255 = 1111 1111</code>、<code>128 = 1000 0000</code>、<code>0 = 0000 0000</code>。</p><p>拼接：<code>11111111 10000000 00000000</code>，共 24 位 = <b>3 字节</b>。</p><p>按 4 位一组转十六进制：<code>1111 1111 | 1000 0000 | 0000 0000</code> → <code>FF | 80 | 00</code> → <b>0xFF8000</b>。</p><p>颜色判断：红满（255）、绿半（128）、蓝无（0）→ 橙色。红 + 半绿 = 橙，这是 RGB 混色的直观推论。</p><p>注意通道顺序是 R、G、B。若顺序写成 BGR（某些图像库的默认），同样的颜色会变成 <code>0080FF</code>，颜色完全变了——这是编程里极常见的 bug 来源。</p></div><div class="qa"><div class="q">例 4　判断下列任务该用栅格还是矢量，并说明判据：照片、公司 logo、屏幕截图、数学示意图、地图图标。</div><p><b>照片 → 栅格。</b>照片是连续色调，含大量细微的颜色渐变与纹理，只能用采样量化表示；用矢量描述反而无法表达。</p><p><b>公司 logo → 矢量。</b>logo 由几何形状与文字构成，需要在名片、招牌、屏幕上任意缩放而不失真。</p><p><b>屏幕截图 → 栅格。</b>截图本身就是像素数据（连字体渲染的抗锯齿边缘也是像素），没有可还原的几何描述。</p><p><b>数学示意图 → 矢量。</b>由直线、圆、曲线、标注组成，缩放后要保持清晰，且便于修改某个元素。</p><p><b>地图图标 → 矢量。</b>要在不同缩放级别与不同屏幕上保持锐利，且可换配色。</p><p>通用判据两步：① 信息是连续色调还是几何形状？② 是否需要任意缩放？两步都指向「形状 + 缩放」就选矢量。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>算 640 × 480、8 位灰度图的未压缩字节数与 KiB。</li><li>2 位与 4 位的色深分别有多少种取值？若 4 位全部给亮度，灰度可分几级？</li><li>算 1920 × 1080、24 位 RGB 图换成 MiB 是多少。</li><li>为什么「高分辨率不自动等于高画质」？至少给三个其他因素。</li><li>矢量图放大为什么不会失真？请从「表示方式」的角度解释。</li><li>一张 1000 × 1000、24 位的图未压缩是 3 MB，但存成 JPEG 只有 200 KB。这个差别可能吗？依据是什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>640 × 480 = 307 200</code> 像素，每像素 1 字节 → <b>307 200 字节</b>；<code>307 200 / 1024 = 300 KiB</code>。</p><p><b>2.</b> <code>2^2 = 4</code> 种；<code>2^4 = 16</code> 种。若 4 位全给亮度，灰度可分 16 级（0–15）。级数少时会出现明显色带。</p><p><b>3.</b> <code>1920 × 1080 = 2 073 600</code> 像素 × 3 字节 = <code>6 220 800</code> 字节；<code>/ 1 048 576 ≈ 5.93 MiB</code>。</p><p><b>4.</b> 分辨率只决定采样密度。其他因素：镜头解析力（模糊的光学系统采样再密也没细节）、传感器噪声（高 ISO 的噪点会盖住细节）、光照与动态范围（过曝处全是 255）、色彩量化精度（位数少则有色带）、后端处理（锐化/降噪会改细节）。</p><p><b>5.</b> 矢量图存的不是像素而是「圆心、半径、颜色」这类描述，放大时按新尺寸<b>重新计算并绘制</b>，所以边缘依旧锐利；栅格图存的是固定数量的像素值，放大只是把已有像素拉伸，因此出现像素化。</p><p><b>6.</b> 可能。原因有两点：① 未压缩的 3 MB 是「原始像素数据」；② JPEG 是有损压缩，利用了相邻像素高度相关（空间冗余）并丢弃人眼不敏感的高频细节（第 7 讲）。1000 × 1000 × 3 = 3 000 000 字节 = 3 MB（十进制），压缩到 200 KB 意味着约 15:1 的压缩比，对照片是常见的。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① 采样与量化的区别（位置 vs 取值）；② <code>W × H × B / 8</code> 的计算与单位换算；③ 8 位灰度 256 级、24 位 RGB 约 1 677 万色；④ RGB 三元组与十六进制写法；⑤ 栅格与矢量的选择判据；⑥ 分辨率的写法与总像素数。</div><div class="callout warn"><b>易错 1</b>把采样与量化说反。记法：「采样 = 采点（位置）」「量化 = 定值（取值）」。</div><div class="callout warn"><b>易错 2</b>算大小忘记除以 8。公式给的是「位」，问的是「字节」，差 8 倍。</div><div class="callout warn"><b>易错 3</b>把 MB 与 MiB 混用。题目给了「1 MB = 10^6 字节」就按十进制，别用 1024。</div><div class="callout warn"><b>易错 4</b>以为「8 位」总是 256 级灰度。8 位也可能是指数色（调色板下标）或某个通道的位宽，要看位怎么分配。</div><div class="callout tip"><b>进阶</b>① 1024 × 768 这类「2 的幂乘积」尺寸算起来非常干净，可当速算锚点；② 彩色图数据量 = 灰度图 × 通道数；③ 若要估算压缩后大小，先用「压缩比 = 原始 / 压缩后」表达（第 7 讲）；④ 记住 CSS 颜色 <code>#RRGGBB</code> 就是 24 位 RGB 的十六进制写法，能把网页开发与本节知识接起来。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s47">方法清单</h2><h3 id="s48">把一张图数字化（三步）</h3><ol class="steps"><li>采样：确定网格密度（宽 × 高），得到像素位置</li><li>量化：确定每像素位数（8 位灰度 / 24 位 RGB），把连续亮度映射到有限级</li><li>编码：把每个量化值写成固定长度的二进制，按行（或按通道）排列</li></ol><h3 id="s49">算未压缩图像大小（四步）</h3><ol class="steps"><li>算像素数：<code>W × H</code></li><li>算每像素字节：<code>B / 8</code></li><li>相乘得字节数</li><li>按题目口径换算：KiB 用 1024，kB 用 1000；标注「未压缩」</li></ol><h3 id="s50">判断栅格还是矢量（两问）</h3><ul class="checklist"><li>信息是连续色调（照片、纹理）还是几何形状（线、圆、字）？</li><li>是否需要任意缩放而保持清晰？</li><li>两者都指向形状 + 缩放 → 矢量；否则 → 栅格</li></ul><h3 id="s51">答题时的自查</h3><ul class="checklist"><li>写清「未压缩」与单位口径</li><li>分辨率的写法是「宽 × 高」</li><li>色深要说清「位怎么分配」</li><li>RGB 要写清通道顺序</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p2–p3</td><td>六个关键问题、现实的连续性 vs 计算机的离散性、数字化的三步流水线</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p4–p6</td><td>数字图像定义、像素 = picture element、二维网格与 I(x, y) 记号、灰度矩阵</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p7–p12</td><td>采样定义（在哪里测量）、采样网格示意、采样决定空间分辨率、分辨率写法 640×480 至 3840×2160、总像素 1920×1080=2.07MP、分辨率不等于画质</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p13–p18</td><td>量化定义（给什么值）、采样与量化对照表、量化示意、灰度 0 黑 255 白、8 位 256 级、灰度图即二维数字数组</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p19–p20</td><td>编码定义（怎样用位表示）、128 → 10000000、三步的分工总结</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p21–p25</td><td>RGB 模型、三元组、五种关键颜色表、24 位 = 3 字节、256^3 = 16 777 216、单像素 (255,128,0) 的二进制</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p26–p27</td><td>色深定义与 2^n 表、8 位在不同分配下的不同含义</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p28–p31</td><td>未压缩大小公式、1024×768 灰度 768 KiB、1920×1080 RGB 5.93 MiB、数据量 ∝ 分辨率 × 色深</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p32–p34</td><td>栅格图像定义与例子、分辨率依赖与像素化、优缺点表</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p35–p38</td><td>矢量图形定义、圆的数学描述、栅格与矢量六项对照、适用场景、常见格式</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p39–p42</td><td>完整数字化流水线、表示 vs 编码 vs 压缩、三步一句话总结与大图</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p43–p50</td><td>四道复习题（800×600 像素数、8 位级数、原始数据量、栅格或矢量），已收入本讲第十二节</td></tr><tr><td>Week6- Audio and Video Representation/Exercise 3.pdf</td><td>第 3、4、6 题</td><td>RGB 怎样表示颜色、位深/色深的定义与 1 位和 8 位灰度的差别、4000×3000 24 位图像的 MB 计算（本讲例 2 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>三原色与视锥细胞的感知依据、I(x,y) 到矩阵运算的衔接、CSS #RRGGBB 与十六进制的对应、MB 与 MiB 的口径差异，均为衔接性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w4-character-encoding.html">← Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a class="next" href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 8 讲 · 软件演化、维护与遗留系统 · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-3.html">第 3 章 测试、演化与项目管理</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">8.1 变化是常态：Lehman 第一定律</a><a class="toc-l3" href="#s3">8.2 生命周期的三个阶段</a><a class="toc-l3" href="#s4">8.3 演化过程由什么决定</a><a class="toc-l3" href="#s5">8.4 紧急变更与紧急修复过程</a><a class="toc-l3" href="#s6">8.5 敏捷与演化：无缝，但有交接问题</a><a class="toc-l3" href="#s7">8.6 遗留系统：不只是软件</a><a class="toc-l3" href="#s8">8.7 为什么替换难、改也难</a><a class="toc-l3" href="#s9">8.8 遗留系统的四种处置策略</a><a class="toc-l3" href="#s10">8.9 维护：定义与三类</a><a class="toc-l3" href="#s11">8.10 维护成本与预测</a><a class="toc-l3" href="#s12">8.11 再工程与重构</a><a class="toc-l3" href="#s13">8.12 代码坏味道</a><a class="toc-l3" href="#s14">8.13 AI 与软件演化</a><a class="toc-l2" href="#s15">遗留系统处置的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a class="toc-l3" href="l08-evolution-and-maintenance.html">▸ 第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 8 讲 · 软件演化、维护与遗留系统</h1><p class="lead">Software Evolution and Maintenance <span class="badge mute">30361</span> <span class="badge mute">第 8 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 测试、演化与项目管理</a></p><p class="src">原始文件：<code>17_Week 11/1_SE - Lecture 8 - 2026.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前面七讲讲的是「把系统造出来」，这一讲讲「系统造出来之后的几十年」。课件给出一个残酷的事实：大型公司软件预算的大部分花在改变与演化既有软件上，而不是开发新软件。因此这一讲的核心不是技术，而是<b>经济学</b>：为什么旧系统改起来贵、什么时候该修、什么时候该换、怎么用重构延缓衰败。</p><p>与前后衔接：第 3 讲的「演化」是四项活动之一，本讲展开；第 6 讲的架构决策决定后续演化的难易；第 10 讲的配置管理是演化的基础设施；第 12 讲的 Sasken 案例展示了「需求持续演化 + 离岸团队」如何放大维护难度。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>陈述 Lehman 第一定律，并解释它对项目预算的含义</li><li>说明遗留系统的六个组成要素，并解释为什么它不只是软件</li><li>用「质量 × 业务价值」四象限为遗留系统选择处置策略</li><li>区分三类维护，并说明为什么维护成本通常是开发的 2–100 倍</li><li>区分再工程（reengineering）与重构（refactoring）的时机与目的</li><li>识别五种典型代码坏味道，并给出对应重构手法</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">8.1 变化是常态：Lehman 第一定律</h3><p>课件开篇引用 Lehman 的软件演化第一定律：</p><p>“Software must continually change, or it becomes progressively less useful.”（软件必须持续变化，否则会逐渐变得不那么有用。）</p><p>这句话不是修辞，而是预算现实：组织在软件系统上有巨额投资，这些系统是关键的商业资产；要维持这些资产对业务的价值，就必须不断修改与更新。课件明确指出：<b>大型公司软件预算的大部分用于改变与演化既有软件，而不是开发新软件</b>。</p><p>软件为什么会变？课件列了六个来源：软件被使用后出现新需求；业务环境变化；错误必须修复；新的计算机与设备被加入系统；技术变化（包括 AI 进入软件工程）；系统的性能或可靠性需要提升。对所有组织而言，关键问题是<b>如何实施并管理对既有系统的改变</b>。</p><h3 id="s3">8.2 生命周期的三个阶段</h3><p>课件用「开发与演化的螺旋模型」表示：系统投入使用后，每一圈都是「提出变更 → 分析影响 → 实现 → 发布」的循环。生命周期后段可分三段：</p><table><tr><th>阶段</th><th>英文</th><th>定义</th><th>特征</th></tr><tr><td>演化</td><td>evolution</td><td>系统处于运行使用中，随着新需求被提出并实现而演化</td><td>仍在增加新功能</td></tr><tr><td>服务</td><td>servicing</td><td>软件仍然有用，但所做的改变仅限于维持其可运行</td><td><b>不增加新功能</b></td></tr><tr><td>淘汰</td><td>phase-out</td><td>软件可能仍在使用，但不再做任何改变</td><td>只等替代或下线</td></tr></table><p>这三个阶段的划分直接决定维护预算的分配：演化阶段要投入功能开发；服务阶段只需投入纠错与适配；淘汰阶段应尽量不再投入，把资源转向替代方案。</p><h3 id="s4">8.3 演化过程由什么决定</h3><p>课件指出，软件演化过程取决于三件事：被维护软件的类型；所使用的开发过程；参与人员的技能与经验。</p><p><b>变更提案是系统演化的驱动力</b>（proposals for change are the driver for system evolution）。变更提案应与受影响的构件建立链接，从而可以估算变更的成本与影响——这正是第 4 讲「可追溯性」在演化阶段的价值。变更识别与演化贯穿系统的整个生命周期。</p><p>变更实现（change implementation）是开发过程的一次迭代：设计、实现并测试对系统的修订。它的第一阶段可能是<b>程序理解</b>（program understanding），尤其当原开发者不负责此次变更时。在程序理解阶段，你必须弄清程序如何组织、如何交付功能、拟议变更可能如何影响程序。</p><div class="callout warn"><b>易错</b>很多同学把「维护」理解为「只改 bug」。维护包含三类活动，其中功能增强往往占最大工作量；而「程序理解」是维护的第一步，也是最容易被低估的成本。</div><h3 id="s5">8.4 紧急变更与紧急修复过程</h3><p>紧急变更可能不得不在不走完整个软件工程过程的情况下实施，典型情形有三种：严重系统故障必须修复以恢复normal运行；系统环境的改变（如操作系统升级）产生了意外影响；业务变化要求极快响应（如竞争对手发布产品）。</p><p>紧急修复过程（emergency repair process）的要点是：先止血（回滚、打补丁、关闭功能），再做根因分析，最后把修复纳入正常变更流程并补测试。课件以图呈现该过程（原 PDF 为图）。答题时的关键判断是：<b>紧急修复允许跳过评审与文档，但不允许跳过「事后补齐」</b>，否则技术债会以复利增长。</p><h3 id="s6">8.5 敏捷与演化：无缝，但有交接问题</h3><p>敏捷方法基于增量开发，因此从开发到演化的过渡是<b>无缝</b>的：演化只是基于频繁发布的开发过程的延续；自动化回归测试在变更时尤其有价值；变更可以表达为额外的用户故事。</p><p>但「交接」会出问题，两个方向都要能说：</p><ul><li>开发用敏捷、演化团队不熟悉敏捷且偏好计划驱动：演化团队期望详细文档来支撑维护，而敏捷过程不产出这类文档；</li><li>开发用计划驱动、演化团队偏好敏捷：演化团队可能要从零建立自动化测试，而既有代码可能从未按敏捷期望被重构与简化。</li></ul><h3 id="s7">8.6 遗留系统：不只是软件</h3><p>遗留系统（legacy systems）是依赖「已不再用于新系统开发的语言与技术」的较老系统；可能依赖较老的硬件（如大型机），并伴随遗留的流程与规程。</p><p>课件强调：遗留系统不只是软件系统，而是更广的<b>社会技术系统</b>（socio-technical systems），包含硬件、软件、库与其他支撑软件，以及业务流程。</p><p>六个组成要素：</p><table><tr><th>要素</th><th>英文</th><th>说明</th></tr><tr><td>硬件</td><td>hardware</td><td>常依赖过时硬件</td></tr><tr><td>支撑软件</td><td>support software</td><td>依赖可能已过时或不再受支持的支撑软件（操作系统、中间件、编译器）</td></tr><tr><td>应用软件</td><td>application software</td><td>通常由多个交付业务服务的程序组成</td></tr><tr><td>应用数据</td><td>application data</td><td>由应用系统处理，常在不同数据库中不一致或重复</td></tr><tr><td>业务流程</td><td>business processes</td><td>为达成业务目标而设，可能受遗留系统限制</td></tr><tr><td>业务策略与规则</td><td>business policies and rules</td><td>定义业务运作，可能与遗留系统的使用交织在一起</td></tr></table><div class="callout exam"><b>必考</b>「遗留系统是社会技术系统」是本节最容易被忽略的定义句。答题时若只写「老代码」，会丢掉「业务流程、业务规则、数据」这些关键维度，也难以解释为什么替换风险高。</div><h3 id="s8">8.7 为什么替换难、改也难</h3><p>替换遗留系统风险高、成本高，因此企业继续使用它们。风险高的四个原因：</p><ol><li>缺乏完整的系统规格；</li><li>系统与业务流程紧密集成；</li><li>嵌入在遗留系统中的业务规则没有被文档化；</li><li>新软件开发可能延期或超预算。</li></ol><p>改遗留系统昂贵的原因（六条）：</p><ul><li>没有一致的编程风格；</li><li>使用过时的编程语言，掌握该语言的人很少；</li><li>系统文档不足；</li><li>系统结构退化；</li><li>程序优化（如手工汇编级优化）使其难以理解；</li><li>数据错误、重复与不一致。</li></ul><h3 id="s9">8.8 遗留系统的四种处置策略</h3><p>依赖遗留系统的组织必须选择演化策略：完全废弃系统并修改业务流程使其不再需要；继续维护；通过再工程改造以提升可维护性；用新系统替换。所选策略应取决于<b>系统质量</b>与<b>业务价值</b>。</p><table><tr><th>质量 / 价值</th><th>低业务价值</th><th>高业务价值</th></tr><tr><td>低质量</td><td><b>废弃</b>（scrap）</td><td><b>再工程或替换</b>（若市场上有合适系统）</td></tr><tr><td>高质量</td><td><b>用 COTS 替换、废弃或维护</b></td><td><b>正常维护继续运行</b></td></tr></table><p>业务价值评估要听取多方视角：系统最终用户、业务客户、直线经理、IT 经理、高层管理者；访谈不同干系人并汇总结果。评估时看四点：系统的使用情况（偶尔用或少数人用 → 价值低）；所支撑的业务流程（迫使使用低效流程 → 价值低）；系统可靠性（不可靠且直接影响业务客户 → 价值低）；系统输出（业务依赖其输出 → 价值高）。</p><p>系统质量评估看三方面：业务流程评估（业务流程对当前业务目标的支持程度）；环境评估（系统环境的有效性与其维护成本）；应用评估（应用软件系统本身的质量）。</p><p>定量测量可用于评估应用质量，课件给三个指标：变更请求数量（累计值越高，质量越低）；系统使用的不同用户界面数量（界面越多，越可能存在不一致与冗余）；系统处理的数据量（文件数、数据库规模越大，数据中的不一致与错误越多；清理旧数据非常昂贵耗时）。</p><h3 id="s10">8.9 维护：定义与三类</h3><p>维护是「在程序投入使用后修改程序」。该词主要用于定制软件；通用软件产品则说「演化出新版本」。维护通常<b>不涉及对系统架构的重大改变</b>；变更通过修改既有构件与增加新构件实现。</p><table><tr><th>类型</th><th>英文</th><th>做什么</th><th>例子</th></tr><tr><td>纠错性维护</td><td>fault repairs</td><td>修改系统以修复 bug/漏洞、纠正未满足需求的缺陷</td><td>修复结算金额舍入错误</td></tr><tr><td>环境适配</td><td>environmental adaptation</td><td>让软件在不同于初始实现的环境中运行</td><td>迁移到新操作系统、新硬件</td></tr><tr><td>功能增加与修改</td><td>functionality addition and modification</td><td>修改系统以满足新需求</td><td>增加导出 Excel 功能</td></tr></table><p>课件用饼图给出维护工作量分布（原 PDF 为图，考试不要求具体百分比）；理解要点是：三类维护中<b>功能增加与修改通常占用最多工作量</b>，纠错占比相对较小。这解释了为什么「维护 = 改 bug」是错误直觉。</p><h3 id="s11">8.10 维护成本与预测</h3><p>维护成本的五个判断：</p><ul><li>通常大于开发成本（视应用不同，为 <b>2 到 100 倍</b>）；</li><li>受技术与非技术因素共同影响；</li><li>随软件被维护而<b>上升</b>——维护会侵蚀软件结构，使后续维护更难；</li><li>老化软件的支持成本高（旧语言、旧编译器）；</li><li>在维护阶段给系统增加新功能，通常比在开发阶段增加同样功能更贵。</li></ul><p>维护预测（maintenance prediction）关注「系统的哪些部分可能出问题、维护成本高」。课件的因果链值得背：变更的接受程度取决于受影响构件的<b>可维护性</b>；实施变更会<b>降低</b>系统可维护性；维护成本取决于变更数量，而变更成本取决于可维护性。这是一个正反馈回路——越改越难改。</p><p>变更预测（change prediction）需要理解系统与其环境的关系：<b>紧耦合</b>系统在环境变化时就需要变更。影响因素有三：系统接口的数量与复杂度；本质上易变的系统需求数量；系统被使用的业务流程。</p><h3 id="s12">8.11 再工程与重构</h3><p><b>再工程</b>（reengineering）是「在不改变功能的前提下，重构或重写遗留系统的部分或全部」。它适用于「大型系统中部分（而非全部）子系统需要频繁维护」的情形。再工程投入额外工作量使系统更易维护：系统可能被重构与重新文档化。</p><p>再工程的两个优势：<b>降低风险</b>（新软件开发有高风险——开发问题、人员问题、规格问题）；<b>降低成本</b>（再工程成本常显著低于开发新软件）。</p><p>再工程的典型手段（课件以图呈现，此处按标准含义展开）：源代码翻译（转成新语言）、逆向工程（从代码恢复设计与规格）、程序结构改善（去除 goto、结构化控制流）、程序模块化（把紧耦合代码拆成模块）、数据再工程（清理与规范化数据）。</p><p><b>重构</b>（refactoring）是「改进程序以延缓因变更导致的结构退化」，可理解为<b>预防性维护</b>（preventative maintenance）：修改程序以改善结构、降低复杂度、使其更易理解；重构时<b>不应增加功能</b>，而应专注于程序改进。</p><p>两者的区别（高频考点）：</p><table><tr><th>维度</th><th>再工程 reengineering</th><th>重构 refactoring</th></tr><tr><td>时机</td><td>系统已被维护一段时间、维护成本上升之后</td><td>开发与演化的全过程，持续进行</td></tr><tr><td>范围</td><td>常涉及整个系统或子系统，用自动化工具处理</td><td>通常是局部代码结构</td></tr><tr><td>手段</td><td>源代码翻译、逆向工程、模块化、数据再工程</td><td>提取函数、内联、重命名、搬移、以多态替换条件</td></tr><tr><td>是否改变功能</td><td>不改变功能</td><td>不增加功能，只改进结构</td></tr><tr><td>目的</td><td>把遗留系统变成更易维护的新系统</td><td>避免结构与代码退化推高维护成本</td></tr></table><h3 id="s13">8.12 代码坏味道</h3><p>课件列出五种「坏味道」（bad smells）与对应处理：</p><table><tr><th>坏味道</th><th>英文</th><th>问题</th><th>处理</th></tr><tr><td>重复代码</td><td>duplicate code</td><td>同一逻辑散落多处，改一处漏一处</td><td>用单一函数或方法消除重复</td></tr><tr><td>长方法</td><td>long methods</td><td>方法过长，难以理解与测试</td><td>拆成更短的方法</td></tr><tr><td>switch 语句</td><td>switch statements</td><td>重复的 switch 难以扩展</td><td>在面向对象语言中用多态替换</td></tr><tr><td>数据泥团</td><td>data clumping</td><td>同一组数据反复一起出现</td><td>封装成对象</td></tr><tr><td>投机泛化</td><td>speculative generality</td><td>为「将来可能用到」而加的泛化</td><td>删除不必要的泛化</td></tr></table><p>这五种味道对应的重构手法，是代码评审（第 10 讲）最常用的检查项。</p><h3 id="s14">8.13 AI 与软件演化</h3><p>课件的第四节讨论 AI 对演化的影响，给了三个判断：</p><ul><li>AI 的整合正在驱动大规模企业转型，各行业公司都在改变其构建、组织与现代化软件系统的方式；</li><li>AI 把日常维护、重构与文档的负担从人转移到机器；</li><li>组织意识到遗留架构与碎片化数据无法支撑现代 AI 工作负载，因此系统正在向「AI-ready」演化——不是把 AI 当作一个功能，而是改造架构与数据。</li></ul><p>课件用 Lehman 的三条定律对照「传统现实」与「AI 转型」：</p><table><tr><th>Lehman 定律</th><th>传统现实</th><th>AI 转型</th></tr><tr><td>持续变化定律 Law of Continuing Change</td><td>保持软件更新需要大量人工工程努力与缓慢的发布周期</td><td>AI 降低持续更新的摩擦，使代码库能更顺畅地吸收变化</td></tr><tr><td>复杂性递增定律 Law of Increasing Complexity</td><td>复杂性不可避免地增长；重构常被忽视，因为它不交付新功能</td><td>AI 扫描代码库、识别反模式、廉价地完成复杂结构清理——自动化的重构</td></tr><tr><td>熟悉度守恒 Conservation of Familiarity</td><td>增长受人的认知极限约束——团队能理解多少代码</td><td>AI 文档与语义检索扩展团队对庞大遗留仓库的理解（认知放大）</td></tr></table><p>课件最后给出一段很重要的价值判断：转型不可避免但渐进；一个常见误解是「传统基础不再重要」，现实恰恰相反——新工程师必须严格掌握传统最佳实践（扎实的架构、严谨的设计模式、调试直觉、系统约束）；AI 是强大的放大器，但无法替代人的判断：决定哪些代码应该存在、系统如何安全扩展、架构边界应划在哪里。掌握基础并拥抱 AI 速度的人，会成为「桥梁工程师」（bridge engineer）。</p><div class="callout idea" data-ext="l08-evolution-and-maintenance-0"><b>常见误解</b><p>维护常被误读为只改 bug。实际按 Lehman 第一定律，软件必须持续变化否则逐渐失去用处，维护预算大头用在功能增强与演化上。生命周期后段分三段：演化仍加新功能，服务只维持可运行，淘汰不再改动、等替代。变更提案是演化的驱动力，应与受影响构件建立链接以估算成本——这正是需求追溯在维护期的价值。紧急修复允许跳过评审与文档，但不允许跳过事后补齐，否则技术债复利增长。遗留系统是社会技术系统，除软件还含硬件、库与业务流程。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>software evolution</td><td>软件演化</td><td>The stage where the system is in operational use and evolves as new requirements are implemented.</td></tr><tr><td>Lehman’s first law</td><td>Lehman 第一定律</td><td>Software must continually change, or it becomes progressively less useful.</td></tr><tr><td>servicing</td><td>服务阶段</td><td>The software remains useful but only changes required to keep it operational are made.</td></tr><tr><td>phase-out</td><td>淘汰阶段</td><td>The software may still be used but no further changes are made.</td></tr><tr><td>legacy system</td><td>遗留系统</td><td>Older socio-technical system relying on obsolete languages, hardware and processes.</td></tr><tr><td>socio-technical system</td><td>社会技术系统</td><td>Hardware, software, libraries, business processes and rules taken together.</td></tr><tr><td>corrective maintenance</td><td>纠错性维护</td><td>Repairing faults not discovered during development.</td></tr><tr><td>adaptive maintenance</td><td>适应性维护</td><td>Adapting software to a new environment such as a new OS or platform.</td></tr><tr><td>perfective maintenance</td><td>完善性维护</td><td>Adding or modifying functionality to satisfy new requirements.</td></tr><tr><td>maintenance prediction</td><td>维护预测</td><td>Assessing which parts may cause problems and have high maintenance costs.</td></tr><tr><td>change prediction</td><td>变更预测</td><td>Predicting how many changes are needed from coupling to the environment.</td></tr><tr><td>reengineering</td><td>再工程</td><td>Restructuring or rewriting part or all of a legacy system without changing functionality.</td></tr><tr><td>refactoring</td><td>重构</td><td>Program improvements that slow degradation; preventative maintenance.</td></tr><tr><td>bad smell</td><td>代码坏味道</td><td>Symptoms such as duplicate code, long methods, switch statements.</td></tr><tr><td>emergency repair</td><td>紧急修复</td><td>Fixing a serious fault outside the normal process, followed by root cause analysis.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　四象限决策</div><p>情境：某集团有四套系统：A 是 1998 年的工资系统，仍在用但每年只改两次，代码质量尚可；B 是 2005 年的订单系统，业务核心、每天处理 10 万单，但代码混乱、无人懂原语言；C 是 2010 年的内部会议室预订系统，使用人数少、流程低效；D 是 2003 年的报表系统，质量尚可但业务已迁到新数据仓库。请分别给出处置策略。</p><p><b>分析：</b>先做两维评估——业务价值（是否被业务依赖、使用频率、是否影响客户）与系统质量（结构、文档、语言、数据一致性），再落四象限。</p><p><b>A：高质量 + 高价值 → 正常维护继续运行。</b>改动频率低、质量尚可，替换的收益不足以抵消风险。</p><p><b>B：低质量 + 高价值 → 再工程或替换。</b>业务核心不能停，因此优先评估「再工程」（保留业务规则、改善结构与文档）与「替换」的成本；若市场有合适系统且迁移风险可控，则替换。切忌「推倒重写」而不做业务规则挖掘。</p><p><b>C：低质量 + 低价值 → 废弃。</b>先改业务流程使其不再需要，再下线系统；继续维护是纯浪费。</p><p><b>D：高质量 + 低价值 → 用 COTS 替换、废弃或维护。</b>业务已迁走，优先废弃；若仍有少量报表需求，用现成 BI 工具替代，避免为少量需求维护一套系统。</p><p><b>注意：</b>四象限是决策起点而非终点；还要看「替换的时间窗口」与「数据迁移成本」，这两项常是真正决定成败的因素。</p></div><div class="qa"><div class="q">例 2　判断维护类型与成本动因</div><p>情境：某系统上线后发生四件事：① 客户报表金额少了一分钱，排查发现是浮点舍入；② 公司把服务器从 Windows 迁到 Linux，程序无法启动；③ 财务要求新增「按项目维度分摊」功能；④ 系统换了新的短信服务商，接口协议变化。请分类，并说明哪一类通常成本最高、为什么。</p><p><b>解：</b>① <b>纠错性维护</b>（fault repair）：修复开发阶段未发现的缺陷。② <b>环境适配</b>（environmental adaptation）：迁移到新平台。③ <b>功能增加与修改</b>（functionality addition）：满足新需求。④ 也是<b>环境适配</b>：外部依赖的接口协议变化属于运行环境变化。</p><p><b>成本：</b>③ 通常成本最高，因为它要求理解既有设计、改动数据结构与界面、更新测试与文档，且可能触碰架构约束；课件指出在维护阶段增加功能比在开发阶段增加同样功能更贵。</p><p><b>为什么维护越来越贵：</b>每次变更都侵蚀结构（维护预测的因果链），可维护性下降使下一次变更更贵；此外老语言人才稀缺、文档不足、数据不一致都会叠加成本。</p></div><div class="qa"><div class="q">例 3　再工程还是重构</div><p>情境：某银行的核心账务模块有 200 万行 COBOL，每年有 300 次变更请求，维护成本已占 IT 预算 40%；同期一个小的对账工具只有 5000 行 Java，结构尚可但方法过长。请分别为两者选择手段。</p><p><b>分析：</b>判断依据是「范围 + 时机 + 是否改变功能」。核心账务模块已被维护多年、成本高、范围大、语言过时 → <b>再工程</b>：先逆向工程恢复业务规则与设计，再做源代码翻译与模块化，最后补文档与自动化回归测试；不改变功能，因此可用「新旧并行对账」验证等价性。</p><p><b>对账工具：</b>范围小、结构尚可、问题局部 → <b>重构</b>：拆分长方法、消除重复代码、以多态替换 switch；不增加功能，持续进行。</p><p><b>为什么不能反过来：</b>对 200 万行 COBOL 做手工重构不现实（缺人、缺测试、风险高），必须借助工具与分阶段迁移；对 5000 行 Java 做「再工程」是过度投入——它不需要逆向工程与语言翻译。</p></div><div class="qa"><div class="q">例 4　Lehman 定律与 AI</div><p>情境：某公司引入 AI 编码助手后，变更频率提高了 3 倍，但线上缺陷率也上升。请用 Lehman 定律与课件观点解释这一现象，并给出治理建议。</p><p><b>分析：</b>用三条定律逐一对照。</p><p><b>持续变化：</b>AI 降低了变更摩擦，使代码库能吸收更多变化——这是收益，但变化越快，结构退化越快。</p><p><b>复杂性递增：</b>若 AI 生成代码未被重构与审查，复杂性会加速累积；课件说 AI 能「廉价地做结构清理」，但前提是团队真的把重构纳入流程，而不是只追功能。</p><p><b>熟悉度守恒：</b>团队对代码的理解速度没有同比提升；AI 生成的代码若无人真正理解，认知负荷反而上升，缺陷率随之上升。</p><p><b>治理建议：</b>① 把「AI 生成代码」纳入与人工代码相同的评审与测试门槛（check before check-in、never break the build）；② 用自动化重构与静态分析定期清理坏味道；③ 限制单人单次变更规模，保持可审查性；④ 建立「谁能解释这段代码」的责任制，避免熟悉度赤字。</p><p><b>结论：</b>AI 是放大器而非替代品；课件原文强调 human judgment 在「哪些代码该存在、系统如何安全扩展、架构边界在哪」上不可替代。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>陈述 Lehman 第一定律，并解释它为什么意味着「维护预算必然占大头」。</li><li>演化、服务、淘汰三阶段的区别是什么？各阶段的预算应如何分配？</li><li>遗留系统的六个组成要素是什么？为什么说它是社会技术系统？</li><li>替换遗留系统的四个风险与修改遗留系统的六个原因分别是什么？</li><li>再工程与重构的区别（至少三点）。</li><li>写出五种代码坏味道及其处理方式。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 软件必须持续变化，否则逐渐失去用处。因为业务环境、技术平台、用户需求持续变化，系统不更新就会与业务脱节；而既有系统是巨额投资，维持其价值只能靠持续修改，因此预算大头在演化而非新建。</p><p><b>2.</b> 演化：增加新功能，投入功能开发预算；服务：只做维持运行的必要修改，投入纠错与适配的最小预算；淘汰：不再修改，预算转向替代方案与数据迁移。</p><p><b>3.</b> 硬件、支撑软件、应用软件、应用数据、业务流程、业务策略与规则。因为它的价值与风险都嵌在业务流程与规则中，而不只在代码里；替换系统等于替换流程，因此风险远高于「换一套软件」。</p><p><b>4.</b> 替换风险：缺完整规格、与业务流程紧耦合、业务规则未文档化、新开发可能延期超预算。修改困难：编程风格不一致、语言过时且人才稀缺、文档不足、结构退化、程序优化难懂、数据错误重复不一致。</p><p><b>5.</b> 时机（再工程在维护成本上升后，重构持续进行）；范围（再工程常涉及整系统/子系统并用工具，重构多局部）；手段（再工程含逆向工程、语言翻译、数据再工程，重构是提取/内联/重命名/多态替换）；二者都不改变功能，但再工程是「一次性改善可维护性」，重构是「预防性日常维护」。</p><p><b>6.</b> 重复代码 → 提取单一函数；长方法 → 拆短；switch → 多态；数据泥团 → 封装对象；投机泛化 → 删除。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>Lehman 第一定律、演化/服务/淘汰、遗留系统六要素、四象限策略、三类维护、维护成本 2–100 倍、再工程 vs 重构、五种坏味道、紧急修复的三类触发情形。</div><div class="callout warn"><b>易错 1</b>把「维护」等同于「修 bug」。维护包含纠错、适配、功能增强三类，功能增强往往工作量最大。</div><div class="callout warn"><b>易错 2</b>把再工程与重构当成同义词。再工程是「不改功能地重构或重写部分/全部遗留系统」，重构是「持续的小步结构改进」。</div><div class="callout warn"><b>易错 3</b>认为「质量高就该保留」。四象限里「高质量 + 低业务价值」也可能应废弃或用 COTS 替换。</div><div class="callout warn"><b>易错 4</b>认为 AI 让基础不重要。课件明确相反：架构、设计模式、调试直觉、系统约束仍是判断力的来源。</div><div class="callout tip"><b>进阶</b>能画出「变更 → 结构退化 → 可维护性下降 → 下次变更更贵」的正反馈回路，并用它解释为什么「维护成本随维护而上升」，是论述题的高分点。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">遗留系统处置的清单</h2><ol class="steps"><li>确认系统处于演化、服务还是淘汰阶段</li><li>评估业务价值：使用频率、支撑流程、可靠性、输出依赖</li><li>评估系统质量：流程、环境、应用三方面 + 三个定量指标</li><li>落四象限，得到初步策略（废弃/维护/再工程/替换）</li><li>若选再工程：先逆向工程恢复业务规则，再做结构改善与数据清理</li><li>若选替换：评估规格缺失、流程耦合、规则未文档化、新开发延期四类风险</li><li>为紧急变更建立「止血 → 根因 → 补齐测试与文档」的闭环</li><li>把重构纳入日常：定期扫描五种坏味道并修复</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p4–p8</td><td>Lehman 第一定律、软件变化的六个来源、演化的重要性、开发与演化的螺旋、演化/服务/淘汰</td></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p9–p16</td><td>演化过程的决定因素、变更提案与可追溯、变更实现与程序理解、紧急变更与紧急修复、敏捷与演化、交接问题</td></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p17–p27</td><td>遗留系统定义与社会技术属性、六要素、替换风险、修改困难、四种策略与四象限、业务价值与质量评估、三个定量指标</td></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p28–p35</td><td>维护定义、三类维护、工作量分布、维护成本、维护预测与变更预测、再工程定义与优势</td></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p36–p39</td><td>再工程手段、重构定义、再工程与重构的区别、五种坏味道</td></tr><tr><td>17_Week 11/1_SE - Lecture 8 - 2026.pdf</td><td>p40–p42</td><td>AI 与演化、AI-ready、Lehman 三定律对照表、基础功与桥梁工程师</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>再工程的五种具体手段按标准含义展开；课件以图呈现</td></tr></table></section><div class="lnav"><a class="prev" href="l07-testing-and-quality.html">← 第 7 讲 · 软件测试与质量管理</a><a class="next" href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

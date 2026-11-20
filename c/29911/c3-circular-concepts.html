@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · 循环经济核心概念导读（背景拓展） · 29911</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BH60A7201 Kiertotalous.nyt 循环经济</a> / <a href="part-2.html">第 2 章 循环经济概念导读</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 阅读前提：本讲全部为背景拓展</a><a class="toc-l3" href="#s3">3.2 从线性到闭环：两种默认假设</a><a class="toc-l3" href="#s4">3.3 生命周期思维：先把边界画对</a><a class="toc-l3" href="#s5">3.4 废弃物层级：先预防，再回收</a><a class="toc-l3" href="#s6">3.5 R 框架：一组动词，不是一组口号</a><a class="toc-l3" href="#s7">3.6 循环商业模式：把「卖产品」变成「卖服务」</a><a class="toc-l3" href="#s8">3.7 价值保留与系统思维</a><a class="toc-l3" href="#s9">3.8 指标与陷阱：三个容易误判的地方</a><a class="toc-l3" href="#s10">3.9 与 essay 两问的接口</a><a class="toc-l3" href="#s11">3.10 三个常见误解</a><a class="toc-l2" href="#s12">把概念写进 essay 前的自查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="c1-mooc-path.html">第 1 讲 · 课程结构与 MOOC 学习路径</a><a href="c2-written-compilation.html">第 2 讲 · 写作汇编任务与学术写作要求</a><a class="toc-l3" href="c3-circular-concepts.html">▸ 第 3 讲 · 循环经济核心概念导读（背景拓展）</a></div></aside><article><h1>第 3 讲 · 循环经济核心概念导读（背景拓展）</h1><p class="lead">Core Concepts of the Circular Economy: Background Orientation <span class="badge mute">29911</span> <span class="badge mute">第 3 / 3 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 循环经济概念导读</a></p><p class="src">原始文件：<code>Maa.png</code> <code>3_Tasks/2_Written compilation/intro/intro.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这一讲的位置很特殊：它是「补课」，不是「讲课」。源文本只给了登录说明与写作任务说明，没有提供任何概念章节，也没有主题清单。因此本讲的全部概念内容都属于<b>背景拓展</b>，作用有两个——帮你读懂 MOOC 材料里的术语，帮你在 essay 第一问里把概念分组、在第二问里把概念落到生活。</p><p>必须先把边界说清：本讲不是课程材料，不能当作课程结论引用，也不能替代 MOOC 的主题内容。凡是本讲与 MOOC 材料冲突的地方，以 MOOC 材料为准；凡是本讲提到而 MOOC 没提的概念，写进 essay 时要么不用，要么说明它是你自己的背景理解。</p><p>本讲唯一与源文件直接相关的内容，是写作任务对「覆盖所有主题」与「日常生活中的循环经济思维」这两项要求——它们规定了概念导读该往哪个方向准备。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用一句话区分线性经济与循环经济的默认假设</li><li>用生命周期思维判断一个「更环保」的结论是否站得住</li><li>按废弃物层级与 R 框架排出处理方式的优先顺序</li><li>说明产品服务化、再制造、逆向物流为何改变企业激励</li><li>识别「回收率等于循环度」「循环必然更环保」这两类常见误判</li><li>把概念按「物质流、时间尺度、层级、组织方式、系统」五组归类，用于 essay 提纲</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 阅读前提：本讲全部为背景拓展</h3><div class="callout warn"><b>阅读前提</b>源文本没有提供任何概念章节。以下全部内容属于背景拓展（general background），用于帮助你理解 MOOC 材料并组织 essay，不是本课程的讲授内容，也不构成课程政策或评分依据。评分与考核以 MOOC 材料与任务页为准。</div><p>为什么要专门标出来：这门课对来源纪律要求极严——只写基于课程材料的原创想法，避免课外来源。如果误把本讲的概念当成课程内容写进 essay，虽然不算抄袭（本讲不是可引用的出版物），但会造成「写了课程没讲的东西」，与 focus on the MOOC material 的要求相悖。</p><p>正确用法是：用本讲建立框架，用 MOOC 材料填充内容。框架帮你判断「这个概念属于哪一类」，内容必须来自课程。</p><h3 id="s3">3.2 从线性到闭环：两种默认假设</h3><p>线性经济（linear economy）的默认句式是「开采—制造—丢弃」（take-make-dispose）。它背后有三个隐含假设：资源近似无限、废弃物的处置成本近似为零、产品寿命越短越有利于销售。这三个假设在工业化的前两百年基本成立，因此线性模式不是「愚蠢」，而是「当时理性的」。</p><p>循环经济（circular economy）把这个句式改成闭环：材料在产品报废后仍回到生产系统，价值被反复保留。它的隐含假设正好相反：材料是资产而不是消耗品，废弃物是设计阶段的失误（waste is a design flaw），产品的寿命是资产而不是负债。</p><table><tr><th>维度</th><th>线性经济</th><th>循环经济</th></tr><tr><td>物质流向</td><td>单向：原料 → 产品 → 废弃物</td><td>闭环：材料反复回到生产</td></tr><tr><td>价值实现</td><td>在销售瞬间一次性实现</td><td>通过维护、再用、再制造多次实现</td></tr><tr><td>设计目标</td><td>降低成本、加快周转</td><td>延长寿命、便于拆解与回收</td></tr><tr><td>废弃物地位</td><td>末端问题，交给处置系统</td><td>设计阶段就要消除</td></tr><tr><td>企业收益</td><td>卖得越多越好</td><td>产品越耐用越省成本</td></tr></table><p>这张表的关键不在「谁更好」，而在最后一行：循环经济改变的是激励结构，不只是道德态度。当企业靠「卖使用」而不是「卖产品」赚钱时，耐用与可修才符合它的利益——这一点在第 3.6 节展开。</p><h3 id="s4">3.3 生命周期思维：先把边界画对</h3><p>生命周期思维（life-cycle thinking）要求在判断一个产品「环不环保」时，把原料获取、生产、运输、使用、报废整条链条都算进去，而不是只看某一个环节。它是一条方法论要求，不是一个结论。</p><p>为什么必须这样：单点最优常常造成整体更差。典型例子是容器替换——把塑料瓶换成玻璃瓶看起来减少了塑料，但如果玻璃瓶更重、运输距离更长，运输阶段的能耗与排放可能抵消甚至超过收益。谁对谁错取决于具体数据与边界，而「取决于」正是重点。</p><p>操作含义有两条。第一，任何「更环保」的结论都要附带边界说明（system boundary）：你比较的是哪几段、有没有算运输、有没有算使用阶段的能耗。第二，比较要在同一功能单位（functional unit）下做：一升饮料、一次洗涤、一年的供暖，而不是「一个瓶子对另一个瓶子」。</p><div class="callout tip"><b>技巧</b>写 essay 时若要说某做法更好，加一句「在只考虑 X 阶段的前提下」比加三个形容词更有说服力。限定条件不是示弱，它恰恰是学术写作的标志。</div><h3 id="s5">3.4 废弃物层级：先预防，再回收</h3><p>政策与产业实践里常用一个层级（waste hierarchy）来排序处理方式：预防产生 > 再使用 > 回收材料 > 回收能量 > 安全处置。顺序的含义是「越靠上越优先」，因为越靠上保留的价值越多、额外投入的能源越少。</p><p>回收虽然常被当作循环经济的代名词，但它在层级里排在预防与再用之后。原因很实际：回收要破碎、清洗、再熔融，每一步都消耗能源，且材料常常降级（downcycling，例如混纺纤维再生成低强度纤维）。因此「多回收」是末端改善，「少产生」才是源头改善。</p><div class="callout tip"><b>拓展</b>废弃物层级是欧盟废弃物政策中的通用框架，属背景知识，不是本课程的具体规定。若要在 essay 中引用层级，应回到 MOOC 材料确认它是否讲到，并按课程要求处理引用。</div><h3 id="s6">3.5 R 框架：一组动词，不是一组口号</h3><p>R 框架（R-framework）把循环策略写成一串动词，按「保留价值的多少」排序。常见版本如下，不同文献的 R 数量不同，因为对中间环节的切分粗细不同。</p><table><tr><th>层级</th><th>英文</th><th>含义</th><th>价值保留</th></tr><tr><td>R1</td><td>refuse / reduce</td><td>不产生：拒绝不必要的东西，减少用量</td><td>最高</td></tr><tr><td>R2</td><td>reuse</td><td>再用：原功能继续使用</td><td>高</td></tr><tr><td>R3</td><td>repair</td><td>维修：恢复功能</td><td>高</td></tr><tr><td>R4</td><td>refurbish / remanufacture</td><td>翻新／再制造：恢复到可用或接近新品</td><td>中高</td></tr><tr><td>R5</td><td>repurpose</td><td>改用途：换一种功能继续用</td><td>中</td></tr><tr><td>R6</td><td>recycle</td><td>回收：把材料打碎重造成原料</td><td>低</td></tr><tr><td>R7</td><td>recover</td><td>能量回收：焚烧取能</td><td>最低</td></tr></table><p>背数字没有意义，理解排序才有意义：从 R1 到 R7，每往下一步，就需要多投入一道加工，能保住的原有劳动与材料组织方式就少一层。维修一台洗衣机保住的是整机的结构与装配劳动；回收它的钢板只保住了金属的原料价值。</p><p>这个排序也解释了为什么「以旧换新」不一定是循环：如果旧产品被直接破碎，换新只是加快了周转，实际落在 R6，而不是 R2 或 R3。</p><h3 id="s7">3.6 循环商业模式：把「卖产品」变成「卖服务」</h3><p>循环经济在企业层面常通过商业模式落地：产品服务化（product-as-a-service，卖使用而非卖所有权）、共享（sharing）、再制造（remanufacturing）、逆向物流（reverse logistics，把报废品收回）。</p><p>这些模式的共同点是把企业收益与产品寿命绑定：产品越耐用、越易修，企业越省钱；而在「卖产品」的模式下，产品越早坏，销量越大。这不是道德差异，是激励差异。</p><p>落地难点同样在激励之外：逆向物流要有回收网络，再制造要有可拆解设计，产品服务化要有资产管理与残值评估能力。缺任何一环，模式就退化成「以租代售」。</p><h3 id="s8">3.7 价值保留与系统思维</h3><p>循环经济不是「多回收一点」，而是重新设计物质流。两个关键词值得记住：价值保留（value retention）指材料与劳动投入的价值在多个生命周期中被保留；系统边界（system boundary）指你分析覆盖的范围，包含哪些阶段、哪些参与者。</p><p>另一个常被忽略的区分是生物循环与技术循环：生物材料（食物、天然纤维）应回到生物圈安全降解；技术材料（金属、塑料、玻璃）应留在技术圈被反复循环。把两者混在一起处理（例如含添加剂的塑料去做堆肥）会造成污染，也让材料再也回不到高价值用途。</p><h3 id="s9">3.8 指标与陷阱：三个容易误判的地方</h3><ul><li>回收率不等于循环度：回收率高但材料降级使用（downcycling），价值仍在流失；</li><li>物质足迹（material footprint）比垃圾量更能反映压力：它统计一个人或一个地区消耗的原料总量，包含为生产而搬动的全部物质；</li><li>反弹效应（rebound effect）：效率提高后单位成本下降，消费量随之上升，总资源消耗未必下降。</li></ul><p>第三条最反直觉，也最常出现在高阶论述里：如果一件衣服耐穿了，但因此你买了更多件，总消耗可能不降反升。判断循环策略是否真的减量，要看总量而不是单件。</p><h3 id="s10">3.9 与 essay 两问的接口</h3><p>第一问要「核心概念 + 每个主题的重点」，可以借本讲的五组框架给概念归类，避免写成名词清单：物质流（linear / circular）、时间尺度（life-cycle thinking）、层级（waste hierarchy / R-framework）、组织方式（business models）、系统（value retention / rebound effect）。每组写一句「这一组概念共同回答什么问题」，段落就有了逻辑。</p><p>第二问要「日常生活中的循环经济思维」，可以分三层展开：个人选择（修而不是换、拒绝不必要的东西）、家庭系统（购买时看寿命与可修性、看回收渠道是否存在）、社区与制度（共享设施、维修点、回收规则）。三层由内向外，正好对应「思维」而不是「行为清单」。</p><h3 id="s11">3.10 三个常见误解</h3><ul><li>「循环经济 = 垃圾分类」：分类只是末端一环，且排在再用与维修之后；</li><li>「循环一定更环保」：运输、再加工、降级都可能抵消收益，必须看生命周期与边界；</li><li>「循环一定更贵」：产品服务化与再制造常降低全生命周期成本，门槛在前期投入与配套体系，而不在技术本身。</li></ul><p>这三个误解有一个共同结构：把「循环」当成一个形容词，而不是一套要计算的条件。写 essay 时每用一次这个词，最好都能回答「循环什么、在哪个环节循环、代价是什么」。</p><div class="callout idea" data-ext="c3-circular-concepts-0"><b>常见误解</b><p>本讲三个误解共享一个结构：把“循环”当形容词，而不是一套要计算的条件。<strong>循环经济不等于垃圾分类</strong>——分类只是末端一环，在废弃物层级中排在预防与再用之后；<strong>循环也不必然更环保</strong>——运输与再加工可能抵消收益，结论必须附带系统边界与功能单位。</p><p>写第二问时最有效的升级是给判断加边界：<em>Repair rather than replace</em> 对应 R3 而非 R6，保住的是整机的装配劳动；但若维修点很远需专程开车，运输能耗可能吞掉收益。补上这半句，段落就从表态变成分析。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>circular economy</td><td>循环经济</td><td>An economy in which materials loop back into production instead of becoming waste.</td></tr><tr><td>linear economy</td><td>线性经济</td><td>Take-make-dispose: resources in, products sold, waste out.</td></tr><tr><td>take-make-dispose</td><td>开采—制造—丢弃</td><td>The default sentence of the linear model.</td></tr><tr><td>life-cycle thinking</td><td>生命周期思维</td><td>Judge a product across raw material, production, use and end of life.</td></tr><tr><td>system boundary</td><td>系统边界</td><td>The stages and actors your analysis covers; conclusions must state it.</td></tr><tr><td>functional unit</td><td>功能单位</td><td>The same service basis for a fair comparison, e.g. one litre of drink.</td></tr><tr><td>waste hierarchy</td><td>废弃物层级</td><td>Prevent, reuse, recycle, recover energy, dispose — in that priority order.</td></tr><tr><td>R-framework</td><td>R 框架</td><td>Refuse, reduce, reuse, repair, refurbish, remanufacture, repurpose, recycle, recover.</td></tr><tr><td>value retention</td><td>价值保留</td><td>Keeping material and labour value across several product life cycles.</td></tr><tr><td>downcycling</td><td>降级回收</td><td>Recycling into a lower-grade material, so value still leaks away.</td></tr><tr><td>remanufacturing</td><td>再制造</td><td>Restoring used products to like-new condition with replaced worn parts.</td></tr><tr><td>reverse logistics</td><td>逆向物流</td><td>The network that takes used products back from users.</td></tr><tr><td>product-as-a-service</td><td>产品服务化</td><td>Selling the use of a product rather than its ownership.</td></tr><tr><td>material footprint</td><td>物质足迹</td><td>Total raw material consumed to support a person or region.</td></tr><tr><td>rebound effect</td><td>反弹效应</td><td>Efficiency lowers unit cost, demand rises, total resource use may not fall.</td></tr><tr><td>biological / technical cycle</td><td>生物循环／技术循环</td><td>Bio-based materials return to nature; technical materials stay in the loop.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用生命周期思维分析一件棉 T 恤（方法演示，非课程结论）</div><p><b>说明：</b>下面的分析只演示方法，数值与结论不取自课程材料，不可当作课程结论引用。</p><p><b>第一步，画链条：</b>棉花种植（化肥、灌溉、土地）→ 纤维加工与纺纱（能耗、水）→ 织造与染色（化学品、水）→ 成衣制造（劳动、运输）→ 使用阶段（洗涤、烘干、熨烫）→ 报废（填埋、焚烧或回收）。</p><p><b>第二步，找热点：</b>沿链条标出「资源投入最大」与「污染最集中」的环节。棉花的种植用水与化肥、染色的化学品、使用阶段的洗涤烘干，通常是三个高频热点；具体权重取决于当地电网与洗涤习惯。</p><p><b>第三步，比方案：</b>把「买一件便宜棉衫换得勤」与「买一件耐穿、可修、洗护要求低」放在同一功能单位（一年穿着次数）下比较，而不是比单价。</p><p><b>第四步，给结论加边界：</b>写成「在只考虑使用阶段能耗、且电力结构不变的前提下，减少烘干频率的收益大于更换材料」。没有这半句，结论就是空的。</p><p><b>迁移：</b>换任何产品都可套这四步——画链条、标热点、同单位比较、声明边界。</p></div><div class="qa"><div class="q">例 2　把第二问写成一段有概念的日常叙述</div><p><b>弱写法：</b>「我在生活中有循环经济思维，我会回收纸板、用布袋、少点外卖。」——只有行为，没有思维，也没有概念。</p><p><b>强写法的结构：</b>场景 → 判断 → 概念 → 结果。示范：<br/>「去年冬天我的耳机一侧没声音，第一反应是买新的。但按维修优先的顺序想了一遍：换线成本约为新品的十分之一，且原有耳罩与电池仍可用。于是我选择修。这次选择对应的是 R3（repair）而不是 R6（recycle）——保住的是整机的装配劳动，而不只是几克铜。」</p><p><b>为什么这样写有效：</b>它有一个具体场景（可核实）、一个明确判断（不是习惯而是权衡）、一个概念锚点（R3 对 R6）、一个结果（价值被保住）。四项齐备，评分表里 personal perspective 与 incorporate learning from the course 两条同时满足。</p><p><b>再加一句边界：</b>若维修点很远、需要专程开车，运输能耗可能抵消收益——补上这一句，段落就从「表态」升级为「分析」。</p></div><div class="qa"><div class="q">例 3　判断一句话是否越界</div><p><b>原句：</b>「某国回收率达到 65%，说明它已经实现了循环经济。」</p><p><b>问题一，概念错位：</b>回收率衡量的是末端处理比例，落在层级下游；循环经济要看材料是否被高价值保留、产品寿命是否延长、总量是否下降。回收率高可以是「大量生产 + 大量回收」，总量仍在涨。</p><p><b>问题二，忽略降级：</b>如果回收产物降级使用（downcycling），回收率再高也不等于价值被保留。</p><p><b>问题三，缺边界与口径：</b>65% 是哪一年的、按重量还是按件数、含不含工业废料，都会改变结论。没有口径的数字不能支撑判断。</p><p><b>改写：</b>「该国城市生活垃圾的回收率在统计年份达到 65%，但这只说明末端分流比例，不能说明材料是否被高价值保留；要判断循环程度，还需看产品寿命与人均物质足迹的变化。」</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用一句话写出线性经济与循环经济各自的默认假设，并指出两者在企业激励上的差别。</li><li>按废弃物层级排出五种处理方式的优先顺序，并解释为什么回收排在再用之后。</li><li>举一个「单点最优、整体更差」的例子，并说明需要补充哪一句边界才能让结论成立。</li><li>解释产品服务化为什么会让企业更愿意做耐用设计。</li><li>判断：「回收率提高就等于循环经济进展。」这句话的问题在哪三点？</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 线性：资源近似无限、废弃物近乎无成本、产品越短命越好卖（take-make-dispose）；循环：材料是资产、废弃物是设计失误、产品寿命是资产。激励差别在于：线性模式下销量等于收益，循环模式下耐用与可修才省钱。</p><p><b>2.</b> 预防 > 再用 > 回收材料 > 回收能量 > 安全处置。回收排在再用之后，因为回收要破碎、清洗、再熔融，投入额外能源且常导致材料降级；再用保住的是整件产品的结构与劳动。</p><p><b>3.</b> 例：塑料瓶换玻璃瓶减少塑料，但玻璃更重、运输排放更高。需要补充的边界句：「在只考虑包装材料用量、且运输距离不变的前提下」——一旦运输距离变化，结论可能反转。</p><p><b>4.</b> 因为收益从「卖得越多越好」变为「使用期越长、维护越少越省成本」，耐用与可修直接降低成本；同时残值可评估、回收网络可控。难点在逆向物流与可拆解设计。</p><p><b>5.</b> ① 概念错位：回收率是末端指标，层级下游；② 忽略降级回收，价值可能仍在流失；③ 缺口径与边界：年份、统计对象、重量或件数都会改变结论；此外总量（物质足迹）可能仍在上升。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>线性与循环的假设对比；生命周期思维要求「同功能单位 + 声明边界」；废弃物层级与 R 框架的优先顺序（预防与再用高于回收）；价值保留与降级回收的区别。这些是本讲的核心判断工具。</div><div class="callout warn"><b>易错</b>① 把循环经济等同于垃圾分类或回收率；② 断言「循环一定更环保」而不给边界；③ 把本讲的拓展内容当成课程材料写进 essay 并当作课程结论；④ 混淆生物循环与技术循环，用堆肥处理含添加剂塑料。</div><div class="callout tip"><b>进阶</b>能用反弹效应与系统边界把论证推进一层：不仅说「这个措施更循环」，还说明「在什么条件下它可能不减量」。这种自我限定在学术写作里是加分项，而不是扣分项。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s12">把概念写进 essay 前的自查</h2><ul class="checklist"><li>每个概念都能用一句自己的话解释，而不是只写名词</li><li>概念已按主题归组，且每组能说清「共同回答什么问题」</li><li>第二问的每个生活场景都锚定到第一问的一个概念</li><li>凡出现「更环保／更循环」的判断，都补了边界或前提</li><li>没有把本讲的背景拓展当成课程材料直接引用</li><li>区分了生物循环与技术循环，没有混用</li><li>没有用「回收率」代替「循环度」做结论</li><li>若提到总量，使用物质足迹或类似的总量口径，而不是单件数据</li><li>全文没有加入 MOOC 材料之外的可引用来源（否则触发引用义务）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Maa.png（课程配图）</td><td>整图</td><td>地球被切为蓝色城市天际线与绿色森林两半，皱褶纸背景、飞鸟；视觉上把「建成环境」与「自然系统」放在同一球体上，与循环经济的系统视角呼应</td></tr><tr><td>3_Tasks/2_Written compilation/intro/intro.html</td><td>第一问</td><td>「覆盖所有主题」「每个主题最重要的内容」→ 本讲据此给出概念分组的准备方法</td></tr><tr><td>3_Tasks/2_Written compilation/intro/intro.html</td><td>第二问</td><td>「循环经济思维如何体现在日常生活」→ 本讲据此给出个人／家庭／社区三层框架</td></tr><tr><td>（拓展）3.1–3.8 全部概念</td><td>—</td><td>源文本未提供任何概念章节；线性与循环、生命周期思维、废弃物层级、R 框架、商业模式、价值保留、指标陷阱均为背景拓展</td></tr><tr><td>（跳过）image (2).png</td><td>—</td><td>该图无可读内容，未提取任何信息，不作为证据</td></tr></table></section><div class="lnav"><a class="prev" href="c2-written-compilation.html">← 第 2 讲 · 写作汇编任务与学术写作要求</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

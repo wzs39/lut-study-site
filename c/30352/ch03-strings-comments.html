@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>③ 注释、字符串与输出控制 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-2.html">第 2 章 字符串与流程控制</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、注释：写给人看的代码</a><a class="toc-l3" href="#s3">1.1 单行注释以 # 开始</a><a class="toc-l3" href="#s4">1.2 三引号字符串与文档字符串</a><a class="toc-l2" href="#s5">二、字符串是一串字符</a><a class="toc-l3" href="#s6">2.1 定义与长度</a><a class="toc-l3" href="#s7">2.2 转义序列</a><a class="toc-l3" href="#s8">2.3 多行字符串</a><a class="toc-l3" href="#s9">2.4 拼接与重复</a><a class="toc-l2" href="#s10">三、索引：正着数与倒着数</a><a class="toc-l2" href="#s11">四、字符串不可变</a><a class="toc-l2" href="#s12">五、切片：一次取一段</a><a class="toc-l2" href="#s13">六、print 的 sep 与 end</a><a class="toc-l2" href="#s14">七、int、float 与 round</a><a class="toc-l3" href="#s15">7.1 round() 是四舍五入，但有两个意外</a><a class="toc-l3" href="#s16">7.2 int() 是截断，不是四舍五入</a><a class="toc-l2" href="#s17">八、常见错误与调试提示</a><a class="toc-l2" href="#s18">操作清单</a><a class="toc-l3" href="#s19">动一段文本之前，先问四件事</a><a class="toc-l3" href="#s20">调试字符串输出</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a class="toc-l3" href="ch03-strings-comments.html">▸ ③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>③ 注释、字符串与输出控制</h1><p class="lead">Comments, Strings and Print Control <span class="badge mute">30352</span> <span class="badge mute">第 3 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 字符串与流程控制</a></p><p class="src">原始文件：<code>Ch 2 - Part 1 - Comments.pdf</code> <code>Ch 2 - Part 2 - Strings.pdf</code> <code>Ch 2 - Part 3 - More on strings.pdf</code> <code>Ch 2 - Part 4 - Modify Printing.pdf</code> <code>Ch 2 - Part 5 - Converting ints and floats.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 2 章前半部分讲的是同一件事的两面：让机器读懂人、也让人读懂机器。注释把意图写进代码，字符串承载所有文本，<code>print</code> 的 <code>sep</code> 与 <code>end</code> 决定版式，<code>round()</code> 与 <code>int()</code> 决定小数怎么落地。</p><p>上一讲解决了「数据怎么算、怎么读进来、怎么印出去」；这一讲把文本本身拆开：字符怎么编号、怎么切段、为什么改不动。下一讲开始让程序做判断。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 <code>#</code> 与 docstring 写出有用的注释，而不是复述代码</li><li>说明 <code>\n</code>、<code>\t</code>、<code>\\</code>、<code>\"</code> 各自是什么意思</li><li>用正索引和负索引取出任意一个字符，并解释 <code>IndexError</code> 的来源</li><li>用切片取出子串、反转字符串，并说清「含 start 不含 stop」</li><li>解释字符串为什么不可变，改用切片重组来「修改」它</li><li>用 <code>sep</code> / <code>end</code> 控制多值输出与不换行输出</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、注释：写给人看的代码</h2><p>课件先从动机讲起：真实的程序会长到几百行、几百个文件（Part 1 p2），到那时连作者本人也会忘记某一行为什么要那样写。注释（comment）就是留给「人」读的说明，解释器整段跳过。</p><h3 id="s3">1.1 单行注释以 # 开始</h3><p>从 <code>#</code> 到行尾都属于注释，不会被运行（Part 1 p3）。它既可以独占一行，也可以写在代码右边当行内注释。</p><pre><code># 这一整行都是注释，解释器什么也不做
+price = 12.5          # 行内注释：# 之前照常执行
+name = "page#1"       # 这个 # 在字符串里面，不算注释
+print(name)</code></pre><pre><code>page#1</code></pre><p>最后一行给出了一条容易忽略的边界：<code>#</code> 只有出现在字符串之外才开启注释；写在引号里它就是普通字符。链接、颜色值 <code>"#ff0000"</code>、井号标签都不需要转义。</p><h3 id="s4">1.2 三引号字符串与文档字符串</h3><p>课件讲多行字符串时说「一件事占一行太麻烦」，于是用三个引号把多行包起来（Part 2 p5）。这种写法常被借来当块注释：</p><pre><code>"""
+这段说明被当作块注释使用。
+解释器仍会创建这个字符串对象，只是没有变量接收，
+于是它立刻被丢弃，效果看起来与注释相同。
+"""
+print("done")</code></pre><p>严格说它不是注释，而是「未绑定变量的字符串字面量」。真正有身份的是放在函数、类或模块第一行的那种字符串，叫<b>文档字符串</b>（docstring）：</p><pre><code>def area(r):
+    """Return the area of a circle with radius r."""
+    return 3.14159 * r ** 2
+
+print(area(2))
+help(area)</code></pre><p><code>help(area)</code> 会把 docstring 打印出来——这正是课程示例程序里每个函数开头都写一句 <code>"""Prints the menu options for calculating areas."""</code> 的原因：它既是注释，又能被工具读取。</p><div class="callout tip"><b>判断注释是否合格</b>解释「为什么」，不要复述「做什么」。<code>x = x + 1  # add one</code> 是废话；<code>x = x + 1  # 补偿从 0 开始的下标</code> 才有价值。</div><h2 id="s5">二、字符串是一串字符</h2><h3 id="s6">2.1 定义与长度</h3><p>字符串（string）是字符的序列：字母、数字、符号、空格、汉字各算一个字符。用一对单引号或一对双引号包起来即可，两种写法完全等价（Part 2 p2）：</p><pre><code>s1 = 'This is a string'
+s2 = "This is a string"
+print(s1 == s2)
+print(len("programming"))</code></pre><pre><code>True
+11</code></pre><p><code>len()</code> 返回字符个数（Part 2 p3），数的是「字符」而不是「字节」：<code>len("中文")</code> 得 2。</p><h3 id="s7">2.2 转义序列</h3><p>有些字符没法直接写进引号里（引号本身、换行），于是用反斜杠开头的<b>转义序列</b>（escape sequence）表示（Part 2 p4）。</p><table><tr><th>转义写法</th><th>实际内容</th><th>典型用途</th></tr><tr><td><code>\\</code></td><td>一个反斜杠</td><td>Windows 路径、正则表达式里常见</td></tr><tr><td><code>\'</code></td><td>单引号</td><td>在单引号字符串里表示引号本身</td></tr><tr><td><code>\"</code></td><td>双引号</td><td>在双引号字符串里表示引号本身</td></tr><tr><td><code>\n</code></td><td>换行</td><td>newline，最常用</td></tr><tr><td><code>\t</code></td><td>制表符</td><td>tab，用来对齐列</td></tr></table><pre><code>print("第一行\n第二行")
+print("姓名\t年龄")
+print("He said \"hi\"")
+print('It\'s ok')</code></pre><pre><code>第一行
+第二行
+姓名    年龄
+He said "hi"
+It's ok</code></pre><p>第二行的输出里，姓名与年龄之间是一个制表符（显示宽度随终端而定），所以看起来像几个空格。</p><h3 id="s8">2.3 多行字符串</h3><pre><code>text = """第一行
+第二行
+第三行"""
+print(text)
+print(len(text))</code></pre><p>内容里的真实换行会原样变成字符串中的 <code>\n</code>，所以 <code>len(text)</code> 把换行符也算进去。这里有个隐蔽的坑：三引号内部每行行首的空白也是字符，把多行字符串写在缩进很深的函数里，内容会凭空多出一排空格。</p><h3 id="s9">2.4 拼接与重复</h3><pre><code>print("Hello" + " " + "World")
+print("-" * 20)
+print(("ab" + "\n") * 2, end="")</code></pre><pre><code>Hello World
+--------------------
+ab
+ab</code></pre><p><code>+</code> 只能把字符串接字符串：<code>"a" + 1</code> 抛 <code>TypeError</code>，必须先 <code>str(1)</code>。乘法 <code>*</code> 需要一个整数，<code>"ab" * 0</code> 得空字符串，负数也得空字符串。</p><div class="callout warn"><b>隐式拼接的坑</b>Python 允许相邻的两个字符串字面量自动合并：<code>"abc" "def"</code> 就是 <code>"abcdef"</code>。写长句时很方便，但列表里漏了逗号写成 <code>["a" "b"]</code>，会静默变成只有一个元素 <code>"ab"</code>，不报错、很难发现。</div><h2 id="s10">三、索引：正着数与倒着数</h2><p>每个字符有一个位置编号，从 0 开始（Part 3 p2）。长度为 12 的 <code>"I love code!"</code>：I 是 0，空格是 1，l 是 2……最后一位 <code>!</code> 是 11。</p><pre><code>s = "I love code!"
+print(s[0], s[2], s[11])
+print(len(s) - 1)</code></pre><pre><code>I l !
+11</code></pre><p>写 <code>s[len(s) - 1]</code> 而不是硬编码 <code>s[11]</code>，字符串一变长度就不需要改代码。负索引（negative index）从右往左数，最后一位是 <code>-1</code>（Part 3 p3）：</p><pre><code>s = "I love code!"
+print(s[-1])
+print(s[-2])
+print(s[-len(s)])</code></pre><pre><code>!
+e
+I</code></pre><div class="callout warn"><b>IndexError</b>下标超过 <code>len(s) - 1</code> 或小于 <code>-len(s)</code>，会抛 <code>IndexError: string index out of range</code>。空字符串连 <code>s[0]</code> 都不能取。负索引的合法范围是 <code>-len(s)</code> 到 <code>-1</code>。</div><h2 id="s11">四、字符串不可变</h2><p>immutable 的意思是「创建之后内容不能改」（Part 3 p4）。下面这条语句不是「把第 0 个字符换成 H」，而是直接报错：</p><pre><code>s = "hello"
+s[0] = "H"</code></pre><pre><code>TypeError: 'str' object does not support item assignment</code></pre><p>能做的是整体换一个新字符串：<code>s = "Hello"</code>。要记住区别：这是「让变量指向另一个字符串」，不是「修改原来那个字符串」。本讲末尾的切片重组，以及第 8 讲的列表可变性，都建立在这一点上。</p><h2 id="s12">五、切片：一次取一段</h2><p>切片（slice）的完整形式是 <code>s[start:stop:step]</code>，规则只有一条：<b>含 start，不含 stop</b>（Part 3 p5）。三个参数都可以省略。</p><table><tr><th>写法</th><th>含义</th><th>例子（s = "I love code!"）</th><th>结果</th></tr><tr><td><code>s[2:6]</code></td><td>下标 2 到 5</td><td><code>s[2:6]</code></td><td><code>love</code></td></tr><tr><td><code>s[:4]</code></td><td>开头到下标 3</td><td><code>s[:4]</code></td><td><code>I lo</code></td></tr><tr><td><code>s[7:]</code></td><td>下标 7 到结尾</td><td><code>s[7:]</code></td><td><code>code!</code></td></tr><tr><td><code>s[:]</code></td><td>整串的副本</td><td><code>s[:] == s</code></td><td><code>True</code></td></tr><tr><td><code>s[::2]</code></td><td>每隔一个取</td><td><code>s[::2]</code></td><td><code>Ilv oe</code></td></tr><tr><td><code>s[::-1]</code></td><td>整串反转</td><td><code>s[::-1]</code></td><td><code>!edoc evol I</code></td></tr></table><p>三条边界：切片越界不报错（<code>s[5:100]</code> 自动截到末尾）；<code>start</code> 大于 <code>stop</code> 且步长为正时返回空串 <code>""</code>；切片得到的是<b>新字符串</b>，与原来不是同一个对象。</p><p>因为切片产生新串，「改字符串」的标准手法就是切片重组（Part 3 p6）：把不要的段切掉，把新段拼进去。</p><pre><code>s = "I love code!"
+print(s[:2] + "really " + s[2:])</code></pre><pre><code>I really love code!</code></pre><p>同理，把首字母改成大写可以写 <code>s[0].upper() + s[1:]</code>；去掉末尾换行可以写 <code>s[:-1]</code>（仅当确实以换行结尾时）。</p><div class="callout tip"><b>三个必须背下来的切片</b><code>s[::-1]</code> 反转；<code>s[-3:]</code> 取末三位；<code>s[1:]</code> 去掉首字符。考试里出现频率极高，也是写回文、扩展名、日期重排的通用零件。</div><h2 id="s13">六、print 的 sep 与 end</h2><p><code>print()</code> 有两个可选参数控制版式（Part 4 p2–p6）：<code>sep</code> 是多个值之间的分隔符，默认一个空格；<code>end</code> 是结尾追加的内容，默认换行 <code>\n</code>。</p><pre><code>print("a", "b", "c")
+print("a", "b", "c", sep="-")
+print("a", "b", "c", sep="")
+print("no newline", end="")
+print(" continues here")
+print("end of report", end="\n\n")</code></pre><pre><code>a b c
+a-b-c
+abc
+no newline continues here
+end of report
+</code></pre><p><code>sep</code> 可以是任意字符串：空串、<code>" -> "</code>、<code>", "</code>；<code>end</code> 也是，包括 <code>""</code>（不换行）、<code>"\t"</code>（同行制表）、<code>"\n\n"</code>（多空一行）。</p><p>这两个参数只影响 <code>print</code> 的输出，不改变数据本身：<code>"a" + "b"</code> 永远是 <code>"ab"</code>，不会因为 <code>sep</code> 变成 <code>a-b</code>。循环里逐个印又不想换行，写 <code>print(item, end="")</code>；想用逗号隔开，写 <code>print(item, end=", ")</code>，并自行处理末尾多出来的那个逗号。</p><div class="callout warn"><b>sep 只对多参数生效</b><code>print("a" + "b", sep="-")</code> 输出的仍是 <code>ab</code>：只有一个参数，分隔符没有用武之地。想要 <code>a-b</code> 必须写 <code>print("a", "b", sep="-")</code>。</div><h2 id="s14">七、int、float 与 round</h2><h3 id="s15">7.1 round() 是四舍五入，但有两个意外</h3><p><code>round(x)</code> 返回最接近的整数，<code>round(x, n)</code> 保留 n 位小数（Part 5 p2）。</p><pre><code>print(round(6.7))
+print(round(6.7, 0))
+print(round(3.14159, 2))
+print(round(2.5), round(3.5))</code></pre><pre><code>7
+7.0
+3.14
+2 4</code></pre><p>意外一：<code>round(6.7, 0)</code> 得 <code>7.0</code> 而不是 <code>7</code>——只要给了第二个参数，返回类型仍是 float。意外二：<code>round(2.5)</code> 得 2 不是 3，因为 Python 用「银行家舍入」（banker's rounding），恰好 .5 时向偶数靠。</p><h3 id="s16">7.2 int() 是截断，不是四舍五入</h3><p><code>int(x)</code> 把 float 转成 int 时，小数部分被直接丢弃（Part 5 p2）。</p><pre><code>print(int(6.9))
+print(int(-6.9))
+print(int(3.0))</code></pre><pre><code>6
+-6
+3</code></pre><p><code>int(-6.9)</code> 得 <code>-6</code>，是<b>向零截断</b>而不是向下取整；要向下取整得用 <code>//</code> 或第 10 讲的 <code>math.floor</code>。字符串转数字有前提：<code>int("42")</code> 可以，<code>int(" 42 ")</code> 也可以（两端空白被忽略），<code>int("3.7")</code> 不行——抛 <code>ValueError</code>，得先 <code>float("3.7")</code> 再 <code>int()</code>。</p><h2 id="s17">八、常见错误与调试提示</h2><div class="callout warn"><b>把数字拼进字符串</b><code>"total: " + 12</code> 抛 TypeError。三种改法：<code>str(12)</code>、交给 print 的 <code>sep</code>、或 <code>f"total: {12}"</code>（推荐）。</div><div class="callout warn"><b>引号不配对</b><code>print("hello)</code> 报 <code>SyntaxError: unterminated string literal</code>。错误标记常落在行尾，真正的问题在少了一个引号，往回数引号个数即可。</div><div class="callout warn"><b>slice 的 stop 少算一位</b>想取前三字符要写 <code>s[0:3]</code>；写成 <code>s[0:2]</code> 只有两个字符。自检方法：切片结果长度 = <code>stop - start</code>（步长为 1 时）。</div><div class="callout tip"><b>先打印再判断</b>不确定切片或转义结果时，把 <code>len()</code>、单个下标、切片分别打印出来，比盯着代码猜快得多；也可以把字符串放进 <code>repr()</code> 里，让 <code>\n</code> 显示成两个字符。</div><div class="callout idea" data-ext="ch03-strings-comments-0"><b>前后衔接</b><p>字符串<strong>不可变</strong>（immutable）：<code>s[0] = "H"</code> 抛 TypeError，只能让变量指向新串。切片是这个限制的副产品——<code>s[::-1]</code> 反转、<code>s[-3:]</code> 取末三位、<code>s[1:]</code> 去首字符，都产生新对象；规则只有“含 start 不含 stop”，取前三字符是 <code>s[0:3]</code>。切片越界不报错，和索引越界抛 IndexError 形成对比。</p></div><div class="callout tip" data-ext="ch03-strings-comments-1"><b>常见误解</b><p>注释写“为什么”而非复述“做什么”：<code>x = x + 1 # add one</code> 是废话，写清补偿下标才有价值。三引号的多行文本严格说不是注释，是未绑定变量的字符串字面量；只有函数／类第一行的才是 docstring，能被 <code>help()</code> 读出。两隐蔽坑：相邻字符串字面量会静默拼接，<code>print("a"+"b", sep="-")</code> 只有一个参数，分隔符不生效。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>comment</td><td>注释</td><td>Anything after # is ignored by the interpreter.</td></tr><tr><td>docstring</td><td>文档字符串</td><td>A string as the first statement of a function; readable with help().</td></tr><tr><td>escape sequence</td><td>转义序列</td><td>\n is a newline, \t is a tab.</td></tr><tr><td>immutable</td><td>不可变的</td><td>A string cannot be changed in place: s[0] = "H" raises TypeError.</td></tr><tr><td>index</td><td>索引 / 下标</td><td>The position of a character, starting from 0.</td></tr><tr><td>negative index</td><td>负索引</td><td>s[-1] is the last character.</td></tr><tr><td>slice</td><td>切片</td><td>s[start:stop] includes start but excludes stop.</td></tr><tr><td>concatenation</td><td>拼接</td><td>Joining two strings with +.</td></tr><tr><td>repetition</td><td>重复</td><td>"ab" * 3 gives "ababab".</td></tr><tr><td>len()</td><td>长度</td><td>len("programming") returns 11.</td></tr><tr><td>sep</td><td>分隔符</td><td>print("a", "b", sep="-") prints a-b.</td></tr><tr><td>end</td><td>结尾字符</td><td>print("x", end="") suppresses the newline.</td></tr><tr><td>rounding</td><td>舍入</td><td>round(3.14159, 2) returns 3.14.</td></tr><tr><td>truncation</td><td>截断</td><td>int(6.9) returns 6, dropping the decimals.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　给定 <code>s = "Fundamentals of Programming"</code>，输出它的长度、首字符、末字符、反转串与大写形式。</div><p>把五个操作分开写，输出带标签，便于核对：</p><pre><code>s = "Fundamentals of Programming"
+
+print("length:", len(s))
+print("first:", s[0])
+print("last:", s[-1])
+print("reversed:", s[::-1])
+print("upper:", s.upper())</code></pre><p>输出：</p><pre><code>length: 27
+first: F
+last: g
+reversed: gnimmargorP fo slatnemadnuF
+upper: FUNDAMENTALS OF PROGRAMMING</code></pre><p>逐点解释：<code>len(s)</code> 数到 27（含两个空格）；<code>s[0]</code> 是 F；<code>s[-1]</code> 等价于 <code>s[26]</code>，是 g；<code>s[::-1]</code> 步长为 −1，从末尾倒着走；<code>s.upper()</code> 返回新串，原串不变。</p></div><div class="qa"><div class="q">例 2　把「商品、单价、数量」打印成对齐的收据，并用 <code>sep</code> 画分隔线。</div><p>思路：表格宽度固定为 20，用 f-string 的 <code>:&lt;12</code>（左对齐）与 <code>:&gt;8</code>（右对齐）拼列；分隔线用 <code>print("-" * 20)</code> 生成。</p><pre><code>item = "Coffee beans"
+price = 9.5
+qty = 3
+total = price * qty
+
+print("ITEM         AMOUNT")
+print("-" * 20)
+print(f"{item:&lt;12}{total:&gt;8.2f}")
+print("-" * 20)
+print("TOTAL", f"{total:.2f}", sep=" = ")</code></pre><p>输出：</p><pre><code>ITEM         AMOUNT
+--------------------
+Coffee beans   28.50
+--------------------
+TOTAL = 28.50</code></pre><p>解释：<code>:&lt;12</code> 把 <code>"Coffee beans"</code> 补到 12 列左对齐；<code>:&gt;8.2f</code> 把 28.5 补到 8 列右对齐并保留两位；最后一行演示 <code>sep=" = "</code> 只在多参数时生效。</p></div><div class="qa"><div class="q">例 3　把总秒数 3725 转成 <code>1:02:05</code> 的形式。</div><p>思路：小时 = <code>// 3600</code>；余下秒数再除以 60 得分钟；最后 <code>% 60</code> 得秒。分钟与秒要求两位补零，用 f-string 的 <code>:02d</code>。</p><pre><code>total = 3725
+h = total // 3600
+m = total % 3600 // 60
+s = total % 60
+print(f"{h}:{m:02d}:{s:02d}")</code></pre><pre><code>1:02:05</code></pre><p>解释：<code>3725 // 3600 = 1</code>；<code>3725 % 3600 = 125</code>，<code>125 // 60 = 2</code>；<code>3725 % 60 = 5</code>。<code>%</code> 与 <code>//</code> 的配合是「拆分数量」的通用套路，第 5 讲算硬币找零会再遇到。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>判断 <code>"level"</code> 与 <code>"Level"</code> 是否回文，分别输出结果。</li><li>从邮箱 <code>"student.name@lut.fi"</code> 里取出用户名与域名两部分。</li><li>把金额 1234567.891 打印成 <code>1,234,567.89</code>。</li><li>把 <code>"2024-11-20"</code> 改写成 <code>20.11.2024</code>（只用切片与拼接）。</li><li>用一条 <code>print</code> 输出 <code>1-2-3-4-5</code>，再用循环外的方式输出 <code>12345</code>（提示：<code>sep</code>）。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 回文判断统一写 <code>s == s[::-1]</code>。<code>"level" == "level"</code> → <code>True</code>；<code>"Level" == "leveL"</code> → <code>False</code>。若要不区分大小写，先 <code>s.lower()</code> 再比较。</p><p><b>2.</b> <code>user, domain = s.split("@")</code> 需要解包（第 8 讲元组）；本讲范围内用 <code>s.split("@")[0]</code> 与 <code>s.split("@")[-1]</code>，得到 <code>student.name</code> 与 <code>lut.fi</code>。</p><p><b>3.</b> <code>print(f"{1234567.891:,.2f}")</code> → <code>1,234,567.89</code>。逗号是千分位分隔符，必须写在 <code>.2f</code> 前面。</p><p><b>4.</b> 年月日各四位两位两位，固定长度最好切：<code>d[8:] + "." + d[5:7] + "." + d[:4]</code> → <code>20.11.2024</code>。若格式可能变化，改用 <code>split("-")</code> 再倒序拼接。</p><p><b>5.</b> <code>print(1, 2, 3, 4, 5, sep="-")</code> → <code>1-2-3-4-5</code>；<code>print(1, 2, 3, 4, 5, sep="")</code> → <code>12345</code>。两题都不要写字符串加法。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>切片「含头不含尾」的语义；负索引 <code>s[-1]</code>；<code>sep</code> 与 <code>end</code> 的默认值；字符串不可变的含义；<code>round()</code> 与 <code>int()</code> 的区别。</div><div class="callout warn"><b>易错 1　off-by-one</b>取前三个字符是 <code>s[:3]</code> 不是 <code>s[:2]</code>；取末三位是 <code>s[-3:]</code> 不是 <code>s[-2:]</code>。画格子数一遍再写。</div><div class="callout warn"><b>易错 2　把 slice 当修改</b><code>s[0:3] = "abc"</code> 对字符串非法（TypeError），切片只能读；要「改」必须拼一个新串并重新赋值给变量。</div><div class="callout warn"><b>易错 3　转义漏写或写错</b>路径 <code>"C:\temp"</code> 里的 <code>\t</code> 会被当成制表符；需要字面反斜杠时写 <code>"C:\\temp"</code>，或用正斜杠 <code>"C:/temp"</code>。</div><div class="callout tip"><b>进阶</b><code>round()</code> 的银行家舍入、<code>int()</code> 的向零截断、以及 <code>0.1 + 0.2 != 0.3</code> 这三件事常被拿来出判断题。浮点比较别写 <code>==</code>，写 <code>abs(a - b) &lt; 1e-9</code>，或先 <code>round(a, 5)</code>。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s18">操作清单</h2><h3 id="s19">动一段文本之前，先问四件事</h3><ol class="steps"><li>这段文本的长度是多少？最后一位下标是 <code>len(s) - 1</code>，负索引最后一位是 −1</li><li>我要的是「一个字符」还是「一段子串」？一个字符用 <code>s[i]</code>，一段用切片</li><li>切片的 stop 要不要 +1？默念一遍「含头不含尾」</li><li>结果是只读展示，还是要拼回一个新串？字符串永远不能被原地修改</li></ol><h3 id="s20">调试字符串输出</h3><ul class="checklist"><li>用 <code>repr(s)</code> 看一眼隐藏的 <code>\n</code> 与 <code>\t</code></li><li>数字与字符串拼接前先 <code>str()</code>，或直接用 f-string</li><li>多值输出先用 <code>sep</code>，不要手工拼 <code>"-"</code></li><li>循环里不想换行时检查是否写了 <code>end=""</code></li><li>切片报空串时，先打印 <code>len(s)</code> 确认没有越界</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Ch 2 - Part 1 - Comments.pdf</td><td>p2–p3</td><td>注释动机、<code>#</code> 注释规则、解释器跳过注释</td></tr><tr><td>Ch 2 - Part 2 - Strings.pdf</td><td>p2–p6</td><td>字符串定义、<code>len()</code>、转义序列表、多行字符串、<code>+</code> 与 <code>*</code></td></tr><tr><td>Ch 2 - Part 3 - More on strings.pdf</td><td>p2–p6</td><td>正/负索引、不可变性、切片六种写法、切片重组修改字符串</td></tr><tr><td>Ch 2 - Part 4 - Modify Printing.pdf</td><td>p2–p6</td><td><code>sep</code> 与 <code>end</code> 的默认值和任意取值、两者组合</td></tr><tr><td>Ch 2 - Part 5 - Converting ints and floats.pdf</td><td>p2</td><td><code>round(x)</code>、<code>int(x)</code> 截断</td></tr></table><p><b>跳过项：</b>Part 2–4 中标注 <code>Example1.py</code>–<code>example7.py</code> 的截图页只给出代码文件本身（代码已并入本讲示例与正文），不另设页码；Moodle 上的「课程考核 / 作业截止」类行政页不进入本讲。</p><p><b>拓展项：</b>docstring 与 <code>help()</code>、相邻字面量隐式拼接、<code>repr()</code> 调试、银行家舍入的解释，都属于在原知识点上补背景，不引入新考点。</p></section><div class="lnav"><a class="prev" href="ch02-operators-io.html">← ② 运算符、输入输出与 f-string</a><a class="next" href="ch04-conditionals.html">④ 条件分支与 match-case →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

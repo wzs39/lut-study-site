@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 讲 · CV 作业：结构、写法与提交 · 30331</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT10A9900 学习导论 DD Studies</a> / <a href="part-2.html">第 2 章 学位规划与求职材料</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、作业要求：用什么材料、交什么格式</a><a class="toc-l2" href="#s3">二、CV 必须有的 11 个部分</a><a class="toc-l2" href="#s4">三、九条格式硬要求</a><a class="toc-l2" href="#s5">四、LUT 样板逐块拆解（FYC CV, EN）</a><a class="toc-l3" href="#s6">4.1 抬头与联系方式</a><a class="toc-l3" href="#s7">4.2 PROFILE（简短自述）</a><a class="toc-l3" href="#s8">4.3 EDUCATION（教育经历）</a><a class="toc-l3" href="#s9">4.4 WORK EXPERIENCE（工作经历）</a><a class="toc-l3" href="#s10">4.5 SKILLS / IT SKILLS / LANGUAGE SKILLS</a><a class="toc-l3" href="#s11">4.6 证书、职务、爱好、项目与其他</a><a class="toc-l3" href="#s12">4.7 REFERENCES（推荐人）</a><a class="toc-l2" href="#s13">五、芬兰文版：不是翻译，是本地化</a><a class="toc-l2" href="#s14">六、一份真实的学生 CV：没有工作经验怎么写</a><a class="toc-l2" href="#s15">七、把“做过”写成“能证明能力”</a><a class="toc-l2" href="#s16">八、ATS 与投递：格式上的隐形门槛</a><a class="toc-l2" href="#s17">九、常见失分点</a><a class="toc-l2" href="#s18">CV 完成清单</a><a class="toc-l2" href="#s19">投递前 10 秒自测</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sse-intro-environment.html">第 1 讲 · 软件工程系、学习环境与课程要求</a><a href="sse-teamwork.html">第 2 讲 · 团队协作与多元文化团队</a><a href="degree-structure-psp.html">第 3 讲 · 学位结构、个人学习计划（PSP）与自我管理</a><a class="toc-l3" href="cv-assignment.html">▸ 第 4 讲 · CV 作业：结构、写法与提交</a></div></aside><article><h1>第 4 讲 · CV 作业：结构、写法与提交</h1><p class="lead">The CV Assignment: Structure, Writing and Submission <span class="badge mute">30331</span> <span class="badge mute">第 4 / 4 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 学位规划与求职材料</a></p><p class="src">原始文件：<code>5_Assignments_2_Upload your CV_intro_intro.html.txt</code> <code>FYC CV (EN).pdf.txt</code> <code>FYC CV (FI).pdf.txt</code> <code>Zishuo_Wang_CV.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 1 讲说“暑期实习要尽早找”，第 3 讲把三年排进了日历；本讲交付第一份可用的求职材料。CV 是这门课的作业 3（10 月底截止），也是你后面所有实习、交换、第一份工作的起点。</p><p>课件给的不是“模板填空”，而是一套判断标准：必须有哪 11 个部分、10 秒内要能读懂、1–2 页、字号不小于 9–10、时间与技能等级写法一致、要过 ATS。本讲用 LUT Career Services 的英文与芬兰文样板，以及一份真实的在读学生 CV，把标准落到具体句子上。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>列出 CV 的 11 个组成部分，并判断哪些是“有才写”的可选部分</li><li>用 10 秒规则与 ATS 要求检查一份 CV</li><li>把课程项目改写成“动作 + 技术 + 结果”的要点句</li><li>在没有正式工作经验时，用项目、竞赛、职务与爱好证明能力</li><li>按目标岗位调整 3–5 段最相关经历的顺序并导出 PDF</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、作业要求：用什么材料、交什么格式</h2><p>作业说明只有一句核心要求：借助 <b>Career Services 的通用 CV 说明</b>创建一份 CV。它给出两类范例：TEK 的 CV 示例（其中有一份专门面向学士学位学生的示例），以及 LUT Career Services 的 CV 样板（英文版与芬兰文版）。最后一句是提交要求：<b>把 CV 作为 PDF 文件上传</b>。</p><p>这意味着评分的不是“好看”，而是“是否符合通用规范 + 是否可读 + 是否与目标岗位相关”。模板只是外壳，内容与结构才是评分点。</p><h2 id="s3">二、CV 必须有的 11 个部分</h2><p>作业说明用一份清单列出了 CV 的组成部分，前六项基本是必备，后五项是“有才写”。</p><table><tr><th>序号</th><th>部分（英文）</th><th>中文</th><th>是否必备</th></tr><tr><td>1</td><td>A headline (CV, Curriculum Vitae or Resume)</td><td>标题行</td><td>必备</td></tr><tr><td>2</td><td>Personal information</td><td>个人信息</td><td>必备</td></tr><tr><td>3</td><td>Short profile</td><td>简短自述</td><td>必备</td></tr><tr><td>4</td><td>Education</td><td>教育经历</td><td>必备</td></tr><tr><td>5</td><td>Work experience</td><td>工作经历</td><td>必备</td></tr><tr><td>6</td><td>Language skills</td><td>语言能力</td><td>必备</td></tr><tr><td>7</td><td>IT skills</td><td>IT 技能</td><td>必备（对学生尤其重要）</td></tr><tr><td>8</td><td>Projects (if you have some)</td><td>项目</td><td>有则写</td></tr><tr><td>9</td><td>Positions of trust (if you have some)</td><td>信任职务</td><td>有则写</td></tr><tr><td>10</td><td>Competence certificates (if you have some)</td><td>能力证书</td><td>有则写</td></tr><tr><td>11</td><td>References (if you have some)</td><td>推荐人</td><td>有则写</td></tr></table><p>注意顺序：教育经历排在 work experience 之前。对在读学生这是合理的——你当前的身份是学生，教育就是你最相关的“经历”。等你有了全职工作，再把工作经历提前。</p><h2 id="s4">三、九条格式硬要求</h2><p>作业说明的第二份清单是“你的 CV 还必须满足这些要求”，每一条都可以直接当检查项：</p><ol><li><b>10 秒规则</b>：CV 必须清晰到能在 10 秒内被读懂。</li><li><b>标准长度 1–2 页</b>。</li><li>设计清晰、小标题可理解，<b>标题要一眼能找到</b>。</li><li>字体易读，<b>字号不小于 9–10</b>。</li><li>用<b>要点句（bullet points）或结构化句子</b>：关键信息在长段落里最容易丢失。</li><li>全文<b>一致</b>：时间段写法统一（如 4/2021），技能等级写法统一（如 “Chinese – native”“MATLAB – excellent”）。</li><li>按<b>与岗位的匹配度</b>组织章节，最相关的技能与经历要最先跳出来。</li><li>考虑<b>申请人跟踪系统（ATS）与 CV 机器人</b>：一些在线投递会先被程序扫描，所以格式要简单，并放入与岗位相关的关键词。</li><li>检查拼写与语法。</li></ol><div class="callout warn"><b>10 秒规则不是修辞</b>招聘方通常先扫三个位置：标题行与姓名、最近一段教育/工作、技能关键词。如果你的小标题不显眼、时间写成三种格式、技能只写“熟悉”，10 秒就什么都读不到。</div><h2 id="s5">四、LUT 样板逐块拆解（FYC CV, EN）</h2><p>这份样板的价值在于：它把每一条抽象要求变成了具体写法，甚至把“不要写什么”也标在了版面上。</p><h3 id="s6">4.1 抬头与联系方式</h3><p>版面顶部是 <b>NAME</b> 与 <b>TITLE</b>（姓名与职业称号），右侧是联系方式：电话（+358…）、邮箱、LinkedIn、作品集或其他必要链接。样板在邮箱旁直接标注 <b>“Email: Not LUT or LAB address!”</b>——求职用个人邮箱，不用学校邮箱；LinkedIn 要写<b>个性化地址</b>，而不是系统生成的一串数字。</p><h3 id="s7">4.2 PROFILE（简短自述）</h3><p>样板原文：“I am a result-oriented soon-to-graduate M.Sc. (Tech.) who is focused on environmental development projects. I work with a prompt and professional approach both at the customer interface and within the team. If you want to know me better, watch my brief video introduction Here [hyperlink].”</p><p>四句话的结构值得照抄：<b>身份 + 方向</b>（即将毕业的理工硕士，聚焦环境发展项目）→ <b>工作方式</b>（在客户界面与团队内部都迅速、专业）→ <b>行动召唤</b>（想看更多可看短视频介绍）。没有形容词堆砌，每句都能被追问。</p><h3 id="s8">4.3 EDUCATION（教育经历）</h3><p>样板给两段：硕士在前——Master of Science (Technology)，Major: Chemical Engineering，Master’s programme: Biorefineries，Minor: Environmental Technology，<b>50/120 ECTS</b>，LUT，8/2020–；学士在后——Bachelor of Engineering，Degree program: Sustainable Solutions Engineering，Thesis: Development of an environmental system for Xxx，LAB University of Applied Sciences，8/2016–5/2020。</p><p>旁边的注记是整页最重要的一句方法论：<b>“Additional education if it’s relevant for the position. Mainly the highest degree and the latest, on-going education are enough.”</b>——只写与岗位相关的教育；通常最高学位与最近/在读的教育就够了。</p><h3 id="s9">4.4 WORK EXPERIENCE（工作经历）</h3><p>样板用三段结构：<b>Title</b>（职称）→ <b>Job description</b> 要点 → <b>Company | 时间</b>。示例是 Senior Data Analyst：收集并分析循环经济数据（在专用软件与客户界面中）；排查软件问题；在一个需要强案例能力与任务导向的团队型单元中工作。版面上还有一句提醒：<b>“Remember transferable skills!”</b>——别忘了可迁移技能，不要只写技术。</p><p>数量规则：<b>每份申请写 3–5 段最相关的工作经历</b>。其余可以放进 “More experience”：实习或其他无薪经历（如 work try-out）；与专业不直接相关的工作——<b>“all work experience is important if you don’t have enough experience in your own field yet!”</b></p><h3 id="s10">4.5 SKILLS / IT SKILLS / LANGUAGE SKILLS</h3><p>SKILLS 列的是软技能：Problem solving、Organizational skills、Design thinking、User research and training、Self-motivation、Sustainable development mindset。IT SKILLS 用“工具 + 等级”两列：O365 Excellent、C++ Excellent、MathLab Basics、Apotti Good、Social media Intermediate（FB, Twitter, vlogs）。LANGUAGE SKILLS 同样两列：Finnish Native、English Working proficiency、Swedish Basics。</p><p>注记说明用法：只放对目标岗位必要的技能，需要时加第二页。等级词要统一——样板用 Excellent / Good / Intermediate / Basics 四档，全文不混用“熟练/精通/了解”。</p><h3 id="s11">4.6 证书、职务、爱好、项目与其他</h3><p>样板把五类内容合并成一个标题：<b>CERTIFICATES / POSITIONS OF TRUST / HOBBIES / PROJECTS / OTHER</b>。这是一个实用设计：内容少的类别不必各自占一个标题，避免版面被切碎。</p><h3 id="s12">4.7 REFERENCES（推荐人）</h3><p>两种写法任选：<b>“References available upon request”</b>，或列出 Name / Title 并注明 “Contact information upon request”。不要未经同意把别人的手机号写上去。</p><h2 id="s13">五、芬兰文版：不是翻译，是本地化</h2><p>FYC CV (FI) 与英文版结构一一对应，但用词按芬兰招聘习惯改写：TYÖKOKEMUS（工作经历）、KOULUTUS（教育）、SUOSITTELIJAT（推荐人）、TAIDOT（技能）、KIELITAITO（语言能力）、SERTIFIKAATIT / HARRASTUKSET / LUOTTAMUSTOIMET / PROJEKTIT / MUU。</p><p>几个细节值得注意：邮箱标注为 <b>“Ei LUT/LAB s-posti!”</b>（不要用 LUT/LAB 邮箱）；技能等级用 <b>Erinomainen</b>（优秀）、<b>Hyvä</b>（良好）、<b>Perusteet</b>（基础）；语言用 <b>Äidinkieli</b>（母语）；工作经历旁提醒 <b>“Muista myös yleiset taidot, ei vain tekninen osaaminen!”</b>（也要记住通用技能，不只是技术能力）。</p><p>结论：投芬兰语岗位就用芬兰语版本，并且用本地等级词；不要用英文版直接机翻，等级词与章节名会显得不专业。</p><table><tr><th>英文</th><th>芬兰文</th><th>说明</th></tr><tr><td>Work experience</td><td>TYÖKOKEMUS</td><td>工作经历</td></tr><tr><td>Education</td><td>KOULUTUS</td><td>教育</td></tr><tr><td>Skills</td><td>TAIDOT</td><td>技能</td></tr><tr><td>Language skills</td><td>KIELITAITO</td><td>语言能力</td></tr><tr><td>References</td><td>SUOSITTELIJAT</td><td>推荐人</td></tr><tr><td>Native</td><td>Äidinkieli</td><td>母语</td></tr><tr><td>Excellent / Good / Basics</td><td>Erinomainen / Hyvä / Perusteet</td><td>技能等级</td></tr></table><h2 id="s14">六、一份真实的学生 CV：没有工作经验怎么写</h2><p>Zishuo Wang 的 CV 是本课程的真实样例（版式注明取自本课程的模板）。它的最大价值是回答“没有正式工作经历怎么办”。</p><p>抬头与联系方式：姓名 + “SOFTWARE ENGINEERING STUDENT”；电话、学校邮箱、地点 Lahti、国籍、出生日期、GitHub、可工作时间（<b>“Part-time during term, full-time summer 2027”</b>）。这一行“可用时间”对招实习生的人非常有用，很多学生 CV 会漏。</p><p>PROFILE 用四句交代身份与目标：LUT 双学位项目（与河北工业大学合作）软件工程一年级学生；会写 Python 工具与网页原型、部署本地 LLM、使用开源工具；<b>正在找第一份 trainee 或实习岗位</b>。</p><p>SKILLS 是软技能（问题解决、团队协作、快速自学、调试排错、技术写作、敏捷与迭代思维）；IT SKILLS 用“工具 + 等级”（Python Proficient、Git/GitHub Proficient、UML 2.0 Good、MS Office Good、HTML/CSS/JS Good、TypeScript/React Good、Docker Good、C/C++ Basics、Linux/Bash Basics、Nuclei/Fofa Basics）；LANGUAGE SKILLS 用“语言 + 等级”（Chinese Native、English (IELTS 6.0) Working proficiency、Finnish (A1) Basics）。</p><p>WORK EXPERIENCE 一栏没有空白，也没有编造：<b>“No formal work or internship experience to date. Practical experience comes from my own Python and open-source projects, local LLM deployment work and the LUT Energy Hackathon 2026.”</b> 这句话把“没有”转成了“有，只是来自别处”。</p><p>EDUCATION 写学士（BSc Tech，LUT Lahti，09/2026–expected 2030），下面用一行写专业与双学位项目编号（ST251），再用一行列课程（Programming、Data Structures and Algorithms、Software Engineering、Discrete Mathematics、UML 2.0 Modelling、Digital Logic）；高中一段写 09/2023–06/2026 与高考（Gaokao, Hebei, 2026）。</p><p>PROJECTS 是整页的核心：每个项目一行标题 + 技术栈 + 一到两句“做了什么、能干什么”。例如 Lecture Translator（Python、FastAPI、Docker、Ollama）做讲座实时双语字幕，支持课程会话、术语表翻译，可导出 Markdown、Word、SRT 与 Anki；LUT Timetable（TypeScript、React、Electron、Capacitor）做 LUT 与 LAB 学生的时间表应用，自动同步 SISU 与 TimeEdit、处理冲突、按课程上色、支持筛选与上课提醒。</p><p>最后是 COMPETITIONS（Energy Hackathon 2026，为 Kempower 做技术与市场调研并做出可运行原型）、CERTIFICATES / POSITIONS OF TRUST / HOBBIES（IELTS 6.0；短视频比赛一等奖；团校与团活动；爱好 Python 脚本、本地 AI 模型部署、游戏模组、AI 图像与视频生成），以及 REFERENCES（代码作品集 GitHub；并注明 CV 版式来自本课程模板）。</p><div class="callout tip"><b>无经验者的可用素材</b>课程项目、开源仓库、黑客松、竞赛、志愿与社团职务、 freelance 小活、以及“自己搭过的东西”。关键不是头衔，而是<b>可验证的产出</b>（仓库链接、演示、文档）。</div><h2 id="s15">七、把“做过”写成“能证明能力”</h2><p>样板与真实 CV 的共同写法是：<b>动作动词开头 + 技术/方法 + 对象 + 结果或规模</b>。对比一下：</p><table><tr><th>弱写法</th><th>强写法</th><th>差别</th></tr><tr><td>Worked on a course project</td><td>Built a Python CLI that converts lecture audio to bilingual subtitles (Whisper + FastAPI), exported to SRT and Anki</td><td>有技术、有对象、有产出</td></tr><tr><td>Good at teamwork</td><td>Coordinated a 5-person team in a 6-week course project; ran weekly 15-minute status meetings and kept a Trello backlog</td><td>有规模、有方法、可核验</td></tr><tr><td>Used AI in studies</td><td>Used Copilot as a code reviewer for 4 assignments; wrote the Declaration of AI usage for each submission</td><td>符合本课程的 AI 规则，且能证明判断力</td></tr></table><p>对没有量化结果的项目，用“规模、复杂度、约束”代替数字：几人团队、几周、多少行/多少个接口、支持哪些平台、处理了哪些边界情况。</p><h2 id="s16">八、ATS 与投递：格式上的隐形门槛</h2><p>作业说明专门提醒 ATS 与 CV 机器人：一些在线投递会先被程序扫描，所以要<b>保持格式简单</b>，并<b>放入与岗位相关的关键词</b>。可操作的规则是：</p><ul class="checklist"><li>用单栏版式，不用分栏、表格套表格、文本框</li><li>章节标题用常规写法（Education / Work experience），不用图形化标题</li><li>技能写成标准工具名（Python、Docker、Figma），不用自造缩写</li><li>时间统一写成 09/2026 – 06/2030 或 9/2026–6/2030，全文一致</li><li>导出为 PDF，文件名写“姓_名_CV.pdf”，不要用 “final_v3”</li><li>提交前用纯文本方式打开一次，检查是否还能读出章节与关键词</li></ul><h2 id="s17">九、常见失分点</h2><p>按作业说明与两份样板反推，最容易失分的地方是：没有标题行（读者不知道这是什么文件）；用学校邮箱；小标题不显眼；用长段落代替要点；时间格式三种混用；技能等级只写“熟悉”；写了 3 页；放了一堆与岗位无关的经历；拼写与语法错误；以及把 PDF 交成了 Word 或图片。</p><div class="callout exam"><b>作业 3 的两个硬指标</b><b>10 月底截止</b>、<b>以 PDF 上传</b>。内容上必须覆盖 11 个部分中的必备项，并满足 1–2 页、字号 ≥9–10、10 秒可读。</div><div class="callout idea" data-ext="cv-assignment-0"><b>技巧</b><p>没有正式工作经验时，CV 不靠编造而靠改写来源：课程项目、开源仓库、黑客松、社团职务都有<strong>可验证的产出</strong>。弱写法 <em>Worked on a course project</em> 换成“Built a Python CLI converting lecture audio to bilingual subtitles, exported to SRT and Anki”，动作＋技术＋对象＋结果一次到位；没有数字就用规模、复杂度与约束代替。</p><p>10 秒规则不是修辞：招聘方先扫标题行、最近一段教育与技能关键词。教育排在经历之前正好符合在读生身份；技能等级全文统一，求职用个人邮箱而非学校邮箱。还要过 ATS——单栏、常规小标题、标准工具名，提交前用纯文本打开一次，确认章节与关键词仍可读。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>curriculum vitae (CV)</td><td>履历</td><td>A structured document of education, experience and skills.</td></tr><tr><td>resume</td><td>简历</td><td>North-American term for a short CV; the headline may read CV, Curriculum Vitae or Resume.</td></tr><tr><td>headline</td><td>标题行</td><td>The line identifying the document, e.g. “CV”.</td></tr><tr><td>profile</td><td>简短自述</td><td>Three to four sentences on who you are, your direction and what you offer.</td></tr><tr><td>transferable skills</td><td>可迁移技能</td><td>General skills such as problem solving or organising that apply across jobs.</td></tr><tr><td>applicant tracking system (ATS)</td><td>申请人跟踪系统</td><td>Software that scans applications before a human reads them; keep formatting simple.</td></tr><tr><td>10 second rule</td><td>10 秒规则</td><td>The CV must be readable and understandable in less than ten seconds.</td></tr><tr><td>competence certificate</td><td>能力证书</td><td>A certificate proving a specific competence, e.g. a language or safety certificate.</td></tr><tr><td>position of trust</td><td>信任职务</td><td>A role such as a student association board member or team captain.</td></tr><tr><td>references</td><td>推荐人</td><td>People who can recommend you; often “available upon request”.</td></tr><tr><td>work try-out</td><td>试工</td><td>Unpaid trial work that counts as experience.</td></tr><tr><td>skill level</td><td>技能等级</td><td>A consistent scale such as Native / Excellent / Good / Basics.</td></tr><tr><td>PDF</td><td>便携文档格式</td><td>The required submission format for the CV assignment.</td></tr><tr><td>thesis</td><td>学位论文</td><td>Listed under education with its topic when relevant.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　从零做出一页 CV 的六步</div><p><b>第 1 步：收集素材（30 分钟）。</b>列出教育（学校、专业、起止、学分、论文题目）、工作与实习（公司、职称、起止、三件做过的事）、项目（技术栈、产出、链接）、技能（工具 + 等级）、语言（等级或考试分数）、证书、职务、爱好。</p><p><b>第 2 步：选版式（10 分钟）。</b>用单栏、标题清晰、字号 ≥9–10 的模板；不要用双栏或图形化时间轴。</p><p><b>第 3 步：写 profile（15 分钟）。</b>四句：身份与方向 / 你擅长什么 / 一个证据 / 行动召唤或可用时间。</p><p><b>第 4 步：按“教育 → 经历 → 项目 → 技能 → 语言 → 其他”填。</b>每段经历写 2–4 条要点，动词开头，带技术或方法。</p><p><b>第 5 步：统一格式。</b>所有时间用同一种写法；技能等级只用四档词；章节标题大小一致。</p><p><b>第 6 步：自检与导出。</b>用 10 秒规则看一遍（能否立刻找到姓名、最近教育、三项关键技能）；检查拼写；导出 PDF 并命名。</p></div><div class="qa"><div class="q">例 2　把“课程项目”改写成能过 10 秒规则的要点句</div><p>原始素材：软件工程课小组项目，做了一个图书借阅系统的后端，用了 Spring Boot 和 MySQL，写了接口文档，最后演示。</p><p><b>改写：</b>“Built the REST backend of a library-loan system in a 5-person course team (Spring Boot, MySQL); designed 12 endpoints, wrote the OpenAPI documentation, and demoed the working flow in the final review.”</p><p><b>拆解：</b>动作（Built）＋对象（REST backend of a library-loan system）＋规模（5-person team、12 endpoints）＋技术（Spring Boot, MySQL）＋结果（documentation, working demo）。</p><p><b>再压缩到一行（CV 用）：</b>“Library-loan backend — Spring Boot, MySQL; 12 REST endpoints, OpenAPI docs, 5-person team.”每个词都能被追问，没有形容词。</p></div><div class="qa"><div class="q">例 3　用 10 秒规则与 ATS 双检一份 CV</div><p><b>10 秒测试：</b>把 CV 给一个不了解你的同学看 10 秒，然后合上，问他三个问题：这人学什么、最近在做什么、最擅长哪三个工具。三个都答对，说明层级与关键词有效。</p><p><b>ATS 测试：</b>把 PDF 另存为纯文本（或复制到记事本），检查章节标题是否还在、技能是否还能读成一行行文字、时间是否完整。若变成一堆碎片，说明用了文本框、分栏或图形化标题。</p><p><b>修正常见动作：</b>把图形化时间轴改成普通列表；把“技能”做成“工具 — 等级”的两列表；把邮箱从学校邮箱换成个人邮箱；把三页压到两页，删掉与岗位无关的早期经历。</p></div><div class="qa"><div class="q">例 4　只有一段实习和三门课，怎么选“3–5 段最相关经历”？</div><p>先写目标岗位的三个关键词（例如“后端、测试、云”）。然后把所有素材逐条标注命中哪个关键词：实习（后端接口，命中 2 个）＞课程项目（测试自动化，命中 1 个）＞黑客松（云端部署，命中 1 个）＞社团财务（组织能力，命中 0 个）。</p><p>按命中数排序，取前 3–5 段；命中 0 的放进 “Other” 或删掉。若总经历不足 3 段，就把项目拆成两段（如“后端”与“测试”各一段），并用课程作业补足。</p><p><b>判断标准：</b>招聘方读完前三分之一页，就应该知道你与这个岗位的匹配点在哪里。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出 CV 的 11 个组成部分，并标出哪四项是“有才写”。</li><li>把这句话改成 CV 要点句：“我参加过一个小组项目，负责前端，做了一些页面，最后拿了不错的分数。”</li><li>你的 CV 有 3 页，其中 1 页是高中经历与爱好。按本讲标准给出压缩方案。</li><li>为什么要避免用 LUT 邮箱？给出两个具体理由与一个替代做法。</li><li>写一份 4 句的 profile，目标岗位是“软件开发实习生”。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> headline、personal information、short profile、education、work experience、language skills、IT skills、projects、positions of trust、competence certificates、references。其中 projects、positions of trust、competence certificates、references 是“有才写”。</p><p><b>2.</b> 示例：“Built the front end of a 5-person course project (React, 6 pages), implemented responsive layouts and form validation, and contributed to a final grade of 4/5.”——动作、技术、规模、结果都有。</p><p><b>3.</b> 保留：与岗位相关的教育、经历、项目、技能、语言；压缩：高中只留一行（学校、时间、毕业）；爱好只留 1–2 项能证明能力的；删掉与岗位无关的早期经历或移入 “More experience”。目标 1–2 页，字号不小于 9–10。</p><p><b>4.</b> 理由：学校邮箱可能在你毕业后失效或被限制转发；求职场景中雇主期望稳定可达的个人邮箱，样板也明确写 “Not LUT or LAB address!”。替代：用“名.姓”形式的个人邮箱，并在 CV 与求职信里保持一致。</p><p><b>5.</b> 示例：“First-year Software Engineering student at LUT in the double-degree programme with Hebei University of Technology. I build Python tools and web prototypes and have deployed local LLM setups. I am looking for my first trainee or internship role in software development, part-time during term and full-time in summer 2027.”（四句：身份、能力、目标、可用时间。）</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>CV 的 11 个部分；九条格式要求（10 秒规则、1–2 页、字号 9–10、要点句、一致性、相关性排序、ATS、拼写）；提交格式为 PDF；作业 3 在 10 月底截止。</div><div class="callout warn"><b>易错 1</b><b>用学校邮箱。</b>样板直接标注 “Not LUT or LAB address!”。</div><div class="callout warn"><b>易错 2</b><b>技能只写“熟悉/精通”而不给等级体系。</b>要统一用 Native / Excellent / Good / Intermediate / Basics 这类可比较的词。</div><div class="callout warn"><b>易错 3</b><b>用分栏、文本框、图形化时间轴。</b>ATS 读不出来，10 秒规则也会失效。</div><div class="callout tip"><b>进阶</b>能解释“为什么教育经历放在工作经历之前”以及“什么时候该反过来”——依据是当前身份与岗位相关性，不是固定规则。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s18">CV 完成清单</h2><ul class="checklist"><li>标题行写明 CV / Curriculum Vitae / Resume</li><li>个人信息含个人邮箱（非 LUT/LAB）、电话、地点、LinkedIn 个性化地址</li><li>profile 四句以内，含身份、方向、证据、可用时间</li><li>教育按“最高 + 最近/在读”排列，含专业、项目、学分或论文题目</li><li>工作/项目每段 2–4 条要点，动词开头，含技术或方法</li><li>技能写成“工具 — 等级”，等级词全文统一</li><li>时间格式全文统一（如 09/2026 – 06/2030）</li><li>总长 1–2 页，字号不小于 9–10</li><li>最相关的 3–5 段经历排在最前</li><li>已用纯文本方式检查 ATS 可读性</li><li>拼写与语法已检查（可用工具辅助，但需人工确认）</li><li>导出为 PDF，文件名含姓名</li></ul><h2 id="s19">投递前 10 秒自测</h2><ul class="checklist"><li>10 秒内能否说出“这人学什么专业”</li><li>10 秒内能否说出“最近在做什么”</li><li>10 秒内能否说出“最擅长哪三个工具”</li><li>标题与小标题是否一眼可见</li><li>第一屏是否出现与岗位相关的关键词</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>5_Assignments_2_Upload your CV_intro_intro.html.txt</td><td>第 1 段与范例</td><td>作业要求、Career Services 说明、TEK 与 LUT 样板</td></tr><tr><td>5_Assignments_2_Upload your CV_intro_intro.html.txt</td><td>“The CV should have” 清单</td><td>11 个组成部分与可选标记</td></tr><tr><td>5_Assignments_2_Upload your CV_intro_intro.html.txt</td><td>“should also fulfill” 清单</td><td>10 秒规则、1–2 页、字号、要点句、一致性、相关性排序、ATS、拼写</td></tr><tr><td>5_Assignments_2_Upload your CV_intro_intro.html.txt</td><td>末段</td><td>以 PDF 上传</td></tr><tr><td>FYC CV (EN).pdf.txt</td><td>p1 全页</td><td>英文样板：抬头、profile、教育、工作、技能、语言、推荐人的具体写法与注记</td></tr><tr><td>FYC CV (FI).pdf.txt</td><td>p1 全页</td><td>芬兰文样板的章节名与等级词（Erinomainen / Hyvä / Perusteet、Äidinkieli）</td></tr><tr><td>Zishuo_Wang_CV.pdf.txt</td><td>p1</td><td>真实学生 CV：无正式工作经验时的 profile、项目、竞赛、证书与爱好写法；可用时间一行</td></tr><tr><td>（跳过）</td><td>Zishuo_Wang_CV.pdf.txt p2</td><td>空白页</td></tr><tr><td>（补充）</td><td>—</td><td>“动作 + 技术 + 对象 + 结果”的写法模板、文件名规范与投递前 10 秒自测，属于基于样板句式的迁移方法，非原文条款</td></tr></table></section><div class="lnav"><a class="prev" href="degree-structure-psp.html">← 第 3 讲 · 学位结构、个人学习计划（PSP）与自我管理</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

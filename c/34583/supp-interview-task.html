@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>补充 · 食物访谈作业（haastattelu ruoka） · 34583</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ99 芬兰语2</a> / <a href="part-4.html">第 4 章 场景应用、复习与作业</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">1. 作业原文与任务结构</a><a class="toc-l3" href="#s3">2. 开场句逐词拆解</a><a class="toc-l3" href="#s4">3. 问题一：Kuka sinä olet?（你是谁）</a><a class="toc-l3" href="#s5">4. 问题二：Mitä söit tänään aamiaiseksi?（你今天早饭吃了什么）</a><a class="toc-l3" href="#s6">5. 问题三：Mikä on sinun lempiruoka?（你最喜欢的食物是什么）</a><a class="toc-l3" href="#s7">6. 食物与餐次词汇（访谈必备）</a><a class="toc-l3" href="#s8">7. 访谈流程与记录表</a><a class="toc-l3" href="#s9">8. 从表格到报告：Haastattelun tulokset</a><a class="toc-l3" href="#s10">9. 与「爱好访谈」的对照</a><a class="toc-l2" href="#s11">例题 1：完整访谈对话</a><a class="toc-l2" href="#s12">例题 2：改正三个错句</a><a class="toc-l2" href="#s13">例题 3：汇报六人结果</a><a class="toc-l2" href="#s14">练习</a><a class="toc-l2" href="#s15">考点与难点</a><a class="toc-l2" href="#s16">方法清单</a><a class="toc-l2" href="#s17">源文件对应</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-intro-numbers.html">第 1 讲 · 自我介绍、数字与存在句</a><a href="t2-weather-seasons-months.html">第 2 讲 · 天气、季节与月份</a><a href="t3-clock-time-expression.html">第 3 讲 · 钟点、星期与 Milloin 时间格</a><a href="t4-future-plans.html">第 4 讲 · 将来表达与周末计划</a><a href="t5-present-tense-vt1.html">第 5 讲 · 现在时与第一类动词</a><a href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务</a><a href="t7-verb-types-1-6.html">第 7 讲 · 六类动词系统</a><a href="t8-food-shopping.html">第 8 讲 · 食物词汇与购物场景</a><a href="t9-nominative-genitive.html">第 9 讲 · 格系统与属格</a><a href="t10-partitive.html">第 10 讲 · 部分格的构成与用法</a><a href="t11-likes-meals-restaurant.html">第 11 讲 · 喜好表达、餐食与餐厅场景</a><a href="t12-review-exam.html">第 12 讲 · 复习与考试题型</a><a class="toc-l3" href="supp-interview-task.html">▸ 补充 · 食物访谈作业（haastattelu ruoka）</a></div></aside><article><h1>补充 · 食物访谈作业（haastattelu ruoka）</h1><p class="lead">Food Interview Assignment <span class="badge mute">34583</span> <span class="badge mute">第 13 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 场景应用、复习与作业</a></p><p class="src">原始文件：<code>FI2, haastattelu ruoka.docx</code> <code>FI2, haastattelu harrastukset.docx</code> <code>Haastattelun tulokset.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 9 讲讲「喜好、餐食与餐厅」，这一讲把配套的真实作业 <b>FI2, haastattelu ruoka</b>（食物访谈）拆开：它表面上只是「去问六个人三个问题」，实际上一次练了<b>过去时、部分格宾语、变成格、所有格</b>四套语法。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用芬兰语完整走完一次访谈：开场、提问、追问、致谢</li><li>正确说出「我今天早饭吃了……」并解释为什么用部分格</li><li>把 aamiainen 变成 aamiaiseksi，说明 -ksi 的作用</li><li>把六份回答汇总成一段口头或书面报告</li><li>在访谈中听懂并记录人名、食物名与喜好表达</li></ul><p>与前后讲的衔接：第 8 讲食物词汇 + 第 10 讲部分格 + 第 11 讲喜好表达，在本讲合流；作业里的句式也是考试口试的模板。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">1. 作业原文与任务结构</h3><p>原文只有四行，但每一行都含语法点：</p><p><code>Haastattele kuutta ihmistä, käytä kysymyksiä alla.</code>（访谈六个人，使用下面的问题。）</p><p><code>Aloita: ”Anteeksi, saanko kysyä kolme kysymystä? Tehtävä on minun suomen kurssille.”</code></p><p><code>Kuka sinä olet? | Mitä söit tänään aamiaiseksi? | Mikä on sinun lempiruoka?</code></p><table><tr><th>要求</th><th>含义</th><th>考察点</th></tr><tr><td>kuutta ihmistä</td><td>六个人（partitive）</td><td>数字后的名词用 partitive</td></tr><tr><td>käytä kysymyksiä</td><td>使用这些问题（partitive 复数）</td><td>käytä 是 käyttää 的命令式</td></tr><tr><td>kolme kysymystä</td><td>三个问题</td><td>数字 + partitive 单数</td></tr><tr><td>Tehtävä on … kurssille</td><td>作业是……课程的</td><td>-lle 表示「为……而做」</td></tr></table><h3 id="s3">2. 开场句逐词拆解</h3><table><tr><th>词/短语</th><th>原形</th><th>语法说明</th></tr><tr><td>Anteeksi</td><td>anteeksi</td><td>对不起 / 打扰一下，固定词</td></tr><tr><td>saanko</td><td>saada（得到、可以）</td><td>第一人称疑问式 -nko：saanko = 我可以……吗</td></tr><tr><td>kysyä</td><td>kysyä（问）</td><td>saada 后接动词原形（不定式）</td></tr><tr><td>kolme</td><td>kolme（三）</td><td>数词，后面名词用 partitive 单数</td></tr><tr><td>kysymystä</td><td>kysymys（问题）</td><td>partitive：kysymys → kysymystä</td></tr><tr><td>Tehtävä</td><td>tehtävä（任务、作业）</td><td>由 tehdä 派生的 -va 名词</td></tr><tr><td>on</td><td>olla</td><td>系动词</td></tr><tr><td>minun</td><td>minä（属格）</td><td>「我的」</td></tr><tr><td>suomen</td><td>suomi（属格）</td><td>suomen kurssi = 芬兰语课程</td></tr><tr><td>kurssille</td><td>kurssi（向格 -lle）</td><td>为课程而做 → 用 -lle</td></tr></table><div class="callout tip"><b>一句话记住</b>「May I ask three questions?」= <code>Saanko kysyä kolme kysymystä?</code>；「for my Finnish course」= <code>minun suomen kurssille</code>，两个格一个都不能省。</div><h3 id="s4">3. 问题一：Kuka sinä olet?（你是谁）</h3><p>这是身份问句，回答用 <code>Minä olen + 名字/身份</code>。注意 <code>kuka</code> 问人，<code>mikä</code> 问物；问名字也可以说 <code>Mikä sinun nimesi on?</code>（你的名字是什么），因为名字被视为「物」。</p><table><tr><th>问</th><th>答</th><th>说明</th></tr><tr><td>Kuka sinä olet?</td><td>Minä olen Zishuo.</td><td>直接给名字</td></tr><tr><td>Kuka sinä olet?</td><td>Minä olen opiskelija.</td><td>给身份</td></tr><tr><td>Mikä sinun nimesi on?</td><td>Minun nimeni on Zishuo.</td><td>名字用 mikä + 所有格后缀</td></tr></table><div class="callout warn"><b>易错</b><code>Minä olen opiskelija</code> 中 opiskelija 是主格（表语），不要加 partitive；只有在「我正在学某专业」时才用 <code>Opiskelen + partitive</code>。</div><h3 id="s5">4. 问题二：Mitä söit tänään aamiaiseksi?（你今天早饭吃了什么）</h3><p>这一句是整份作业的语法核心，含三件事：</p><ol class="steps"><li><b>过去时</b>：<code>syödä</code>（吃）的过去式是 <code>söin, söit, söi, söimme, söitte, söivät</code>。问「你吃了」用 <code>söit</code>。</li><li><b>部分格宾语</b>：<code>Mitä</code> 本身就是 <code>mikä</code> 的 partitive；回答时食物若是不可数或「吃了一部分」，也要用 partitive：<code>Minä söin puuroa.</code>（我吃了（一些）粥）。</li><li><b>变成格 -ksi</b>：<code>aamiainen → aamiaiseksi</code>，表示「当作早饭」。同理 <code>lounaaksi</code>（当作午饭）、<code>päivälliseksi</code>（当作晚饭）。</li></ol><table><tr><th>问句成分</th><th>原形</th><th>作用</th></tr><tr><td>Mitä</td><td>mikä</td><td>什么（partitive，因为吃的是「部分」）</td></tr><tr><td>söit</td><td>syödä</td><td>第二人称单数过去时</td></tr><tr><td>tänään</td><td>tänään</td><td>今天（时间副词，不变格）</td></tr><tr><td>aamiaiseksi</td><td>aamiainen</td><td>-ksi：作为早饭</td></tr></table><p>典型回答：</p><ul><li><code>Minä söin aamiaiseksi puuroa ja join kahvia.</code>（早饭我吃了粥、喝了咖啡。）</li><li><code>Minä söin vain leipää ja juustoa.</code>（我只吃了面包和奶酪。）</li><li><code>En syönyt aamiaista.</code>（我没吃早饭。）——否定句里宾语也用 partitive。</li></ul><div class="callout warn"><b>易错</b>否定句 <code>En syönyt</code> 用动词过去分词 <code>syönyt</code>，不是 <code>söin</code>；这是否定过去时的固定搭配（en + 过去分词）。</div><h3 id="s6">5. 问题三：Mikä on sinun lempiruoka?（你最喜欢的食物是什么）</h3><p><code>lempi-</code> 是「最喜欢的」前缀，可拼在任何名词前：<code>lempiruoka</code>（最喜欢的食物）、<code>lempielokuva</code>（最喜欢的电影）、<code>lempiväri</code>（最喜欢的颜色）。</p><p>回答两种写法：</p><table><tr><th>写法</th><th>例句</th><th>结构</th></tr><tr><td>主语式</td><td>Minun lempiruokani on sushi.</td><td>所有格后缀 -ni 加在 lempiruoka 后</td></tr><tr><td>话题式</td><td>Lempiruokani on sushi.</td><td>省略 minun，更自然</td></tr><tr><td>口语式</td><td>Mun lemppari on sushi.</td><td>puhekieli：minun → mun，lempi → lemppari</td></tr></table><p>若想说「我喜欢吃……」，用 <code>Tykkään + partitive</code>：<code>Tykkään sushista.</code>（注意 tykätä 要求 elative -sta/-stä，不是 partitive）。</p><h3 id="s7">6. 食物与餐次词汇（访谈必备）</h3><table><tr><th>Suomi</th><th>中文</th><th>English</th></tr><tr><td>aamiainen</td><td>早餐</td><td>breakfast</td></tr><tr><td>lounas</td><td>午餐</td><td>lunch</td></tr><tr><td>päivällinen</td><td>晚餐</td><td>dinner</td></tr><tr><td>välipala</td><td>加餐 / 零食</td><td>snack</td></tr><tr><td>ruoka</td><td>食物</td><td>food</td></tr><tr><td>juoma</td><td>饮料</td><td>drink</td></tr><tr><td>puuro</td><td>粥</td><td>porridge</td></tr><tr><td>leipä</td><td>面包</td><td>bread</td></tr><tr><td>juusto</td><td>奶酪</td><td>cheese</td></tr><tr><td>kahvi</td><td>咖啡</td><td>coffee</td></tr><tr><td>tee</td><td>茶</td><td>tea</td></tr><tr><td>maito</td><td>牛奶</td><td>milk</td></tr><tr><td>hedelmä</td><td>水果</td><td>fruit</td></tr><tr><td>vihannes</td><td>蔬菜</td><td>vegetable</td></tr><tr><td>liha</td><td>肉</td><td>meat</td></tr><tr><td>kala</td><td>鱼</td><td>fish</td></tr><tr><td>kana</td><td>鸡肉</td><td>chicken</td></tr><tr><td>riisi</td><td>米饭</td><td>rice</td></tr><tr><td>pasta</td><td>意面</td><td>pasta</td></tr><tr><td>keitto</td><td>汤</td><td>soup</td></tr><tr><td>salaatti</td><td>沙拉</td><td>salad</td></tr><tr><td>vesi</td><td>水</td><td>water</td></tr></table><div class="callout tip"><b>格的变化</b>这些食物多是不可数名词，作宾语时用 partitive：<code>syön leipää</code>、<code>juon kahvia</code>、<code>ostan maitoa</code>。可数的单个食物才用主格：<code>syön omenan</code>（吃一个苹果）。</div><h3 id="s8">7. 访谈流程与记录表</h3><p>作业要求访谈六个人，并把回答填进表格。表格三列正好对应三个问题：</p><table><tr><th>Kuka sinä olet?</th><th>Mitä söit tänään aamiaiseksi?</th><th>Mikä on sinun lempiruoka?</th></tr><tr><td>Anna</td><td>puuroa ja kahvia</td><td>lohikeitto</td></tr><tr><td>Mikko</td><td>leipää ja juustoa</td><td>pizza</td></tr><tr><td>Liisa</td><td>en syönyt aamiaista</td><td>sushi</td></tr></table><p>记录时只写关键词即可（puuroa、kahvia），汇报时再补成完整句。这样既快又不会因为拼写卡住而冷场。</p><p>访谈礼仪（口语考试也会看）：先眼神接触说 <code>Anteeksi</code>，说明来意，问完说 <code>Kiitos paljon!</code>，若对方反问，用 <code>Minä opiskelen suomea.</code> 回答。</p><h3 id="s9">8. 从表格到报告：Haastattelun tulokset</h3><p>访谈后通常要口头汇报或写一段总结。结构是「人数 → 多数/少数 → 有趣发现」：</p><ul><li><code>Minä haastattelin kuusi ihmistä.</code>（我访谈了六个人。）</li><li><code>Suurin osa söi aamiaiseksi puuroa tai leipää.</code>（多数人早饭吃粥或面包。）</li><li><code>Kaksi ihmistä ei syönyt aamiaista.</code>（两个人没吃早饭。）</li><li><code>Suosituin lempiruoka oli sushi.</code>（最受欢迎的喜欢的食物是寿司。）</li></ul><p>注意 <code>suurin osa</code>（大多数）作主语时动词用第三人称单数；<code>kaksi ihmistä</code> 也用单数动词，因为芬兰语数词短语整体视为单数。</p><div class="callout warn"><b>易错</b>「两个人没吃」不能说 <code>Kaksi ihmistä eivät syöneet</code>（口语可听到，但标准写法是 <code>Kaksi ihmistä ei syönyt</code>）。考试写作用单数。</div><h3 id="s10">9. 与「爱好访谈」的对照</h3><p>同一门课还有一份 <code>FI2, haastattelu harrastukset</code>（爱好访谈），结构完全一样：开场句相同，问题换成 <code>Mitä sinä harrastat?</code>（你有什么爱好）、<code>Milloin sinä harrastat?</code>（什么时候做）、<code>Miksi sinä harrastat sitä?</code>（为什么做）。</p><p>把两份作业放在一起看，会发现模板是固定的：<b>开场 → 三个疑问词问句 → 记录 → 汇报</b>。掌握这个模板，口试任何主题都能套。</p><div class="callout idea" data-ext="supp-interview-task-0"><b>前后衔接</b><p>食物访谈把第 8、10、11 讲合流。开场 <code>Anteeksi, saanko kysyä kolme kysymystä? Tehtävä on minun suomen kurssille.</code> 里 <code>kolme kysymystä</code> 是数词 + 部分格单数，<code>kurssille</code> 是 -lle 表「为课程而做」。三问各有语法核心：① <code>Kuka sinä olet?</code> 答 <code>Minä olen Anna</code>，表语用主格，别加部分格；② <code>Mitä söit tänään aamiaiseksi?</code> 含过去时 <code>söit</code>、部分格宾语 <code>puuroa</code>、以及 <code>aamiainen→aamiaiseksi</code> 的 -ksi「作为某餐」；否定 <code>En syönyt aamiaista</code> 用过去分词 <code>syönyt</code> 而不是 <code>söin</code>。③ <code>Mikä on sinun lempiruoka?</code> 答 <code>Lempiruokani on sushi</code> 用所有格后缀 -ni；<code>lempi-</code> 可粘出 <code>lempielokuva, lempiväri</code>。注意「我喜欢寿司」要说 <code>Tykkään sushista</code>（出格）而非部分格。汇报时 <code>Suurin osa söi aamiaiseksi puuroa</code> 与 <code>Kaksi ihmistä ei syönyt</code> 都用单数动词；爱好访谈结构相同，换三个疑问词即可套用。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>haastattelu / interview</td><td>访谈</td><td>Haastattele kuutta ihmistä.</td></tr><tr><td>aamiainen / breakfast</td><td>早餐</td><td>aamiaiseksi（作为早饭）</td></tr><tr><td>lounas / lunch</td><td>午餐</td><td>lounaaksi</td></tr><tr><td>päivällinen / dinner</td><td>晚餐</td><td>päivälliseksi</td></tr><tr><td>lempiruoka / favourite food</td><td>最喜欢的食物</td><td>Minun lempiruokani on sushi.</td></tr><tr><td>syödä / to eat</td><td>吃</td><td>söin, söit, söi</td></tr><tr><td>juoda / to drink</td><td>喝</td><td>join, joit, joi</td></tr><tr><td>partitiivi / partitive</td><td>部分格</td><td>söin puuroa</td></tr><tr><td>translatiivi / translative</td><td>变成格</td><td>aamiaiseksi</td></tr><tr><td>kielto / negation</td><td>否定</td><td>en syönyt</td></tr><tr><td>tykätä / to like</td><td>喜欢</td><td>Tykkään sushista.</td></tr><tr><td>harrastus / hobby</td><td>爱好</td><td>Mitä sinä harrastat?</td></tr><tr><td>suurin osa / most</td><td>大多数</td><td>Suurin osa söi puuroa.</td></tr><tr><td>haastatella / to interview</td><td>访谈（动词）</td><td>Minä haastattelin kuusi ihmistä.</td></tr><tr><td>puhekieli / colloquial Finnish</td><td>口语</td><td>mun, sä, lemppari</td></tr><tr><td>tehtävä / assignment</td><td>作业</td><td>Tehtävä on minun kurssille.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><h2 id="s11">例题 1：完整访谈对话</h2><div class="qa"><div class="q">把三个问题串成一段真实对话，并标出每句的语法点。</div><p><b>A：</b><code>Anteeksi, saanko kysyä kolme kysymystä? Tehtävä on minun suomen kurssille.</code>（saanko = saada + -nko；kolme kysymystä = 数词 + partitive）</p><p><b>B：</b><code>Joo, tietenkin.</code>（当然可以。）</p><p><b>A：</b><code>Kuka sinä olet?</code> <b>B：</b><code>Minä olen Anna.</code></p><p><b>A：</b><code>Mitä söit tänään aamiaiseksi?</code> <b>B：</b><code>Minä söin puuroa ja join kahvia.</code>（söit 过去时；puuroa、kahvia 部分格）</p><p><b>A：</b><code>Mikä on sinun lempiruoka?</code> <b>B：</b><code>Minun lempiruokani on lohikeitto.</code>（-ni 所有格后缀）</p><p><b>A：</b><code>Kiitos paljon!</code></p></div><h2 id="s12">例题 2：改正三个错句</h2><div class="qa"><div class="q"><code>Mitä sinä syöt tänään aamiaiseksi?</code> / <code>Minä söin puuro.</code> / <code>Minun lempiruoka on sushi.</code></div><p>第一句问的是「今天早饭吃了什么」，已经发生，要用过去时 <code>söit</code>，不是现在时 <code>syöt</code>。</p><p>第二句 <code>puuro</code> 是不可数食物，作宾语要用 partitive：<code>puuroa</code>。</p><p>第三句缺所有格后缀：<code>Minun lempiruokani on sushi.</code>（或去掉 minun：<code>Lempiruokani on sushi.</code>）</p></div><h2 id="s13">例题 3：汇报六人结果</h2><div class="qa"><div class="q">六人中四人早饭吃粥，两人没吃；最喜欢的食物是披萨。写两句汇报。</div><p><code>Suurin osa (neljä ihmistä) söi aamiaiseksi puuroa.</code></p><p><code>Kaksi ihmistä ei syönyt aamiaista, ja suosituin lempiruoka oli pizza.</code></p><p>要点：<code>suurin osa</code> 与数词短语都配单数动词；<code>suosituin</code> 是 superlative（最受欢迎的）。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><h2 id="s14">练习</h2><p>1. 变位：syödä 与 juoda 的过去时六个人称。</p><details><summary>答案与思路</summary><div class="ans"><p><code>söin, söit, söi, söimme, söitte, söivät</code>；<code>join, joit, joi, joimme, joitte, joivat</code>。</p></div></details><p>2. 把 aamiainen、lounas、päivällinen 变成「作为……餐」的形式。</p><details><summary>答案与思路</summary><div class="ans"><p><code>aamiaiseksi, lounaaksi, päivälliseksi</code>；-nen 词尾变 -se-，其余加 -ksi。</p></div></details><p>3. 翻译：今天早饭我喝了一杯咖啡，吃了一个苹果。</p><details><summary>答案与思路</summary><div class="ans"><p><code>Tänään minä join aamiaiseksi kahvia ja söin omenan.</code>咖啡不可数用 partitive，苹果可数用主格宾格（omenan）。</p></div></details><p>4. 否定改写：<code>Minä söin aamiaista.</code> → 否定句。</p><details><summary>答案与思路</summary><div class="ans"><p><code>Minä en syönyt aamiaista.</code>（en + 过去分词 syönyt，宾语仍 partitive）。</p></div></details><p>5. 写一句汇报：三个人喜欢鱼，两个人喜欢肉，一个人喜欢沙拉。</p><details><summary>答案与思路</summary><div class="ans"><p><code>Kolme ihmistä pitää kalasta, kaksi lihasta ja yksi salaatista.</code>注意 pitää 要求 elative -sta/-stä。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s15">考点与难点</h2><div class="callout exam"><b>必考</b><ul><li>syödä / juoda 的过去时变位</li><li>aamiainen → aamiaiseksi（-ksi 变成格）</li><li>食物宾语的 partitive（puuroa、kahvia、leipää）</li><li>否定过去时 en + 过去分词</li><li>lempiruoka 的所有格写法</li></ul></div><div class="callout warn"><b>易错</b><ul><li>现在时与过去时混用（söit vs syöt）</li><li>不可数名词误用主格（söin puuro）</li><li>否定句仍用 söin（应为 en syönyt）</li><li>数词短语配复数动词（应为单数）</li><li>tykätä / pitää 后误用 partitive（应为 elative）</li></ul></div><div class="callout tip"><b>进阶</b><p>能区分 <code>syön omenan</code>（吃一整个苹果）与 <code>syön omenaa</code>（吃苹果，一部分），并解释「部分格表示动作未完成或不指整个对象」——这是口试拿高分的关键。</p></div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s16">方法清单</h2><ol class="steps"><li>开场三件套：Anteeksi + saanko kysyä + 说明来意</li><li>问句用疑问词开头，动词放句末（Kuka sinä olet?）</li><li>时间词 tänään 放动词后，不需变格</li><li>食物宾语先判断可数/不可数，再选主格或 partitive</li><li>报告前先数人数，再写「多数/少数」句，动词用单数</li><li>交作业前核对每个 ä/ö 与格尾（-ksi / -ssa / -sta）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s17">源文件对应</h2><table><tr><th>补充文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>FI2, haastattelu ruoka.docx</td><td>Tunti 9</td><td>第 1–7 节：任务要求、三个问题、词汇与记录表</td></tr><tr><td>FI2, haastattelu harrastukset.docx</td><td>Tunti 6</td><td>第 9 节：同模板的爱好访谈对照</td></tr><tr><td>Haastattelun tulokset.html</td><td>Tunti 6</td><td>第 8 节：汇报结构与句型</td></tr><tr><td>菜单与食物图片</td><td>Tunti 9</td><td>仅用于确认词汇范围，无可抽取文字</td></tr><tr><td>练习空白表格</td><td>Tunti 9</td><td>记录表格式，不构成知识点</td></tr></table><p><b>重复副本</b>：<code>FI2, haastattelu ruoka.docx</code> 与 <code>1_FI2, haastattelu ruoka.docx</code> 内容一致，按 md5 去重。<b>拓展</b>：第 6 节词汇表与第 8 节汇报句型为补充背景，不改变作业原有要求。</p></section><div class="lnav"><a class="prev" href="t12-review-exam.html">← 第 12 讲 · 复习与考试题型</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

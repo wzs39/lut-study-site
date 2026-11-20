@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 6 · 音频与视频表示：采样率、位深、帧率 · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-3.html">第 3 章 数字编码与压缩</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、从真实信号到数字数据</a><a class="toc-l3" href="#s3">1.1 声音与视频本来是连续的</a><a class="toc-l3" href="#s4">1.2 三种信息，三个维度</a><a class="toc-l2" href="#s5">二、声音是什么</a><a class="toc-l3" href="#s6">2.1 物理层面</a><a class="toc-l3" href="#s7">2.2 设备层面</a><a class="toc-l3" href="#s8">2.3 模拟信号的两个连续</a><a class="toc-l2" href="#s9">三、音频的采样</a><a class="toc-l3" href="#s10">3.1 三步流水线</a><a class="toc-l3" href="#s11">3.2 采样的定义</a><a class="toc-l3" href="#s12">3.3 采样率</a><a class="toc-l3" href="#s13">3.4 采样率与细节</a><a class="toc-l3" href="#s14">3.5 一个直观算例</a><a class="toc-l3" href="#s15">3.6 采样率与频率内容</a><a class="toc-l3" href="#s16">3.7 奈奎斯特准则</a><a class="toc-l2" href="#s17">四、量化与位深</a><a class="toc-l3" href="#s18">4.1 量化做什么</a><a class="toc-l3" href="#s19">4.2 采样与量化的分工</a><a class="toc-l3" href="#s20">4.3 位深</a><a class="toc-l3" href="#s21">4.4 编码</a><a class="toc-l2" href="#s22">五、声道与每秒数据量</a><a class="toc-l3" href="#s23">5.1 单声道与立体声</a><a class="toc-l3" href="#s24">5.2 每秒多少位</a><a class="toc-l2" href="#s25">六、音频数据量公式</a><a class="toc-l3" href="#s26">6.1 公式</a><a class="toc-l3" href="#s27">6.2 算例：一分钟 CD 音质</a><a class="toc-l3" href="#s28">6.3 四个影响因素</a><a class="toc-l2" href="#s29">七、从图像到视频</a><a class="toc-l3" href="#s30">7.1 视频是什么</a><a class="toc-l3" href="#s31">7.2 帧</a><a class="toc-l3" href="#s32">7.3 帧率</a><a class="toc-l3" href="#s33">7.4 帧率与运动</a><a class="toc-l3" href="#s34">7.5 视频分辨率</a><a class="toc-l3" href="#s35">7.6 颜色表示</a><a class="toc-l3" href="#s36">7.7 视频的维度公式</a><a class="toc-l2" href="#s37">八、视频数据量公式</a><a class="toc-l3" href="#s38">8.1 公式</a><a class="toc-l3" href="#s39">8.2 算例：1080p、10 秒</a><a class="toc-l3" href="#s40">8.3 决定因素</a><a class="toc-l3" href="#s41">8.4 与音频的量级对比</a><a class="toc-l2" href="#s42">九、多媒体文件里有什么</a><a class="toc-l3" href="#s43">9.1 视频文件不只是画面</a><a class="toc-l3" href="#s44">9.2 音频与视频的对照</a><a class="toc-l3" href="#s45">9.3 常见格式</a><a class="toc-l2" href="#s46">十、为什么音视频文件这么大</a><a class="toc-l2" href="#s47">十一、统一视角</a><a class="toc-l2" href="#s48">十二、课件小测（附答案）</a><a class="toc-l2" href="#s49">方法清单</a><a class="toc-l3" href="#s50">音频数字化（三步）</a><a class="toc-l3" href="#s51">算未压缩音频大小（四步）</a><a class="toc-l3" href="#s52">算未压缩视频大小（四步）</a><a class="toc-l3" href="#s53">分辨三类参数（自查）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a class="toc-l3" href="w6-audio-and-video.html">▸ Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 6 · 音频与视频表示：采样率、位深、帧率</h1><p class="lead">Audio and Video Representation <span class="badge mute">86</span> <span class="badge mute">第 6 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 数字编码与压缩</a></p><p class="src">原始文件：<code>Week6- Audio and Video Representation/Lecture6.pdf</code> <code>Week6- Audio and Video Representation/Exercise 3.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲的图像是「二维空间」的信息。这一讲处理两种更复杂的信息：音频只有「一维时间」，视频是「二维空间 + 一维时间」。三者用的是同一套三步法（采样—量化—编码），只是采样的维度不同。</p><p>本讲的另一半内容是「算数据量」。音频与视频的文件之所以大得离谱，原因可以用一条公式说清：数据量 = 采样率 × 位深 × 声道 × 时长（音频），再乘上帧率与分辨率（视频）。理解了这条公式，第 7 讲「为什么要压缩」就不用再解释了。</p><p>与前后讲的关系：上一讲给出图像公式 <code>W × H × B / 8</code>；本讲把它扩展成音频与视频的公式；下一讲（压缩）就是针对这些「大得装不下」的数据做减法。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说明声音为什么是模拟信号，以及数字化三步怎样作用于它</li><li>区分采样率（每秒取样次数）与位深（每次取样用几位）</li><li>用奈奎斯特准则判断给定最高频率所需的最低采样率</li><li>计算未压缩音频的数据量，并说明四个影响因素</li><li>说明视频是「帧的序列」，并区分帧率与分辨率</li><li>计算未压缩视频的数据量，并解释它为什么比音频大几个数量级</li><li>区分文件格式（容器）与编解码器（codec）</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、从真实信号到数字数据</h2><h3 id="s3">1.1 声音与视频本来是连续的</h3><p>课件开篇指出：声音与视频原本是<b>连续的物理信号</b>，数字化的基本过程与图像相同——连续信息必须被转换成离散的数字数据。</p><pre><code>真实信号 → 采样 → 量化 → 编码 → 二进制数据</code></pre><h3 id="s4">1.2 三种信息，三个维度</h3><p>课件用一句话把三类信息区分开，这是本讲最重要的一张对照：</p><table><tr><th>信息类型</th><th>被采样的是什么</th><th>维度</th></tr><tr><td>图像 Image</td><td>空间信息</td><td>2 维空间</td></tr><tr><td>音频 Audio</td><td>随时间变化的声音</td><td>1 维时间</td></tr><tr><td>视频 Video</td><td>随时间变化的图像</td><td>2 维空间 + 1 维时间</td></tr></table><p>维度决定了公式的形状：图像乘两个长度（宽、高），音频乘一个时间（秒），视频乘两个长度加一个时间（还乘帧率）。后面所有计算题都是这条规律的展开。</p><h2 id="s5">二、声音是什么</h2><h3 id="s6">2.1 物理层面</h3><p>课件解释：我们之所以听到声音，是因为一系列<b>空气压力波</b>振动了耳膜，耳膜再把信号送给大脑。</p><h3 id="s7">2.2 设备层面</h3><p>用手机听音乐时，设备把<b>电信号</b>送给扬声器，扬声器振动产生声音。这个电信号控制扬声器膜片的运动，膜片再产生到达耳朵的压力波。</p><p>课件的结论句很关键：<b>这个信号是声波的模拟表示</b>（"the signal is an analog representation of the sound wave"）。模拟（analog）在这里的意思是「与原始物理量连续对应」——电压随声压连续变化。</p><h3 id="s8">2.3 模拟信号的两个连续</h3><p>课件把模拟音频信号画成一条连续波形，并指出它有两个连续：</p><ul><li><b>连续的时间</b>：任何时刻都有信号值</li><li><b>连续变化的幅度</b>：值可以是任意实数</li></ul><p>计算机无法直接存整条连续波形。原因很硬：连续意味着无限多的点、无限精度——存储与传输都不可能。于是必须数字化。</p><h2 id="s9">三、音频的采样</h2><h3 id="s10">3.1 三步流水线</h3><pre><code>模拟音频 → 采样 → 量化 → 编码 → 数字音频</code></pre><h3 id="s11">3.2 采样的定义</h3><p>采样按<b>固定的时间间隔</b>测量连续信号的幅度。它回答的问题是「<b>什么时候</b>测量信号」。</p><p>这句话与上一讲形成对照：图像采样问「在哪里（空间）」，音频采样问「在何时（时间）」。课件也明确写了：与图像不同，音频采样主要关乎<b>时间</b>。</p><p>课件还诚实地承认代价：这种技术会丢掉一些数据，但能得到合理的声音（"This technique loses some data but produces a reasonable sound"）。丢多少、怎么丢，就是下面采样率与量化位数要控制的。</p><h3 id="s12">3.3 采样率</h3><p>采样频率（sampling frequency）：<b>每秒取的样本数</b>。单位是赫兹（Hz）。</p><table><tr><th>采样率</th><th>每秒样本数</th><th>常见用途</th></tr><tr><td>8 kHz</td><td>8 000</td><td>电话语音</td></tr><tr><td>16 kHz</td><td>16 000</td><td>语音识别、播客</td></tr><tr><td>44.1 kHz</td><td>44 100</td><td>CD 音质</td></tr><tr><td>48 kHz</td><td>48 000</td><td>视频伴音、专业音频</td></tr></table><h3 id="s13">3.4 采样率与细节</h3><p>采样率越高，每秒的样本越多，越能准确地表示信号的变化。课件用两条疏密不同的波形对比：低采样率只在少数点取值，波峰波谷容易被「错过」；高采样率能贴近原始曲线。</p><h3 id="s14">3.5 一个直观算例</h3><p>若以 10 000 Hz 采样一段 2 秒的音频：</p><pre><code>10 000 × 2 = 20 000 个样本</code></pre><p>注意这里只算了「样本数」，还没算每个样本占多少位。样本数 × 位深才是数据量。</p><h3 id="s15">3.6 采样率与频率内容</h3><p>声音里含不同频率成分：低频变化慢，高频变化快。要表示快速变化，采样率必须足够高——否则就会「看不清」快速振荡。</p><h3 id="s16">3.7 奈奎斯特准则</h3><p>课件给出一条基本规则：</p><p><b><code>f_s ≥ 2 × f_max</code></b></p><p>其中 f_s 是采样率，f_max 是要表示的最高频率。例：若最高频率是 20 kHz，采样率至少约 40 kHz。这条规则叫<b>奈奎斯特采样准则</b>（Nyquist sampling criterion）。</p><p>为什么是 2 倍？直觉解释：要还原一个周期，至少要在波峰与波谷各取一个点；采样率低于 2 倍时，快速振荡会被「误读」成慢速振荡（这个现象叫混叠 aliasing）。</p><div class="callout tip"><b>顺带理解 44.1 kHz</b>人耳可听上限约 20 kHz，按奈奎斯特需要 ≥ 40 kHz。CD 选 44.1 kHz 而不是 40 kHz，是留出余量并与早期用录像机存储数字音频的工程折衷有关。这条来历属于理解性拓展，考试按 <code>f_s ≥ 2 f_max</code> 计算即可。</div><h2 id="s17">四、量化与位深</h2><h3 id="s18">4.1 量化做什么</h3><p>采样之后，每个样本仍是一个连续幅度值。量化把电压（幅度）用<b>有限位数</b>表示成一个数。它回答「给每个样本什么值」。</p><h3 id="s19">4.2 采样与量化的分工</h3><table><tr><th>过程</th><th>主要问题</th><th>离散化的是什么</th></tr><tr><td>采样 Sampling</td><td>什么时候测量？</td><td>时间</td></tr><tr><td>量化 Quantization</td><td>给什么值？</td><td>幅度</td></tr></table><p>一句记法：<b>采样离散化时间，量化离散化振幅</b>。与图像那对（位置 / 取值）完全平行。</p><h3 id="s20">4.3 位深</h3><p>位深（bit depth）决定可能的幅度级数。n 位可表示 <code>2^n</code> 级：</p><table><tr><th>位深</th><th>级数</th><th>常见用途</th></tr><tr><td>8 位</td><td>256</td><td>低质量语音</td></tr><tr><td>16 位</td><td>65 536</td><td>CD 音质</td></tr><tr><td>24 位</td><td>16 777 216</td><td>录音棚、母带</td></tr></table><p>位深越高，越能精确表示幅度。这与图像色深是同一个道理：位数决定量化台阶的密度，台阶越密，误差（量化噪声）越小。</p><h3 id="s21">4.4 编码</h3><p>量化得到离散数值后，编码把它们写成二进制。课件给了两个例子：</p><pre><code>样本 128 → 10000000（8 位）
+样本  25 → 00011001（8 位）</code></pre><p>一串样本就变成一串二进制值。注意这里 128 是「量化后的中位值」，不是「128 伏」——幅度已经被映射到整数编号上了。</p><h2 id="s22">五、声道与每秒数据量</h2><h3 id="s23">5.1 单声道与立体声</h3><p>单声道（mono）只用一个声道，如 16 位、44.1 kHz、单声道。立体声（stereo）通常用两个声道：左（Left）与右（Right），每个声道有自己独立的样本序列。</p><p>为什么要有两个声道？因为人耳靠双耳时间差与强度差判断声源方位。两个独立声道能记录这种差异，于是有了「声场」。代价是数据量翻倍。</p><h3 id="s24">5.2 每秒多少位</h3><p>课件用一个具体配置算出每秒的数据量：采样率 44.1 kHz、每样本 16 位、2 个声道。</p><pre><code>44 100 × 16 × 2 = 1 411 200 位/秒
+1 411 200 / 8 = 176 400 字节/秒</code></pre><p>这就是「176.4 KB/s」这个常被引用的数字。第 7 讲讲压缩时，开场就会拿它当「原始数据有多大」的例子。</p><h2 id="s25">六、音频数据量公式</h2><h3 id="s26">6.1 公式</h3><p>对未压缩数字音频：</p><p><b><code>大小（位）= f_s × B × C × T</code></b></p><p>其中 f_s 是采样率、B 是位深、C 是声道数、T 是时长（秒）。换成字节：</p><p><b><code>大小（字节）= f_s × B × C × T / 8</code></b></p><h3 id="s27">6.2 算例：一分钟 CD 音质</h3><pre><code>44 100 × 16 × 2 × 60 / 8 = 10 584 000 字节
+10 584 000 / 1 048 576 ≈ 10.1 MiB</code></pre><p>一分钟就要 10 MiB。一小时约 606 MiB，一张 700 MB 的 CD 只能装七十多分钟——这正是 CD 容量的由来。</p><h3 id="s28">6.3 四个影响因素</h3><p>课件写成一个比例式：<b>数据量 ∝ 采样率 × 位深 × 声道数 × 时长</b>。四个量任一变大，文件就变大。</p><table><tr><th>参数</th><th>调高会怎样</th><th>代价</th></tr><tr><td>采样率</td><td>样本更密，高频细节更准</td><td>数据量线性增大</td></tr><tr><td>位深</td><td>幅度更精确，噪声更小</td><td>数据量线性增大</td></tr><tr><td>声道数</td><td>声场更完整</td><td>数据量按倍数增大</td></tr><tr><td>时长</td><td>内容更长</td><td>数据量线性增大</td></tr></table><h2 id="s29">七、从图像到视频</h2><h3 id="s30">7.1 视频是什么</h3><p>课件定义：数字视频本质上是<b>随时间显示的一串图像</b>。</p><pre><code>帧 1 → 帧 2 → 帧 3 → 帧 4 → …</code></pre><p>每一帧都是一张图像。所以：<b>视频 = 空间信息 + 时间信息</b>。</p><h3 id="s31">7.2 帧</h3><p>帧（frame）是视频序列中的一幅图像。连续播放多帧，就产生了运动的知觉。这个「知觉」很重要：视频里并没有真正运动的东西，只有一叠静态画面；运动是视觉系统补齐的。</p><h3 id="s32">7.3 帧率</h3><p>帧率（frame rate）是每秒显示或采集的帧数，单位 <b>fps</b>（frames per second）。</p><table><tr><th>帧率</th><th>常见用途</th></tr><tr><td>24 fps</td><td>电影</td></tr><tr><td>30 fps</td><td>电视、网络视频</td></tr><tr><td>60 fps</td><td>游戏、体育、高动态画面</td></tr></table><p>例如 30 fps 表示每秒表示 30 帧。帧率越高，每秒的画面越多，运动变化被记录得越频繁、越平滑。</p><h3 id="s33">7.4 帧率与运动</h3><p>低帧率下，物体在两个位置之间「跳」，中间没有记录；高帧率下，路径上有更多采样点。这与音频采样率是同一个逻辑：<b>采样越密，越快的变化越能表示</b>。</p><h3 id="s34">7.5 视频分辨率</h3><p>每一帧都有自己的空间分辨率，如 1280 × 720、1920 × 1080、3840 × 2160。例如 1920 × 1080 的视频，表示每一帧含 1920 × 1080 个像素。</p><h3 id="s35">7.6 颜色表示</h3><p>每一帧可以用 RGB 这样的颜色表示。简单的 RGB 表示：红 8 位、绿 8 位、蓝 8 位 → 每像素 24 位。图像的颜色模型原封不动搬到每一帧上。</p><h3 id="s36">7.7 视频的维度公式</h3><p>课件给了两个层次的写法：</p><pre><code>图像：宽 × 高
+视频：宽 × 高 × 时间
+更具体：视频 = 帧宽 × 帧高 × 帧率 × 时长</code></pre><h2 id="s37">八、视频数据量公式</h2><h3 id="s38">8.1 公式</h3><p><b><code>大小（位）= W × H × B × F × T</code></b></p><p>其中 W、H 是帧尺寸，B 是每像素位数，F 是帧率，T 是时长（秒）。字节数除以 8：</p><p><b><code>大小（字节）= W × H × B × F × T / 8</code></b></p><h3 id="s39">8.2 算例：1080p、10 秒</h3><p>配置：1920 × 1080、24 位 RGB、30 fps、10 秒。课件分三步算：</p><pre><code>一帧：1920 × 1080 × 24 / 8 = 6 220 800 字节
+一秒：6 220 800 × 30 = 186 624 000 字节
+十秒：1 866 240 000 字节 ≈ 1.74 GiB</code></pre><p>十秒就 1.74 GiB。课件用一句总结：<b>这就是为什么原始视频数据可能极大</b>。</p><h3 id="s40">8.3 决定因素</h3><p>比例式：<b>数据量 ∝ 分辨率 × 色深 × 帧率 × 时长</b>。四项相乘，因此视频数据会「非常快地增长」——把分辨率从 720p 提到 1080p，像素数变成 2.25 倍；再提帧率、再提色深，很快就到「每秒几百 MB」。</p><h3 id="s41">8.4 与音频的量级对比</h3><p>同一秒内：CD 音质音频约 176 KB，1080p 视频约 187 MB。差一千倍以上。这解释了为什么视频必须压缩（第 7 讲），而音频压缩的紧迫性略低（但也很大）。</p><h2 id="s42">九、多媒体文件里有什么</h2><h3 id="s43">9.1 视频文件不只是画面</h3><p>课件指出一个多媒体视频可能包含：</p><ul><li>视觉信息 → 帧</li><li>音频信息 → 音频样本</li></ul><p>所以一个视频文件里可能有：视频流、音频流、元数据、其他信息。这已经预告了第 4 章「文件格式 vs 容器 vs 编解码器」的区分。</p><h3 id="s44">9.2 音频与视频的对照</h3><table><tr><th>对照项</th><th>音频 Audio</th><th>视频 Video</th></tr><tr><td>主要信息</td><td>声音</td><td>视觉 + 声音</td></tr><tr><td>采样维度</td><td>时间</td><td>空间 + 时间</td></tr><tr><td>基本单位</td><td>样本（sample）</td><td>帧（frame）</td></tr><tr><td>主要速率</td><td>采样率</td><td>帧率</td></tr><tr><td>空间分辨率</td><td>不适用</td><td>宽 × 高</td></tr><tr><td>数值含义</td><td>样本幅度</td><td>像素值</td></tr></table><h3 id="s45">9.3 常见格式</h3><p>音频格式：WAV、AIFF、MP3、AAC、FLAC。视频格式：MP4、WebM、MOV、AVI、MKV。</p><p>课件强调：<b>文件格式与压缩算法或编解码器不是同一件事</b>。MP4 是容器（能装 H.264 视频 + AAC 音频），H.264 是视频编码标准，AAC 是音频编码格式。三者可自由组合，这正是「格式 ≠ 编码」的含义。</p><h2 id="s46">十、为什么音视频文件这么大</h2><p>课件分两段解释，逻辑一样：<b>每个参数都在乘</b>。</p><p><b>原始音频</b>取决于采样率、位深、声道数、时长：录得越久样本越多；采样率越高每秒样本越多；位深越高每样本位越多。</p><p><b>原始视频</b>同时叠加了高空间分辨率、颜色信息、每秒很多帧、较长时长。仅 1920 × 1080 × 24 位 × 30 fps 就已经产生极大的原始数据量。</p><h2 id="s47">十一、统一视角</h2><p>课件最后把三类信息并排，强调同一条原理：</p><pre><code>真实信息 → 采样 → 量化 → 编码 → 数字数据</code></pre><table><tr><th>信息</th><th>采样维度</th><th>采样参数</th><th>量化参数</th></tr><tr><td>图像</td><td>空间</td><td>分辨率（宽 × 高）</td><td>色深（每像素位数）</td></tr><tr><td>音频</td><td>时间</td><td>采样率（Hz）</td><td>位深（每样本位数）</td></tr><tr><td>视频</td><td>空间 + 时间</td><td>分辨率 + 帧率</td><td>色深</td></tr></table><p>这张表值得背下来：考试里「为什么视频数据量比音频大」的答案就在「维度多一层、每层都在乘」。</p><h2 id="s48">十二、课件小测（附答案）</h2><ol><li>44.1 kHz 的录音一秒取多少样本？→ <code>44.1 × 1000 = 44 100</code> 个</li><li>16 位样本有多少量化级？→ <code>2^16 = 65 536</code> 级</li><li>16 位、44.1 kHz、单声道、10 秒的原始大小？→ <code>44 100 × 16 × 1 × 10 / 8 = 882 000</code> 字节</li><li>30 fps 的视频 20 秒有多少帧？→ <code>30 × 20 = 600</code> 帧</li><li>1280 × 720、24 位、30 fps 的一秒原始数据？→ <code>1280 × 720 × 24 × 30 / 8 = 82 944 000</code> 字节 ≈ 79.1 MiB</li></ol></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>analog signal</td><td>模拟信号</td><td>A signal that is continuous in time and in amplitude.</td></tr><tr><td>sampling rate (sampling frequency)</td><td>采样率</td><td>Number of samples taken per second, in hertz.</td></tr><tr><td>bit depth</td><td>位深</td><td>Number of bits per sample; gives 2^n amplitude levels.</td></tr><tr><td>quantization level</td><td>量化级</td><td>One of the finite amplitude values a sample can take.</td></tr><tr><td>Nyquist criterion</td><td>奈奎斯特准则</td><td>The sampling rate must be at least twice the highest frequency to be represented.</td></tr><tr><td>aliasing</td><td>混叠</td><td>A fast signal misread as a slow one when the sampling rate is too low.</td></tr><tr><td>mono</td><td>单声道</td><td>One audio channel, e.g. 16-bit, 44.1 kHz, mono.</td></tr><tr><td>stereo</td><td>立体声</td><td>Two channels (left and right), each with its own sample sequence.</td></tr><tr><td>frame</td><td>帧</td><td>One image in a video sequence.</td></tr><tr><td>frame rate</td><td>帧率</td><td>Number of frames per second (fps).</td></tr><tr><td>video resolution</td><td>视频分辨率</td><td>Width × height of each frame.</td></tr><tr><td>container</td><td>容器</td><td>A file that packages media streams and metadata, e.g. MP4.</td></tr><tr><td>codec</td><td>编解码器</td><td>An algorithm that encodes and decodes a media stream, e.g. H.264 or AAC.</td></tr><tr><td>uncompressed audio size</td><td>未压缩音频大小</td><td>f_s × B × C × T / 8 bytes.</td></tr><tr><td>uncompressed video size</td><td>未压缩视频大小</td><td>W × H × B × F × T / 8 bytes.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　算 44.1 kHz、16 位、立体声、60 秒的未压缩音频大小，并换算成 MiB。</div><p><b>第一步，算每秒样本数：</b><code>44 100</code> 个/秒。</p><p><b>第二步，算每秒位数：</b><code>44 100 × 16 × 2 = 1 411 200</code> 位/秒（两个声道各算一遍）。</p><p><b>第三步，乘时长：</b><code>1 411 200 × 60 = 84 672 000</code> 位。</p><p><b>第四步，转字节：</b><code>84 672 000 / 8 = 10 584 000</code> 字节。</p><p><b>第五步，换算：</b><code>10 584 000 / 1 048 576 ≈</code> <b>10.1 MiB</b>（十进制约 10.58 MB）。</p><p>也可以直接用公式一步：<code>44 100 × 16 × 2 × 60 / 8</code>。两种写法结果相同，考试时写公式再代值更不容易错。</p><p>检算技巧：<code>44 100 × 16 × 2 / 8 = 176 400</code> 字节/秒，乘 60 得 10 584 000。先算「每秒多少字节」这个中间量，后面所有题都能复用。</p></div><div class="qa"><div class="q">例 2　算 1000 × 800、24 位、50 fps、10 秒、无音轨的视频大小（按 1 GB = 10^9 字节）。</div><p><b>第一步，一帧多少字节：</b><code>1000 × 800 × 24 / 8 = 2 400 000</code> 字节。</p><p><b>第二步，一秒多少字节：</b><code>2 400 000 × 50 = 120 000 000</code> 字节。</p><p><b>第三步，乘时长：</b><code>120 000 000 × 10 = 1 200 000 000</code> 字节。</p><p><b>第四步，换算：</b><code>1 200 000 000 / 10^9 =</code> <b>1.2 GB</b>。</p><p>这与 Exercise 3 第 8 题同型。注意题目若按 GiB 计，则 <code>1 200 000 000 / 1 073 741 824 ≈ 1.12 GiB</code>——两种口径都要会，看题干给的是哪一种。</p><p>量级检验：10 秒就 1.2 GB，说明一小时未压缩视频约 430 GB，任何存储介质都受不了，必须压缩。</p></div><div class="qa"><div class="q">例 3　算 50 kHz、24 位、立体声、一分钟的音频大小（按 1 MB = 10^6 字节）。</div><p><code>50 kHz = 50 000</code> 个样本/秒；每样本 24 位 = 3 字节；两个声道；60 秒。</p><p><b>公式代入：</b><code>50 000 × 24 × 2 × 60 / 8 = 18 000 000</code> 字节。</p><p><b>验算中间量：</b><code>50 000 × 3 × 2 = 300 000</code> 字节/秒；<code>300 000 × 60 = 18 000 000</code>，一致。</p><p><b>换算：</b><code>18 000 000 / 10^6 =</code> <b>18 MB</b>。</p><p>注意这道题的三个参数同时都偏高（采样率高于 CD、位深高于 CD、双声道），所以是 CD 音质的 1.7 倍左右。凡是「参数都变高」的题，结果一定明显大于基准值，可用来快速验算。</p></div><div class="qa"><div class="q">例 4　某信号的最高频率是 15 kHz。按奈奎斯特准则，采样率至少要多少？若实际用 8 kHz 会怎样？</div><p><b>第一步，套公式：</b><code>f_s ≥ 2 × f_max = 2 × 15 000 = 30 000</code> Hz，即至少 <b>30 kHz</b>。</p><p><b>第二步，判断实际值：</b>8 kHz &lt; 30 kHz，不满足准则。</p><p><b>第三步，说明后果：</b>高于 4 kHz 的频率成分无法被正确表示，会被「折叠」到低频区，产生与原始信号不符的成分——这就是混叠（aliasing）。听感上是金属味、哨音或失真。</p><p><b>第四步，给补救：</b>要么提高采样率到 30 kHz 以上，要么在采样前用低通滤波器把 4 kHz 以上的成分滤掉（抗混叠滤波），让信号本身满足准则。</p><p>这道题的迁移点：任何「给定最高频率求采样率」的题都是乘 2；「给定采样率求可表示的最高频率」是除 2。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>44.1 kHz 的采样率，一秒取多少个样本？样本之间相隔多少微秒？</li><li>16 位与 24 位分别有多少量化级？</li><li>算 16 位、44.1 kHz、单声道、10 秒的未压缩字节数。</li><li>30 fps 的视频，20 秒共多少帧？若帧率改为 24 fps 呢？</li><li>算 1280 × 720、24 位、30 fps 的一秒原始数据量，并换算成 MiB。</li><li>把采样率从 44.1 kHz 提到 48 kHz，其他参数不变，数据量增加多少百分比？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 44.1 kHz = <b>44 100</b> 个样本/秒。相邻样本间隔 <code>1 / 44 100 ≈ 22.7 µs</code>（约 0.0000227 秒）。这一小问考的是「kHz 要乘 1000」，写成 4 410 或 441 000 都是常见错。</p><p><b>2.</b> <code>2^16 = 65 536</code> 级；<code>2^24 = 16 777 216</code> 级。位数每加 1，级数翻倍。</p><p><b>3.</b> <code>44 100 × 16 × 1 × 10 / 8 = 882 000</code> 字节（约 861 KiB）。</p><p><b>4.</b> 30 fps × 20 s = <b>600 帧</b>；24 fps × 20 s = <b>480 帧</b>。帧率降低会减少数据量，但运动连贯性变差。</p><p><b>5.</b> <code>1280 × 720 × 24 × 30 / 8 = 82 944 000</code> 字节；<code>/ 1 048 576 ≈ 79.1 MiB</code>。</p><p><b>6.</b> 只改采样率，数据量按同一比例变：<code>48 000 / 44 100 ≈ 1.088</code> → 增加约 <b>8.8%</b>。这类「只改一个参数」的题，直接用比值算，不必重算绝对值。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① 采样率与位深的定义与分工（时间 vs 幅度）；② <code>f_s × B × C × T / 8</code> 与 <code>W × H × B × F × T / 8</code> 两条公式；③ 单位换算（kHz、MiB、MB、GB）；④ 奈奎斯特 <code>f_s ≥ 2 f_max</code>；⑤ 帧、帧率、分辨率三者的关系；⑥ 容器与编解码器的区别。</div><div class="callout warn"><b>易错 1</b>把 44.1 kHz 当成 44 100 之外的值，或忘记乘 1000。凡是 kHz 都要乘 1000 换成 Hz。</div><div class="callout warn"><b>易错 2</b>立体声忘记乘 2。声道数是公式里最容易漏的一项。</div><div class="callout warn"><b>易错 3</b>算视频时忘记乘帧率，或把「帧率 × 时长」当成帧数以外的量。正确顺序：一帧字节 → 一秒字节 → 总字节。</div><div class="callout warn"><b>易错 4</b>把 MP4 当成一种编码。MP4 是容器，里面可以装 H.264 视频与 AAC 音频。</div><div class="callout tip"><b>进阶</b>① 先算「每秒字节数」这个中间量，所有题都能复用；② 只改一个参数时用比值算增量，速度快且不易错；③ 奈奎斯特给的是下限，实际系统会取更高（CD 取 44.1 kHz 而非 40 kHz）；④ 抗混叠滤波器的作用是「采样前先限制带宽」，属于工程补充。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s49">方法清单</h2><h3 id="s50">音频数字化（三步）</h3><ol class="steps"><li>采样：按固定间隔取幅度值，采样率 f_s 满足 <code>f_s ≥ 2 f_max</code></li><li>量化：把幅度映射到 <code>2^B</code> 个等级之一（B 为位深）</li><li>编码：把每个量化值写成 B 位二进制，按声道分别排列</li></ol><h3 id="s51">算未压缩音频大小（四步）</h3><ol class="steps"><li>把 kHz 换成 Hz（乘 1000）</li><li>算每秒位数：<code>f_s × B × C</code></li><li>乘时长 T（秒）</li><li>除以 8 得字节，再按题目口径换算单位</li></ol><h3 id="s52">算未压缩视频大小（四步）</h3><ol class="steps"><li>算一帧字节：<code>W × H × B / 8</code></li><li>算一秒字节：再乘帧率 F</li><li>乘时长 T</li><li>换算单位并标注「未压缩」</li></ol><h3 id="s53">分辨三类参数（自查）</h3><ul class="checklist"><li>采样率 / 帧率 → 决定「多久取一次」</li><li>位深 / 色深 → 决定「每次多精确」</li><li>声道数 / 分辨率 → 决定「一次取多少个并行通道或像素」</li><li>时长 → 简单的线性放大</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p2–p4</td><td>六个关键问题、连续信号与数字化三步、图像/音频/视频的采样维度对照</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p5–p7</td><td>声波与耳膜、设备中的电信号、模拟信号的两个连续（时间与幅度）</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p8–p13</td><td>音频数字化流程、采样定义（when）、采样率与四个常见值、采样率与细节、10 kHz×2s=20 000 样本、频率内容</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p14</td><td>奈奎斯特准则 <code>f_s ≥ 2 f_max</code> 与 20 kHz→40 kHz 的例子</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p15–p19</td><td>量化定义（幅度用有限位表示）、采样与量化对照、位深 8/16/24 的级数、编码 128 与 25 的例子、三步总结</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p20–p24</td><td>单声道与立体声、44.1k×16×2 的每秒位数与字节数、音频大小公式、一分钟 10.1 MiB、四个影响因素</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p25–p31</td><td>视频是帧序列、帧的定义、帧率 24/30/60、帧率与运动、视频分辨率、每帧 24 位 RGB、视频 = 宽×高×帧率×时长</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p32–p35</td><td>视频大小公式、1080p 10 秒 1.74 GiB 的三步计算、四个决定因素</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p36–p41</td><td>多媒体文件的组成（视频流/音频流/元数据）、音频与视频对照表、常见音频与视频格式、格式 ≠ 编解码器、为什么大</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p42–p43</td><td>音视频与图像的统一数字化视图、维度差异（空间/时间/空间+时间）</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf</td><td>p44–p53</td><td>五道复习题（44.1 kHz 样本数、16 位级数、10 秒单声道大小、30 fps×20 s 帧数、1280×720 一秒数据量），已收入本讲第十二节</td></tr><tr><td>Week6- Audio and Video Representation/Exercise 3.pdf</td><td>第 5、7、8 题</td><td>采样率与位深如何影响质量与文件大小、50 kHz/24 位/立体声一分钟的 MB、1000×800/50 fps/10 s 的 GB（本讲例 2、例 3 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>44.1 kHz 的来历（人耳 20 kHz 上限 + 余量）、混叠与抗混叠滤波、先算「每秒字节」的中间量技巧、CD 容量的估算，均为理解性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w5-image-representation.html">← Week 5 · 图像表示：采样、量化、编码与 RGB</a><a class="next" href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

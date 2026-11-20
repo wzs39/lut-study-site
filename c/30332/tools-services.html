@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 1 讲 · 学习工具与服务 · 30332</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT30A1000 学习工具与AI</a> / <a href="part-1.html">第 1 章 学习工具与办公软件</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、eLUT 与 Student IT Guide：所有入口的总入口</a><a class="toc-l3" href="#s3">1.1 为什么必须用学校提供的工具</a><a class="toc-l3" href="#s4">1.2 eLUT 搜索怎么用才快</a><a class="toc-l2" href="#s5">二、LUT 邮箱：官方通信的唯一通道</a><a class="toc-l2" href="#s6">三、LUT Calendar：把课表、会议与截止日放在一处</a><a class="toc-l2" href="#s7">四、OneDrive：文件的主平台</a><a class="toc-l2" href="#s8">五、Teams：课程与项目的主场</a><a class="toc-l3" href="#s9">5.1 频道、聊天与文件</a><a class="toc-l3" href="#s10">5.2 发起一场会议</a><a class="toc-l2" href="#s11">六、Zoom：教师侧的线上课堂</a><a class="toc-l3" href="#s12">6.1 线上课堂礼仪</a><a class="toc-l2" href="#s13">七、Moodle：所有课程的学习环境</a><a class="toc-l2" href="#s14">八、TimeEdit：唯一权威的课表与教室</a><a class="toc-l2" href="#s15">九、LUTPub：学位论文与研究材料的仓库</a><a class="toc-l2" href="#s16">十、Primo：图书馆的一站式检索</a><a class="toc-l3" href="#s17">10.1 Primo 的三种检索入口</a><a class="toc-l3" href="#s18">10.2 LUTPub 与 Primo 的分工</a><a class="toc-l2" href="#s19">十一、十个入口怎么配合：四个真实闭环</a><a class="toc-l2" href="#s20">第一周系统配置清单</a><a class="toc-l2" href="#s21">每次线上课前的五分钟检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a class="toc-l3" href="tools-services.html">▸ 第 1 讲 · 学习工具与服务</a><a href="office-ai.html">第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a href="presentation-tools.html">第 3 讲 · 演示工具与 AI</a><a href="drawing-design.html">第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a href="ai-generated-content.html">第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</a><a href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明</a></div></aside><article><h1>第 1 讲 · 学习工具与服务</h1><p class="lead">Tools and Services for Studying <span class="badge mute">30332</span> <span class="badge mute">第 1 / 6 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 学习工具与办公软件</a></p><p class="src">原始文件：<code>Lecture 1 Tools and services for studying.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>CT30A1000 的第一讲不教软件操作，而是先把“学校给你配了哪些系统、每个系统管什么”讲清楚。原因很实际：在 LUT，信息不是找不到，而是散在十个系统里；找错系统比不会用更浪费时间。</p><p>本讲按课件顺序讲十个入口：eLUT 与 Student IT Guide、LUT 邮箱、LUT Calendar、OneDrive、Teams、Zoom、Moodle、TimeEdit、LUTPub、Primo，并补上线上课堂的礼仪。第 2–6 讲分别深入办公软件、演示、绘图、AI 生成内容与 AI 学习方法。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说出“查课表 / 交作业 / 找论文 / 开会 / 存文件”各应打开哪个系统</li><li>用 LUT 邮箱与 DuoMobile 完成两步验证登录</li><li>在 Teams 里建课程频道并发起带议程的会议</li><li>按线上课堂礼仪参加 Zoom 讲座（摄像头、静音、举手、聊天）</li><li>用 Primo 与 LUTPub 找到一篇论文或一份学位论文</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、eLUT 与 Student IT Guide：所有入口的总入口</h2><p>eLUT 是 LUT 学生的信息页：所有与学习有关的信息、新闻、活动都在这里；它有一个强力的搜索引擎用来找信息；首页给出最常用服务与工具的快捷链接（Quick links）；主菜单（Main menu）则链接到全部服务与工具。</p><p>主菜单下有一个关键分支：<b>Student IT Guide → Study systems</b>，那里放的是 IT 相关信息，以及“学生可用的学习工具怎么用”的说明。也就是说，eLUT 负责“告诉你有什么”，Student IT Guide 负责“教你怎么用”。</p><h3 id="s3">1.1 为什么必须用学校提供的工具</h3><p>课件给了七条理由，逐条都指向成本与风险：使用同一套工具能避免混乱、省下配置时间；不必为了配合不同小组去学多个应用；小组作业在同一个系统上更顺畅；学校工具附带官方支持与指导；工具经过学校批准，并考虑了学生数据隐私；软件由学校付费，学生不用自己买；而替代工具或个人工具可能达不到学校的安全标准，从而把你的文件、个人数据或研究置于风险中。</p><div class="callout warn"><b>一条硬规则</b>课件的 Important Notice 写得很明确：教师与教职工只对“经批准的学校工具”提供指导，也只回复通过学校官方工具与平台发送的消息；这些软件的许可证有效且由学校付费，所以请坚持使用这些工具。</div><h3 id="s4">1.2 eLUT 搜索怎么用才快</h3><p>eLUT 的搜索引擎是找“规则类信息”的最快入口：考试说明、报名截止、IT 指南、表格模板都在里面。有效的做法是用“系统名 + 动作”做关键词，例如“TimeEdit calendar”“Sisu enrolment”“turnitin thesis”，而不是用一句自然语言提问。</p><p>如果搜索结果指向 Student IT Guide，就说明这是一条“操作说明”；如果指向某门课程页，就说明这是“课程特定规则”。两者的优先级不同：课程页的说明覆盖通用指南。</p><h2 id="s5">二、LUT 邮箱：官方通信的唯一通道</h2><p>入口是 LUT 的 Outlook 网页版。用学生邮箱登录，格式为 <b>firstname.surname@student.lut.fi</b>，并配合 <b>DuoMobile</b> 两步验证（2FA）应用。关于 LUT ID 与登录的说明在 Student IT Guide 的 “LUT ID and signing in” 页面。</p><p>课件特别标注：教师与教职工<b>只回复你用 LUT 邮箱发出的消息</b>；用私人邮箱发的邮件不会得到回复，这是为了隐私与数据保护。还有一条容易被忽略：<b>不要把学校邮件转发到私人邮箱地址</b>。</p><div class="callout tip"><b>实际用法</b>把 LUT 邮箱加到手机邮件客户端，并开启通知；给教师写信时用“课程代码 + 事由”做主题（例如 “CT30A1000 — question about Assignment 2”），回复会快很多。</div><h2 id="s6">三、LUT Calendar：把课表、会议与截止日放在一处</h2><p>日历与邮箱是集成的：可以直接从 Outlook 邮件里安排事件与会议；可以设提醒，避免忘记任务或约会；可以把日历分享给同学，用于小组项目或与学习伙伴协调时间；与 Microsoft Teams 同步后，可以从日历一键加入线上课程或会议；手机、平板、电脑都能查看与更新；可以用颜色区分事件类型（例如课程、个人、截止日），让安排一眼可读。</p><p>对学生的用法建议：把四个作业截止、考试报名、12 月春季选课这些“只出现一次但后果严重”的日期全部建成全天事件，并设两周前与三天前两次提醒。</p><h2 id="s7">四、OneDrive：文件的主平台</h2><p>OneDrive 是保存、访问与在线共享文件的主平台；与 Microsoft 365（Word、Excel、PowerPoint 等）集成；任何联网设备都能访问；是与教师和学校工作人员共享文档的主要方式；也推荐用于团队或学习小组内部共享。</p><p>课件列出的好处：自动备份——设备丢失或损坏时学习材料仍在；在任何设备（手机、平板、笔记本）上访问并同步文档、作业与演示；易于协作——与同学实时共享并共同编辑；用文件夹把课程作业、笔记与项目整理清楚；<b>免费且安全的 5 TB 存储</b>。</p><div class="callout warn"><b>共享前先想权限</b>OneDrive 的共享链接默认可能是“有链接即可编辑”。发给教师时应改为“可查看”，发给小组时才给“可编辑”，并对敏感材料关闭下载。</div><h2 id="s8">五、Teams：课程与项目的主场</h2><p>Teams 是给学生与教师的沟通协作平台，属于 Microsoft 365，与 OneDrive、Word、Excel、PowerPoint 集成；把聊天、视频会议、文件共享与团队协作放在一处；桌面、手机、网页都能用；课件称它是“每个人都有的推荐协作工具”。</p><p>好处：与同学和教师即时聊天或开会；为课程或项目创建团队（team）与频道（channel）；共同编辑文档、共享文件、使用共享笔记；把对话、会议与文件都留在同一处；任何设备都能入会并获取材料。</p><h3 id="s9">5.1 频道、聊天与文件</h3><p>课件第 2 页展示三件事：为小组作业与课程建立 Teams 频道；单独或分组聊天；发起新聊天；访问并共享文件。实践上的分工是：<b>频道</b>放“属于这门课/这个项目”的讨论与文件，<b>聊天</b>放临时的两人或小组对话。</p><h3 id="s10">5.2 发起一场会议</h3><p>课件第 3 页的操作要点：点 Teams 会议（Tap the Teams meeting）；添加参会人；<b>写清议程（agenda）</b>。议程不是礼貌，它决定会议能否在 30 分钟内结束。</p><ol class="steps"><li>在课程频道里点“会议”，选时间</li><li>添加参会人（同学、教师）</li><li>在描述里写议程：每条对应一个决定或一个交付物</li><li>附上会前材料（文档、链接、上次会议记录）</li><li>会前 10 分钟测试麦克风与共享屏幕</li></ol><h2 id="s11">六、Zoom：教师侧的线上课堂</h2><p>Zoom 是教师用于线上讲座与会议的交互式视频会议工具；支持视频、音频、屏幕共享、聊天，以及标注（annotations）与分组讨论室（breakout rooms）等互动工具；<b>加入会议不需要 Zoom 账号</b>——教师会提供链接、会议 ID 与密码；可以通过浏览器、桌面客户端或手机应用参加（要完整功能建议用桌面客户端）。</p><p>加入步骤：提前安装 Zoom 客户端；点击链接或输入会议 ID 与密码（来自 Moodle 或教师）；也可以用浏览器加入，但部分功能受限；加入前测试扬声器与麦克风。</p><h3 id="s12">6.1 线上课堂礼仪</h3><table><tr><th>项目</th><th>讲座（lecture）</th><th>会议（meeting）</th></tr><tr><td>摄像头</td><td>发言、提问或小组工作时打开</td><td>通常应打开，以显示投入与专业</td></tr><tr><td>麦克风</td><td>轮到你说话前保持静音</td><td>同左</td></tr><tr><td>举手</td><td>发言前用 Raise hand，维持秩序、避免打断</td><td>同左</td></tr><tr><td>聊天</td><td>只用于相关问题或讨论，避免离题</td><td>同左</td></tr><tr><td>屏幕共享</td><td>即使不打算演示，也提前练习一次</td><td>同左</td></tr><tr><td>设备</td><td>会前测试耳机与麦克风</td><td>同左</td></tr></table><div class="callout tip"><b>提前五分钟</b>线上课堂最常见的事故不是内容，而是“听不到”“看不到共享屏”。提前五分钟进会，测试音频与共享，比会中抢救便宜得多。</div><h2 id="s13">七、Moodle：所有课程的学习环境</h2><p>Moodle 是所有课程的主要在线学习环境：用它获取课程材料、提交作业、完成考试；浏览器或手机应用都能访问；支持测验（quizzes）、论坛（forums）与反馈等互动学习。</p><p>课件的 Important Notice 是一条纪律：<b>所有课程作业与提交都应在 Moodle 完成</b>；除非教师明确指示，不要把作业或课程完成情况用邮件发送。</p><h2 id="s14">八、TimeEdit：唯一权威的课表与教室</h2><p>TimeEdit 是学校官方的在线排课与预约系统：显示课程时间表、上课地点与考试安排；<b>上课地点的详细信息只在 TimeEdit 里给出</b>；课程时间与教室可能变动，甚至开课之后也会变；所有更新会自动出现在 TimeEdit；你可以订阅自己的课表并加入 Outlook 日历；浏览器或手机应用都能随时查看。</p><div class="callout exam"><b>最容易被考的一句</b>“Lecture location details are available only in TimeEdit.” 教室信息不在 Moodle、不在邮件里，只在 TimeEdit。</div><h2 id="s15">九、LUTPub：学位论文与研究材料的仓库</h2><p>LUTPub 是 LUT 的出版仓库：收录学士与硕士论文、licentiate 论文、博士论文以及摘要；也包含其他出版物、研究数据集、教学材料与演示资源；可以在线检索、阅读与下载。</p><p>课件的实用提示：LUTPub 是找<b>论文题目灵感、潜在导师与相关研究</b>的好地方。用法是先按关键词找近三年的硕士论文，看它们的目录结构与研究方法，再顺着参考文献找导师与课题组。</p><h2 id="s16">十、Primo：图书馆的一站式检索</h2><p>Primo 是图书馆检索工具：提供对图书与电子书、文章、数据库等的一站式检索；记得先在右上角登录，登录后才能看到完整的可用资源与权限。</p><p>课件的 tip 很实用：<b>在 Google Scholar 里显示为付费的文章，可能在 Primo 里可以免费获取</b>；用标题或出版物编号去 Primo 搜。</p><h3 id="s17">10.1 Primo 的三种检索入口</h3><p>Primo 支持三种入口，用途不同：<b>关键词</b>适合探索一个主题，先用宽词看有哪些文献；<b>标题</b>适合你已经知道要哪一篇；<b>出版物编号</b>（DOI、ISBN 或期刊卷期）最快命中唯一记录。检索不到时，先减少限定词（年份、语言、文献类型），再换编号；仍然不到，就换到 LUTPub 或去问图书馆员。</p><ul><li>用引号把短语固定住，避免词被拆开检索</li><li>先宽后窄：先看结果量，再加年份与文献类型</li><li>结果页先看“在线访问”是否有全文，再看纸本馆藏位置</li><li>导出引用前核对作者、年份与期刊名，机器生成的引用常有小错</li></ul><h3 id="s18">10.2 LUTPub 与 Primo 的分工</h3><p>两个系统都“能搜到论文”，但覆盖范围不同：Primo 覆盖图书馆订购的图书、期刊与数据库，适合找期刊论文与教材；LUTPub 覆盖本校产生的学位论文、研究数据集与教学材料，适合找选题、看本校的研究方向与导师。找“别人怎么写这个题目”用 Primo，找“本校谁做过这个题目”用 LUTPub。</p><p>一个高效的顺序是：先用 Primo 找 3 篇综述建立框架，再用 LUTPub 找 2 篇本校硕士论文看结构与本地数据，最后回到 Primo 补齐引用。三步都做完，再动笔。</p><h2 id="s19">十一、十个入口怎么配合：四个真实闭环</h2><table><tr><th>场景</th><th>顺序</th><th>判断标准</th></tr><tr><td>今天上什么、在哪上</td><td>TimeEdit → LUT Calendar → Moodle</td><td>时间、教室、材料三者一致；教室以 TimeEdit 为准</td></tr><tr><td>交作业</td><td>Moodle → OneDrive（附件）→ LUT 邮箱（仅沟通）</td><td>作业在 Moodle 提交；邮件只用于问问题</td></tr><tr><td>找一篇论文</td><td>Primo（先登录）→ LUTPub（学位论文）</td><td>能下载全文，或找到可申请的馆藏</td></tr><tr><td>小组协作</td><td>Teams 团队/频道 → OneDrive 文件夹 → Calendar 会议</td><td>文件在频道里，会议有议程，记录可追溯</td></tr></table><div class="callout idea" data-ext="tools-services-0"><b>前后衔接</b><p>十个入口不是清单，而是四条闭环：查课走 TimeEdit → Calendar → Moodle，交作业走 Moodle → OneDrive，找论文走 Primo → LUTPub，协作走 Teams → OneDrive → Calendar。最易混的是教室信息的唯一权威：<em>Lecture location details are available only in TimeEdit</em>。Moodle 给材料、邮件给沟通，都不给教室；课程页规则覆盖通用指南。</p></div><div class="callout tip" data-ext="tools-services-1"><b>常见误解</b><p>“老师没回邮件”常常不是忙，而是你用了私人邮箱——课件明确只回复 LUT 邮箱发出的消息，也别把学校邮件转发到私人地址。另一个隐蔽坑是 OneDrive 共享链接默认可能是“有链接即可编辑”：给教师改为 <em>Can view</em>，给小组才给 <em>Can edit</em>，含敏感材料勾选 <em>Can't download</em>。会议同理：写清 agenda 比寒暄更能让 30 分钟内结束。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>eLUT</td><td>学生信息门户</td><td>The info page for LUT students: news, events, quick links to all services.</td></tr><tr><td>Student IT Guide</td><td>学生 IT 指南</td><td>Instructions on how to use the study tools and systems.</td></tr><tr><td>LUT ID</td><td>LUT 账号</td><td>The account used to sign in to LUT services.</td></tr><tr><td>two-factor authentication (2FA)</td><td>两步验证</td><td>Sign-in requires DuoMobile in addition to the password.</td></tr><tr><td>OneDrive</td><td>云盘</td><td>The main platform for saving, accessing and sharing files; 5 TB for students.</td></tr><tr><td>Teams channel</td><td>Teams 频道</td><td>A workspace inside a team for a course or project, with files and conversations.</td></tr><tr><td>agenda</td><td>议程</td><td>A written list of what a meeting must decide or deliver.</td></tr><tr><td>Zoom breakout room</td><td>Zoom 分组讨论室</td><td>Small sub-meetings inside a Zoom session.</td></tr><tr><td>Raise hand</td><td>举手</td><td>A Zoom/Teams tool used before speaking to keep order.</td></tr><tr><td>Moodle</td><td>在线学习平台</td><td>The main online learning environment for materials, submissions and exams.</td></tr><tr><td>TimeEdit</td><td>排课系统</td><td>The official scheduling system; lecture locations appear only here.</td></tr><tr><td>LUTPub</td><td>出版仓库</td><td>Stores theses, dissertations, research datasets and teaching materials.</td></tr><tr><td>Primo</td><td>图书馆检索</td><td>One-stop search for books, e-books, articles and databases.</td></tr><tr><td>annotation</td><td>标注</td><td>Drawing on a shared screen during an online session.</td></tr><tr><td>subscription (calendar)</td><td>日历订阅</td><td>Adding a timetable feed to Outlook so updates appear automatically.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　周一早上用 10 分钟确认“今天上什么、在哪、要交什么”</div><p><b>第 1 步：</b>打开 TimeEdit，看今天的课程块，记下<b>时间、教室、课程代码</b>。教室信息只在这里有，所以先看它。</p><p><b>第 2 步：</b>打开 LUT Calendar，确认有没有与课程冲突的会议或截止提醒；如果课表有变动，把 TimeEdit 的新时间手动更新到日历（或确认订阅已同步）。</p><p><b>第 3 步：</b>打开 Moodle 的课程页，看本周要交的作业与材料，确认提交入口是否已开放。</p><p><b>第 4 步：</b>若课程是线上，回到 Calendar 点会议链接（Teams 或 Zoom），提前 5 分钟测试音频。</p><p><b>判断标准：</b>三处信息一致（时间、地点、任务），且你知道“万一教室变了要去哪看”（TimeEdit）。</p></div><div class="qa"><div class="q">例 2　参加一场 Zoom 线上讲座的完整准备</div><p><b>会前：</b>提前安装 Zoom 客户端（浏览器版功能受限）；从 Moodle 或教师邮件拿到链接、会议 ID 与密码；测试扬声器与麦克风；把手机静音，准备好笔记位置。</p><p><b>入会：</b>点链接或输入 ID + 密码；若被要求，输入显示名（用真名，便于教师识别）；加入后先静音。</p><p><b>会中：</b>发言、提问或进入分组讨论时打开摄像头；用 Raise hand 再说话；聊天区只发与内容相关的问题；需要时用标注指出屏幕上的位置。</p><p><b>会后：</b>把笔记存入 OneNote 或 OneDrive；如需提问，用 LUT 邮箱写给教师，主题写课程代码。</p><p><b>常见错误：</b>用浏览器入会却发现不能分组；全程开麦导致回声；在聊天区发与课程无关的内容。</p></div><div class="qa"><div class="q">例 3　小组要共同写一份报告：Teams + OneDrive 怎么搭</div><p><b>第 1 步：</b>在 Teams 里为这门课建一个团队（或使用教师已建好的课程团队），再建一个频道，命名如 “Project report”。</p><p><b>第 2 步：</b>在频道的“文件”标签里新建文件夹（如 01_outline、02_drafts、03_figures），把 Word 文档放在 02_drafts。</p><p><b>第 3 步：</b>共享时给组员“可编辑”，给教师“可查看”；需要时关闭“可下载”。</p><p><b>第 4 步：</b>在频道里发起会议，写清议程（本周要定大纲、分工、截止），并把会议记录置顶。</p><p><b>判断标准：</b>任何人打开频道就能看到“最新版本在哪、谁负责哪节、下次什么时候开会”。</p></div><div class="qa"><div class="q">例 4　找一篇“Google Scholar 要付费”的论文</div><p><b>第 1 步：</b>在 Google Scholar 记下论文<b>标题</b>与<b>出版物编号（DOI 或期刊卷期）</b>。</p><p><b>第 2 步：</b>打开 Primo，先在右上角登录（不登录看不到完整权限）。</p><p><b>第 3 步：</b>用标题或出版物编号检索；若显示有电子全文，直接下载；若只有纸本，记下馆藏位置与索书号。</p><p><b>第 4 步：</b>若这是一篇学位论文，改到 LUTPub 按关键词检索，通常能直接下载 PDF，并用它顺藤找到导师与相关研究。</p><p><b>判断标准：</b>你拿到的是全文而不是摘要；引用时记录 DOI 与访问日期。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出“查教室、交作业、找论文、开小组会、存共享文件”分别该用哪个系统，并说明理由。</li><li>写出用 LUT 邮箱登录的两步验证流程，并解释为什么不能把学校邮件转发到私人邮箱。</li><li>设计一场 30 分钟小组会议的 Teams 议程（至少 4 项，每项对应一个决定或交付物）。</li><li>线上讲座中，你要在分组讨论里发言并在主会场提问。写出你会用到的 Zoom 功能与礼仪动作。</li><li>TimeEdit 与 LUT Calendar 都能显示时间，为什么教室信息必须以 TimeEdit 为准？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 查教室 → TimeEdit（地点只在这里给出）；交作业 → Moodle（所有提交在 Moodle，除非教师明确指示）；找论文 → Primo（先登录，一站式检索）与 LUTPub（学位论文全文）；开小组会 → Teams（频道 + 会议 + 议程）；存共享文件 → OneDrive（与 Office 集成、5 TB、可设权限）。</p><p><b>2.</b> 用 firstname.surname@student.lut.fi 登录 Outlook 网页版，密码之后再通过 DuoMobile 应用确认。不转发的原因：隐私与数据保护；转发后邮件离开了学校控制的通道，且教师只回复 LUT 邮箱，转发件容易丢上下文与附件权限。</p><p><b>3.</b> 示例：0–5 分钟确认上次行动项；5–15 分钟定本周交付物与分工（决定：谁在周五前交哪一节）；15–25 分钟解决一个阻塞（决定：采用方案 A/B）；25–30 分钟定下次会议与记录人。每项都写“要决定什么”。</p><p><b>4.</b> 分组讨论：用 breakout room 进入小组，打开摄像头与麦克风；回主会场后先静音，用 Raise hand 请求发言，被点名后再开麦；需要指屏幕时用 annotation；聊天区只写与问题相关的内容。</p><p><b>5.</b> 因为 TimeEdit 是官方排课与预约系统，课程时间与教室的变动会自动更新在那里；Calendar 只是你个人的日程副本，订阅同步可能有延迟，手动添加的条目更不会自动改。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>四个对应关系：教室→TimeEdit、提交→Moodle、论文→Primo 与 LUTPub、会议→Teams、文件→OneDrive；LUT 邮箱格式与 2FA；Zoom 加入不需要账号。</div><div class="callout warn"><b>易错 1</b><b>用私人邮箱联系教师。</b>课件写明教师只回复 LUT 邮箱的来信，私人邮箱不会得到回复。</div><div class="callout warn"><b>易错 2</b><b>把作业用邮件发给教师。</b>所有课程作业与提交都在 Moodle，除非教师明确要求邮件。</div><div class="callout warn"><b>易错 3</b><b>去 Moodle 找教室。</b>地点只在 TimeEdit，且可能开课后变动。</div><div class="callout tip"><b>进阶</b>能解释“为什么学校坚持统一工具”：安全标准、数据隐私、许可证与支持成本，四者共同构成不使用个人工具的理由。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">第一周系统配置清单</h2><ul class="checklist"><li>用 LUT 邮箱 + DuoMobile 完成首次登录，并在手机上配置邮件</li><li>把 LUT Calendar 加到手机，创建“课程 / 截止 / 个人”三种颜色</li><li>在 TimeEdit 订阅自己的课表，确认已出现在 Outlook 日历中</li><li>在 OneDrive 建“课程/学年/课程代码”三级文件夹</li><li>在 Teams 里找到本学期课程团队，打开通知</li><li>安装 Zoom 桌面客户端并测试麦克风、扬声器、屏幕共享</li><li>在 Moodle 打开每门课，确认作业入口与材料位置</li><li>在 Primo 登录一次，确认能下载一篇电子全文</li><li>在 LUTPub 检索一个自己感兴趣的主题，保存两篇论文</li></ul><h2 id="s21">每次线上课前的五分钟检查</h2><ul class="checklist"><li>摄像头可用、背景整洁</li><li>麦克风默认静音，耳机已连接</li><li>知道 Raise hand 与聊天区在哪里</li><li>会前材料已下载到本地（防止共享时找不到）</li><li>会议链接来自 Moodle 或教师，而不是转发的旧链接</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p2</td><td>课程标题与十个工具清单</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p3–p4</td><td>eLUT 与 Student IT Guide；为何使用学校工具；只回复官方平台消息</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p5</td><td>LUT 邮箱地址格式、DuoMobile 2FA、不转发到私人邮箱</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p6</td><td>LUT Calendar 的六项功能</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p7</td><td>OneDrive 的定义、五项好处、5 TB 存储</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p8–p10</td><td>Teams 的定义、好处、频道与聊天、发起会议与议程</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p11–p12</td><td>Zoom 的功能、加入方式、线上课堂礼仪</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p13</td><td>Moodle 的用途与“提交都在 Moodle”的规定</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p14</td><td>TimeEdit 的功能、地点只在此、变动自动更新、订阅日历</td></tr><tr><td>Lecture 1 Tools and services for studying.pdf.txt</td><td>p15–p16</td><td>LUTPub 收录范围与选题提示；Primo 登录与付费文章提示</td></tr><tr><td>（跳过）</td><td>p1、p17</td><td>封面与结束空白页</td></tr><tr><td>（补充）</td><td>—</td><td>四个“真实闭环”、共享权限建议与第一周五分钟检查，属于基于原文功能的操作化整理</td></tr></table></section><div class="lnav"><span></span><a class="next" href="office-ai.html">第 2 讲 · 办公软件与 AI（Word、Excel、Copilot） →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

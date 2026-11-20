@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理 · 30565</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-3.html">第 3 章 计数与归纳</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">7.1 组合数学在数什么</a><a class="toc-l3" href="#s3">7.2 四个公式的总表</a><a class="toc-l3" href="#s4">7.3 可重复且顺序重要：nk</a><a class="toc-l3" href="#s5">7.4 不重复且顺序重要：n!/(n−k)!</a><a class="toc-l3" href="#s6">7.5 单射与双射的个数</a><a class="toc-l3" href="#s7">7.6 不重复且顺序无关：C(n, k)</a><a class="toc-l3" href="#s8">7.7 可重复且顺序无关：多重集</a><a class="toc-l3" href="#s9">7.8 四种情形的辨认练习</a><a class="toc-l3" href="#s10">7.9 Pascal 三角与递推</a><a class="toc-l3" href="#s11">7.10 二项式定理</a><a class="toc-l3" href="#s12">7.11 四个常见陷阱的对照</a><a class="toc-l2" href="#s13">考点分层</a><a class="toc-l2" href="#s14">方法清单</a><a class="toc-l3" href="#s15">计数问题的三问</a><a class="toc-l3" href="#s16">常用等价翻译</a><a class="toc-l3" href="#s17">展开二项式</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a href="relations-inverse-composition-logic.html">第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a class="toc-l3" href="combinatorics-counting.html">▸ 第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a href="divisibility-euclidean-algorithm.html">第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a href="modular-inverse-rsa-matrices-intro.html">第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a href="supp-set-proof-workshop.html">补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</h1><p class="lead">Combinatorics: Four Counting Formulas, Pascal’s Triangle and the Binomial Theorem <span class="badge mute">30565</span> <span class="badge mute">第 7 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 计数与归纳</a></p><p class="src">原始文件：<code>07-lesson.pdf</code> <code>08-exercise.pdf</code> <code>Lecture5_Combinatorics and proof by induction.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 7 讲只有一件事：数清楚“从 n 个选项里选 k 次”有多少种做法。听起来简单，但四种情形（能否重复 × 顺序是否重要）给出四个完全不同的公式，而考试题往往把它们混在同一道题里考。</p><p>这一讲的另一条线是二项式系数：<code>C(n, k)</code> 既出现在计数公式里，也出现在 Pascal 三角与二项式展开中。第 8 讲会用归纳法证明 Pascal 递推，第 12 讲会把二项式系数用在矩阵幂上。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>对任一计数问题先问三件事：能重复吗、顺序重要吗、有没有额外限制</li><li>熟练写出四个公式并说出各自的适用条件</li><li>把“函数个数”“单射个数”“双射个数”翻译成计数公式</li><li>用“点与竖线”编码解释可重复无顺序公式 C(k+n−1, k)</li><li>写出 Pascal 三角的前几行，并会用递推公式</li><li>用二项式定理展开 (a + b)ⁿ 并说明系数的组合意义</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">7.1 组合数学在数什么</h3><p>组合数学（combinatorics）研究“一件事能以多少种方式发生”。历史上的两个例子：印度《Bhagabadi Sutra》（约公元前 300 年）问“从甜、辣、涩、酸、咸、苦六种味道中选一、二或三种，有多少种组合”；中国《易经》（约公元前 1000–200 年）的六十四卦，是六条线、每条线有阴（断）阳（连）两态的“可重复排列”，共 2⁶ = 64 种。</p><p>课程把它们统一成一句话：<b>做 k 次选择，开始时有 n 个选项。</b>例如“从 6 个味道里选 3 个”：k = 3、n = 6，不能重复、顺序无关（甜酸咸与酸甜咸是同一盘菜）；“写 6 条线，每条两态”：k = 6、n = 2，可重复、顺序有关（卦象不同）。</p><p>动手之前必须回答三个问题：(a) 能重复吗？(b) 顺序重要吗？(c) 还有别的限制吗？前两条决定用哪个公式，第三条决定这道题是否“超出四公式范围”。课件给的例子 “4 位老师教 7 个班，每人至少教一个班” 就属于第三条：因为“至少一个”是额外限制，不能直接套公式。</p><h3 id="s3">7.2 四个公式的总表</h3><table><tr><th></th><th>顺序重要 order matters</th><th>顺序无关 order doesn’t matter</th></tr><tr><td>允许重复 with repetition</td><td>n<sup>k</sup></td><td>C(k + n − 1, k)</td></tr><tr><td>不允许重复 no repetition</td><td>n! / (n − k)!</td><td>C(n, k) = n! / (k!(n − k)!)</td></tr></table><p>记忆方法：<b>先看重复</b>（重复 → 幂或“点线编码”；不重复 → 阶乘或二项式系数），<b>再看顺序</b>（顺序 → 除 (n−k)! 或直接相乘；无关 → 再除 k!）。四格里对角线上的两个公式最容易混：<code>n<sup>k</sup></code> 与 <code>C(k+n−1,k)</code> 都是“可重复”，区别只在顺序。</p><h3 id="s4">7.3 可重复且顺序重要：n<sup>k</sup></h3><p>做 k 次选择、每次 n 个选项、可重复、顺序重要（两次选择结果只要某一位不同就算不同）。第 1 次有 n 个选项，第 2 次仍有 n 个（前面的选择不限制后面的），……第 k 次仍是 n 个，故总数 <code>n<sup>k</sup> = n × n × … × n</code>（k 个因子）。</p><p>典型例子：三位数密码锁，每位 0–9，允许 999、456 与 654 不同，故共 10³ = 1000 种（也可理解为从 000 = 0 到 999 共 1000 个数）。Ex1：一周 6 道题，每题“做了/没做”，填分表的方式有 2⁶ = 64 种。Ex2：A 有 12 个元素，则 <code>A³ = A × A × A</code> 有 12³ = 1728 个元素。Ex3：B 有 3 个元素，则有序对有 3² = 9 个（无序的二元子集只有 C(3,2) = 3 个）。</p><p>与函数的关系：若 #A = k、#B = n，则从 A 到 B 的函数共 <code>n<sup>k</sup></code> 个。理由是对 A 的每个元素独立地选一个像，k 个元素各 n 种选择。这条把“计数”与“函数”直接连起来：Ex6 问 #A = 3、#B = 4 时有多少函数，答 4³ = 64。</p><h3 id="s5">7.4 不重复且顺序重要：n!/(n−k)!</h3><p>第 1 次 n 个选项，第 2 次 n − 1 个（不能选已选的），…，第 k 次 n − k + 1 个，故总数 <code>n(n−1)…(n−k+1) = n!/(n−k)!</code>。记号 <code>a! = a(a−1)(a−2)…3·2·1</code>，并约定 0! = 1。</p><p>经典例子（源文件 p19）：芬兰冰球联赛 15 支队伍，发金、银、铜牌，不允许并列。金牌 15 种、银牌 14 种、铜牌 13 种，故 15 × 14 × 13 = 2730 种。课件把 2730 个三元组逐一列出，说明“顺序不同算不同结果”（HPK, IFK, ILV 与 HPK, ILV, IFK 是两种）。</p><p>Ex4：三个任务 E（查邮件）、H（做作业）、C（上课），安排顺序有 3! = 6 种。Ex5：#A = 3、#B = 4 时单射有 4 × 3 × 2 = 24 个；#A = 4、#B = 3 时没有单射（抽屉原理：4 个元素映到 3 个值必撞车），公式给 3!/(3−4)! 无意义，说明必须 k ≤ n。</p><p>趣味等式：六周有多少秒？<code>10! = 60 × 60 × 24 × 7 × 6 = 3628800</code>。因为 60 秒 × 60 分 × 24 小时 × 7 天 × 6 周，恰好是 10! 的分解。</p><h3 id="s6">7.5 单射与双射的个数</h3><p>当 #A = k、#B = n 且 k ≤ n 时，单射 f: A → B 的个数是 <code>n!/(n−k)!</code>（k 个因子相乘）。特别地，当 #A = #B = n 时，双射个数是 <code>n!</code>——这正是“n 个元素的排列数”。</p><p>满射的个数不在本课程范围内，因为它很难（与 Stirling 数有关）。考试若出现“满射计数”，通常只是要求判断“这属于哪一类”，或说明“不能直接套公式”。</p><h3 id="s7">7.6 不重复且顺序无关：C(n, k)</h3><p>先按“有顺序”选：<code>n!/(n−k)!</code> 种；每个最终的无序选择对应 k! 种不同的排列（k 个元素的全排列），故要除以 k!：<code>C(n, k) = n!/((n−k)!·k!)</code>，读作“n choose k”，称为二项式系数（binomial coefficient）。</p><p>例（源文件 p27–p28）：从六种味道里选两种做菜，不能重复（甜甜不算），顺序无关（甜酸 = 酸甜）。按有序算是 6 × 5 = 30 种，每种无序组合被数了 2! = 2 次，故 <code>30/2 = 15</code> 种。课件把 30 个有序对全部列出再两两配对，直观展示“除以 k!”的过程。</p><p>性质：<code>C(n, k) = C(n, n−k)</code>（选 k 个等价于留下 n−k 个）；C(n, 0) = C(n, n) = 1；<code>C(n, 1) = n</code>。若 #A = n，则 A 的 k 元子集个数为 <code>C(n, k)</code>——这正是第 2 讲幂集 2ⁿ 的加总来源：<code>Σ_k C(n, k) = 2ⁿ</code>。</p><p>Ex7：六种味道选三种，<code>C(6,3) = 20</code>。Ex8：5 元素集合的 2 元子集有 <code>C(5,2) = 10</code> 个。</p><h3 id="s8">7.7 可重复且顺序无关：多重集</h3><p>多重集（multiset）是“顺序无关但允许重复”的集合：作为多重集 <code>{2, 2} ≠ {2}</code>、<code>{2, 3, 2} = {2, 2, 3} ≠ {2, 3}</code>。若 #A = n，则 A 的 k 元多重集个数是 <code>C(k + n − 1, k)</code>。</p><p>推导（点线编码）：一个选择可以这样记录——先约定颜色顺序，然后写一串“点”和“竖线”：每个点代表一个当前颜色的物品，每条竖线代表“换到下一种颜色”。选 k 个物品、有 n 种颜色，就需要 k 个点与 n − 1 条竖线，共 <code>k + n − 1</code> 个符号。任意选定其中哪 k 个位置放点（其余放竖线），就唯一确定一种选择；不同的选择对应不同的符号串。故总数为 <code>C(k + n − 1, k)</code>。</p><p>例（源文件 p33–p37）：用 5 种颜色装 6 个马卡龙，<code>C(6 + 5 − 1, 6) = C(10, 6) = 210</code>。编码 <code>...||.|.|.</code>（颜色顺序绿、黄、紫、红、蓝）表示 3 绿、0 黄、1 紫、1 红、1 蓝。Ex10：黑五购物车恰好 4 件、店里有 100 种商品，<code>C(4 + 100 − 1, 4) = C(103, 4) = 4421275</code> 种。Ex11：5 元素集合的 3 元多重集，<code>C(3 + 5 − 1, 3) = C(7, 3) = 35</code>。</p><h3 id="s9">7.8 四种情形的辨认练习</h3><p>课件给了一组辨析题：哪些问题的答案是 <code>C(10, 5)</code>？(A) 用 0–9 组成 5 位 PIN 码——可重复、顺序重要，应是 10⁵；(B) 10 名学生分成两队各 5 人打篮球——不重复、顺序无关，但“两队”无标签，故是 <code>C(10,5)/2</code>；(C) 从 10 名与会者中选 5 人组成委员会——正是 <code>C(10,5)</code>；(D) 长度 10、含 5 个 1 的比特串——相当于从 10 个位置里选 5 个放 1，也是 <code>C(10,5)</code>。</p><p>2024 年第一次考试第 3 题把这一辨析做成了大题：(1) 12 件不同物品，5 天每天取一件并记录哪天取到哪件——可重复？不，取出的不放回，故“不重复、顺序重要”，<code>12!/7!</code>；(2) 5 个青苹果、4 个红苹果、6 个黄苹果（同色不可区分），买 4 个——不重复？同色可重复取，顺序无关，故“可重复、顺序无关”，但其实只有 3 种颜色，<code>C(4 + 3 − 1, 4) = 15</code>；(3) 10 个 LED 灯串，亮 5 灭 5 的图案——不重复、顺序无关，<code>C(10,5) = 252</code>；(4) 100 元买 A（30 元）、B（10 元）、C（5 元）若干——有预算约束，属 (E) 其他，不能直接套公式。</p><div class="callout warn"><b>额外限制要单独处理</b>只要出现“至少”“恰好”“不能相邻”“两队无标签”“有预算上限”这类条件，就落在四公式之外（E 类）。正确做法是先按公式算出总数，再用减法或分情况处理；若无法处理，就说明它不属于四类（2024 年考题允许这种答案）。</div><h3 id="s10">7.9 Pascal 三角与递推</h3><p>Pascal 三角的每一行是二项式系数：第 0 行 1；第 1 行 1 1；第 2 行 1 2 1；第 3 行 1 3 3 1；第 4 行 1 4 6 4 1；第 5 行 1 5 10 10 5 1；第 6 行 1 6 15 20 15 6 1；第 7 行 1 7 21 35 35 21 7 1。规律是：每个数等于它上方两个数之和。</p><p>用公式写就是 <code>C(n, k−1) + C(n, k) = C(n+1, k)</code>。证明思路（第 8 讲用归纳法完成）：假设第 n 行恰好是 C(n,0), C(n,1), …, C(n,n)，则由递推与首尾的 1，第 n+1 行就是 C(n+1,0), …, C(n+1,n+1)。</p><p>组合解释（更直观）：从 n+1 个元素里选 k 个，盯住某个特定元素 e。若不选 e，则要从其余 n 个里选 k 个，有 C(n,k) 种；若选 e，则还要从其余 n 个里选 k−1 个，有 C(n,k−1) 种。两类互斥且穷尽，故相加。</p><h3 id="s11">7.10 二项式定理</h3><p>二项式（binomial）是形如 <code>(a + b)ⁿ</code>（n ∈ N）的多项式，a、b 可以是变量或数。例：<code>(1 + x)² = 1 + 2x + x²</code>；<code>(y + z)³ = y³ + 3y²z + 3zy² + z³</code>；<code>(3 + a)⁵ = 3⁵ + 5·3⁴a + 10·3³a² + 10·3²a³ + 5·3a⁴ + a⁵</code>。</p><p>定理：对一切 n ∈ N，<code>(a + b)ⁿ = Σ<sub>k=0</sub><sup>n</sup> C(n, k) a<sup>n−k</sup> b<sup>k</sup> = C(n,0)aⁿ + C(n,1)a<sup>n−1</sup>b + … + C(n,n−1)ab<sup>n−1</sup> + C(n,n)bⁿ</code>。</p><p>证明（组合证明）：把 (a + b)ⁿ 看成 n 个因子 (a + b) 相乘。展开时每个因子贡献一个 a 或一个 b；要得到项 <code>a<sup>n−k</sup>b<sup>k</sup></code>，必须恰有 k 个因子贡献 b。选哪 k 个因子贡献 b 的方式有 <code>C(n, k)</code> 种，故该项系数为 C(n, k)。这就是“二项式系数”这个名字的来源。</p><p>特例：取 a = b = 1 得 <code>Σ C(n,k) = 2ⁿ</code>（子集总数）；取 a = 1、b = −1 得 <code>Σ (−1)<sup>k</sup> C(n,k) = 0</code>（偶数子集与奇数子集一样多）。</p><h3 id="s12">7.11 四个常见陷阱的对照</h3><p>陷阱一：把“不计顺序”算成“计顺序”。检验办法是问自己“交换两个被选项，算不算新结果”。陷阱二：把“不放回”当成“放回”。检验办法是问“同一个东西能被选两次吗”。陷阱三：忘了“无标签分组”要除以组数的阶乘（10 人分两队各 5 人，<code>C(10,5)/2 = 126</code>，因为 (ABCDE|FGHIJ) 与 (FGHIJ|ABCDE) 是同一分法）。陷阱四：圆排列忘记固定一个人（n 人围坐为 (n−1)!，不是 n!）。这四条覆盖了本课程计数题 90% 的失分点。</p><p>还有一个“反向陷阱”：把本该乘起来的分步过程写成相加。判断依据是独立选择（每一步的选项数与前面无关）用乘法原理，互斥情形（要么这样、要么那样）用加法原理。例如“密码前两位是字母、后两位是数字”是 26² × 10²（乘）；“首字母是 A 或 B”是 2 × …（乘）而不是 26 + …（加）。写答案前先问一句：这些情况会同时发生吗？</p><div class="callout idea" data-ext="combinatorics-counting-0"><b>推导补充</b><p>计数前先回答三问：能重复吗、顺序重要吗、还有别的限制吗，前两问决定四公式中的哪一格，第三问决定是否超纲。四格里最容易混的是两个可重复公式：顺序重要时每次都有 n 个选项，做 k 次得 nᵏ；顺序无关时用点线编码得 C(k+n−1,k)。不重复时顺序重要是 n!/(n−k)!，顺序无关再除以 k! 得 C(n,k)。函数计数直接接上：#A=k、#B=n 时从 A 到 B 的函数共 nᵏ 个，因为 A 的每个元素独立选一个像。至少一个这类额外限制不能直接套公式。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>combinatorics</td><td>组合数学</td><td>Counting in how many ways something can happen.</td></tr><tr><td>repetition</td><td>允许重复</td><td>The same option may be chosen several times.</td></tr><tr><td>order matters</td><td>顺序重要</td><td>Two selections in different orders count as different.</td></tr><tr><td>factorial</td><td>阶乘</td><td>a! = a(a−1)…2·1, with 0! = 1.</td></tr><tr><td>permutation</td><td>排列</td><td>An ordered selection without repetition: n!/(n−k)!.</td></tr><tr><td>combination</td><td>组合</td><td>An unordered selection without repetition: C(n, k).</td></tr><tr><td>binomial coefficient</td><td>二项式系数</td><td>C(n, k) = n!/(k!(n−k)!), read “n choose k”.</td></tr><tr><td>multiset</td><td>多重集</td><td>Order does not matter but repetition is allowed: {2,2} ≠ {2}.</td></tr><tr><td>dots and bars</td><td>点线编码</td><td>k dots and n−1 bars encode a multiset.</td></tr><tr><td>Pascal’s triangle</td><td>帕斯卡三角</td><td>Each entry is the sum of the two above it.</td></tr><tr><td>Pascal’s rule</td><td>帕斯卡递推</td><td>C(n,k−1) + C(n,k) = C(n+1,k).</td></tr><tr><td>binomial theorem</td><td>二项式定理</td><td>(a+b)ⁿ = Σ C(n,k) a<sup>n−k</sup> b<sup>k</sup>.</td></tr><tr><td>surjection count</td><td>满射计数</td><td>Hard; involves Stirling numbers, not required here.</td></tr><tr><td>injection count</td><td>单射计数</td><td>n!/(n−k)! for k ≤ n.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 p19）15 支队伍发金、银、铜牌，不允许并列，有多少种结果？</div><p>三问：能重复吗？不能（一支队伍只能拿一块牌）；顺序重要吗？重要（金 ≠ 银）；有额外限制吗？没有。故属“不重复、顺序重要”，用 <code>n!/(n−k)!</code>。</p><p>分步：金牌 15 种；银牌在剩下 14 支里选，14 种；铜牌 13 种。故 <code>15 × 14 × 13 = 2730</code>。</p><p>也可写成 <code>15!/(15−3)! = 15!/12! = 2730</code>。检验：若把“只选三支获奖队伍、不计名次”，则是 <code>C(15,3) = 455</code>，2730/455 = 6 = 3!，正是“每组的 3! 种名次”。</p></div><div class="qa"><div class="q">例 2　（源文件 p33–p37）用 5 种颜色装 6 个马卡龙，有多少种装法？</div><p>三问：能重复吗？能（可以全是绿的）；顺序重要吗？不重要（只看每种颜色几个）；额外限制？没有。故属“可重复、顺序无关”，用 <code>C(k+n−1, k)</code>。</p><p>编码：约定颜色顺序，用 6 个点表示 6 个马卡龙、4 条竖线分隔 5 种颜色，共 10 个符号。任选 6 个位置放点即可。</p><p>计算：<code>C(6 + 5 − 1, 6) = C(10, 6) = 10!/(6!·4!) = (10·9·8·7)/(4·3·2·1) = 210</code>。</p><p>验证另一个方向：若用“隔板法”，把 6 个相同的球分到 5 个不同的盒子，允许空盒，正是 <code>C(6+5−1, 5−1) = 210</code>，两种说法一致。</p></div><div class="qa"><div class="q">例 3　（源文件 p27–p28）从 6 种味道里选 3 种做菜（不重复、顺序无关），有多少种？</div><p>按有序算：6 × 5 × 4 = 120 种有序三元组。</p><p>每种无序组合被数了 3! = 6 次（例如 甜酸咸、甜咸酸、酸甜咸……），故 <code>120/6 = 20</code>。</p><p>用公式：<code>C(6, 3) = 6!/(3!·3!) = 720/36 = 20</code>。</p><p>对照：若顺序重要（比如“第一口吃什么”），答案就是 120；若允许重复（甜甜辣也算），则是 <code>C(3+6−1,3) = C(8,3) = 56</code>。三个答案必须分清。</p></div><div class="qa"><div class="q">例 4　（2023 年第二次考试第 3 题）甜甜圈店有 6 种口味，买一盒 12 个，只计每种的数量、不计顺序，有多少种选法？</div><p>可重复（可以全买香蕉味）、顺序无关（只看数量），无额外限制，故用 <code>C(k + n − 1, k)</code>，其中 k = 12、n = 6。</p><p>计算：<code>C(12 + 6 − 1, 12) = C(17, 12) = C(17, 5)</code>。</p><p><code>C(17,5) = 17·16·15·14·13 / (5·4·3·2·1) = 742560/120 = 6188</code>。</p><p>易错：若误用 <code>C(6,12)</code>（无意义）或 <code>6¹²</code>（当成有序），都会得到完全错误的数。判断“顺序无关”是关键。</p></div><div class="qa"><div class="q">例 5　（2024 年第一次考试第 3 题）把四个情境归类并计数。</div><p>(1) 12 件不同物品，5 天每天取一件并记录——不放回、有顺序：<code>12·11·10·9·8 = 95040 = 12!/7!</code>。</p><p>(2) 三种颜色苹果共 15 个（同色不可区分），买 4 个——可重复（同色可多取）、顺序无关：<code>C(4+3−1, 4) = C(6,4) = 15</code>。</p><p>(3) 10 个灯亮 5 灭 5——不重复、顺序无关（位置固定，只选哪些亮）：<code>C(10,5) = 252</code>。</p><p>(4) 100 元买 A、B、C 若干——有预算等式约束（30a + 10b + 5c ≤ 100），属 (E) 其他，题目明确说不需要算出具体数。</p><p>归纳：四公式只覆盖“无额外限制”的情形；带“至少/恰好/预算/无标签”字样的题一律要先分类再处理。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>某网站密码要求 8 位，每位可取 26 个字母或 10 个数字，区分大小写，有多少种密码？</li><li>从 10 人中选 3 人组成小组（不分职务），有多少种？若分别担任组长、记录员、计时员呢？</li><li>用 4 种颜色给 7 个相同的球上色，只计每种颜色的球数，有多少种？</li><li>8 人围成一圈就座，有多少种坐法？（提示：圆排列先固定一个人）</li><li>展开 (2x − 1)⁴，并写出各项系数之和。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 每位 36 种，可重复、顺序重要：<code>36⁸ = 2 821 109 907 456</code>（约 2.82 × 10¹²）。</p><p><b>2.</b> 不分职务：<code>C(10,3) = 120</code>；分职务：<code>10·9·8 = 720 = 10!/7!</code>。比值 720/120 = 6 = 3!。</p><p><b>3.</b> 可重复、顺序无关：<code>C(7+4−1, 7) = C(10,7) = C(10,3) = 120</code>。</p><p><b>4.</b> 圆排列：先固定一人消除旋转对称，其余 7 人排列，故 <code>7! = 5040</code>。（若还考虑翻转对称，则再除以 2。）</p><p><b>5.</b> <code>(2x−1)⁴ = 16x⁴ − 32x³ + 24x² − 8x + 1</code>；系数和令 x = 1 得 <code>(2−1)⁴ = 1</code>，也可由 16−32+24−8+1 = 1 验证。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s13">考点分层</h2><div class="callout exam"><b>必考</b>① 判断计数情境属于四类中的哪一类并计算（2022 年第二次考试第 3 题、2023 年第二次考试第 3 题、2024 年第一次考试第 3 题都是这个结构）。② 计算 C(n,k) 与 n!/(n−k)!。③ 用 Pascal 递推或二项式定理展开（2022 年第三次考试第 3 题要求证明 Pascal 法则，8 分）。④ 结合“函数/单射/双射个数”出题。</div><div class="callout warn"><b>易错点</b>① 把“顺序无关”当成“顺序重要”，多算 k! 倍。② 把“可重复”漏掉，少算许多。③ 无标签分组忘除 2（两队各 5 人）。④ 圆排列忘记固定一个人，多算 n 倍。⑤ 忽略额外限制（至少、恰好、预算），硬套公式。</div><div class="callout warn"><b>失分点</b>只写公式不写“为什么是这一类”（三问的答案），会被扣说明分；Pascal 法则的证明只写代数变形、不写组合解释，会丢掉“证明”的实质分。</div><div class="callout tip"><b>进阶</b>① 记住 <code>Σ C(n,k) = 2ⁿ</code> 与 <code>C(n,k) = C(n,n−k)</code>。② 会用点线编码解释隔板法。③ 知道满射计数涉及 Stirling 数，不属本课程。④ 会把“含恰好 k 个 1 的比特串”翻译成 C(n,k)。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">方法清单</h2><h3 id="s15">计数问题的三问</h3><ol class="steps"><li>问一：同一样东西能被选多次吗（可重复）</li><li>问二：交换选择顺序会得到不同结果吗（顺序）</li><li>问三：有没有“至少/恰好/不相邻/无标签”的额外限制</li><li>前两问定位四格表中的一格；第三问若为“有”，先归类为 E 再单独处理</li><li>最后代入公式并做数量级检查（结果不应超过 n<sup>k</sup>）</li></ol><h3 id="s16">常用等价翻译</h3><ul class="checklist"><li>从 n 个里选 k 个（不计顺序、不放回）= C(n,k)，也是 n 元集的 k 元子集数</li><li>n 个元素的排列 = n!，也是 n 元集上的双射数</li><li>k 个元素的单射 A → B（#B = n）= n!/(n−k)!</li><li>把 k 个相同球放进 n 个不同盒子（可空）= C(k+n−1, k)</li><li>长度 n、含 k 个 1 的 0/1 串 = C(n,k)</li></ul><h3 id="s17">展开二项式</h3><ol class="steps"><li>写出 (a + b)ⁿ = Σ C(n,k) a<sup>n−k</sup> b<sup>k</sup></li><li>从 Pascal 三角第 n 行取系数（n 小的时候最快）</li><li>逐项写出，注意符号：b 为负时奇次项变号</li><li>用 x = 1 检验系数和是否等于 (a + b)ⁿ 在 x = 1 的值</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>07-lesson.pdf</td><td>p3–p5</td><td>四公式总表、Pascal 三角速览、第 7 周学习目标 8.1–8.2</td></tr><tr><td>07-lesson.pdf</td><td>p8–p12</td><td>组合数学的历史例子（Bhagabadi Sutra、易经）、三问框架、密码锁例子</td></tr><tr><td>07-lesson.pdf</td><td>p13–p17</td><td>可重复且顺序重要 n<sup>k</sup>、Ex1–Ex3、笛卡尔积元素个数、函数个数 n<sup>k</sup></td></tr><tr><td>07-lesson.pdf</td><td>p19–p25</td><td>不重复且顺序重要 n!/(n−k)!、冰球奖牌 2730、Ex4–Ex6、单射与双射个数、满射为何难</td></tr><tr><td>07-lesson.pdf</td><td>p27–p31</td><td>不重复且顺序无关 C(n,k)、味道例子、Ex7–Ex9、子集个数公式</td></tr><tr><td>07-lesson.pdf</td><td>p33–p39</td><td>马卡龙问题的点线编码、可重复且顺序无关 C(k+n−1,k)、Ex10–Ex11、多重集定义</td></tr><tr><td>07-lesson.pdf</td><td>p41–p43</td><td>四格表总结、C(10,5) 辨析题</td></tr><tr><td>07-lesson.pdf</td><td>p44–p46</td><td>Pascal 三角与递推、二项式定义与二项式定理的组合证明</td></tr><tr><td>08-exercise.pdf</td><td>全篇</td><td>计数与排列组合的配套练习（含两行记号与置换）</td></tr><tr><td>（跳过）</td><td>p6–p7、p26、p32、p43</td><td>目录页与讨论页，内容已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>隔板法与点线编码的对照、圆排列、C(10,5)/2 的无标签分组说明、2024 年四情境题的完整归类</td></tr></table></section><div class="lnav"><a class="prev" href="cardinality-countable-sets.html">← 第 6 讲 · 基数、可数集与对角线法</a><a class="next" href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

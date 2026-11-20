@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 讲 · 办公软件与 AI（Word、Excel、Copilot） · 30332</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT30A1000 学习工具与AI</a> / <a href="part-1.html">第 1 章 学习工具与办公软件</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、Microsoft 365 在 LUT 是什么</a><a class="toc-l2" href="#s3">二、Word：写作的主工具</a><a class="toc-l3" href="#s4">2.1 一个省时间的技巧：官方论文模板</a><a class="toc-l3" href="#s5">2.2 共享文档：四种权限</a><a class="toc-l3" href="#s6">2.3 导出 PDF</a><a class="toc-l3" href="#s7">2.4 长文档靠三件事维持秩序</a><a class="toc-l3" href="#s8">2.5 协作冲突怎么处理</a><a class="toc-l3" href="#s9">2.6 为什么用链接而不是附件</a><a class="toc-l3" href="#s10">2.7 引用工具到底替你做了什么</a><a class="toc-l2" href="#s11">三、Excel：数据、计算与图表</a><a class="toc-l3" href="#s12">3.1 从数据到图表</a><a class="toc-l3" href="#s13">3.2 三个最基本的计算</a><a class="toc-l3" href="#s14">3.3 透视表的四步</a><a class="toc-l2" href="#s15">四、M365 Copilot：AI 助手，但不在 Word/Excel 里</a><a class="toc-l3" href="#s16">4.1 怎么用：聊天与“+”号</a><a class="toc-l3" href="#s17">4.2 Copilot Agents：把重复的指令变成助手</a><a class="toc-l3" href="#s18">4.3 给 Copilot 的提示词写成四段</a><a class="toc-l3" href="#s19">4.4 Copilot 的三种安全用法与三种危险用法</a><a class="toc-l3" href="#s20">4.5 把 Copilot 的产出搬进文档的三条路径</a><a class="toc-l2" href="#s21">五、三个工具如何配合：一份报告的流水线</a><a class="toc-l2" href="#s22">写报告前</a><a class="toc-l2" href="#s23">共享与提交前</a><a class="toc-l2" href="#s24">用 Copilot 时</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="tools-services.html">第 1 讲 · 学习工具与服务</a><a class="toc-l3" href="office-ai.html">▸ 第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a href="presentation-tools.html">第 3 讲 · 演示工具与 AI</a><a href="drawing-design.html">第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a href="ai-generated-content.html">第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</a><a href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明</a></div></aside><article><h1>第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</h1><p class="lead">Office Software and AI: Word, Excel and M365 Copilot <span class="badge mute">30332</span> <span class="badge mute">第 2 / 6 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 学习工具与办公软件</a></p><p class="src">原始文件：<code>Lecture 2 Office software and AI.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 1 讲把“去哪找”讲完了，本讲讲“找到之后用什么写”。LUT 给每个学生配了完整的 Microsoft 365：Word、Excel、PowerPoint、OneDrive、Teams，以及 M365 Copilot。本讲只深入三个最常用的：Word（写作）、Excel（数据）、Copilot（AI 助手）。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 Word 的样式与引用工具写出格式一致的长文档，并导出 PDF</li><li>按“可编辑 / 可审阅 / 可查看 / 不可下载”设置共享权限</li><li>用 Excel 做一张表、一个透视汇总与一张图表</li><li>判断 Copilot 能做什么、不能做什么（它不在 Word/Excel 里）</li><li>用 Copilot 建一个可重复使用的 Agent</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、Microsoft 365 在 LUT 是什么</h2><p>它是一整套面向所有 LUT 学生的生产力工具：提供 Word、Excel、PowerPoint、OneDrive、Teams 与 Copilot AI；可在桌面、浏览器与手机上使用；文件通过 OneDrive 自动同步；支持实时协作与 AI 辅助的工作流；是经学校批准、可用于学习与研究的安全环境。</p><p>这句话里有两个容易被忽略的词：<b>自动同步</b>与<b>安全环境</b>。前者意味着你不需要“记得保存”，后者意味着你不应该把课程材料搬到未经批准的个人网盘。</p><h2 id="s3">二、Word：写作的主工具</h2><p>Word 是写报告、论文、文档与学位论文的主工具：多数书面作业要求用它提交；它支持学术写作的引用与参考文献工具；支持实时协作编辑与评论，能保证小组作业与长文档的格式一致；内置样式、标题、引用与模板；与 OneDrive 完全集成，提供自动保存与版本历史；桌面、浏览器、手机都能用。</p><h3 id="s4">2.1 一个省时间的技巧：官方论文模板</h3><p>课件给了一个非常实用的提示：用搜索工具在 eLUT 上找到<b>官方且最新的 LUT 学位论文 Word 模板</b>；这个模板稍作修改就能用于课程作业。它的价值在于：页边距、字体、标题层级、封面与参考文献格式已经符合学校要求，你只需要替换内容。</p><h3 id="s5">2.2 共享文档：四种权限</h3><p>共享的步骤是：找到要共享的人，或直接输入邮箱地址；<b>设置文档权限</b>——可编辑（can edit）、可审阅（review）、可查看（view）、或不可下载（can’t download）；加一句消息说明这份文档是什么；“复制链接”会生成可分享的链接（记得同时设对权限）；“发送”会把链接与消息发给选定的人。</p><table><tr><th>权限</th><th>对方能做什么</th><th>什么时候用</th></tr><tr><td>Can edit</td><td>直接改正文</td><td>小组共同撰写</td></tr><tr><td>Review</td><td>用修订/批注提意见，不直接改</td><td>请同学或教师评审</td></tr><tr><td>View</td><td>只能看</td><td>发给教师确认进度</td></tr><tr><td>Can’t download</td><td>能看但不能下载</td><td>含敏感或个人数据的材料</td></tr></table><h3 id="s6">2.3 导出 PDF</h3><p>操作只有四步：打开 File 菜单 → 选择 Export → Download as PDF → Word 弹出 “Your document is ready” 对话框后按 Download。导出前先检查三件事：目录页码是否更新、图表编号是否连续、字体是否被替换。</p><h3 id="s7">2.4 长文档靠三件事维持秩序</h3><p>第一，<b>样式驱动结构</b>：标题 1/2/3 用样式而不是手动加粗，目录与编号才会自动更新；第二，<b>分节符控制页眉页脚</b>：封面、目录、正文各一节，页码从正文重新开始；第三，<b>版本历史</b>：OneDrive 会保留旧版本，改坏了可以回到上一版，不必靠“final_v2”这种文件名。</p><h3 id="s8">2.5 协作冲突怎么处理</h3><p>两人同时改同一段时，Word 会保留双方的修订。处理顺序是：先看版本历史确认谁改了什么，再逐条接受或拒绝；评审阶段统一用 Review 权限收意见，定稿阶段只留一个人有编辑权。这一步能避免“最后一份文件是谁的”这种典型小组事故。</p><h3 id="s9">2.6 为什么用链接而不是附件</h3><p>把 Word 文件作为附件发给五个人，你会得到五个版本；发共享链接，只有一份文件。课件强调 OneDrive 是“与教师共享文档的主要方式”，原因就在这里：链接指向同一份真源，权限可以随时收回，版本历史可以追溯。</p><p>判断标准很简单：需要对方<b>改</b>，给可编辑链接；需要对方<b>看</b>，给只读链接；需要对方<b>评</b>，给 Review 链接。附件只用于“必须留一份不可改的快照”，例如提交到 Moodle 的最终 PDF。</p><h3 id="s10">2.7 引用工具到底替你做了什么</h3><p>Word 的引用与参考文献工具做三件事：把你输入的来源（作者、年份、标题、出版信息）存成一条记录；在正文插入引用标记；在文末按选定样式自动生成参考文献列表。它的价值不是“帮你查资料”，而是“保证正文标记与文末条目一一对应，并且在改动顺序后自动重排”。</p><p>因此有两个操作纪律：来源信息必须自己核对（工具不会验证真伪）；样式一经确定就全文统一，不要手工改某一条的格式，否则自动重排会把它改回去。</p><p>课程报告常见的要求是“正文有引用、文末有列表、格式统一”。三者都做到，才算“按学术格式报告”——这正是本课程学习成果里的一条。</p><h2 id="s11">三、Excel：数据、计算与图表</h2><p>Excel 能做的事：创建与编辑表格、计算与结构化数据；用公式、函数与<b>透视表（pivot tables）</b>分析数据；用图表把信息可视化；通过 OneDrive 实时协作编辑；使用预算、计划、数据跟踪等模板；尤其适合实验报告、研究数据、统计与项目工作。</p><p>课件还给了一句很坦诚的建议：请通过搜索网上适合自己学习风格的教程来掌握 Excel 基础。换句话说，课堂不讲函数语法，但作业会用到。</p><h3 id="s12">3.1 从数据到图表</h3><p>课件给的四步是：选 Insert 选项卡 → 选中数据 → 选图表类型（示例用的是饼图 Pie chart）→ 右键点图表并选 Format 进行编辑。</p><ol class="steps"><li>把原始数据整理成“一行一条记录、一列一个字段”的规范表</li><li>选中数据区域（含表头）</li><li>Insert → 选择图表类型（比较用柱状、趋势用折线、占比用饼图）</li><li>右键图表 → Format，改标题、坐标轴、数据标签</li><li>把图表复制到报告时，保留数据来源与单位</li></ol><div class="callout tip"><b>先规范再分析</b>透视表与图表都依赖“规范表”。如果第一行不是表头、或同列混了数字与文字，后面每一步都会出错。</div><h3 id="s13">3.2 三个最基本的计算</h3><p>课件只要求会用公式、函数与透视表，没有列具体函数。作为操作补充（非课件原文），学生最常用的是三个：<code>SUM</code> 求和、<code>AVERAGE</code> 求平均、<code>COUNTIF</code> 条件计数（例如统计不及格人数）。它们的共同前提仍是规范表：一行一条记录、一列一个字段。</p><p>写公式时用单元格引用而不是手打数字，表格增删行后结果才会自动更新；做完后用一两个手算结果抽查，避免整列引用错位。</p><h3 id="s14">3.3 透视表的四步</h3><p>透视表的价值是把几百行数据压成几张汇总。四步是：选中规范表 → Insert → PivotTable → 在字段面板把字段拖到四个区域：<b>行</b>（分类维度）、<b>列</b>（第二维度）、<b>值</b>（要计算的数字，默认求和，可改为平均/计数）、<b>筛选</b>（用于切片）。</p><p>常见错误是“值”区放了文本字段，结果只能计数；或行区放了唯一值（如姓名），汇总等于没汇总。判断标准：透视后的行数应明显少于原始行数，否则说明维度选错了。</p><h2 id="s15">四、M365 Copilot：AI 助手，但不在 Word/Excel 里</h2><p>Copilot 是 AI 助手，有网页版与手机应用；帮做通用任务：写作、总结、解释、头脑风暴；能生成文本、想法、大纲、邮件与学习笔记；适合做规划、调研与理解复杂主题；<b>它与 Office 工具并肩工作，但并不直接在 Word/Excel 里面</b>；用 LUT 账号可以使用免费版。</p><p>它能帮你做的事（课件清单）：总结长文档或文章；重写或改进你的文本；为项目或作业生成想法；创建解释、示例、图表或清单；准备邮件、报告或学习计划。</p><h3 id="s16">4.1 怎么用：聊天与“+”号</h3><p>打开 Copilot 后，在 AI Chat 里直接打字或说话即可；它能读取并分析不同类型的文档与文件；用 <b>“+”号</b>可以把内容加给它——从你的电脑，或从 OneDrive 云端。</p><h3 id="s17">4.2 Copilot Agents：把重复的指令变成助手</h3><p>Agent 是可定制的 AI 助手，你可以创建一个来<b>重复或自动执行特定任务</b>。它的意义是：不必每次都给同样的指令，而是建一个记得自己角色、目标与规则的助手。</p><p>创建步骤：直接输入你的想法，或浏览现成的 Agent；Copilot 会引导你完成流程；在配置页可以修改，或从零创建你想要的 Agent；<b>技巧</b>是看看现成 Agent 是怎么做的，从中学；如果卡住，就问 Copilot 下一步怎么做。</p><div class="callout warn"><b>Copilot 的两个边界</b>第一，它不在 Word/Excel 内部，所以“在文档里点一下自动改全文”这种操作不要期待；第二，它生成的内容仍需要核对，并按各课程要求写 Declaration of AI usage。</div><h3 id="s18">4.3 给 Copilot 的提示词写成四段</h3><p>可复用的结构是：<b>角色</b>（你是谁、按什么标准判断）→ <b>任务</b>（要产出什么）→ <b>上下文</b>（课程要求、受众、已有材料，用 + 号上传）→ <b>输出格式</b>（几段、多长、要不要清单）。四段齐全，产出才稳定；缺哪一段，就等着返工哪一部分。</p><ul><li>角色：Act as a thesis supervisor in software engineering.</li><li>任务：Review Section 3 and list three weaknesses with locations.</li><li>上下文：上传课程评分标准与本节草稿。</li><li>格式：A table with columns Issue / Location / Suggested fix, max 8 rows.</li></ul><h3 id="s19">4.4 Copilot 的三种安全用法与三种危险用法</h3><p>安全用法：让它解释一段你没读懂的方法；让它按评分标准列出你草稿的薄弱点；让它把长表格改写成三行摘要（你再核对数字）。这三种都发生在“你已经有一份自己的工作”之后。</p><p>危险用法：让它直接写出你还没想的结论；让它生成参考文献（极易编造）；让它把整段英文改写成“看起来专业”的句子而你无法核对。判断标准仍是第 6 讲那条：用完能不能脱稿讲出来。</p><h3 id="s20">4.5 把 Copilot 的产出搬进文档的三条路径</h3><p>第一条是复制文本：适合短清单与提纲，粘进 Word 后必须套用本文章的样式，否则字体会突然变样。第二条是让 Copilot 生成文件再下载：适合表格与演示骨架，下载后放在 OneDrive 同一文件夹，避免出现“桌面版”和“云端版”两个真源。</p><p>第三条是手工转录：听起来最笨，但对“必须自己负责的结论”最安全——你读一遍、写一遍、核一遍，错误会在这一步暴露。三种路径可以混用：骨架用第二条，措辞用第一条，结论用第三条。</p><h2 id="s21">五、三个工具如何配合：一份报告的流水线</h2><table><tr><th>阶段</th><th>工具</th><th>产出</th></tr><tr><td>收集与整理数据</td><td>Excel</td><td>规范表、透视汇总、1–2 张图表</td></tr><tr><td>列提纲与写初稿</td><td>Word（可用 Copilot 生成提纲）</td><td>带标题层级的草稿</td></tr><tr><td>排版与引用</td><td>Word 样式 + 引用工具 + 官方模板</td><td>格式一致的正文与参考文献</td></tr><tr><td>评审与修改</td><td>Word 共享（Review 权限）+ 评论</td><td>带批注的版本</td></tr><tr><td>提交</td><td>Word → Export → PDF；Moodle 提交</td><td>PDF 文件</td></tr></table><div class="callout idea" data-ext="office-ai-0"><b>推导补充</b><p>为什么用链接而不是附件？发五个人附件就得到五个版本，链接只指向一份真源，权限可收回、版本历史可追溯。由此推出三种判据：要对方<strong>改</strong>给 Can edit，要对方<strong>评</strong>给 Review，要对方<strong>看</strong>给 View；附件只留给提交 Moodle 的最终 PDF。长文档用样式而非手动加粗，目录与编号才会自动更新，改坏还能回退。</p></div><div class="callout idea" data-ext="office-ai-1"><b>常见误解</b><p>最大的工作流误解是以为 Copilot 嵌在 Word/Excel 里能“点一下改全文”——课件明确它 <em>works alongside, not inside</em>，产出要自己搬进文档。其次别把它当事实来源：它不知道你的评分标准，也常编造参考文献。提示词写成四段——角色（<em>Act as a thesis supervisor</em>）、任务、上下文（用 + 号上传评分标准）、输出格式。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>Microsoft 365</td><td>微软 365 套件</td><td>Word, Excel, PowerPoint, OneDrive, Teams and Copilot for all LUT students.</td></tr><tr><td>style</td><td>样式</td><td>A named set of formatting rules applied to headings and body text.</td></tr><tr><td>heading level</td><td>标题层级</td><td>H1/H2/H3 structure that also feeds the table of contents.</td></tr><tr><td>citation tool</td><td>引用工具</td><td>Built-in Word feature for references and bibliographies.</td></tr><tr><td>version history</td><td>版本历史</td><td>OneDrive keeps older versions so you can restore them.</td></tr><tr><td>document privileges</td><td>文档权限</td><td>Can edit, review, view, or can’t download.</td></tr><tr><td>collaboration</td><td>协作</td><td>Real-time co-editing and commenting in Word and Excel.</td></tr><tr><td>export as PDF</td><td>导出 PDF</td><td>File → Export → Download as PDF.</td></tr><tr><td>pivot table</td><td>透视表</td><td>Summarises large tables by rows, columns and values.</td></tr><tr><td>chart type</td><td>图表类型</td><td>Pie for proportions, bar for comparison, line for trends.</td></tr><tr><td>M365 Copilot</td><td>微软 Copilot</td><td>AI assistant in web and mobile apps; works alongside, not inside, Word/Excel.</td></tr><tr><td>prompt</td><td>提示词</td><td>The instruction you give the AI; output quality reflects input quality.</td></tr><tr><td>Copilot Agent</td><td>Copilot 智能体</td><td>A reusable assistant that remembers its role, goals and rules.</td></tr><tr><td>free version</td><td>免费版</td><td>Available with a LUT account.</td></tr><tr><td>OneDrive sync</td><td>OneDrive 同步</td><td>Files sync automatically across devices.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用官方模板写一份 10 页课程报告并导出 PDF</div><p><b>第 1 步：</b>在 eLUT 搜索并下载最新的 LUT 学位论文 Word 模板；另存为课程报告文件名，放在 OneDrive 的课程文件夹。</p><p><b>第 2 步：</b>用模板自带的标题样式写章节（不要手动加粗改字号）；写完后更新目录，检查页码。</p><p><b>第 3 步：</b>用引用工具插入参考文献；正文中的引用与文末列表要能一一对应。</p><p><b>第 4 步：</b>插入 Excel 生成的图表，统一图注编号（Figure 1、Figure 2）。</p><p><b>第 5 步：</b>File → Export → Download as PDF；打开 PDF 检查分页、字体与图表清晰度。</p><p><b>判断标准：</b>目录页码正确、图表编号连续、字体未被替换、参考文献格式统一。</p></div><div class="qa"><div class="q">例 2　把文档发给教师评审，而不是直接给编辑权</div><p>在 Word 里点共享，输入教师邮箱；权限选 <b>Review</b>（可提批注与修订，但不能直接改正文）；消息里写“Please review Section 2–3 by Friday; comments only, I will apply the changes.”；发送链接。</p><p>为什么这样选：教师需要能标注问题，但不需要改动你的正文；你保留修改权，版本不会被两个人同时改乱。</p><p>如果对方只是要看进度，选 View；如果材料含访谈原文或个人信息，勾选 can’t download。</p></div><div class="qa"><div class="q">例 3　用 Excel 把实验数据变成一张图</div><p>把数据整理成两列（例如“温度 / 产率”），第一行是表头；选中整个区域（含表头）；Insert → 选择散点图或折线图；右键图表 → Format，改坐标轴标题与单位，加上数据标签。</p><p>若要按组汇总，先插入透视表：行放“组别”，值放“产率”的平均值；再用透视结果做柱状图。</p><p><b>常见错误：</b>把单位写进单元格（“25 °C”变成文本，无法计算）；表头有合并单元格；图表没有轴标题，读者不知道数字含义。</p></div><div class="qa"><div class="q">例 4　用 Copilot 做“复习计划”，再把它固化成 Agent</div><p><b>第一次（聊天）：</b>给 Copilot 一段上下文：“I have a 6-lecture course on study tools and AI; exam in 12 days; I can study 90 minutes on weekdays and 3 hours on weekends. Build a day-by-day plan with active recall tasks, and list what to skip if I fall behind.”</p><p><b>第二次（Agent）：</b>把这段需求变成 Agent 的角色与规则——“You are my study planner for CT30A1000. Always ask for my available hours first, then produce a day-by-day plan with active recall and a fallback plan.” 之后每次只需说“update my plan”。</p><p><b>注意：</b>计划里的课程内容必须回到 Moodle 与课件核对；Copilot 不在 Word/Excel 内，产出要自己复制到文档；提交作业时按课程要求写 AI 声明。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出 Word 中“可编辑 / 可审阅 / 可查看 / 不可下载”四种权限各自适用的场景。</li><li>把一份 30 页的 Word 文档导出为 PDF，列出导出前必须检查的三件事。</li><li>给定一张“班级 / 姓名 / 成绩”的表，说明如何用透视表算出每班平均分，并选一种合适的图表。</li><li>Copilot 能做什么、不能做什么？各写三条，并说明“不在 Word/Excel 内”对工作流的影响。</li><li>设计一个用于“每周检查作业格式”的 Copilot Agent：写出它的角色、目标与三条规则。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> Can edit：小组共同撰写；Review：请教师或同学提意见但不改正文；View：只让对方看进度；Can’t download：含个人信息、访谈原文或未公开数据的材料。</p><p><b>2.</b> 检查目录与页码是否更新、图表编号与交叉引用是否连续、字体与页边距是否被替换；另外确认 PDF 里图片清晰、没有空白页。</p><p><b>3.</b> 选中整表 → Insert → PivotTable；行放“班级”，值放“成绩”并设为平均值；图表选柱状图（比较各班），不用饼图（饼图适合占比）。</p><p><b>4.</b> 能：总结长文、改写、生成想法/提纲/清单、准备邮件与计划、读文件（用 + 号加文件）。不能：直接在 Word/Excel 内部改文档、保证事实正确、替代你自己的核对与判断。影响：需要在 Copilot 与 Office 之间复制粘贴，产出要人工校对后再进文档。</p><p><b>5.</b> 角色：“You are a formatting checker for LUT course reports.” 目标：“Find formatting inconsistencies against the official template.” 规则：①只列问题与位置，不改写内容；②按“标题层级 / 图表编号 / 参考文献 / 页边距”四类输出；③不确定时标注“needs human check”。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>Word 共享的四种权限；导出 PDF 的路径（File → Export → Download as PDF）；Excel 图表的四步；Copilot 是网页/手机应用且不在 Word/Excel 内；Copilot Agent 的作用。</div><div class="callout warn"><b>易错 1</b><b>以为 Copilot 在 Word 里。</b>课件原文：works alongside Office tools, but not directly inside Word/Excel。</div><div class="callout warn"><b>易错 2</b><b>共享时默认给“可编辑”。</b>发给教师应用 View 或 Review，否则对方误改会让版本混乱。</div><div class="callout warn"><b>易错 3</b><b>用合并单元格与文本型数字做表。</b>透视表与图表都会失败。</div><div class="callout tip"><b>进阶</b>能解释“为什么官方模板能省时间”：它把格式规范固化成样式，样式又驱动目录与编号，改动内容时结构自动更新。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s22">写报告前</h2><ul class="checklist"><li>已从 eLUT 下载最新官方 Word 模板</li><li>文档已存在 OneDrive 课程文件夹（自动保存已开）</li><li>标题使用样式而非手动加粗</li><li>引用工具已设置为课程要求的引用格式</li><li>图表在 Excel 中生成，编号规则已确定</li></ul><h2 id="s23">共享与提交前</h2><ul class="checklist"><li>共享权限按对象设置（教师 View/Review、组员 Edit）</li><li>共享消息写清“这是什么文件、需要对方做什么、什么时候”</li><li>版本历史中能看到今天的修改记录</li><li>导出 PDF 后逐页检查分页与图表</li><li>在 Moodle 提交的是 PDF（若课程要求）</li><li>按课程要求写了 Declaration of AI usage</li></ul><h2 id="s24">用 Copilot 时</h2><ul class="checklist"><li>提示词里给了角色、任务、受众、格式与限制</li><li>上传的是必要文件（用 + 号从电脑或 OneDrive）</li><li>对产出逐条核对事实与引用</li><li>没有把 Copilot 产出直接当作自己的分析提交</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p3</td><td>Office 365 的组成、跨平台、OneDrive 同步、安全环境</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p4</td><td>Word 的定位、引用工具、协作、样式与模板、版本历史、论文模板提示</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p5</td><td>共享文档的步骤与四种权限</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p6</td><td>导出 PDF 的四步与 “Your document is ready” 对话框</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p7–p8</td><td>Excel 的用途、透视表、模板；Insert → 选数据 → 选图表 → Format</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p9–p10</td><td>Copilot 的定义、能力清单、免费版、AI Chat 与 + 号加文件</td></tr><tr><td>Lecture 2 Office software and AI.pdf.txt</td><td>p11</td><td>Copilot Agents 的定义与创建步骤</td></tr><tr><td>（跳过）</td><td>p1、p12</td><td>封面与结束空白页</td></tr><tr><td>（补充）</td><td>—</td><td>“报告流水线”的五阶段与导出前检查项，属于基于原文功能的流程化整理</td></tr></table></section><div class="lnav"><a class="prev" href="tools-services.html">← 第 1 讲 · 学习工具与服务</a><a class="next" href="presentation-tools.html">第 3 讲 · 演示工具与 AI →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

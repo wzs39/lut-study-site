@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro） · 30332</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT30A1000 学习工具与AI</a> / <a href="part-2.html">第 2 章 演示与设计工具</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、OneNote：数字笔记本</a><a class="toc-l3" href="#s3">1.1 上手三步</a><a class="toc-l3" href="#s4">1.2 搜索、标签与共享</a><a class="toc-l3" href="#s5">1.3 课堂笔记的三栏法</a><a class="toc-l3" href="#s6">1.4 插入文件与“打印输出”的区别</a><a class="toc-l2" href="#s7">二、Visio：把流程画成可交付的图</a><a class="toc-l3" href="#s8">2.1 四种替代用法</a><a class="toc-l3" href="#s9">2.2 画一张流程图的四步</a><a class="toc-l3" href="#s10">2.3 图形语义：让图自己说话</a><a class="toc-l3" href="#s11">2.4 时间线与组织图的两条规则</a><a class="toc-l3" href="#s12">2.5 Visio 网页版的边界与替代</a><a class="toc-l3" href="#s13">2.6 从流程图到检查表：同一份流程的两种交付</a><a class="toc-l2" href="#s14">三、Miro：团队思考的白板</a><a class="toc-l3" href="#s15">3.1 上手：画布、邀请与工具栏</a><a class="toc-l3" href="#s16">3.2 一个可直接用的工作坊流程</a><a class="toc-l3" href="#s17">3.3 权限、导出与复盘</a><a class="toc-l3" href="#s18">3.4 白板的三条协作规则</a><a class="toc-l3" href="#s19">4.1 交付格式与命名</a><a class="toc-l3" href="#s20">3.5 白板规模：超过 15 人怎么办</a><a class="toc-l3" href="#s21">4.2 三种产出，三种保存方式</a><a class="toc-l3" href="#s22">2.7 一张图的两种读者</a><a class="toc-l2" href="#s23">四、三者怎么选</a><a class="toc-l2" href="#s24">建笔记（每次上课前 2 分钟）</a><a class="toc-l2" href="#s25">画图（提交前）</a><a class="toc-l2" href="#s26">团队白板（会后）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="tools-services.html">第 1 讲 · 学习工具与服务</a><a href="office-ai.html">第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a href="presentation-tools.html">第 3 讲 · 演示工具与 AI</a><a class="toc-l3" href="drawing-design.html">▸ 第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a href="ai-generated-content.html">第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</a><a href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明</a></div></aside><article><h1>第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</h1><p class="lead">Drawing and Design Software: OneNote, Visio and Miro <span class="badge mute">30332</span> <span class="badge mute">第 4 / 6 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 演示与设计工具</a></p><p class="src">原始文件：<code>Lecture 4 Drawing and design software.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 2–3 讲处理“文字与演示”，本讲处理“画出来”：笔记与手绘（OneNote）、结构化图表（Visio）、以及协作白板（Miro）。三者分工不同：OneNote 是个人知识库，Visio 是交付级图表，Miro 是团队思考的空间。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 OneNote 建“笔记本—分区—页面”三级结构，做带手绘图的课堂笔记</li><li>用 Visio 模板画出流程图并连接图形、标注判断分支</li><li>用 Miro 组织一次“静默写—聚类—投票”的需求工作坊</li><li>按产出类型（个人笔记/正式图表/团队讨论）选对工具</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、OneNote：数字笔记本</h2><p>OneNote 是 Microsoft 365 里的数字笔记本：可以打字、绘画、手写、插入图片或文件；支持用笔记本（notebook）、分区（section）、页面（page）组织学习材料；桌面、网页、手机都能用。</p><p>为什么用它（课件四条）：把课堂笔记、课程材料与研究整理在一处；通过共享笔记本与同学协作；可以直接在笔记里画示意图、思维导图或草图；跨设备同步，随时学习。</p><h3 id="s3">1.1 上手三步</h3><p>课件的起步只有三件事：为主题或章节添加<b>分区</b>；为笔记、图表或链接添加<b>页面</b>；用文字、绘图、图片或文件来组织笔记。</p><ol class="steps"><li>新建一个“课程名”笔记本</li><li>按周或按章节建分区（如 Week1、Week2）</li><li>每节课建一个页面，标题写“日期 + 主题”</li><li>把课件 PDF 作为“插入文件”放进页面，旁边写自己的批注</li><li>手绘示意图时用绘图工具，事后用文字复述一遍</li></ol><div class="callout tip"><b>笔记要能被检索</b>OneNote 能搜索手写与图片中的文字（取决于识别），但最可靠的检索键是标题。页面标题统一写成“日期 + 主题”，比任何标签体系都稳。</div><h3 id="s4">1.2 搜索、标签与共享</h3><p>笔记多了以后，靠翻页找内容是浪费。三个习惯能把 OneNote 变成可检索的知识库：页面标题统一“日期 + 主题”；关键术语用标签（tag）标记，之后可按标签汇总；把笔记本共享给小组时只给需要的人，并约定“谁在哪个分区写”。</p><p>共享笔记本的好处是多人同时写、自动合并；代价是结构容易被改乱。约定分区命名与页面标题格式，比事后整理便宜得多。</p><h3 id="s5">1.3 课堂笔记的三栏法</h3><p>一页笔记分三栏，比从头记到尾更有用：左栏写<b>概念与定义</b>（考试要背的），中栏写<b>操作步骤</b>（作业要做的），右栏写<b>我的疑问</b>（课后要问的）。下课时右栏就是你复习与提问的清单。</p><p>手写与打字不必二选一：公式、箭头、示意图用手写更快；定义、步骤、引用用打字更可检索。OneNote 的好处正是两者能在同一页共存。</p><h3 id="s6">1.4 插入文件与“打印输出”的区别</h3><p>OneNote 里放课件有两种方式：<b>插入文件</b>（作为附件）与<b>打印输出</b>（把页面图像铺在笔记里）。附件省空间，但要双击打开才能看；打印输出可以直接在页面上批注，代价是文件变大、文字不可检索。</p><p>课堂上的实用组合是：打印输出当“可批注的底稿”，附件当“原始文件备份”。两者都放，复习时既能看批注，也能回到原文核对。</p><h2 id="s7">二、Visio：把流程画成可交付的图</h2><p>Visio 是 Microsoft 的图表与流程图工具；在 Microsoft 365 下提供<b>轻量网页版</b>；可以画流程图、组织架构图、时间线与简单示意图；通过浏览器访问，并与其他 Microsoft 365 应用集成。</p><p>为什么用它（课件四条）：快速做出专业外观的图表，用于作业或小组项目；方便在线共享与协作；提供常见图表的模板与图形（shapes）；帮助把流程、层级或数据关系表达清楚。</p><h3 id="s8">2.1 四种替代用法</h3><p>课件专门列了四类“不只是流程图”的用法：<b>思维导图与头脑风暴</b>——为论文、项目或研究把想法可视化；<b>故事板与创意规划</b>——为媒体或设计课程规划视觉叙事、动画序列或视频项目；<b>数据可视化与组织架构图</b>——为演示或作业表达层级、网络或关系；<b>项目规划与工作流图</b>——把小组任务、责任与时间线画出来。</p><h3 id="s9">2.2 画一张流程图的四步</h3><p>课件给的操作顺序是：选择模板（流程图、示意图、思维导图等）→ 把图形拖放到画布（drag and drop shapes onto the canvas）→ 用线或箭头连接图形（connect shapes with lines or arrows）→ 需要更多图形时点“Find more shapes”。</p><ol class="steps"><li>先写下流程的“开始—步骤—判断—结束”，不要先打开软件</li><li>选模板：流程图用 basic flowchart，组织关系用 org chart</li><li>拖入图形，一个框只写一个动作（动词开头）</li><li>用箭头连方向；判断分支在箭头上写“是/否”</li><li>对齐与间距统一，导出前检查每条线都有两端</li></ol><div class="callout warn"><b>最常见的错</b>把两段流程塞进一个框，或用箭头表达“时间顺序”却没标条件。读者会在第一个判断处卡住。</div><h3 id="s10">2.3 图形语义：让图自己说话</h3><p>课件只要求“拖图形、连线”，但要画出一张别人能读懂的图，需要约定图形语义（属通用绘图规范，非课件原文）：<b>矩形</b>表示步骤，<b>菱形</b>表示判断，<b>圆角矩形或椭圆</b>表示开始/结束，<b>箭头</b>表示流向，<b>并行分支</b>用分叉线表示。</p><p>另一个细节是方向：主干从左到右或从上到下，回退的箭头画在下方或侧边，避免交叉。读者第一次看就能找到起点，这张图才算合格。</p><h3 id="s11">2.4 时间线与组织图的两条规则</h3><p>时间线只放“有日期的事件”，不要把所有任务都塞进去；同一行只放同一类型（课程、交付、考试），否则读者无法比较间隔。组织图只放“汇报关系”，不要混入“协作关系”，后者用虚线另画。</p><p>两张图的共同要求是“能数得清层级”：时间线的刻度一致，组织图的同级框大小一致。对齐一旦乱了，图表达的就不是结构，而是混乱。</p><h3 id="s12">2.5 Visio 网页版的边界与替代</h3><p>课件明确它是“lightweight web version”，意味着复杂功能（大规模模板库、精细数据链接）可能不如桌面版。对学生作业，够用的部分是：常见模板、基本图形、连接线、导出。</p><p>如果要做很复杂的图，替代方案是先用纸笔或 Miro 理清结构，再回到 Visio 用模板重画；不要在一个工具里同时做“想”和“排版”两件事。</p><h3 id="s13">2.6 从流程图到检查表：同一份流程的两种交付</h3><p>流程图适合放在报告里解释“整体怎么走”，检查表适合放在执行时保证“每一步没漏”。两张东西来自同一份流程：把每个矩形改写成一条可勾选的检查项，把每个判断改写成“若不满足则回到上一步”。</p><p>课程项目里两者都要：报告用图证明你想清楚了，执行用清单证明你没漏。只画图不写清单，常在截止日前发现漏了测试或引用。</p><h2 id="s14">三、Miro：团队思考的白板</h2><p>Miro 是在线协作白板平台：支持头脑风暴、示意图、流程图、思维导图与便签（sticky notes）；与同学或项目团队实时协作；浏览器或应用都能用。</p><p>为什么用它（课件五条）：适合视觉化思考与小组协作；容易整理想法、规划项目或梳理流程；用便签、图形、连接线与模板支持创意；<b>不是学校官方要求，但在课程与小组项目中被广泛使用</b>；小项目可免费使用。</p><h3 id="s15">3.1 上手：画布、邀请与工具栏</h3><p>课件的起步步骤：选择一个预制画布开始，或用空白板（black board）；邀请成员/协作者加入白板或团队；用 “Find more templates” 找模板；用 “Create new” 菜单新建；工具栏（tool bar）里选便签、图形、连接线、文本等。</p><h3 id="s16">3.2 一个可直接用的工作坊流程</h3><p>第 2 讲提过：如果当面谈期待让你不舒服，可以用便签或 Miro 收集想法——每人 5 分钟写下自己的想法，然后进入小组讨论。把它扩展成完整工作坊：</p><ol class="steps"><li>画布上分三栏：现在的问题 / 想法 / 决定</li><li>每人 5 分钟静默写便签（一贴一个想法）</li><li>主持人把相似便签聚类，不评价</li><li>每人三票（dot voting）投给最想先做的想法</li><li>只对前三名讨论“谁做、什么时候、怎么验收”</li><li>会后把决定复制到 Teams 频道与 Trello 卡片</li></ol><h3 id="s17">3.3 权限、导出与复盘</h3><p>Miro 的协作默认比较开放，分享前要确认链接权限（可编辑/可评论/可查看），避免把内部讨论发给外部；会后导出 PDF 或图片留档，因为免费版的历史版本与访问权限可能变化。</p><p>复盘只需三问：这次有没有人一句话没说？投票结果是否真的变成了任务？下次要不要换更小的画布？三问的答案决定下一次工作坊是 20 分钟还是 60 分钟。</p><h3 id="s18">3.4 白板的三条协作规则</h3><p>第一条，<b>一贴一想法</b>：一张便签写两件事，聚类时一定出错。第二条，<b>先写后说</b>：静默写完再讨论，避免嗓门大的人定义问题。第三条，<b>先投票后承诺</b>：投票只排序，不等于有人负责；每张进入“决定”栏的便签都必须写上负责人与日期。</p><p>这三条规则与第 2 讲的心理安全感直接相关：它们让“不敢说”的人也有进入记录的通道，也让“说了就算”变成“写了才算”。</p><h3 id="s19">4.1 交付格式与命名</h3><p>课程作业提交的图通常是 PNG、PDF 或直接嵌入 Word。导出时注意三点：分辨率足够（截图放大不糊）、背景透明或纯白（避免深色底打印成黑块）、文件名含图号与主题（fig2_architecture.png）。</p><p>如果图要放进报告，图注写“图 2 系统架构（作者自绘）”；若参考了他人模板，注明来源。图的版权与文字一样需要交代。</p><h3 id="s20">3.5 白板规模：超过 15 人怎么办</h3><p>一块板上超过 15 人同时写，便签会重叠、聚类会失控。可执行的做法是分组板：主板上只放“目标、规则、时间”，每组一块子板，最后把每组的 top 3 贴回主板。</p><p>另一种做法是“轮转”：每组写 5 分钟，然后整组移到下一块板继续补充。轮转能让每组看到别人的想法，也避免第一组占满版面。</p><h3 id="s21">4.2 三种产出，三种保存方式</h3><p>个人笔记存 OneNote（可检索、可手写）；正式图表存 Visio 并导出 PNG/PDF（可打印、可插入报告）；团队讨论存 Miro 并导出 PDF（留档），同时把决定抄进 Teams 与任务工具（可执行）。</p><p>判断标准：三个月后你还能不能找到它，并且知道它当时为什么这么画。找得到但看不懂原因，等于没存；看得懂但找不到，也等于没存。</p><h3 id="s22">2.7 一张图的两种读者</h3><p>同一张流程图有两类读者：评审者看“逻辑是否闭合”，执行者看“我下一步做什么”。给评审者的版本要标出输入、输出与判断条件；给执行者的版本要把每个框写成动词开头的任务，并在旁边留一个“完成标志”（例如“测试报告已上传”）。</p><p>课程作业通常两种都要：正文放逻辑版，附录放执行版。只交一种，读者就会在错误的层级上提问。</p><h2 id="s23">四、三者怎么选</h2><table><tr><th>需求</th><th>首选</th><th>理由</th></tr><tr><td>课堂笔记、手绘图、资料归档</td><td>OneNote</td><td>笔记本—分区—页面，跨设备同步，可插入文件</td></tr><tr><td>作业里的流程图、组织图、时间线</td><td>Visio</td><td>模板与图形齐全，输出专业、可协作</td></tr><tr><td>团队头脑风暴、需求梳理、投票</td><td>Miro</td><td>实时多人、便签与连接线、模板多</td></tr><tr><td>课程要求必须提交的图</td><td>Visio（或按教师指定）</td><td>Miro 不是官方要求，交付格式需确认</td></tr><tr><td>临时讨论、无需留档</td><td>白板/纸笔/聊天</td><td>避免为小事建一整套结构</td></tr></table><div class="callout exam"><b>一句判断</b>要“交付”的图用 Visio；要“思考”的图用 Miro；要“记住”的图用 OneNote。</div><div class="callout idea" data-ext="drawing-design-0"><b>前后衔接</b><p>三者分工一句话记：<strong>要“交付”的图用 Visio，要“思考”的图用 Miro，要“记住”的图用 OneNote</strong>。同一份流程有两种读者：评审者看逻辑是否闭合（正文放标了判断条件的逻辑版），执行者看“下一步做什么”（附录放动词开头、旁边留完成标志的执行版）。三个月后还能找到并看懂当时为何这么画，才算保存合格。</p></div><div class="callout idea" data-ext="drawing-design-1"><b>常见误解</b><p>把 Miro 当学校官方工具是典型误用：课件写明 <em>not officially required but widely used</em>，教师不保证支持，交付格式与数据合规也不受保障——提交前先确认课程是否接受截图或导出，并保留 PDF/PNG。另一个高频错是流程图一个框塞多个动作，或用箭头表示时间顺序却不标条件：矩形写步骤、菱形写判断、箭头上标“是/否”，读者才不会卡住。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>OneNote</td><td>数字笔记本</td><td>Digital notebook in Microsoft 365 for notes, drawings and files.</td></tr><tr><td>notebook</td><td>笔记本</td><td>The top level of OneNote structure.</td></tr><tr><td>section</td><td>分区</td><td>A group of pages, e.g. one per week or chapter.</td></tr><tr><td>page</td><td>页面</td><td>One note page for a lecture, diagram or link.</td></tr><tr><td>handwriting</td><td>手写</td><td>Writing with a stylus or finger inside OneNote.</td></tr><tr><td>Visio</td><td>流程图工具</td><td>Microsoft diagram and flowchart tool; lightweight web version with M365.</td></tr><tr><td>flowchart</td><td>流程图</td><td>Shapes connected by arrows showing steps and decisions.</td></tr><tr><td>organizational chart</td><td>组织架构图</td><td>A diagram of hierarchy and reporting lines.</td></tr><tr><td>timeline</td><td>时间线</td><td>A diagram placing events or tasks along time.</td></tr><tr><td>shape</td><td>图形</td><td>A draggable element in Visio or Miro.</td></tr><tr><td>connector</td><td>连接线</td><td>A line or arrow linking two shapes.</td></tr><tr><td>Miro</td><td>协作白板</td><td>Online collaborative whiteboard; widely used but not officially required.</td></tr><tr><td>sticky note</td><td>便签</td><td>A small note used for brainstorming and clustering.</td></tr><tr><td>dot voting</td><td>点投票</td><td>Participants place a limited number of votes to prioritise ideas.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用 OneNote 建一门课的完整笔记结构</div><p><b>第 1 步：</b>新建笔记本 “CT30A1000”，放在 OneDrive 里（便于同步与共享）。</p><p><b>第 2 步：</b>建六个分区，对应六讲：L1 Tools、L2 Office、L3 Presentation、L4 Drawing、L5 AI content、L6 AI study。</p><p><b>第 3 步：</b>每讲建一个页面，标题写“日期 + 主题”；把课件 PDF 插入页面左侧，右侧写三栏笔记：概念 / 操作步骤 / 我的疑问。</p><p><b>第 4 步：</b>需要画流程时用绘图工具画，画完在下方用文字复述一遍（复述才是记忆）。</p><p><b>第 5 步：</b>考前用搜索找关键词，把六个页面导出或打印成复习单。</p></div><div class="qa"><div class="q">例 2　用 Visio 画“课程项目从需求到提交”的流程图</div><p><b>第 1 步：</b>先在纸上列节点：需求访谈 → 写用例 → 设计界面 → 实现原型 → 测试 → 写文档 → 提交。</p><p><b>第 2 步：</b>打开 Visio 网页版，选 basic flowchart 模板；把每个节点拖成一个矩形，一个框一个动作。</p><p><b>第 3 步：</b>在“测试”后加一个判断菱形：“缺陷数 = 0？”是→写文档，否→回到“实现原型”。</p><p><b>第 4 步：</b>用箭头连接，判断分支的箭头上标“是/否”；用对齐工具让主干在同一条水平线上。</p><p><b>第 5 步：</b>加标题与图注，导出 PNG 或 PDF 放进报告；在正文用一句话说明这张图。</p></div><div class="qa"><div class="q">例 3　用 Miro 开一次 30 分钟的需求工作坊</div><p><b>准备：</b>新建空白板，画三栏（问题 / 想法 / 决定）；把链接发到 Teams 频道；设 5 分钟计时器。</p><p><b>静默写：</b>每人 5 分钟写便签，一贴一个想法，不讨论——这一步保证安静的人的意见也能进入记录。</p><p><b>聚类：</b>主持人移动便签归类，只问“这两张是一件事吗”，不评价好坏。</p><p><b>投票：</b>每人三票，投给最想先解决的问题；票数最高的三项进入“决定”栏。</p><p><b>收口：</b>对前三项各写“谁做、什么时候、怎么验收”，会后复制到 Trello 与频道置顶。</p></div><div class="qa"><div class="q">例 4　该用哪个工具？三个场景</div><p>（a）课上老师讲得快，你要边听边画时序图 → <b>OneNote</b>（手写 + 插入课件）。</p><p>（b）作业要求提交一张“系统架构图” → <b>Visio</b>（模板、图形、导出）。</p><p>（c）五个人要对“项目范围”达成一致 → <b>Miro</b>（便签、聚类、投票）。</p><p><b>判断规则：</b>个人记忆 → OneNote；正式交付 → Visio；团队共识 → Miro。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出 OneNote 的 notebook / section / page 三级结构，并为一门六讲的课设计一套命名。</li><li>把“如果测试不通过就回到开发”画成流程图的节点与箭头（用文字描述）。</li><li>Visio 与 Miro 都能画流程图，什么时候必须用 Visio？说明两条理由。</li><li>设计一个 20 分钟的 Miro 工作坊，写出四个步骤与每步的时间。</li><li>为什么课件说 Miro “not officially required but widely used”？这对提交作业意味着什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 笔记本 “CT30A1000”；六个分区 L1–L6；每区内页面标题“日期 + 主题”，如 “2026-09-15 L1 Tools”。</p><p><b>2.</b> 矩形“运行测试” → 菱形“缺陷数 = 0？” → 是：矩形“写文档”；否：箭头标“否”回到矩形“修改实现”。每条箭头都有起点与终点。</p><p><b>3.</b> 理由：①作业要求可提交、可打印的正式图表，Visio 提供模板与导出；②Miro 不是学校官方要求，交付格式与账号权限不受保障。</p><p><b>4.</b> 示例：0–3 分钟说明目标与规则；3–8 分钟静默写便签；8–15 分钟聚类与澄清；15–20 分钟投票并写行动项。</p><p><b>5.</b> 因为它好用但不是学校批准/要求的工具，教师可能不保证支持、也不保证数据合规。提交作业前先确认课程是否接受 Miro 截图或导出文件，并保留导出（PDF/PNG）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>OneNote 三级结构；Visio 的四类替代用法与四步操作；Miro 的定位（非官方要求但广泛使用）；三种工具的分工。</div><div class="callout warn"><b>易错 1</b><b>把 Miro 当官方工具。</b>课件写明 not officially required；交付前确认格式与许可。</div><div class="callout warn"><b>易错 2</b><b>流程图一个框写多个动作。</b>判断分支必须单独成菱形，并在箭头上标条件。</div><div class="callout warn"><b>易错 3</b><b>笔记只存不整理。</b>没有统一标题与分区的笔记本，考前搜不到任何东西。</div><div class="callout tip"><b>进阶</b>能解释“为什么静默写比直接讨论更能收集意见”：它避免一个人主导，也让内向成员的意见进入记录。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s24">建笔记（每次上课前 2 分钟）</h2><ul class="checklist"><li>笔记本在 OneDrive 中，已开启同步</li><li>本节的分区与页面已建好，标题为“日期 + 主题”</li><li>课件 PDF 已插入页面</li><li>页面里留出“概念 / 步骤 / 疑问”三栏</li></ul><h2 id="s25">画图（提交前）</h2><ul class="checklist"><li>一个框只写一个动作，动词开头</li><li>每个判断都有“是/否”两条分支</li><li>每条连接线两端都接在图形上</li><li>对齐与间距统一，图有标题与图注</li><li>已导出 PNG/PDF 并插入报告</li></ul><h2 id="s26">团队白板（会后）</h2><ul class="checklist"><li>便签已聚类，重复项已合并</li><li>投票结果已记录</li><li>前三项都写了“谁做、何时、怎么验收”</li><li>决定已复制到 Teams 与任务工具</li><li>白板链接已设为团队成员可访问</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Lecture 4 Drawing and design software.pdf.txt</td><td>p3–p4</td><td>OneNote 的定义、四条用途、上手三步</td></tr><tr><td>Lecture 4 Drawing and design software.pdf.txt</td><td>p5–p6</td><td>Visio 的定义、四条用途、四类替代用法</td></tr><tr><td>Lecture 4 Drawing and design software.pdf.txt</td><td>p7</td><td>Visio 操作：选模板、拖图形、连箭头、找更多图形</td></tr><tr><td>Lecture 4 Drawing and design software.pdf.txt</td><td>p8</td><td>Miro 的定义、五条用途、免费与“非官方要求”</td></tr><tr><td>Lecture 4 Drawing and design software.pdf.txt</td><td>p9–p10</td><td>Miro 上手：预制画布/空白板、邀请成员、模板、Create new、工具栏</td></tr><tr><td>（跳过）</td><td>p1、p11</td><td>封面与结束空白页</td></tr><tr><td>（补充）</td><td>—</td><td>“静默写—聚类—投票—行动项”的工作坊流程与工具选择规则，是把课件零散提示整合成的操作方法</td></tr></table></section><div class="lnav"><a class="prev" href="presentation-tools.html">← 第 3 讲 · 演示工具与 AI</a><a class="next" href="ai-generated-content.html">第 5 讲 · 各类 AI 生成内容（音乐、图像、视频） →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

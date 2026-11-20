@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 讲 · 团队协作与多元文化团队 · 30331</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT10A9900 学习导论 DD Studies</a> / <a href="part-1.html">第 1 章 学习环境与团队协作</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、先划边界：这门课里 AI 能做什么、不能做什么</a><a class="toc-l2" href="#s3">二、团队是什么</a><a class="toc-l2" href="#s4">三、为什么这门课有这么多团队作业</a><a class="toc-l2" href="#s5">四、什么让团队成功</a><a class="toc-l3" href="#s6">4.1 心理安全感的七个自检问题</a><a class="toc-l3" href="#s7">4.2 如何培养心理安全感</a><a class="toc-l2" href="#s8">五、学生团队里的典型问题</a><a class="toc-l3" href="#s9">5.1 七种现象</a><a class="toc-l3" href="#s10">5.2 六个成因</a><a class="toc-l2" href="#s11">六、多元文化团队的四类挑战</a><a class="toc-l3" href="#s12">6.1 直接沟通 vs 间接沟通</a><a class="toc-l3" href="#s13">6.2 口音与流利度</a><a class="toc-l3" href="#s14">6.3 对层级与权威的态度不同</a><a class="toc-l3" href="#s15">6.4 决策规范冲突</a><a class="toc-l2" href="#s16">七、芬兰职场的四个典型特征</a><a class="toc-l2" href="#s17">八、多元文化团队的四种应对策略</a><a class="toc-l2" href="#s18">九、软件开发中的团队协作</a><a class="toc-l3" href="#s19">9.1 敏捷（agile）</a><a class="toc-l3" href="#s20">9.2 Scrum</a><a class="toc-l3" href="#s21">9.3 Pair programming（结对编程）</a><a class="toc-l2" href="#s22">十、开始团队作业之前：先谈，再做</a><a class="toc-l3" href="#s23">10.1 必须谈开的期待</a><a class="toc-l3" href="#s24">10.2 设定清晰目标</a><a class="toc-l3" href="#s25">10.3 团队建设</a><a class="toc-l2" href="#s26">十一、目标设定之后：backlog 与跟进</a><a class="toc-l2" href="#s27">十二、沟通与协作工具</a><a class="toc-l2" href="#s28">十三、TL/DR</a><a class="toc-l2" href="#s29">团队启动清单（第一次会议前）</a><a class="toc-l2" href="#s30">第一次会议产出清单</a><a class="toc-l2" href="#s31">每周跟进清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sse-intro-environment.html">第 1 讲 · 软件工程系、学习环境与课程要求</a><a class="toc-l3" href="sse-teamwork.html">▸ 第 2 讲 · 团队协作与多元文化团队</a><a href="degree-structure-psp.html">第 3 讲 · 学位结构、个人学习计划（PSP）与自我管理</a><a href="cv-assignment.html">第 4 讲 · CV 作业：结构、写法与提交</a></div></aside><article><h1>第 2 讲 · 团队协作与多元文化团队</h1><p class="lead">Teamwork and Multicultural Teams <span class="badge mute">30331</span> <span class="badge mute">第 2 / 4 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 学习环境与团队协作</a></p><p class="src">原始文件：<code>3_Lectures_2_SSE-teamwork (5).pptx.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 1 讲讲的是“你一个人在什么制度里学习”；本讲讲“你和别人一起怎么把事做成”。软件工程几乎所有产出都是团队产出，所以这门课把团队协作单列一讲，并且把 AI 使用边界放在最前面——因为小组作业里最容易出问题的不是技术，而是有人偷偷用 AI 把整份报告“做完了”。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说清“不用 AI 学编程”在实践中的边界：什么算 vibe coding，什么算允许的 AI 辅导</li><li>用心理安全感的七个问题给一个团队做体检</li><li>识别学生团队里七种典型问题及其六个成因</li><li>用 HBR 的四类挑战分析多元文化团队，并选出适应、退出、结构干预或管理干预</li><li>按课件流程开第一次团队会议：谈期待、定目标、拆 backlog、约 status meeting</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、先划边界：这门课里 AI 能做什么、不能做什么</h2><p>课件第一页就处理一个具体问题：<b>“do not use AI in learning programming”在实践里到底是什么意思？</b>答案分两半。不允许的是：<b>No vibe coding</b>（靠感觉让 AI 写、自己不理解的代码）；<b>不要把 AI 生成的代码作为作业提交</b>。允许的是：把 AI 当<b>导师</b>（例如让它“Explain what my code does in detail”）；把 AI 当<b>代码审查者</b>；在自己代码不工作又不知道为什么时，用 AI 分析并解释错误信息。</p><p>基本规则一句话：<b>你可以为自己的学习生成 AI 输出，但不应该把 AI 生成的输出当作自己的成果提交。</b>并且每门课、每个作业可能有自己的 AI 说明，<b>它们覆盖其他所有说明</b>——包括这一条。</p><table><tr><th>用法</th><th>是否允许</th><th>课件依据</th></tr><tr><td>让 AI 逐行解释自己的代码</td><td>允许（AI as a tutor）</td><td>“Explain what my code does in detail”</td></tr><tr><td>让 AI 当 code reviewer 提改进</td><td>允许</td><td>AI as a code reviewer</td></tr><tr><td>把报错贴给 AI 请它解释原因</td><td>允许</td><td>analysing and explaining error messages</td></tr><tr><td>让 AI 写完整个作业直接提交</td><td>不允许</td><td>Do not submit AI-generated code as your assignment</td></tr><tr><td>不看代码、靠反复试提示词“碰”出能跑的版本</td><td>不允许（vibe coding）</td><td>No vibe coding</td></tr></table><div class="callout warn"><b>优先级</b>课程/作业自己的 AI 说明优先于本讲的一般规则。做小组作业前，先读作业页面的 AI 说明，再讨论组内约定。</div><h2 id="s3">二、团队是什么</h2><p>课件引用 Merriam-Webster 的定义：团队工作是 <b>“work done by a group acting together so that each member does a part that contributes to the efficiency of the whole”</b>——一群人共同行动，每个人承担一部分，从而提升整体的效率。定义里有四个要素：有<b>共同目标</b>；成员都朝这个目标工作；成功的团队协作<b>需要付出</b>；团队协作是<b>可以学习和发展的技能</b>。</p><p>最后一点最重要：它把“我不擅长团队合作”从性格判断改写成技能判断。技能意味着可以拆解、可以练习、可以观察到进步。</p><h2 id="s4">三、为什么这门课有这么多团队作业</h2><p>课件给了四条理由：软件工程本身就是团队工作；你有机会与不同背景的人练习协作；你能看清自己需要提升哪些技能才能成为更好的团队成员；你能认识同伴（第 1 讲已说，同伴是最有价值的职业网络）。</p><p>换句话说，团队作业的评分对象不只是“交付物”，还包括“你在团队里的行为”。这也是为什么本讲后半部分几乎都在讲沟通与冲突，而不是讲工具。</p><h2 id="s5">四、什么让团队成功</h2><p>课件的三条结论：有效的团队协作依赖<b>清晰的沟通、相互尊重与共享目标</b>，它们提升协作与生产力；团队内的<b>心理安全感（psychological safety）</b>让成员感到被重视与被理解，从而敢于冒险与创新；定期的<b>团队建设活动与反馈环节</b>能强化团队动力、提升整体表现。</p><h3 id="s6">4.1 心理安全感的七个自检问题</h3><p>课件引用 APA 的七个问题，可以直接拿来给团队做体检：</p><ol><li>如果你在这个团队犯了错，会被记在心里、以后拿来对付你吗？</li><li>团队成员能不能把问题和棘手的事摆到桌面上？</li><li>成员有时会因为别人“不一样”而排斥他吗？</li><li>在这个团队里冒险是安全的吗？</li><li>向其他成员求助是不是很难开口？</li><li>团队里有人会故意做出削弱大家努力的行为吗？</li><li>在这个团队工作，独特的技能与天赋是否被重视并使用？</li></ol><p>用法：七个问题各打 1–5 分，最低的那两题就是本周要处理的团队问题。注意这些问题问的是<b>感受</b>，不是事实，所以匿名收集比举手表决更真实。</p><h3 id="s7">4.2 如何培养心理安全感</h3><p>课件的五个做法都给了可直接照抄的句式：把注意力放在找解法上，问“what can we all do to help solve this problem?”；主动要意见，“I’d love to get your feedback on that idea.”；认真听同事的想法并提出尊重的问题；即使不同意，也要对分享想法的人保持善意与尊重；给反馈时用尊重、经过思考的方式。</p><div class="callout tip"><b>句式即技能</b>这五句可以直接背下来。团队里最缺的往往不是意愿，而是“开口的那句话”。</div><h2 id="s8">五、学生团队里的典型问题</h2><h3 id="s9">5.1 七种现象</h3><p>课件列出的现象几乎覆盖所有课程小组：一个人主导团队；有些成员完全被动；一个人干了所有活；某个成员被当成局外人；<b>ghosting</b>（失联、不回消息）；感觉自己缺乏必要技能；难以表达自己的意见；有人用了 AI，把最终报告搞砸了。</p><h3 id="s10">5.2 六个成因</h3><p>目标不清晰；时间压力；沟通风格不同；对角色与责任理解不清；期待不同；<b>groupthink</b>（群体思维：成员不愿挑战他人的意见与想法）。</p><p>把现象与成因对上，才知道该改什么：<b>“一个人干了所有活”</b>常常不是因为他强，而是因为目标没拆细、角色没定义；<b>“有人用 AI 搞砸报告”</b>常常不是技术问题，而是团队从未约定 AI 规则。</p><table><tr><th>现象</th><th>最可能的成因</th><th>先改什么</th></tr><tr><td>一个人主导</td><td>角色与责任不清</td><td>把任务拆到人、到日期</td></tr><tr><td>成员被动 / 局外人</td><td>目标不清、期待不同</td><td>第一次会议明确目标与分工</td></tr><tr><td>一个人干所有活</td><td>任务没拆小、没有状态跟踪</td><td>backlog 拆到 3 天以内并设 status meeting</td></tr><tr><td>ghosting</td><td>时间压力、缺乏跟进机制</td><td>固定短会 + 明说“失联即视为阻塞，需要上报”</td></tr><tr><td>不敢表达 / groupthink</td><td>心理安全感低</td><td>先用便签或 Miro 匿名写想法再讨论</td></tr><tr><td>AI 搞砸报告</td><td>未约定 AI 使用</td><td>写清 AI 约定与声明责任</td></tr></table><h2 id="s11">六、多元文化团队的四类挑战</h2><p>课件引用 HBR 的框架，把跨文化团队的摩擦归为四类，每一类都给了具体机制：</p><h3 id="s12">6.1 直接沟通 vs 间接沟通</h3><p>直接沟通可能被视为粗鲁，于是“冒犯者”被排除在沟通之外；而习惯直接沟通的人，又常常读不懂间接表达。判断标准不是哪种更礼貌，而是<b>团队是否把两种风格都当作有效表达</b>。</p><h3 id="s13">6.2 口音与流利度</h3><p>课件给了一个很实用的反问：<b>在某些情况下，书面沟通是不是更有效？</b>把口头讨论改成共享文档 + 书面评论，可以让非母语成员有时间组织语言，也让结论留痕。</p><h3 id="s14">6.3 对层级与权威的态度不同</h3><p>在按地位区别对待的文化里，成员在“扁平团队”里会不舒服。如果他们服从高地位成员，在多数人来自层级文化的团队里会被视为得体；但如果多数人来自平等主义文化，这种行为反而会损害其地位与可信度，甚至带来羞辱。</p><h3 id="s15">6.4 决策规范冲突</h3><p>各文化在决策上差异极大，尤其是<b>该多快做决定</b>与<b>事前需要多少分析</b>。一个团队里同时有人要“先分析清楚再定”、有人要“先定再迭代”，冲突就会出现在每次会议上。</p><h2 id="s16">七、芬兰职场的四个典型特征</h2><p>课件引用 Aalto 的材料，列出四条。了解它们不是为了“入乡随俗”，而是为了理解为什么芬兰同学在团队里的默认行为是这样的。</p><table><tr><th>特征</th><th>具体表现</th></tr><tr><td>低层级（low hierarchies）</td><td>不论职位，所有人以名字相称；学校里教师也用名字；人人平等；咖啡壶空了，即使你是 CEO 也得自己去煮</td></tr><tr><td>高信任（high trust）</td><td>重视自主与独立决策；通常没有微观管理</td></tr><tr><td>简洁沟通（concise communication）</td><td>“芬兰人常常直率、直接、以问题为中心，因此可能显得不礼貌或爱批评”；“做得好的事可以不说、视为理所当然”；“谦逊是核心美德，沉默常被视为金”；偏好快速决策</td></tr><tr><td>（课件同页）</td><td>以上三条共同构成“芬兰工作生活的典型特征”，是与多元文化团队对照的基线</td></tr></table><div class="callout warn"><b>别把“沉默”读成“没意见”</b>在低层级 + 简洁沟通的文化里，沉默常常表示“没有问题、可以继续”。如果你在等一个明确的“我同意”，会议会一直开下去。反过来，如果你的文化里沉默表示保留，就要主动说明。</div><h2 id="s17">八、多元文化团队的四种应对策略</h2><p>课件引用 HBR 给出四条路径，从轻到重：<b>Adaptation</b>（适应）——成员选择适应主流的做事与沟通方式；<b>Exit</b>（退出）——离开团队；<b>Structural intervention</b>（结构干预）——成员尝试不同的工作方式（改流程、改会议形式、改分工）；<b>Managerial intervention</b>（管理干预）——由上级介入。</p><p>顺序不是随意的：先尝试适应与结构调整，仍无法解决才退出或上报。对课程小组来说，“上级”是教师或辅导员。</p><h2 id="s18">九、软件开发中的团队协作</h2><p>课件把软件开发的协作特点讲得很直白：敏捷开发提供了团队协作的框架、工具与方法；沟通之所以重要，是因为作为团队成员你会大量接收与给出反馈。课件列出的反馈类型包括：<b>code review</b>（代码审查）；测试者给开发者的反馈；对 product owner 关于规格不清的反馈；生产环境的缺陷——你会收到 bug reports。</p><h3 id="s19">9.1 敏捷（agile）</h3><p>定义：<b>“Agile is the ability to create and respond to change. It is a way of dealing with, and ultimately succeeding in, an uncertain and turbulent environment.”</b> 它的核心是<b>自适应规划（adaptive planning）：在做中学（learning while doing）</b>。</p><p>Agile 是一个伞形术语，覆盖一组协作式软件开发框架，课件举例：<b>Scrum、Kanban、Scrumban、Extreme Programming (XP)、SAFe (Scaled Agile Framework)</b>。重点不在框架名字，而在它把注意力放在<b>做事的人以及他们如何一起工作</b>：解决方案通过自组织、跨职能团队的协作逐步演化，团队选用适合自身情境的实践。</p><h3 id="s20">9.2 Scrum</h3><p>Scrum 是最常见的组织软件开发的方式之一。课件的比喻是：把工作<b>一小块一小块地</b>交给团队完成，过程中不断实验与反馈，边做边学、边学边改。</p><p>Scrum Team 由三类角色组成：<b>Product Owner</b> 负责给 product backlog 排优先级；<b>Scrum Master</b> 是团队的 servant-leader（服务型领导，<b>不告诉团队该做什么</b>），负责主持/促进会议；<b>Developers</b> 为共同目标一起工作，可以包括测试者与设计者。典型团队规模 <b>6–8 人</b>；团队内部<b>没有子团队、没有层级</b>；它是一个凝聚的整体，一次聚焦一个目标。</p><table><tr><th>角色</th><th>职责（课件原文要点）</th><th>常见误解</th></tr><tr><td>Product Owner</td><td>给 product backlog 排优先级</td><td>不是“项目经理”，不派活给人</td></tr><tr><td>Scrum Master</td><td>服务型领导；促进会议；不指挥团队</td><td>不是“组长”，不能决定技术方案</td></tr><tr><td>Developers</td><td>为共同目标一起工作，可含测试者、设计者</td><td>不是“只写代码的人”</td></tr></table><div class="callout idea"><b>拓展：Scrum 的循环</b>课件第 18 页只有一张“scrum process”示意图，未给文字。按 Scrum 的通用定义，循环是：backlog 排序 → 选出本轮要做的事项 → 在一个固定长度的迭代（sprint）内完成 → 产出可用的增量 → 回顾并调整。这一段属于背景补充，考试以课件文字为准：记住三角色、6–8 人、无子团队与层级、一次一个目标。</div><h3 id="s21">9.3 Pair programming（结对编程）</h3><p>两名开发者在一台电脑上解决同一个问题：<b>Driver</b> 写代码；<b>Navigator / Observer</b> 审查代码并提出修复与改进的想法；两人<b>频繁交换角色</b>。收益是沟通与学习，以及更少的缺陷。</p><p>它同时是一种低成本的团队技能训练：讲清思路、接受即时反馈、在不伤自尊的前提下被纠正——这三件事在远程团队里同样要用。</p><h2 id="s22">十、开始团队作业之前：先谈，再做</h2><h3 id="s23">10.1 必须谈开的期待</h3><p>课件列了一串问题，本质是把隐式期待变成显式约定：你们的目标分数是多少？偏好直接还是间接沟通？偏好面谈还是线上？想要一个明确分工的领导，还是扁平分工？风险有哪些、如何缓解？如果有人必须退出，备份方案是什么？团队出现冲突怎么解决？</p><p>还有一条专门针对 AI：<b>讨论你们的 AI 使用与作业的 AI 说明</b>。如果组内有人反对用 AI、有人想凡事都用 AI，课件给的选项是：<b>妥协，或者分成新的团队</b>。这不是玩笑——它比在截止日前夜发现报告是 AI 拼出来的要便宜得多。</p><h3 id="s24">10.2 设定清晰目标</h3><p>只问两句：要达成什么？截止什么时候？目标必须能被写成一句可验收的话，例如“11 月 20 日前提交一份 10 页的需求规格，含 5 个用例图，通过教师的形式检查”，而不是“把项目做好”。</p><h3 id="s25">10.3 团队建设</h3><p>课件建议做一个 team building activity（课件另给了一份团队建设活动清单作参考）。目的不是娱乐，而是让成员在低风险情境下看到彼此的沟通风格。</p><h2 id="s26">十一、目标设定之后：backlog 与跟进</h2><p>课件把执行拆成五步：准备 backlog（也就是 to-do 清单），写清为达成目标需要完成哪些任务；把任务<b>拆小</b>——在软件开发中，一个任务通常<b>少于 3 天</b>的工作量；把工作分给成员；用<b>状态会议</b>跟进，安排一个简短的周期性会议，讨论“做了什么、遇到什么问题”；用工具跟踪进度；再安排一次“一起做点好玩的事”的团队建设。</p><ol class="steps"><li>写出目标（可验收的一句话 + 截止日期）</li><li>列 backlog：为达成目标需要完成的所有任务</li><li>拆到每个任务 ≤ 3 天工作量</li><li>按技能与兴趣分配到人，并写明交付物</li><li>为每个任务设状态：Not started / In progress / Done</li><li>安排固定的短会（例如每周一 15 分钟）</li><li>每次会议只回答：完成了什么、卡在哪里、下一步谁做什么</li></ol><h2 id="s27">十二、沟通与协作工具</h2><p>如果当面谈期待让你不舒服，课件建议用<b>便签或 Miro</b> 收集所有人的想法：每人用 5 分钟写下自己的想法，然后进入小组讨论。这个“先写后说”的顺序能显著降低表达门槛，也让安静的人的意见进入记录。</p><p>工具能帮你的三件事：列出任务；把任务分配给人；通过状态跟踪完成情况（<b>Not started / In progress / Done</b>）。课件推荐的免费工具：共享 Excel 或 Word 里的任务清单、<b>Trello</b>、<b>Miro</b>、线下用便签；沟通工具：<b>Teams</b>、<b>Discord</b> 等。</p><table><tr><th>需求</th><th>可选工具</th><th>适用场景</th></tr><tr><td>任务清单与状态</td><td>共享 Excel / Word、Trello、Miro、线下便签</td><td>课程小组、3–8 人、两周内交付</td></tr><tr><td>想法收集（匿名/并行）</td><td>便签、Miro</td><td>谈期待、做回顾、避免一个人主导</td></tr><tr><td>日常沟通</td><td>Teams、Discord</td><td>远程协作、快速问答</td></tr><tr><td>结对与代码审查</td><td>共享编辑器 + 语音、代码托管平台的 review 功能</td><td>编程作业、互相学习</td></tr></table><h2 id="s28">十三、TL/DR</h2><p>课件的收尾只有六句：讨论期待；设定清晰目标；倾听；对队友和自己都保持善意与尊重；遇到问题<b>尽早</b>沟通并求助；主动提供帮助。这六句没有一句需要工具，也几乎覆盖了本讲所有失败案例。</p><div class="callout idea" data-ext="sse-teamwork-0"><b>常见误解</b><p>学生团队里“一个人干所有活”常被误读为某人太强，其实多半是目标没拆细、角色没定义；<code>ghosting</code> 也不是性格问题，而是缺固定的状态跟进。把任务拆到 3 天以内、设周期短会并明说“失联即视为阻塞”，比抱怨有效得多。</p><p>多元团队里另一个误解是把沉默读成“没意见”。在低层级＋简洁沟通的芬兰文化里，沉默常表示“没问题、可以继续”；若等一句明确的“我同意”，会议会一直拖。反过来，习惯间接表达的人又可能被误判为不参与——先写后说（便签或 Miro）能把安静者的意见带进记录。Scrum 的 <em>servant-leader</em> 也常被叫成“组长”，但 Scrum Master 不派活、不定技术方案，只主持与促进。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>vibe coding</td><td>凭感觉编程</td><td>Generating code with AI without understanding it; forbidden in programming courses here.</td></tr><tr><td>teamwork</td><td>团队协作</td><td>Work done by a group acting together so each member contributes to the efficiency of the whole.</td></tr><tr><td>psychological safety</td><td>心理安全感</td><td>The shared belief that it is safe to take risks, speak up, and ask for help.</td></tr><tr><td>groupthink</td><td>群体思维</td><td>Reluctance to challenge other members’ opinions and ideas.</td></tr><tr><td>ghosting</td><td>失联</td><td>A team member stops responding and disappears from the work.</td></tr><tr><td>multicultural team</td><td>多元文化团队</td><td>A team whose members differ in communication style, hierarchy norms and decision practices.</td></tr><tr><td>adaptation</td><td>适应策略</td><td>Team members adapt to the prevalent ways of working and communicating.</td></tr><tr><td>structural intervention</td><td>结构干预</td><td>Members try different approaches to working, e.g. new meeting formats or task splits.</td></tr><tr><td>agile</td><td>敏捷</td><td>The ability to create and respond to change; adaptive planning, learning while doing.</td></tr><tr><td>Scrum</td><td>Scrum 框架</td><td>A framework for getting work done in small pieces with continuous feedback loops.</td></tr><tr><td>product backlog</td><td>产品待办列表</td><td>The prioritised list of work; the Product Owner sets the order.</td></tr><tr><td>servant-leader</td><td>服务型领导</td><td>The Scrum Master facilitates and supports but does not tell the team what to do.</td></tr><tr><td>pair programming</td><td>结对编程</td><td>Driver writes code, Navigator reviews and suggests; roles switch often.</td></tr><tr><td>code review</td><td>代码审查</td><td>A structured feedback practice on code before it is accepted.</td></tr><tr><td>status meeting</td><td>状态会议</td><td>A short recurring meeting on what was done and what is blocking.</td></tr><tr><td>bug report</td><td>缺陷报告</td><td>Feedback arriving from production defects.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　第一次团队会议只有 60 分钟，怎么开？</div><p><b>0–10 分钟：自我介绍 + 期待。</b>每人回答三个问题：目标分数、偏好直接还是间接沟通、偏好面谈还是线上。用便签或 Miro 并行写，避免被最能说的人带节奏。</p><p><b>10–20 分钟：AI 约定。</b>读作业页面的 AI 说明；每人说自己打算怎么用 AI；形成一句可执行的约定，例如“允许用 AI 解释报错与做 code review，禁止把 AI 生成的段落直接写进报告；提交前由 X 统一写 Declaration of AI usage”。</p><p><b>20–30 分钟：定目标。</b>写出一句可验收的目标 + 截止日期 + 交付物清单。</p><p><b>30–50 分钟：拆 backlog。</b>把目标拆成 ≤3 天的任务，逐条分配负责人，标出依赖关系（谁先做、谁等谁）。</p><p><b>50–60 分钟：定节奏与风险。</b>约固定短会（时间、时长、平台）；约定失联处理（48 小时无回应即视为阻塞，由谁上报）；指定一个备份人。</p><p><b>产出：</b>一页会议记录（目标、分工表、AI 约定、下次会议时间），发到 Teams 频道置顶。</p></div><div class="qa"><div class="q">例 2　把“做课程项目”拆成可执行 backlog 并跟踪</div><p>先写目标：“第 6 周周五前提交 8 页设计文档 + 可运行原型 + 10 分钟演示”。</p><p>再拆任务（每条 ≤3 天）：需求访谈提纲（0.5 天）；用例图 5 张（1 天）；领域模型（1 天）；界面草图 3 页（1 天）；原型登录与主流程（2 天）；单元测试（1 天）；文档排版与引用（1 天）；演示脚本与彩排（0.5 天）。</p><p>然后把每条放进 Trello 的三列：<b>Not started / In progress / Done</b>，卡片上写负责人与截止日。规则：每人同时只有一张卡在 In progress（限制在制品数量），卡住超过 1 天就在频道里说出来。</p><p>每次 15 分钟短会只看三件事：昨天完成了哪张卡、今天做哪张、哪张卡被阻塞。会议不讨论技术细节，技术细节另开 30 分钟。</p></div><div class="qa"><div class="q">例 3　队友连续一周不回消息（ghosting），按什么顺序处理？</div><p><b>第一步（当天）：</b>私聊一次，明确问“你还好吗？这周的 X 任务还需要你，什么时候能给？”——先确认是人出了问题还是沟通渠道出了问题。</p><p><b>第二步（48 小时无回应）：</b>在团队频道公开 @ 他，并说明影响：“X 任务卡住会导致 Y 延期”，把问题从私人变成团队可见。</p><p><b>第三步（仍无回应）：</b>做结构干预——把该任务拆成更小的部分，先由别人接手可做的部分，同时更新 backlog 与截止风险。</p><p><b>第四步：</b>按课程规则联系教师或辅导员（管理干预），并保留沟通记录（日期、渠道、内容）。不要替队友“默默做完再抱怨”，那会让评估失真，也会让问题在下一门课重演。</p><p><b>判断标准：</b>先归因（能力 / 意愿 / 情境），再选策略；四种策略的顺序是适应 → 结构干预 → 退出 → 管理干预。</p></div><div class="qa"><div class="q">例 4　让 AI 当 code reviewer，而不是代写（符合本讲规则的做法）</div><p>把<b>自己写的</b>一段函数贴给 AI，提示词写成：“You are a senior developer reviewing my code. Do not rewrite it. List: (1) three concrete bugs or edge cases; (2) one readability issue; (3) one question that tests whether I understand the logic.”</p><p>拿到回复后，逐条自己判断：哪条成立、哪条是误报、怎么改。改完再把 diff 贴回去问“did my fix address issue 1 without breaking anything else?”</p><p>这个过程满足三条：代码是你写的；AI 只做审查与解释；你能说出每一处修改的理由。提交时在报告里写清“AI used as a code reviewer for Section 4; all code written and verified by the author”。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用自己的话解释“No vibe coding”，并举一个允许的与一个不允许的 AI 用法。</li><li>给一个 5 人小组做心理安全感体检：设计 7 个问题的匿名打分方式，并说明如何从结果选出本周要改的一件事。</li><li>一个团队里有人偏好直接沟通、有人偏好间接沟通，已经出现“直接的人被孤立”。按本讲框架给出两步干预。</li><li>把“完成课程项目”拆成 6 条 ≤3 天的任务，并为每条写负责人角色与状态。</li><li>组内对 AI 使用意见分裂：两人想全用、三人反对。给出两个可执行方案，并说明各自的代价。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> No vibe coding 指不理解代码、靠反复试提示词“碰”出能跑的版本。允许：让 AI 解释自己写的代码、做代码审查、解释报错。不允许：让 AI 生成作业代码并提交，或不看代码只靠试错交付。</p><p><b>2.</b> 用在线表单匿名收集，七题各 1–5 分；计算均分与最低分题；挑最低分且最影响交付的一题，设一个两周内可完成的动作（例如“每次会议前 24 小时发议程”“错误只讨论修复方案，不追责个人”），两周后重测同七题。</p><p><b>3.</b> 第一步结构干预：把“口头即时讨论”改为“书面提案 + 会议确认”，给间接沟通者表达通道；会议规则写明“对事不对人”。第二步适应：直接沟通者练习先问“我能给一个直接的意见吗？”，间接沟通者练习用一句话给出明确结论。若仍恶化，再考虑退出或请教师介入。</p><p><b>4.</b> 示例：需求提纲（0.5 天，产品角色）；用例图（1 天，设计角色）；数据模型（1 天，开发角色）；界面草图（1 天，设计角色）；原型主流程（2 天，开发角色）；测试与文档（1 天，测试角色）。状态统一用 Not started / In progress / Done。</p><p><b>5.</b> 方案 A（妥协）：约定“AI 只用于解释、审查、生成图表初稿，正文与人名、引用、结论必须人工写”，并指定一人负责 AI 声明。代价：想全用的人觉得受限，需要一次明确投票。方案 B（拆队）：按 AI 偏好重新分组，代价是重新磨合、进度重置，且要向教师说明。课件把这两个选项并列给出，选择依据是“哪种代价更小”。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>团队定义（Merriam-Webster）；心理安全感七问；七种典型问题与六个成因；HBR 四类跨文化挑战与四种应对策略；Scrum 三角色与 6–8 人、无子团队；pair programming 的 driver / navigator；任务 ≤3 天；三种任务状态。</div><div class="callout warn"><b>易错 1</b><b>把 Scrum Master 当“组长”。</b>课件明确写 servant-leader、does not tell the team what to do；他促进会议，不做技术决定。</div><div class="callout warn"><b>易错 2</b><b>把“直接沟通”判为不礼貌。</b>课件说直接沟通“可能被视为粗鲁”，但那是一种感知，不是事实；解决方式是约定沟通规则，而不是让一方闭嘴。</div><div class="callout warn"><b>易错 3</b><b>只拆任务不设状态。</b>课件把“列出、分配、跟踪状态”作为工具的三种用途；没有状态就没有跟进。</div><div class="callout tip"><b>进阶</b>能把“现象—成因—干预（adaptation / structural / managerial）”连成一条链，用来分析任意一个真实小组案例。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s29">团队启动清单（第一次会议前）</h2><ul class="checklist"><li>读完作业页面的 AI 说明，并准备好自己的 AI 使用立场</li><li>准备三个问题的答案：目标分数、沟通偏好、面谈/线上偏好</li><li>想好两个风险与对应的缓解办法</li><li>想好“如果有人退出”的备份方案</li><li>准备一个 15 分钟能做完的团队建设活动</li></ul><h2 id="s30">第一次会议产出清单</h2><ul class="checklist"><li>一句可验收的目标 + 截止日期 + 交付物清单</li><li>一份 AI 使用约定（允许什么、禁止什么、谁写声明）</li><li>backlog：每条 ≤3 天、有负责人、有依赖标注</li><li>固定短会的时间、时长、平台</li><li>失联与冲突的处理规则（多久算阻塞、找谁）</li><li>会议记录已发到共享频道并置顶</li></ul><h2 id="s31">每周跟进清单</h2><ul class="checklist"><li>每张卡的状态是否更新（Not started / In progress / Done）</li><li>是否有人同时进行超过一张卡（限制在制品）</li><li>是否有卡停在同一状态超过 2 天</li><li>是否有人连续两次会议缺席或无回应</li><li>本周是否给出过一次具体、尊重的反馈</li><li>是否有人一直没发言（用便签或文字补充）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 3</td><td>AI 使用边界：no vibe coding、AI as tutor / code reviewer、课程说明优先</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 4–5</td><td>团队定义、共同目标、可学习的技能、为什么这么多团队作业</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 6–8</td><td>成功团队三要素、心理安全感七问与五种培养做法</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 9–10</td><td>七种典型问题与六个成因</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 11–13</td><td>HBR 四类跨文化挑战、芬兰职场特征、四种应对策略</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 14–19</td><td>软件开发中的反馈类型、agile、Scrum 三角色、pair programming</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 20–24</td><td>会前谈期待与 AI、定目标、backlog 与 status meeting、沟通与协作工具</td></tr><tr><td>3_Lectures_2_SSE-teamwork (5).pptx.txt</td><td>slide 25</td><td>TL/DR 六条</td></tr><tr><td>（跳过）</td><td>slide 1、26</td><td>空白页</td></tr><tr><td>（补充）</td><td>—</td><td>Scrum 循环（backlog → 迭代 → 增量 → 回顾）在课件中只有示意图，无文字，故在正文标为拓展背景，不作为考点</td></tr></table></section><div class="lnav"><a class="prev" href="sse-intro-environment.html">← 第 1 讲 · 软件工程系、学习环境与课程要求</a><a class="next" href="degree-structure-psp.html">第 3 讲 · 学位结构、个人学习计划（PSP）与自我管理 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

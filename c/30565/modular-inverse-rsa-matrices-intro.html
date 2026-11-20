@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 11 讲 · 乘法逆元、RSA 与矩阵初步 · 30565</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-4.html">第 4 章 数论与模运算</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">11.1 复习：解 ax + by = c</a><a class="toc-l3" href="#s3">11.2 模运算复习</a><a class="toc-l3" href="#s4">11.3 乘法逆元</a><a class="toc-l3" href="#s5">11.4 Fermat 小定理与 Euler 定理</a><a class="toc-l3" href="#s6">11.5 计算大指数 qe mod m</a><a class="toc-l3" href="#s7">11.6 base 与 modulus 不互素（进阶）</a><a class="toc-l3" href="#s8">11.7 对称密码与公钥密码</a><a class="toc-l3" href="#s9">11.8 RSA 算法三步</a><a class="toc-l3" href="#s10">11.9 RSA 的数值演练</a><a class="toc-l3" href="#s11">11.10 矩阵的定义</a><a class="toc-l3" href="#s12">11.11 矩阵的加法、减法、标量乘与转置</a><a class="toc-l2" href="#s13">考点分层</a><a class="toc-l2" href="#s14">方法清单</a><a class="toc-l3" href="#s15">求乘法逆元</a><a class="toc-l3" href="#s16">计算 qe mod m</a><a class="toc-l3" href="#s17">RSA 一轮流程</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a href="relations-inverse-composition-logic.html">第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a href="combinatorics-counting.html">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a href="divisibility-euclidean-algorithm.html">第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a class="toc-l3" href="modular-inverse-rsa-matrices-intro.html">▸ 第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a href="supp-set-proof-workshop.html">补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>第 11 讲 · 乘法逆元、RSA 与矩阵初步</h1><p class="lead">Multiplicative Inverses, RSA and First Steps in Matrices <span class="badge mute">30565</span> <span class="badge mute">第 11 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 数论与模运算</a></p><p class="src">原始文件：<code>11-lesson.pdf</code> <code>12-exercise.pdf</code> <code>Lecture7_RSA cryptosystem.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 11 讲是数论的高潮：先用乘法逆元把“模运算里的除法”补上，再用它算出大指数的余数，最后组装成 RSA 公钥密码。课程最后 15 分钟转入矩阵的定义与基本运算（加法、标量乘、转置），为第 12 讲的多重与求逆留出接口。</p><p>从考试看，本讲覆盖三块必考内容：q<sup>e</sup> mod m 的计算（常以“最后两位数字”“余数”出现）、乘法逆元的判断与计算、RSA 的加解密与求 d。矩阵的基本运算几乎每年都有一道小题。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>判断 q 在模 m 下是否有乘法逆元，并求出它</li><li>用 Fermat 小定理与 Euler 定理计算大指数的余数</li><li>处理 base 与 modulus 不互素的情形（降模技巧）</li><li>写出 RSA 的密钥生成、加密、解密三步，并证明 D = M</li><li>用扩展欧几里得求 RSA 私钥 d</li><li>说出矩阵的大小、元素记号，并做加法、减法、标量乘与转置</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">11.1 复习：解 ax + by = c</h3><p>四步流程：算 gcd(a, b)；检查是否整除 c；反推欧几里得求一组解；写通解。例（源文件 Ex2）：<code>−123x + 2343y = 21</code>，先化符号再算 gcd，得到一组解后写 <code>x = x₀ − (b/g)k</code>、<code>y = y₀ + (a/g)k</code>。本讲的模运算就是把“找整数解”改写成“找同余类的代表元”，方法完全一致。</p><p>另一个热身：<code>946x + 462y = 20</code>。gcd(946, 462) = 22，而 22 ∤ 20，故无整数解。这类“先检查整除”的判断只需两三行，考试里是送分点。</p><h3 id="s3">11.2 模运算复习</h3><p>模运算（modular arithmetic，又叫 mod-calculations、clock arithmetic）是在整数上“按表盘卷起来”做计算。模 3 时 <code>…, −4, −3, −2, −1, 0, 1, 2, 3, 4, 5, 6, 7, …</code> 里同色的数被视为“相同”，于是 <code>1 + 4 = 5 ≡ 2 (mod 3)</code>。</p><p>两条基本事实：<code>a = b ⇒ a ≡ b (mod m)</code>（对任何 m ∈ Z⁺）；<code>a ≡ b (mod n) ⇒ a = b + kn</code>（对某个 k ∈ Z）。在多项式表达式里，可以把任何“不在指数上的”数替换成与它同余的数（代入规则）。例：<code>947²³⁴ − 152²⁰²⁶ + 80⁸ ≡ 1 − 0 + 0 = 1 (mod 8)</code>，其中用到 947 ≡ 3 且 3² ≡ 1、152 ≡ 0、80 ≡ 0。</p><h3 id="s4">11.3 乘法逆元</h3><p>模 m 下能乘，能不能除？<code>5x ≡ 2 (mod 7)</code> 想写成 <code>x ≡ 2/5</code> 是不合法的。但如果存在 h 使 <code>q·h ≡ 1 (mod m)</code>，则称 h 是 q 模 m 的乘法逆元（multiplicative inverse），此时“除以 q”就可以用“乘以 h”代替。</p><p>定理：q 模 m 的乘法逆元存在当且仅当 <code>gcd(q, m) = 1</code>。证明两个方向：(⇒) 设 qh ≡ 1，则 qh − 1 = mk，即 <code>qh − mk = 1</code> 有整数解，由第 9 讲定理 gcd(q, m) | 1，故 gcd(q, m) = 1。(⇐) 设 gcd(q, m) = 1，则由欧几里得算法，方程 <code>qh − mk = 1</code> 有解 h, k，即 m | qh − 1，也就是 qh ≡ 1 (mod m)。□</p><p>求法有两种：(a) 试遍 0, 1, 2, …, m−1；(b) 解 <code>qh − mk = 1</code>。例：求 29 模 44 的逆元。先化为 <code>29h − 44k = 1</code>，用欧几里得：44 = 1·29 + 15；29 = 1·15 + 14；15 = 1·14 + 1。反推 <code>1 = 15 − 14 = 15 − (29 − 15) = 2·15 − 29 = 2(44 − 29) − 29 = 2·44 − 3·29</code>，即 <code>29·(−3) ≡ 1 (mod 44)</code>。故 h ≡ −3 ≡ 41 (mod 44)，全部解 <code>h = −3 − 44l</code>。检验：29 × 41 = 1189 = 44 × 27 + 1。</p><h3 id="s5">11.4 Fermat 小定理与 Euler 定理</h3><p>定理（Fermat 小定理 Fermat’s little theorem）：若 p 是素数且 gcd(q, p) = 1，则 <code>q<sup>p−1</sup> ≡ 1 (mod p)</code>。推论：<code>q<sup>p−2</sup></code> 就是 q 模 p 的乘法逆元（因为 q·q<sup>p−2</sup> = q<sup>p−1</sup> ≡ 1）。</p><p>定理（Euler 定理，进阶不考）：若 gcd(q, m) = 1，则 <code>q<sup>φ(m)</sup> ≡ 1 (mod m)</code>，其中 φ 是 Euler  totient 函数 <code>φ(m) = #{k ∈ {1,…,m} : gcd(k, m) = 1}</code>。于是 <code>q<sup>φ(m)−1</sup></code> 是 q 模 m 的逆元。</p><p>例：求 29 模 44 的逆元用 Euler 定理。44 = 2²·11，与 44 有公因子的数是 2 的倍数（22 个）与 11 的奇数倍（11、33，2 个），故 φ(44) = 44 − 22 − 2 = 20。于是 <code>29²⁰ ≡ 1 (mod 44)</code>，逆元是 <code>29¹⁹</code>。这个算法对考试不实用（要算 19 次方），但它给出了“逆元一定存在且可算”的理论保证。</p><h3 id="s6">11.5 计算大指数 q<sup>e</sup> mod m</h3><p>三种情形，按难度排列：</p><p>(a) 小周期情形：若某个小幂 q<sup>t</sup> ≡ 1，直接把指数按 t 取余。<code>3<sup>4132</sup> (mod 26)</code>：因 <code>3³ = 27 ≡ 1</code>，而 4132 = 3·1377 + 1，故 <code>3<sup>4132</sup> = 3·(3³)<sup>1377</sup> ≡ 3·1 = 3</code>。</p><p>(b) 模是素数：用 Fermat 小定理，取 t = p − 1。<code>6<sup>934</sup> (mod 13)</code>：因 <code>6<sup>12</sup> ≡ 1</code>，而 934 = 77·12 + 10，故 <code>6<sup>934</sup> ≡ 6<sup>10</sup></code>。再算 6² = 36 ≡ 10、6⁴ ≡ 100 ≡ 9、6⁸ ≡ 81 ≡ 3，于是 <code>6<sup>10</sup> = 6⁸·6² ≡ 3·10 = 30 ≡ 4</code>。</p><p>(c) 模非素数但互素：用 Euler 定理，取 t = φ(m)。总结成一句话：<b>先找周期 t，把 e 写成 e = k·t + r，只算 q<sup>r</sup></b>。因为 <code>q<sup>k·t</sup> = (q<sup>t</sup>)<sup>k</sup> ≡ 1<sup>k</sup> = 1</code>。</p><p>Ex9：<code>17<sup>9000</sup> (mod 307)</code>。先确认 307 是素数：√307 ≈ 17.5，只需试 2、3、5、7、11、13、17，均不整除（307 = 7·43 + 6、307 = 11·27 + 10、307 = 13·23 + 8、307 = 17·18 + 1），故 307 是素数。于是 <code>17<sup>306</sup> ≡ 1</code>，9000 = 29·306 + 126，故只需算 <code>17<sup>126</sup></code>（用平方-乘）。</p><p>Ex10：<code>8<sup>3077</sup> (mod 59)</code>。59 是素数，<code>8<sup>58</sup> ≡ 1</code>；3077 = 53·58 + 3，故结果 = <code>8³ = 512 ≡ 512 − 8·59 = 512 − 472 = 40</code>。</p><p>Ex11：2²⁰²⁶ 的最后两位数字，即求 mod 100。因 gcd(2, 100) ≠ 1，不能直接用 Euler 定理；改用中国剩余定理的思路：分别求 mod 4 与 mod 25。mod 4：<code>2<sup>2026</sup> ≡ 0</code>（指数 ≥ 2）。mod 25：φ(25) = 20，2026 = 101·20 + 6，故 <code>2<sup>2026</sup> ≡ 2⁶ = 64 ≡ 14</code>。设结果为 x，则 x ≡ 0 (mod 4)、x ≡ 14 (mod 25)。写 x = 4k，4k ≡ 14 (mod 25)，4 的逆元是 19（4·19 = 76 ≡ 1），故 k ≡ 14·19 = 266 ≡ 16，x = 64。最后两位是 64。</p><h3 id="s7">11.6 base 与 modulus 不互素（进阶）</h3><p>要求 <code>8<sup>1653</sup> (mod 30)</code>：gcd(8, 30) = 2 ≠ 1，Euler 定理不适用。技巧是先降模：令 <code>4·8<sup>1652</sup> ≡ V (mod 15)</code>，则 <code>4·8<sup>1652</sup> = V + 15k</code>，两边乘 2 得 <code>8·8<sup>1652</sup> = 2V + 30k</code>，即 <code>8<sup>1653</sup> ≡ 2V (mod 30)</code>。</p><p>求 V：gcd(8, 15) = 1，可用 Euler 定理。φ(15) = 15 − 5（3 的倍数：3,6,9,12,15）− 2（5 的非 3 倍数倍：5,10）= 8。故 <code>8⁸ ≡ 1 (mod 15)</code>。又 1652 = 206·8 + 4，故 <code>4·8<sup>1652</sup> = 4·8⁴·(8⁸)<sup>206</sup> ≡ 4·8⁴ ≡ 4·4096 ≡ 4·1 = 4 (mod 15)</code>（4096 = 15·273 + 1）。于是 <code>8<sup>1653</sup> ≡ 2·4 = 8 (mod 30)</code>。这一段是拓展，考试不要求。</p><h3 id="s8">11.7 对称密码与公钥密码</h3><p>加密分两类。对称（symmetric）：双方共享同一把密钥。例子是替换密码：密文 “dsvvb c qt stcvcq”，密钥表把 a→q、b→a、c→z、d→w、e→s…… 解出明文是 “HELLO I AM EMILIA”。问题是“会写的人也会读”，只适合少数熟人通信。</p><p>公钥（public key）：加密钥匙公开、解密钥匙保密。课件给的 RSA 例子：公钥 <code>(n, e) = (23493804793, 65537)</code>，私钥 <code>(n, d) = (23493804793, 14325793613)</code>；密文 “1553534651” 可解出 “406669999”。于是“任何人有公钥都能写，只有持私钥者能读”，任何人都能与你通信。</p><h3 id="s9">11.8 RSA 算法三步</h3><p>准备：选两个大素数 p、q（保密）。</p><p>初始化（密钥生成）：① 计算 <code>n = p·q</code> 与 <code>ϕ = (p−1)(q−1)</code>；② 选 <code>1 &lt; e &lt; n</code> 使 <code>gcd(e, ϕ) = 1</code>（常用 e = 2¹⁶ + 1 = 65537）；③ 求 <code>1 &lt; d &lt; ϕ</code> 使 <code>e·d ≡ 1 (mod ϕ)</code>。公钥是 (n, e)，私钥是 (n, d)。</p><p>加密：把消息写成一个满足 <code>1 &lt; M &lt; n</code> 的数，计算 <code>C = M<sup>e</sup> mod n</code>。解密：<code>D = C<sup>d</sup> mod n</code>。</p><p>正确性证明：ϕ = φ(n)。若 gcd(M, n) = 1，Euler 定理给 <code>M^ϕ ≡ 1 (mod n)</code>；又 <code>e·d ≡ 1 (mod ϕ)</code> 意为 <code>e·d = 1 + kϕ</code>（k ∈ Z⁺）。于是 <code>D ≡ C<sup>d</sup> ≡ M<sup>ed</sup> ≡ M<sup>1+kϕ</sup> ≡ M·(M^ϕ)<sup>k</sup> ≡ M·1<sup>k</sup> ≡ M (mod n)</code>。gcd(M, n) ≠ 1 的情形技术上更繁（见背景材料），实际使用中 p、q、n 选得足够大，这种情形几乎不可能发生。</p><p>长消息的处理：先把文本转成数字（如 ASCII），再切成若干小于 n 的块，逐块加密发送。</p><h3 id="s10">11.9 RSA 的数值演练</h3><p>加密：<code>M = 12345654321</code>，公钥 (23493804793, 65537)。直接算 M<sup>e</sup> 天文数字，但可以用模幂：Python 里 <code>pow(12345654321, 65537, 23493804793)</code> 得 <code>10748999252</code>，故 C = 10748999252。</p><p>解密：<code>pow(10748999252, 14325793613, 23493804793)</code> 得 <code>12345654321</code>，还原成功。考试允许用计算器/电脑算这一步，但必须写出“用模幂 pow(M, e, n)”的方法说明。</p><p>求 d 的过程（源文件 p24）：已知 e = 65537、ϕ = 153612，要求 <code>65537d ≡ 1 (mod 153612)</code>，即 <code>65537d − 153612k = 1</code>。欧几里得：153612 = 2·65537 + 22538；65537 = 2·22538 + 20461；……；最后 <code>1 = 16 − 5·3</code>，一路反推得 <code>1 = −20573·153612 + 48221·65537</code>。故 <code>d ≡ 48221 (mod 153612)</code>。提示：若得到负数，反复加 ϕ 直到落在 (1, ϕ) 内。</p><p>Ex12/Ex13（二进制消息）：公钥 (369949007, 65537)，消息二进制 101101101110001101。先用 <code>int(s, 2)</code> 转十进制得 M，再 <code>pow(M, 65537, n)</code>，最后 <code>bin()</code> 转回二进制，答案应为 1100100100110101100101110011。已知 p = 16481、q = 22447，则 <code>ϕ = (p−1)(q−1) = 369910080</code>，用 <code>d = e<sup>φ(ϕ)−1</sup> mod ϕ</code>（Euler 定理）也可求 d，但实际仍用扩展欧几里得。</p><h3 id="s11">11.10 矩阵的定义</h3><p>矩阵（matrix）是数的矩形阵列，其上定义了加法与乘法。本课程只考虑元素为实数的实矩阵（real matrix）。阵列中的数叫元素（entries/elements），横排叫行（row）、竖排叫列（column）。</p><p>大小：m 行 n 列称为 m × n 矩阵（m-by-n），m、n 称为维数（dimensions）。行数先说、列数后说。只有一行的叫行矩阵（row matrix），只有一列的叫列矩阵（column matrix），行数等于列数的叫方阵（square matrix）。记号：<code>A = [a<sub>ij</sub>]<sub>m×n</sub></code>，其中 <code>a<sub>ij</sub></code> 是第 i 行第 j 列的元素。</p><p>用公式定义矩阵的例子：<code>[i − 2j]<sub>4×3</sub></code> 的第 1 行是 1−2, 1−4, 1−6 即 −1, −3, −5；第 2 行是 0, −2, −4；第 3 行是 1, −1, −3；第 4 行是 2, 0, −2。这类“按公式填表”的题只要按 i、j 的顺序逐格代入即可。</p><p>用途：作为带运算符的数据结构（硬件加速使代码跑得快）；计算机图形学（三维旋转）；网络分析（关联矩阵 incidence matrix）；神经网络；信号与图像处理、物理与工程仿真。</p><h3 id="s12">11.11 矩阵的加法、减法、标量乘与转置</h3><p>加法与减法要求两个矩阵同型：<code>[a<sub>ij</sub>] ± [b<sub>ij</sub>] = [a<sub>ij</sub> ± b<sub>ij</sub>]</code>，逐元素进行。零矩阵（zero matrix）所有元素为 0，<code>A + 0 = A</code>、<code>A − A = 0</code>。</p><p>性质：加法交换 <code>A + B = B + A</code>；加法结合 <code>(A + B) + C = A + (B + C)</code>。证明只需逐元素看实数的交换律与结合律：<code>[a<sub>ij</sub> + b<sub>ij</sub>] = [b<sub>ij</sub> + a<sub>ij</sub>]</code>。减法不交换：<code>A − B ≠ B − A</code>（除非 A = B）。</p><p>标量乘：<code>cA = [c·a<sub>ij</sub>]</code>，每个元素都乘 c。例：<code>c = 4</code>、A 为 2×3 矩阵时每个元素乘 4。注意 <code>A − B = A + (−1)B</code>。</p><p>转置（transpose）：<code>Aᵀ = [a′<sub>ij</sub>]<sub>n×m</sub></code>，其中 <code>a′<sub>ij</sub> = a<sub>ji</sub></code>，即把行写成列。例：<code>[1 2 3; 4 5 6]ᵀ = [1 4; 2 5; 3 6]</code>。性质：<code>(Aᵀ)ᵀ = A</code>；<code>(A + B)ᵀ = Aᵀ + Bᵀ</code>；<code>(cA)ᵀ = c(Aᵀ)</code>。</p><div class="callout tip"><b>与关系的联系</b>二元关系的布尔矩阵（第 12 讲）中，转置恰好对应逆关系 R⁻¹；矩阵的“行”对应关系的第一坐标、“列”对应第二坐标。</div><div class="callout idea" data-ext="modular-inverse-rsa-matrices-intro-0"><b>推导补充</b><p>模 m 下写 x ≡ 2/5 不合法，但当存在 h 使 q·h ≡ 1 (mod m) 时，除以 q 可换成乘 h。逆元存在的充要条件是 gcd(q,m)=1：正向由 qh−1=mk 得 gcd(q,m)|1；反向由 gcd=1 解 qh−mk=1 得 qh≡1。求 29 模 44 的逆元，化为 29h−44k=1，欧几里得反推得 1=2·44−3·29，故 h≡−3≡41。模运算中不在指数上的数可替换成同余数，如 947²³⁴ 中 947≡3 且 3²≡1，这正是算末两位的关键化简。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>multiplicative inverse</td><td>乘法逆元</td><td>h with q·h ≡ 1 (mod m); exists iff gcd(q, m) = 1.</td></tr><tr><td>Fermat’s little theorem</td><td>费马小定理</td><td>q<sup>p−1</sup> ≡ 1 (mod p) for prime p not dividing q.</td></tr><tr><td>Euler’s theorem</td><td>欧拉定理</td><td>q<sup>φ(m)</sup> ≡ 1 (mod m) when gcd(q, m) = 1.</td></tr><tr><td>Euler’s totient</td><td>欧拉函数</td><td>φ(m) counts k in 1..m coprime to m.</td></tr><tr><td>modular exponentiation</td><td>模幂</td><td>Compute q<sup>e</sup> mod m by reducing the exponent modulo a period.</td></tr><tr><td>symmetric encryption</td><td>对称加密</td><td>Sender and receiver share one secret key.</td></tr><tr><td>public-key encryption</td><td>公钥加密</td><td>Anyone can encrypt with the public key; only the private key decrypts.</td></tr><tr><td>RSA</td><td>RSA 算法</td><td>n = pq, φ = (p−1)(q−1), C = M<sup>e</sup> mod n, D = C<sup>d</sup> mod n.</td></tr><tr><td>public key</td><td>公钥</td><td>The pair (n, e).</td></tr><tr><td>private key</td><td>私钥</td><td>The pair (n, d).</td></tr><tr><td>matrix</td><td>矩阵</td><td>A rectangular array of numbers.</td></tr><tr><td>entry</td><td>元素</td><td>An element a_ij at row i, column j.</td></tr><tr><td>square matrix</td><td>方阵</td><td>Same number of rows and columns.</td></tr><tr><td>scalar multiplication</td><td>标量乘</td><td>cA = [c·a_ij].</td></tr><tr><td>transpose</td><td>转置</td><td>Aᵀ has a′_ij = a_ji; rows become columns.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 Ex9）计算 17<sup>9000</sup> (mod 307)。</div><p>先确认 307 是素数：√307 ≈ 17.5，试 2、3、5、7、11、13、17 均不整除（307 = 4·76+3、307 = 13·23+8、307 = 17·18+1），故 307 是素数。</p><p>由 Fermat 小定理，<code>17<sup>306</sup> ≡ 1 (mod 307)</code>。</p><p>把指数按 306 取余：9000 = 29·306 + 126（29·306 = 8874，9000 − 8874 = 126）。故 <code>17<sup>9000</sup> ≡ 17<sup>126</sup></code>。</p><p>用平方-乘：17² = 289 ≡ −18；17⁴ ≡ 324 ≡ 17；17⁸ ≡ 289；可见 17⁴ ≡ 17，于是 17<sup>4k</sup> ≡ 17。126 = 4·31 + 2，故 17<sup>126</sup> ≡ 17<sup>124</sup>·17² ≡ 17·289 ≡ 4913。4913 = 307·16 + 1 = 4912 + 1，故结果 ≡ 1。</p><p>（若按计算器直接算 pow(17, 9000, 307) 也得 1，可用作检验。）</p></div><div class="qa"><div class="q">例 2　求 7 模 12 的乘法逆元（源文件 Ex2(a)）。</div><p>先判存在性：gcd(7, 12) = 1，故逆元存在且唯一（模 12）。</p><p>试 0..11：7·1 = 7、7·2 = 14 ≡ 2、7·3 = 21 ≡ 9、7·4 = 28 ≡ 4、7·5 = 35 ≡ 11、7·6 = 42 ≡ 6、7·7 = 49 ≡ 1，故 7 的逆元是 7。</p><p>用欧几里得验证：12 = 1·7 + 5；7 = 1·5 + 2；5 = 2·2 + 1。反推 1 = 5 − 2·2 = 5 − 2(7 − 5) = 3·5 − 2·7 = 3(12 − 7) − 2·7 = 3·12 − 5·7，即 <code>7·(−5) ≡ 1 (mod 12)</code>，故逆元 ≡ −5 ≡ 7。一致。</p><p>对照 Ex2(b)：6 模 8，gcd(6, 8) = 2 ≠ 1，故逆元不存在（可验证 6h mod 8 只能取 0、2、4、6，永远取不到 1）。</p></div><div class="qa"><div class="q">例 3　（源文件 p23）RSA 加解密演练：n = 23493804793、e = 65537、d = 14325793613，M = 12345654321。</div><p>加密：<code>C = M<sup>e</sup> mod n</code>。用模幂函数 <code>pow(12345654321, 65537, 23493804793) = 10748999252</code>，故密文 C = 10748999252。</p><p>解密：<code>D = C<sup>d</sup> mod n</code>。用 <code>pow(10748999252, 14325793613, 23493804793) = 12345654321</code>，还原出 M。</p><p>为何有效：n = pq，φ(n) = (p−1)(q−1)，ed ≡ 1 (mod φ(n))，故 <code>M<sup>ed</sup> ≡ M (mod n)</code>（Euler 定理）。</p><p>规模说明：这里的 n 只有 11 位，实际 RSA 的 n 有 2048 位以上；本课程只演示原理。</p></div><div class="qa"><div class="q">例 4　求 2<sup>2026</sup> 的最后两位数字。</div><p>最后两位数字就是求 mod 100 的余数。因 gcd(2,100) = 2 ≠ 1，不能直接用 Euler 定理，改为分别求 mod 4 与 mod 25。</p><p>mod 4：指数 ≥ 2 时 2<sup>n</sup> ≡ 0 (mod 4)，故 2<sup>2026</sup> ≡ 0 (mod 4)。</p><p>mod 25：φ(25) = 20，2026 = 101·20 + 6，故 2<sup>2026</sup> ≡ 2⁶ = 64 ≡ 14 (mod 25)。</p><p>合并：x ≡ 0 (mod 4)、x ≡ 14 (mod 25)。令 x = 4k，则 4k ≡ 14 (mod 25)；4 的逆元是 19（4·19 = 76 ≡ 1），故 k ≡ 14·19 = 266 ≡ 16，x = 64。</p><p>检验：2<sup>10</sup> = 1024 ≡ 24，2<sup>20</sup> ≡ 76，…… 用计算器 pow(2, 2026, 100) = 64，一致。</p></div><div class="qa"><div class="q">例 5　（源文件 p33–p36 的题型）设 A = [1 2 3; 0 0 7; 9 9 9]，B = [1; 1; 1]，求 A + B 是否有意义、Aᵀ 与 2A。</div><p>A 是 3×3，B 是 3×1，大小不同，故 A + B 无意义（矩阵加法要求同型）。</p><p>Aᵀ 是 3×3：第 1 行变成第 1 列，即 <code>[1 0 9; 2 0 9; 3 7 9]</code>。</p><p>2A：每个元素乘 2，得 <code>[2 4 6; 0 0 14; 18 18 18]</code>。</p><p>要点：先看大小再运算；转置是“行列互换”，标量乘是“逐元素”。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>判断下列各数在给定模下是否有乘法逆元，若有则求出：5 mod 7、4 mod 8、9 mod 26。</li><li>计算 3<sup>2026</sup> (mod 7) 与 5<sup>2026</sup> (mod 11)。</li><li>设 RSA 的 p = 5、q = 11、e = 3。求 n、φ、d，并加密 M = 7。</li><li>计算矩阵 [1 2; 3 4] + [0 1; 1 0]、3[1 2; 3 4] 与 [1 2; 3 4]ᵀ。</li><li>解释为什么 RSA 中不能把 d 公开，而 e 可以公开。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> gcd(5,7) = 1，逆元 3（5·3 = 15 ≡ 1）；gcd(4,8) = 4 ≠ 1，无逆元；gcd(9,26) = 1，试得 9·3 = 27 ≡ 1，故逆元 3。</p><p><b>2.</b> 3<sup>2026</sup> mod 7：周期 6（3⁶ ≡ 1），2026 = 337·6 + 4，故 ≡ 3⁴ = 81 ≡ 4。5<sup>2026</sup> mod 11：5<sup>10</sup> ≡ 1（Fermat），2026 = 202·10 + 6，故 ≡ 5⁶；5² = 3、5⁴ = 9、5⁶ = 9·3 = 27 ≡ 5。</p><p><b>3.</b> n = 55，φ = 4·10 = 40；e = 3 且 gcd(3,40) = 1；解 3d ≡ 1 (mod 40) 得 d = 27（3·27 = 81 ≡ 1）。加密 C = 7³ mod 55 = 343 mod 55 = 343 − 330 = 13。检验解密：13<sup>27</sup> mod 55 应回到 7。</p><p><b>4.</b> 和为 [1 3; 4 4]；3A = [3 6; 9 12]；Aᵀ = [1 3; 2 4]。</p><p><b>5.</b> e 只能用于加密（单向），知道 e 与 n 也无法在可行时间内求出 d，因为那需要分解 n = pq 求 φ；而 d 一旦泄露，任何人都能解密。RSA 的安全性建立在“大数分解很难”之上。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s13">考点分层</h2><div class="callout exam"><b>必考</b>① 判断并求乘法逆元（2025 年第三次考试第 4 题是变体：解 56x ≡ 4 (mod 100)）。② 计算 q<sup>e</sup> mod m（“最后一位/最后两位”）。③ RSA：由 p、q、e 求 n、φ、d，再加密或解密。④ 矩阵的加法、标量乘、转置（几乎每年第 5 题的第一小问）。</div><div class="callout warn"><b>易错点</b>① 忘记先检查 gcd(q, m) = 1 就求逆元。② 逆元写成负数不化成 (0, m) 内的代表元。③ q<sup>e</sup> mod m 直接把指数按 m 取余（应按周期 t 取余）。④ RSA 里把 φ 写成 pq − 1 而不是 (p−1)(q−1)。⑤ 矩阵加法不看大小就硬加。</div><div class="callout warn"><b>失分点</b>求 d 只给结果不写扩展欧几里得的方程，过程分全失；大幂计算只写答案不写“周期 + 指数分解”，会被判跳步。</div><div class="callout tip"><b>进阶</b>① 用中国剩余定理处理 gcd(base, mod) ≠ 1 的情形。② 知道 φ(pq) = (p−1)(q−1) 与 φ 的容斥算法。③ 理解 RSA 安全性等价于大数分解困难。④ 会把关系看成布尔矩阵，用矩阵乘法算关系的合成。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">方法清单</h2><h3 id="s15">求乘法逆元</h3><ol class="steps"><li>算 gcd(q, m)：不为 1 则不存在逆元，停止</li><li>写出 qh − mk = 1，用欧几里得算法列出竖式</li><li>反推把 1 表示成 q、m 的线性组合</li><li>读出 q 的系数 h₀，并把 h₀ 化成 [0, m) 内的代表元</li><li>代回验证 q·h ≡ 1 (mod m)</li></ol><h3 id="s16">计算 q<sup>e</sup> mod m</h3><ul class="checklist"><li>若存在小 t 使 q<sup>t</sup> ≡ 1，用 t</li><li>若 m 为素数且 m ∤ q，用 t = m − 1（Fermat）</li><li>若 gcd(q, m) = 1，用 t = φ(m)（Euler）</li><li>把 e 写成 k·t + r，只算 q<sup>r</sup></li><li>用平方-乘逐步取余，最后检查余数在 [0, m)</li></ul><h3 id="s17">RSA 一轮流程</h3><ol class="steps"><li>取素数 p、q，算 n = pq 与 φ = (p−1)(q−1)</li><li>选 e 使 1 &lt; e &lt; n 且 gcd(e, φ) = 1</li><li>解 ed ≡ 1 (mod φ) 得私钥 d</li><li>加密 C = M<sup>e</sup> mod n；解密 D = C<sup>d</sup> mod n</li><li>验证 D = M，并检查 1 &lt; M &lt; n</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>11-lesson.pdf</td><td>p4–p6</td><td>解 ax+by=c 的复习与 Ex1–Ex2、模运算复习与代入示例、Ex3–Ex8</td></tr><tr><td>11-lesson.pdf</td><td>p10–p15</td><td>乘法逆元的定义与存在性证明、求法（枚举与欧几里得）、29 模 44 的例、Fermat 小定理、Euler 定理与 φ(44)</td></tr><tr><td>11-lesson.pdf</td><td>p16–p19</td><td>大幂计算的三种情形（3<sup>4132</sup>、6<sup>934</sup>）、Ex9–Ex11、降模技巧（8<sup>1653</sup> mod 30）、总结</td></tr><tr><td>11-lesson.pdf</td><td>p21–p25</td><td>对称与公钥加密的对比、RSA 三步算法与正确性证明、数值演练、求 d 的扩展欧几里得、Ex12–Ex13</td></tr><tr><td>11-lesson.pdf</td><td>p28–p31</td><td>矩阵的定义、大小与记号、[i−2j]<sub>4×3</sub>、矩阵的用途</td></tr><tr><td>11-lesson.pdf</td><td>p33–p36</td><td>加法与减法、交换律与结合律的证明、标量乘、转置及其性质</td></tr><tr><td>12-exercise.pdf</td><td>Ex1–Ex6</td><td>最后一位数字、逆元判定、Fermat 应用、RSA 加解密、转置与加法</td></tr><tr><td>（跳过）</td><td>p2–p3、p8–p9、p20、p26–p27、p32</td><td>目录与回顾页，内容已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>中国剩余定理式的降模、Euler φ 的容斥计算、RSA 安全性与大数分解</td></tr></table></section><div class="lnav"><a class="prev" href="primes-and-modular-arithmetic.html">← 第 10 讲 · 素数分解与模运算</a><a class="next" href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

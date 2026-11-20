@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · 软件过程、过程活动与过程改进 · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-1.html">第 1 章 导论与过程模型</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 软件过程是什么</a><a class="toc-l3" href="#s3">3.2 过程描述里有什么</a><a class="toc-l3" href="#s4">3.3 计划驱动与敏捷：不是二选一</a><a class="toc-l3" href="#s5">3.4 三种基本过程模型</a><a class="toc-l3" href="#s6">3.5 增量开发的收益与代价</a><a class="toc-l3" href="#s7">3.6 集成与配置：以复用为基础</a><a class="toc-l3" href="#s8">3.7 四项过程活动的内部结构</a><a class="toc-l3" href="#s9">3.8 应对变化：让返工变便宜</a><a class="toc-l3" href="#s10">3.9 原型：为学习而建</a><a class="toc-l3" href="#s11">3.10 增量交付：按优先级分批交付</a><a class="toc-l3" href="#s12">3.11 过程改进：从「救火」到「改流程」</a><a class="toc-l3" href="#s13">3.12 过程改进循环与度量</a><a class="toc-l2" href="#s14">描述与改进一个过程的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a class="toc-l3" href="l03-process-activities-and-improvement.html">▸ 第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 3 讲 · 软件过程、过程活动与过程改进</h1><p class="lead">Software Processes, Process Activities and Process Improvement <span class="badge mute">30361</span> <span class="badge mute">第 3 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 导论与过程模型</a></p><p class="src">原始文件：<code>10_Week 4/1_SE - Lecture 3 - 2026.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 2 讲讲了「有哪些模型」，这一讲把镜头拉近到模型内部：一个软件过程由哪些活动组成、活动之间有哪些产物与角色、当变化来临时过程如何应对，最后讨论组织如何系统地改进自己的过程（SPI）。这一讲是「从项目视角看过程」转向「从组织视角看过程」的桥梁。</p><p>与前后讲的衔接：第 2 讲的过程模型是本讲的三种基本过程模型的理论来源；本讲的「四项活动」在第 4 至 8 讲逐一展开；本讲末尾的过程改进与度量，直接通向第 10 讲的质量管理与配置管理。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用「活动 + 顺序 + 产物 + 角色 + 前后条件」完整描述一个软件过程</li><li>区分计划驱动过程与敏捷过程，并说明现实中为什么大多数过程是混合的</li><li>比较瀑布、增量开发、集成与配置三种过程模型的适用条件与风险</li><li>解释变更代价的两个降低手段：变更预期（change anticipation）与变更容忍（change tolerance）</li><li>说明原型与增量交付各自降低哪一类风险，以及各自的局限</li><li>为一个组织设计一套可度量的过程改进方案，并选择归纳式或规范式方法</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 软件过程是什么</h3><p>课件定义：“A structured set of activities required to develop a software system.”（开发一个软件系统所需的一组结构化活动。）所有软件过程都包含四项活动：</p><ul><li><b>规格 specification</b>：定义系统应该做什么；</li><li><b>设计与实现 design and implementation</b>：定义系统的组织方式并实现系统；</li><li><b>验证 validation</b>：检查系统是否做了客户想要的事；</li><li><b>演化 evolution</b>：根据变化的客户需求修改系统。</li></ul><p>而「过程模型」（process model）是过程的<b>抽象表示</b>：它从某个特定视角描述过程。课件原句：“A software process model is an abstract representation of a process. It presents a description of a process from some particular perspective.”同一过程可以画出多个模型，取决于你关心什么（时间？角色？产物？风险？）。</p><h3 id="s3">3.2 过程描述里有什么</h3><p>描述与讨论过程时，我们通常谈活动及其顺序（例如「定义数据模型」「设计用户界面」）。但完整的过程描述还应包含：</p><table><tr><th>要素</th><th>英文</th><th>说明</th></tr><tr><td>产物</td><td>products</td><td>过程活动的产出，如 SRS、设计文档、测试报告</td></tr><tr><td>角色</td><td>roles</td><td>参与者的职责，如产品负责人、架构师、测试工程师</td></tr><tr><td>前置条件</td><td>pre-conditions</td><td>活动开始前必须为真的事实，如「需求已基线化」</td></tr><tr><td>后置条件</td><td>post-conditions</td><td>活动完成后必须为真的事实，如「所有单元测试通过」</td></tr></table><p>这四个要素是「过程可执行」的关键：没有产物就无法检查，没有角色就无人负责，没有前后条件就无法判断活动是否真的完成。第 13 讲的课程项目计划书要求写「检查点（checkpoints）与评审内容」，本质就是给阶段补上前置与后置条件。</p><h3 id="s4">3.3 计划驱动与敏捷：不是二选一</h3><p>课件定义：<b>计划驱动过程</b>（plan-driven processes）指所有过程活动都事先计划好，并按计划度量进展；<b>敏捷过程</b>（agile processes）指规划是增量的，过程可较容易地改变以反映变化的客户需求。</p><p>紧接着是一句极重要的判断：“In practice, most practical processes include elements of both plan-driven and agile approaches. There are no right or wrong software processes.”（实践中大多数过程同时包含计划驱动与敏捷要素；软件过程没有对错之分。）</p><div class="callout exam"><b>必考</b>「没有对错的软件过程」这一判断常被用来反驳「瀑布过时」「敏捷是唯一正确」的绝对化表述。答题时要落到「是否适合当前项目的需求稳定性、风险、监管与团队」。</div><h3 id="s5">3.4 三种基本过程模型</h3><table><tr><th>模型</th><th>特征</th><th>可能是计划驱动或敏捷</th></tr><tr><td>瀑布模型 the waterfall model</td><td>计划驱动；规格与开发是分离而独立的阶段</td><td>计划驱动</td></tr><tr><td>增量开发 incremental development</td><td>规格、开发、验证相互交织</td><td>两者皆可</td></tr><tr><td>集成与配置 integration and configuration</td><td>系统由既有的可配置构件组装而成</td><td>两者皆可</td></tr></table><p>课件的关键补充：实践中大多数大型系统使用的过程都同时包含这三种模型的要素。例如：总体按瀑布分阶段立项与验收，内部按增量开发交付，部分模块直接集成商用构件。</p><h3 id="s6">3.5 增量开发的收益与代价</h3><p>收益三条：</p><ol><li>容纳客户需求变化的成本降低——需要重做的分析与文档远少于瀑布；</li><li>更容易获得客户对已完成工作的反馈——客户可以对着演示评论，看到已经实现了多少；</li><li>更快速地向客户交付并部署有用软件——客户能比瀑布更早使用并获得价值。</li></ol><p>代价两条（高频考点）：</p><ul><li><b>过程不可见</b>（the process is not visible）：管理者需要定期可交付物来衡量进展；如果系统开发很快，为每个版本都产出反映其状态的文档并不经济，于是「进展」变得难以从外部观察。</li><li><b>系统结构退化</b>（structure tends to degrade）：除非投入时间与金钱做重构，频繁变更会侵蚀软件结构；结构一旦变坏，后续变更越来越难、越来越贵。</li></ul><p>第 2 讲的「保持简单 + 持续重构」与这里呼应：增量开发的代价必须用重构来偿还，否则「增量」会变成「技术债复利」。</p><h3 id="s7">3.6 集成与配置：以复用为基础</h3><p>该模型基于软件复用：系统由既有构件或应用系统集成而成，这类现成系统常被称为 <b>COTS</b>（Commercial-off-the-shelf，商用现货）。被复用的元素可以被配置，以适配用户需求的行为与功能。课件指出：复用现在是构建许多类型业务系统的标准做法。</p><p>优点：更少的从零开发 → 成本与风险降低；更快的交付与部署。</p><p>缺点：<b>需求妥协不可避免</b>，系统可能并不满足用户真实需要；<b>失去对复用元素演化的控制</b>——构件供应商的升级节奏不由你决定。</p><div class="callout warn"><b>易错</b>「复用一定更好」是错误直觉。复用降低的是开发成本与风险，换来的是需求妥协与演化失控；当系统差异化正是竞争力来源时，复用可能损害产品。</div><h3 id="s8">3.7 四项过程活动的内部结构</h3><p>课件强调：真实的过程是技术、协作与管理活动的交织序列；四项基本活动在不同过程中被<b>不同地组织</b>——瀑布里排成序列，增量开发里相互交织。</p><p><b>软件规格</b>：确定需要哪些服务，以及系统运行与开发的约束。需求工程过程包括三步：需求获取与分析（干系人要求或期望什么）、需求规格（详细定义需求）、需求验证（检查需求的有效性）。第 4 讲会完整展开。</p><p><b>设计与实现</b>：把系统规格转换为可执行系统的过程。设计是「设计一个能实现规格的软件结构」，实现是「把这个结构翻译成可执行程序」。二者密切相关、可以交织。课件另有一张「设计过程的一般模型」图（原 PDF 为图），其要点是：设计从体系结构设计开始，逐层细化到构件设计与接口设计，并与需求反复核对。</p><p>实现有两条路径：开发一个或多个程序；或配置一个应用系统（configuring an application system）。对多数系统而言，设计与实现是交织活动。</p><p><b>软件验证</b>：验证与确认（V&amp;V）旨在表明系统符合其规格并满足客户需求；包括检查与评审过程以及系统测试。系统测试用从规格与真实数据导出的测试用例来执行系统。课件明确指出：<b>测试是最常用的 V&amp;V 活动</b>。</p><p><b>软件演化</b>：软件天生灵活、可以改变；当业务环境变化导致需求变化时，支撑业务的软件必须演化。过去「开发」与「演化/维护」之间有明确分界，但随着全新系统越来越少，这条分界越来越不重要——这也是第 8 讲的主题。</p><h3 id="s9">3.8 应对变化：让返工变便宜</h3><p>变化在所有大型软件项目中都不可避免，来源至少三类：业务变化带来新的或改变的需求；新技术带来改进实现的可能性；平台变化要求应用改动。变化导致<b>返工</b>（rework），因此变化成本包含两部分：返工的成本 + 实现新功能的成本。</p><p>降低返工成本有两个思路，必须能区分：</p><table><tr><th>手段</th><th>英文</th><th>做法</th><th>典型技术</th></tr><tr><td>变更预期</td><td>change anticipation</td><td>在过程里安排能「提前发现」可能变化的活动，使重大返工发生前就预见到变化</td><td>系统原型、原型化需求验证</td></tr><tr><td>变更容忍</td><td>change tolerance</td><td>把过程设计成「变化发生时能以较低成本被容纳」</td><td>增量交付、可配置架构、自动化回归测试</td></tr></table><p>课件给出两个具体技术：<b>系统原型</b>（快速开发系统或其一部分，以检查客户需求与设计决策的可行性，支持变更预期）与<b>增量交付</b>（把增量交付给客户评论与试用，同时支持变更规避与变更容忍）。</p><h3 id="s10">3.9 原型：为学习而建</h3><p>原型定义：“A prototype is an initial version of a system used to demonstrate concepts and try out design options.”（用于演示概念、试验设计选项的系统初始版本。）</p><p>原型的收益（课件五条）：改善系统可用性；更贴近用户真实需要；改善设计质量；改善可维护性；减少开发工作量。</p><p>要理解「原型」的两种用法（这是课件图示的要点，也是常见考点）：<b>抛弃型原型</b>（throw-away prototype）用于澄清需求后丢弃，不进入产品；<b>演化型原型</b>（evolutionary prototype）逐步演化为最终系统。前者适合验证不确定性，后者要承担「原型代码质量差却上线」的风险。</p><div class="callout warn"><b>易错</b>把原型当成「先做一个简化版产品」。原型的目的是<b>学习</b>（验证需求或设计选项），不是交付；若把抛弃型原型直接当产品，会继承其粗糙的结构与缺失的非功能属性。</div><h3 id="s11">3.10 增量交付：按优先级分批交付</h3><p>增量交付不是一次性交付整个系统，而是把开发与交付拆成若干增量，每个增量交付部分功能。用户需求被排优先级，<b>优先级最高的进入早期增量</b>。</p><p>关键规则：一旦某个增量的开发开始，该增量的需求就被<b>冻结</b>；但后续增量的需求可以继续演化。这条规则解决了「既要稳定又要灵活」的矛盾：冻结当前、放开未来。</p><p>优点：每个增量都交付客户价值，功能更早可用；早期增量充当原型，帮助引出后续增量的需求；整体项目失败的风险更低；优先级最高的服务通常获得最多测试。</p><p>问题：多数系统需要一套被各部分共用的基础设施，而<b>识别所有增量都需要的公共设施很难</b>；此外，迭代过程的本质是「规格与软件一起发展」，这与许多组织的采购模型冲突——在这些组织里，完整系统规格是开发合同的一部分。</p><h3 id="s12">3.11 过程改进：从「救火」到「改流程」</h3><p>课件的出发点很现实：无论大型、中型、小型还是初创软件公司，通常在开发与交付中都会遇到问题——缺文档、不遵循流程、缺过程治理、团队间缺集成与协作、缺需求可追溯性、缺技术管理等等。这些问题的后果是项目失败：进度、成本、质量三方面。</p><p>SPI（software process improvement）可被视为软件开发项目中的<b>再工程或变更管理</b>过程：识别开发生命周期中的低效环节并加以解决，从而得到更好的过程。课件另一定义：过程改进意味着<b>理解现有过程</b>并<b>改变这些过程</b>，以提高产品质量和／或降低成本与开发时间。</p><p>动机（课件列了八条，可归为四组）：</p><table><tr><th>动机</th><th>说明</th></tr><tr><td>标准化与过程一致性</td><td>建立与组织目标、战略对齐的、标准且实用的开发过程</td></tr><tr><td>成本降低</td><td>通过改进过程消除问题、冗余与缺陷来改善项目成本</td></tr><tr><td>竞争优势</td><td>例如通过 CMMI 认证，可凭「基于标准方法的成熟过程」获得更多销售机会</td></tr><tr><td>达成目标、缩短上市时间</td><td>组织目标、项目交付、质量标准、有价值的产品、专业文档都是 SPI 的产出</td></tr><tr><td>提升客户满意度</td><td>按时、按规格、高质量交付会提升满意度并改善销售</td></tr><tr><td>工作满意度</td><td>员工因产出高质量产品、清楚知道自己该做什么而获得满足感，减少因不成熟过程引发的冲突与救火</td></tr><tr><td>自动化与自治</td><td>引入工具实现自动化、提升质量与一致性，并让不同员工承担不同角色</td></tr><tr><td>已被证明的成效</td><td>成功实施的 SPI 项目有大量证据支持其价值</td></tr></table><h3 id="s13">3.12 过程改进循环与度量</h3><p>课件给出「过程改进循环」图（原 PDF 为图），其四步可概括为：<b>度量现状 → 分析原因 → 实施改变 → 再度量验证</b>，并循环往复。它与 PDCA 同构，关键在于「以数据开头、以数据收尾」。</p><p>过程度量（process measurement）的两条原则：</p><ul><li>尽可能收集<b>定量</b>的过程数据；但在组织没有清晰定义过程标准时这很难——你不知道该测什么，因此<b>可能必须先定义过程，才可能度量</b>。</li><li>过程度量应当用于<b>评估改进效果</b>；但这不意味着「度量驱动改进」。改进的驱动因素应是<b>组织目标</b>。</li></ul><p>过程度量指标（process metrics）三类：</p><table><tr><th>类别</th><th>含义</th><th>例子</th></tr><tr><td>时间</td><td>完成过程活动所需时间</td><td>日历时间；完成某活动或过程的工作量</td></tr><tr><td>资源</td><td>过程或活动所需资源</td><td>总工作量（人日）</td></tr><tr><td>事件次数</td><td>特定事件发生次数</td><td>发现的缺陷数</td></tr></table><p>SPI 方法分两大类：<b>归纳式</b>（inductive，自下而上）与<b>规范式</b>（prescriptive，自上而下），多数方法都是循环的、含四个主要步骤。</p><table><tr><th>类别</th><th>代表方法</th><th>思路</th></tr><tr><td>规范式 prescriptive</td><td>CMMI（Capability Maturity Model Integration）、SPICE（Software Process Improvement and Capability dEtermination）</td><td>由外部成熟度模型给出「应该达到什么」，组织对照差距逐级提升</td></tr><tr><td>归纳式 inductive</td><td>QIP（Quality Improvement Paradigm）、iFLAP（improvement framework utilizing lightweight assessment and improvement planning）</td><td>从团队自身实践出发，轻量评估后制定改进计划</td></tr></table><p>课件在「能力成熟度等级」页只放了图，并列出需要自行阅读的主题：Kanban、Crystal、CMMI、SPICE。CMMI 的五个成熟度等级是：初始级（initial）、已管理级（managed）、已定义级（defined）、量化管理级（quantitatively managed）、优化级（optimizing）；SPICE（ISO/IEC 15504）用 0–5 的能力等级描述单个过程的能力。这部分课件要求自学，考试若出现通常只考「五级名称与顺序」或「CMMI 属规范式、QIP 属归纳式」。</p><div class="callout idea" data-ext="l03-process-activities-and-improvement-0"><b>常见误解</b><p>最容易走极端的判断是瀑布过时、敏捷唯一正确。课件明确：实践中大多数过程同时含计划驱动与敏捷要素，软件过程没有对错；选择应落到需求稳定性、风险、监管与团队，而非流派站队。另一个被低估的代价是增量开发：它降低变更成本、带来早期反馈，但<strong>过程不可见</strong>——管理者难从外部衡量进展；结构也易退化，除非投入重构，否则变更越来越贵。完整过程描述不只要活动顺序，还要产物、角色、前置与后置条件，否则活动无法检查、无人负责。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>software process</td><td>软件过程</td><td>A structured set of activities required to develop a software system.</td></tr><tr><td>process model</td><td>过程模型</td><td>An abstract representation of a process from some particular perspective.</td></tr><tr><td>product</td><td>产物</td><td>The outcome of a process activity, e.g. a requirements document.</td></tr><tr><td>role</td><td>角色</td><td>The responsibilities of the people involved in the process.</td></tr><tr><td>pre-condition</td><td>前置条件</td><td>A statement that must be true before an activity is enacted.</td></tr><tr><td>post-condition</td><td>后置条件</td><td>A statement that must be true after an activity is enacted or a product produced.</td></tr><tr><td>plan-driven process</td><td>计划驱动过程</td><td>All process activities are planned in advance and progress is measured against the plan.</td></tr><tr><td>incremental development</td><td>增量开发</td><td>Specification, development and validation are interleaved.</td></tr><tr><td>integration and configuration</td><td>集成与配置</td><td>The system is assembled from existing configurable components.</td></tr><tr><td>COTS</td><td>商用现货</td><td>Commercial-off-the-shelf system reused and configured rather than built.</td></tr><tr><td>change anticipation</td><td>变更预期</td><td>Process activities that anticipate possible changes before significant rework.</td></tr><tr><td>change tolerance</td><td>变更容忍</td><td>The process is designed so changes can be accommodated at low cost.</td></tr><tr><td>prototype</td><td>原型</td><td>An initial version used to demonstrate concepts and try out design options.</td></tr><tr><td>incremental delivery</td><td>增量交付</td><td>Delivering part of the functionality in each increment, highest priority first.</td></tr><tr><td>process improvement</td><td>过程改进</td><td>Understanding existing processes and changing them to raise quality or cut cost and time.</td></tr><tr><td>process metric</td><td>过程度量</td><td>Quantitative data on time, resources or event occurrences in a process.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　区分变更预期与变更容忍</div><p>情境：某团队做了三件事：① 在需求阶段用可点击原型与客户确认关键流程；② 把系统拆成可独立部署的六个服务，任一服务可单独升级；③ 建立自动化回归测试，每次提交都跑。请判断各属于变更预期还是变更容忍，并说明理由。</p><p><b>分析：</b>先抓定义。变更预期是「在重大返工前提前发现变化」，手段是让不确定性尽早暴露；变更容忍是「变化发生时以低成本容纳」，手段是结构与流程上的可替换性。</p><p>① 属<b>变更预期</b>：原型让客户在看到具体界面后提出真实需求，把「需求理解错误」这类返工提前到编码之前。</p><p>② 属<b>变更容忍</b>：服务化把变更的影响范围限制在单个服务内，架构本身容纳变化。</p><p>③ 属<b>变更容忍</b>：自动化回归测试让「改一处、坏三处」能被立即发现，从而降低每次变化的代价。</p><p><b>检查：</b>三者是否互相替代？不。预期降低「变化发生的概率与规模」，容忍降低「变化发生后的代价」，二者互补。</p></div><div class="qa"><div class="q">例 2　增量交付与原型，选哪个</div><p>情境：某政务系统必须在 4 个月内上线「企业注册」功能，但「税务申报」部分需求尚不明确，客户也无法说清。团队规模 8 人。请给出交付策略并说明理由。</p><p><b>分析：</b>两个部分的不确定性不同：注册功能需求明确、有明确上线日期；申报功能需求不清。这决定了两者应使用不同的不确定性处理手段。</p><p><b>策略：</b>整体采用<b>增量交付</b>：把需求排优先级，把「企业注册」作为第一个增量，冻结其需求并在 4 个月内交付；「税务申报」作为后续增量，需求继续演化。对申报部分先用<b>原型</b>做变更预期——把原型给税务窗口人员试用，暴露「他们说不清但一看就知道不对」的需求。</p><p><b>理由：</b>增量交付解决「何时交付价值」与「范围冻结」的问题；原型解决「需求无法言说」的问题。两者组合正是课件所说的「早期增量本身充当原型，帮助引出后续增量的需求」。</p><p><b>风险与对策：</b>公共设施（登录、权限、审计日志）会被两个增量共用，若在第一个增量里只为注册设计，第二个增量会被迫改造——所以在增量 1 就要识别并实现公共设施，这正是课件指出的增量交付首要问题。</p></div><div class="qa"><div class="q">例 3　为一家公司设计 SPI 方案</div><p>情境：某 60 人软件公司连续三个项目延期，客户投诉缺陷多；公司没有统一的过程文档，各团队各写各的；管理层想「上个 CMMI 三级」。请给出一个务实的过程改进方案。</p><p><b>分析：</b>先诊断，再选方法，再定度量，最后定节奏。</p><p><b>诊断：</b>症状是「延期 + 缺陷多 + 无统一过程」。可能的根因是：无过程基线（不知道正常水平）、无需求可追溯性（变更无法评估影响）、无缺陷度量（无法定位高缺陷模块）。</p><p><b>方法选择：</b>直接冲 CMMI 三级风险高——CMMI 是规范式（自上而下），需要大量过程资产与证据。务实做法是<b>先归纳后规范</b>：先用 iFLAP 之类轻量方法在 1–2 个团队试点（自下而上，成本低、阻力小），把「需求基线 + 变更单 + 缺陷记录」三件事做起来；等有数据、有共识后，再对照 CMMI 二级（已管理级）的要求补齐项目管理制度。</p><p><b>度量设计：</b>按课件三类指标各取一个——时间（需求从提出到基线化的日历时间）、资源（每个需求的人日）、事件（每千行代码缺陷数、变更请求数）。关键原则：度量用于<b>评估改进</b>，改进的驱动是组织目标（按期交付、降低缺陷），不是「把数字做好看」。</p><p><b>节奏：</b>按「度量 → 分析 → 改变 → 再度量」循环，每季度一轮；每轮只改一两个环节，避免一次改太多导致无法归因。</p><p><b>注意：</b>课件提醒「在过程未定义前无法度量」——所以第一步不是收集数据，而是把「需求基线化」这个活动定义清楚（产物、角色、前后条件）。</p></div><div class="qa"><div class="q">例 4　复用构件的取舍</div><p>情境：某公司要做一套医院排班系统，市场上已有成熟的排班引擎可授权使用（COTS）。但医院要求「按科室自定义排班规则，且规则需支持护士工会的复杂条款」。请分析复用该引擎的利弊，并给出建议。</p><p><b>分析：</b>用课件的两条缺点逐一检验。</p><p><b>需求妥协：</b>COTS 引擎的规则模型是固定的，工会条款这类高度定制的规则很可能无法表达，或只能通过外部脚本绕行。妥协的代价是「系统不完全满足真实需要」，而这恰恰是排班系统的核心价值。</p><p><b>演化失控：</b>工会条款会随劳资协议变化，而引擎升级节奏由供应商决定；若供应商停止支持或修改规则模型，医院将被迫跟随。</p><p><b>收益：</b>排班算法的核心（约束求解、冲突检测）极其复杂，自研成本与风险高；复用可显著缩短上市时间。</p><p><b>建议：</b>分层决策——核心求解引擎复用，规则表达层自研（把工会条款翻译成引擎可执行的约束）；合同中约定源码托管（escrow）与规则模型的扩展接口，以缓解演化失控。这是「部分复用 + 关键差异化自研」的典型折中。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出软件过程的四项基本活动，并说明「过程模型」与「软件过程」的区别。</li><li>增量开发的两大问题是什么？分别给出一种缓解手段。</li><li>判断：集成与配置模型中，需求妥协是可以完全避免的。（对/错，说明理由）</li><li>某团队在每个增量开始后仍允许修改该增量的需求，结果每个增量都延期。请指出违反了哪条规则，并说明正确做法。</li><li>设计三个过程度量指标，分别对应时间、资源、事件三类，并说明它们能回答什么管理问题。</li><li>CMMI 与 QIP 分别属于规范式还是归纳式？各自的优缺点是什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 规格、设计与实现、验证、演化。软件过程是现实中的一组活动；过程模型是对它的抽象表示，从一个特定视角描述它，因此同一过程可以有多个模型。</p><p><b>2.</b> ①过程不可见——缓解：设定轻量的固定交付节奏（如每两周演示 + 一页进展说明），用可运行的增量代替厚文档作为进展证据；②结构退化——缓解：持续重构、把重构排进每个增量、用自动化测试保护重构。</p><p><b>3.</b> 错。课件明确「requirements compromises are inevitable」：复用构件的功能边界决定了系统能做什么，需求必须向构件让步。</p><p><b>4.</b> 违反了「增量开始后需求冻结，只有后续增量的需求可继续演化」。正确做法：把新需求排入后续增量的待办列表；若必须插入当前增量，则等量移除其他内容（范围不变），否则日期必然滑动。</p><p><b>5.</b> 时间：需求从提出到基线化的中位天数——回答「我们的规格活动是否成为瓶颈」；资源：每个需求从设计到验收的人日——回答「单位功能的成本是否在改善」；事件：每千行代码的缺陷数——回答「质量是否在提升、哪个模块最危险」。</p><p><b>6.</b> CMMI 属规范式（外部模型给出目标等级，组织对照差距改进）；QIP 属归纳式（从团队自身数据与经验出发）。规范式优点是标准、可比、利于投标；缺点是文档负担重、易形式主义。归纳式优点是贴合实际、阻力小；缺点是难以横向比较、易停留在局部优化。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>软件过程与过程模型的定义、四项活动、三种过程模型的特征与适用、增量开发的两大问题、变更预期与变更容忍的区分、原型的定义与收益、增量交付的冻结规则、SPI 的定义与两类方法。</div><div class="callout warn"><b>易错 1</b>把「变更预期」与「变更容忍」对调。记法：预期 = 提前看见（原型），容忍 = 事后能扛（增量交付、可配置架构）。</div><div class="callout warn"><b>易错 2</b>认为增量交付 = 增量开发。增量开发是「分批构建」，增量交付是「分批交给用户使用」；前者可以一次交付，后者必然多次交付。</div><div class="callout warn"><b>易错 3</b>把过程度量当成 KPI 考核工具。课件明确：度量用于评估改进，改进的驱动是组织目标，不是度量本身。</div><div class="callout tip"><b>进阶</b>能指出「增量交付与采购模型冲突」的根源：合同把完整规格作为交付物，而增量交付要求规格与软件共同演化。这条冲突在第 2 讲（敏捷合同）与第 12 讲（IBM 案例）会再次出现，是三处互证的考点。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">描述与改进一个过程的清单</h2><ol class="steps"><li>写出过程包含的活动，并标注顺序与并行关系</li><li>为每个活动定义产物（可检查的交付物）</li><li>为每个活动指定角色（谁负责、谁批准）</li><li>写出前置条件与后置条件（怎样才算开始、怎样才算完成）</li><li>标注哪些活动用于「变更预期」、哪些用于「变更容忍」</li><li>选出三类度量各一个（时间、资源、事件），并写明采集方式</li><li>按「度量 → 分析 → 改变 → 再度量」设定改进循环与复盘节奏</li><li>评估是否需要规范式模型（CMMI/SPICE）；若需要，先补齐二级（已管理级）的项目管理证据</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p4–p7</td><td>软件过程定义、四项活动、过程模型、过程描述要素（产物/角色/前后条件）、计划驱动与敏捷</td></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p8–p13</td><td>增量开发、收益与问题、集成与配置、COTS、复用优缺点</td></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p14–p23</td><td>四项活动的内部结构：需求工程过程、设计与实现、验证与确认、演化</td></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p24–p31</td><td>应对变化、返工成本、变更预期与变更容忍、原型、增量交付及其优缺点</td></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p32–p43</td><td>过程改进的动因、SPI 定义、改进循环、度量与指标、归纳式与规范式方法、CMMI/SPICE</td></tr><tr><td>10_Week 4/1_SE - Lecture 3 - 2026.pdf</td><td>p44</td><td>自学任务：Kanban、Crystal、CMMI、SPICE</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>CMMI 五级名称与 SPICE 能力等级按标准定义补足；课件仅给图并要求自学</td></tr></table></section><div class="lnav"><a class="prev" href="l02-sdlc-models-and-agile.html">← 第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a class="next" href="l04-requirements-engineering.html">第 4 讲 · 需求工程 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

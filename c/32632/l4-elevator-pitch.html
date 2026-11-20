@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 讲 · 电梯演讲：60 秒说清你是谁 · 32632</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">KE00DA03 大学英语</a> / <a href="part-2.html">第 2 章 词汇语法与演讲表达</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">4.1 任务与评分：三个维度、一条硬线</a><a class="toc-l3" href="#s3">4.2 三个阶段：Planning / Preparing / Presenting</a><a class="toc-l3" href="#s4">4.3 六段结构：60 秒的分配方案</a><a class="toc-l3" href="#s5">4.4 语速与字数：60 秒到底多少词</a><a class="toc-l3" href="#s6">4.5 把形容词换成证据：六组改写</a><a class="toc-l3" href="#s7">4.6 语言：时态、动词与礼貌强度</a><a class="toc-l3" href="#s8">4.7 准备阶段：录音自评的三个问题</a><a class="toc-l3" href="#s9">4.8 Presenting：镜头前的三个技术点</a><a class="toc-l3" href="#s10">4.9 AI 边界：可以当教练，不能当作者</a><a class="toc-l2" href="#s11">本讲方法清单</a><a class="toc-l3" href="#s12">60 秒 pitch 五步准备法</a><a class="toc-l3" href="#s13">镜头前交付检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l1-launch-self-intro.html">第 1 讲 · 开课、自我介绍与学习资源</a><a href="l2-reading-chunking.html">第 2 讲 · 朗读、分块与技术文本阅读</a><a href="l3-vocabulary-grammar-clinic.html">第 3 讲 · 词汇与语法诊所</a><a class="toc-l3" href="l4-elevator-pitch.html">▸ 第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a href="l5-presentation-data.html">第 5 讲 · 工程演讲与图表描述</a><a href="l6-meetings-negotiation.html">第 6 讲 · 会议沟通、协商与专业简报</a><a href="supp-homework-map.html">补遗 · 十三次课的作业地图、交付通道与考核节点</a></div></aside><article><h1>第 4 讲 · 电梯演讲：60 秒说清你是谁</h1><p class="lead">The 60-Second Elevator Pitch <span class="badge mute">32632</span> <span class="badge mute">第 4 / 7 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 词汇语法与演讲表达</a></p><p class="src">原始文件：<code>3_Assignments_2_ASSIGNMENT 1 Elevator Pitch [DL Nov 5]_intro_intro.html</code> <code>5_UNIT 2 Expressing Opinions_1_Meeting 8 homework.html</code> <code>5_UNIT 2 Expressing Opinions_3_Meeting 9 homework.html</code> <code>5_UNIT 2 Expressing Opinions_6_Meeting 11 homework.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 4 讲是 Unit 2 Expressing Opinions 的第一个产出任务：<b>60 秒电梯演讲</b>（elevator pitch），先写稿、再练、在 Meeting 11 现场录制。它把前三讲的能力第一次压缩成一个成品：自我介绍的语篇（第 1 讲）、说清楚的停顿与重音（第 2 讲）、准确的词序与搭配（第 3 讲）。</p><p>课程对它的定义值得抄下来：<i>An elevator pitch is a professional summary or introduction to who you are and the value you can potentially bring to a company.</i> 并特别指出，芬兰的面试常以 <i>Tell us about yourself</i> 开场，电梯演讲就是这道题的标准答案。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用七个规划问题把经历整理成「技能—热情—独特价值」三条线索</li><li>按「钩子—身份—证据—价值—差异—行动邀请」六段结构写出 130 至 150 词稿</li><li>把空洞的形容词句改写为带证据的具体句</li><li>按 130 至 150 词／分钟估算时长并留出停顿余量</li><li>用录音自评三项：清晰度、语速、难发音词</li><li>面对镜头完成 60 秒演讲，保持眼神接触与面部表情</li><li>判断哪些 AI 用法被允许、哪些属于「代写稿件」的禁区</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 任务与评分：三个维度、一条硬线</h3><p>作业说明的第一句就把场景钉死了：<i>This assignment requires you to create and present a 60-second elevator pitch. You prepare your pitch in advance and you deliver it live during Meeting 11.</i> 也就是说稿子可以提前写好、练熟，但交付是<b>现场录制</b>，不能剪辑补救。</p><p>三个评分维度：<b>language</b>（语法的正确性与表达的自然度）、<b>content</b>（是否使用了电梯演讲的结构）、<b>audience</b>（眼神、面部表情等肢体语言，以及与目标听众的匹配度）。三者权重相当，这意味着「稿子写得好」只能拿到三分之一。</p><div class="callout exam"><b>计分换算</b>0 至 49.99 Fail (revise)；50 至 59.99 Passable (1)；60 至 69.99 Satisfactory (2)；70 至 79.99 Good (3)；80 至 89.99 Very Good (4)；90 至 100 Excellent (5)。三个维度任一出现明显缺陷（如全程低头读稿），就很难进入 4 级以上。</div><h3 id="s3">4.2 三个阶段：Planning / Preparing / Presenting</h3><p>作业把流程明确分成三段，每段都有可检查的产出物。照着做，准备过程本身就是一个可复用的方法：</p><table><tr><th>阶段</th><th>作业要求</th><th>你要产出的东西</th></tr><tr><td>1. Planning</td><td>用思维导图或笔记回答七个问题；决定听众是谁；读老师给的电梯演讲材料（Meeting 8 slides 15–21）；写稿</td><td>一张思维导图 + 一份 130 至 150 词稿</td></tr><tr><td>2. Preparing</td><td>大声读稿练习；录音并回听；分析自己是否清晰、过快、不自然，哪些词难说</td><td>一份自评笔记（3 条问题 + 对应改法）</td></tr><tr><td>3. Presenting</td><td>课上录视频，约 60 秒，提交到 Moodle</td><td>一个不剪辑的视频文件或链接</td></tr></table><p>七个规划问题原文如下，它们不是写作提示，而是<b>内容清单</b>：<i>Who are you? What do you study? What professional experiences do you have? Why is what you do important for them? Why are you passionate about this? What makes you stand out? Why should someone employ you?</i></p><p>注意第四、第七个问题都指向<b>对方</b>（them、someone）。这是电梯演讲与自我介绍的分水岭：自我介绍以「我」为中心，电梯演讲必须回答「这对你有什么用」。</p><h3 id="s4">4.3 六段结构：60 秒的分配方案</h3><p>把七个问题压进 60 秒，需要一个明确的结构。下面这套六段式在 130 至 150 词内可以稳定跑完，每段都有时间预算：</p><table><tr><th>段落</th><th>时长</th><th>功能</th><th>句式模板</th></tr><tr><td>① 钩子</td><td>5 秒</td><td>一句让人抬头的话</td><td>Most people don’t realise that … / I build systems that …</td></tr><tr><td>② 身份</td><td>8 秒</td><td>姓名、专业、学校</td><td>I’m … , a third-year … student at LUT.</td></tr><tr><td>③ 证据</td><td>15 秒</td><td>一段具体经历 + 一个数字</td><td>Last summer I interned at … , where I … , which cut … by 20%.</td></tr><tr><td>④ 价值</td><td>15 秒</td><td>你能为对方解决什么</td><td>What I can offer your team is … / I help companies … by …</td></tr><tr><td>⑤ 差异</td><td>10 秒</td><td>你和别人的不同</td><td>What sets me apart is …</td></tr><tr><td>⑥ 行动邀请</td><td>7 秒</td><td>给对方一个下一步</td><td>I’d be glad to show you … / I’d love to hear how your team …</td></tr></table><p>合起来 60 秒。注意③④两段占一半时间——这是刻意的：<b>证据与价值才是听众真正在听的部分</b>，钩子只负责让人愿意听下去。</p><div class="callout warn"><b>结构失衡</b>初学者常把 40 秒花在②身份上（学校、城市、课程名），最后 10 秒才慌忙说「我很努力」。评分表里 content 一项考的是 <i>use of elevator pitch structure</i>，身份信息超过三句就是结构分丢失。</div><h3 id="s5">4.4 语速与字数：60 秒到底多少词</h3><p>自然英语演讲语速约 130 至 150 词／分钟，折算每秒 2.2 至 2.5 词。60 秒的理想稿长是 <b>130 至 150 词</b>；若含 3 次明显停顿与 2 次强调，实际能装进去的内容约 120 至 140 词。</p><p>算法：词数 ÷ 语速 = 分钟数。例如 140 词 ÷ 145 词／分钟 ≈ 0.97 分钟，接近 58 秒，正好留 2 秒开场呼吸。若你的稿子是 200 词，除以 145 得 1.38 分钟——超时 23 秒，必须删掉整整一段。</p><p>删减优先级：先删身份细节（课程名、城市），再删形容词（hard-working、passionate 单独出现时没有信息量），最后才动证据句。证据句是唯一不能删的部分。</p><h3 id="s6">4.5 把形容词换成证据：六组改写</h3><p>电梯演讲最常见的失分点是「形容词堆砌」。形容词不可验证，证据可验证。下面六组对照可以直接套用：</p><table><tr><th>空洞表达</th><th>改写为证据句</th><th>改写理由</th></tr><tr><td>I’m hard-working.</td><td>I worked 20 hours a week in a lab while taking five courses, and still finished the project on schedule.</td><td>用具体工时与结果替代评价</td></tr><tr><td>I’m good at teamwork.</td><td>In our capstone project I coordinated a team of four and set up the weekly task board.</td><td>用角色与动作说明「团队」</td></tr><tr><td>I’m passionate about engineering.</td><td>I’ve been rebuilding small engines since I was fifteen, and I now volunteer at a repair café.</td><td>用时间跨度与持续行动证明热情</td></tr><tr><td>I have good communication skills.</td><td>I presented our prototype to twelve industry visitors and wrote the two-page summary afterwards.</td><td>用场景与听众规模说话</td></tr><tr><td>I’m a fast learner.</td><td>I taught myself Python in one semester to automate our measurement reports.</td><td>用自学路径与用途说明</td></tr><tr><td>I want to work for you.</td><td>I’d like to bring my test-automation experience to your production line team.</td><td>把「想要」换成「能带来什么」</td></tr></table><div class="callout tip"><b>一个数字胜过三个形容词</b>60 秒里最多放两个数字（如 20%、4 人、2 个月），多了听众记不住。数字要能一句话说清来源：<i>which cut our setup time by about a third</i>。</div><h3 id="s7">4.6 语言：时态、动词与礼貌强度</h3><p>电梯演讲只用三种时态，混用会立刻显得不专业：<b>一般现在时</b>说身份与能力（<i>I’m a third-year student. I work with embedded systems.</i>）；<b>一般过去时</b>说具体经历（<i>Last summer I interned at …</i>）；<b>现在完成时</b>说持续至今的积累（<i>I’ve worked with CAD for three years.</i>）。</p><p>动词要选有力度的实义动词，避免 <i>do、make、get、have</i> 万能化：用 <i>designed、built、tested、cut、reduced、coordinated、automated</i> 替代。同一句话对比：<i>I did a project about automation</i>（弱）→ <i>I automated the test sequence for a small production line</i>（强）。</p><p>礼貌强度也要拿捏。请求式表达用 <i>I’d be glad to … / I’d love to hear …</i>；不要用 <i>I want you to give me a chance</i>（听起来像要求）。自我评价用 <i>I’d describe myself as …</i> 比 <i>I am …</i> 更稳。</p><div class="callout warn"><b>固定搭配错误</b><i>apply for a job</i>（不是 apply a job）；<i>be interested in working</i>（不是 interested to work）；<i>two years of experience</i>（不是 two years experience）；<i>responsible for</i>（不是 responsible of）；<i>good at + V-ing</i>（不是 good in）。这五个错在 pitch 里一出现，language 一项就掉档。</div><h3 id="s8">4.7 准备阶段：录音自评的三个问题</h3><p>作业在 Preparing 阶段给了三个自评问题，照抄如下：<i>are you speaking clearly, too fast, too unnaturally? Are some words difficult to say? Which words?</i> 这三个问题对应三种不同的修正手段：</p><ul><li><b>清晰度</b>不足 → 问题多在词尾与辅音群（<i>texts</i> /teksts/、<i>asked</i> /ɑːskt/），做法是把难词单独抄出来，慢速读十遍再放回句子。</li><li><b>语速</b>过快 → 用第 2 讲的停顿记号在稿子上标竖线，每 8 至 10 词一个短停，强迫自己减速。</li><li><b>不自然</b> → 多半是背稿腔：句子太长、书面语太重。把 <i>Furthermore, I would like to emphasise that …</i> 改成 <i>What I really enjoy is …</i>。</li></ul><p>难发音词是个人化的清单，但中国学习者的高频难词有共性：<i>three</i> /θriː/、<i>technology</i> /tekˈnɒlədʒi/、<i>southern</i> /ˈsʌðən/、<i>engineering</i> /ˌendʒɪˈnɪərɪŋ/、<i>analysis</i> /əˈnæləsɪs/、<i>entrepreneur</i> /ˌɒntrəprəˈnɜː/。把重音位置标在稿子上（大写重读音节），比反复整句念更有效。</p><h3 id="s9">4.8 Presenting：镜头前的三个技术点</h3><p>第一，<b>看镜头不看屏幕</b>。摄像头就是听众的眼睛，眼神飘向自己的画面会让 audience 一项直接失分。第二，<b>站姿与手</b>：手在胸前小幅度动作即可，不要抱臂或插兜。第三，<b>开头与结尾各留半秒静默</b>，让听者有时间进入与收尾——这半秒是「从容」与「慌张」的分界。</p><p>现场录制还有一个现实约束：<i>Please bring your phone to class to record yourself.</i> 手机录制意味着没有提词器，所以稿子必须练到「只靠六个关键词就能说」的程度。练习方法：把稿子压缩成六张关键词卡，遮住稿子只说关键词，说不下去再看一眼。</p><h3 id="s10">4.9 AI 边界：可以当教练，不能当作者</h3><p>这项作业的 AI 规则是三份作业里最宽松也最清楚的一份：允许 <i>creating an example pitch to use as inspiration</i>、<i>language guidance</i>、<i>checking your final product for errors</i>；禁止 <i>writing a script for the pitch completely or partially</i>。</p><p>分界线画在「文本的作者是谁」。让 AI 给三个开头句作参考、让它挑出你稿子里的介词错误，这是教练；让它写一段你直接照读，这是作者。作业原文还补了一句：<i>you are supposed to be the author of the text that you upload</i>。</p><div class="callout idea" data-ext="l4-elevator-pitch-0"><b>前后衔接</b><p>电梯演讲把前几讲第一次压成成品：自我介绍的语篇、分块的停顿与重音、准确的词序与搭配。七个规划问题里第四和第七个都指向<b>对方</b>（<em>why is what you do important for them</em>／<em>why should someone employ you</em>）——这是它与自我介绍的分水岭：自我介绍以“我”为中心，pitch 必须回答“这对你有什么用”。按六段式分配 60 秒：钩子 5 秒、身份 8 秒、证据 15 秒、价值 15 秒、差异 10 秒、行动邀请 7 秒；证据与价值占一半，因为听众真正听的是这两段。</p></div><div class="callout tip" data-ext="l4-elevator-pitch-1"><b>常见误解</b><p>最大的失分点是形容词堆砌：<em>I’m hard-working</em> 不可验证，改成 <em>I worked 20 hours a week in a lab while taking five courses, and still finished on schedule</em>。一个数字胜过三个形容词，60 秒最多放两个。语速按 130–150 词/分钟估算，140 词约 58 秒、留 2 秒开场呼吸；200 词就超时 23 秒，必须整整删一段（先删身份细节与形容词，证据句最后动）。固定搭配错也掉档：<em>apply for a job</em>、<em>responsible for</em>、<em>good at V-ing</em>、<em>two years of experience</em>。AI 可以当教练（示例、语言指导、查错），不能当作者代写稿件。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>elevator pitch</td><td>电梯演讲</td><td>A 60-second professional summary of who you are and the value you bring.</td></tr><tr><td>unique value</td><td>独特价值</td><td>What you can offer that others cannot.</td></tr><tr><td>audience alignment</td><td>听众匹配</td><td>Adapting your pitch to the company or team in front of you.</td></tr><tr><td>hook</td><td>钩子</td><td>The first sentence that makes people want to listen.</td></tr><tr><td>call to action</td><td>行动邀请</td><td>The last sentence that suggests the next step.</td></tr><tr><td>speech rate</td><td>语速</td><td>About 130–150 words per minute in natural speech.</td></tr><tr><td>proof point</td><td>证据点</td><td>A concrete experience or number that supports a claim.</td></tr><tr><td>stand out</td><td>脱颖而出</td><td>What makes you stand out from other candidates?</td></tr><tr><td>passionate about</td><td>对……充满热情</td><td>I’m passionate about building things that work reliably.</td></tr><tr><td>internship</td><td>实习</td><td>Last summer I interned at a manufacturing company.</td></tr><tr><td>apply for</td><td>申请</td><td>I decided to apply for this programme.</td></tr><tr><td>two years of experience</td><td>两年经验</td><td>I have two years of experience in test automation.</td></tr><tr><td>responsible for</td><td>负责</td><td>I was responsible for the weekly test report.</td></tr><tr><td>eye contact</td><td>眼神接触</td><td>Keep eye contact with the camera lens, not the screen.</td></tr><tr><td>body language</td><td>肢体语言</td><td>Body language is one third of the assessment.</td></tr><tr><td>author of the text</td><td>文本作者</td><td>You are supposed to be the author of the text you upload.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　你写了一份 186 词的稿子，按 145 词／分钟计算时长，并给出删减到 60 秒的方案。</div><p><b>解：</b>第一步算时长：186 ÷ 145 ≈ 1.28 分钟 ≈ 77 秒，超时 17 秒。</p><p>第二步定删减量：要回到 58 秒（留 2 秒呼吸），目标词数 = 145 × 0.97 ≈ 140 词，需删 46 词。</p><p>第三步按优先级删：身份段里的 <i>which is a city in central China</i>（7 词）、课程名与年级细节（约 12 词）、两个形容词句 <i>I am hard-working and passionate</i>（9 词）、钩子里的一句铺垫（约 18 词），合计 46 词。</p><p>第四步复核：保留钩子、证据、价值、差异、行动邀请五段完整，只压缩身份段。</p><p><b>通用思路：</b>先算总时长 → 定目标词数 → 按「形容词→身份细节→铺垫→证据」的顺序删 → 保证证据与价值两段完整。</p></div><div class="qa"><div class="q">例 2　把 <i>I am a hard-working student and I have good teamwork skills. I want to work in your company.</i> 改写为有证据的版本。</div><p><b>解：</b>原句三处问题：形容词不可验证（hard-working、good）；teamwork 没有场景；<i>want to work in your company</i> 以自我为中心。</p><p>改写：<i>In our capstone project I coordinated a team of four and set up a weekly task board, which kept us on schedule. I’d like to bring that way of working to your production team.</i></p><p>改动清单：形容词 → 角色与动作（coordinated a team of four）；skills → 具体工具（a weekly task board）；结果（kept us on schedule）；结尾从「我想要」变成「我能带来」。</p><p><b>通用思路：</b>每个形容词问一句「凭什么」→ 找到那件事 → 补角色、动作、结果 → 结尾指向对方。</p></div><div class="qa"><div class="q">例 3　诊断下面这段 pitch 缺了哪两段，并各补一句：</div><p><i>Hi, I’m Pauli Salo. I’m a third-year electrical engineering student at LUT. I study power systems and I have taken courses in automation and control. I’m also interested in data centres. I hope to find a summer job.</i></p><p><b>解：</b>六段里只有①钩子（其实也没有钩子，只是问候）与②身份，缺<b>③证据</b>、<b>④价值</b>、<b>⑤差异</b>，⑥行动邀请也太弱（<i>I hope to find a summer job</i> 是在陈述愿望，不是给对方下一步）。</p><p>补③证据：<i>Last spring I built a small monitoring setup for a lab test bench, which cut manual logging time by half.</i></p><p>补④价值：<i>What I can offer your team is hands-on experience with measurement and reporting tools.</i></p><p>补⑤差异：<i>What sets me apart is that I’ve worked both on the hardware side and on the data side of the same project.</i></p><p><b>通用思路：</b>用六段表逐段打勾，空白处就是缺内容；每补一段只写一句，先保证结构齐，再打磨语言。</p></div><div class="qa"><div class="q">例 4　改错并说明规则：<i>I am graduated from LUT last year. I have two years experience in a lab, and I am good in teamwork. I am interested to work in your company.</i></div><p><b>解：</b>四处错误。① <i>am graduated</i> → <i>graduated</i>：graduate 是不及物动词，完成时用 have graduated，过去时直接用 graduated；若尚未毕业则 <i>I’m a final-year student</i>。</p><p>② <i>two years experience</i> → <i>two years of experience</i>：数量短语修饰不可数名词要加 of。</p><p>③ <i>good in teamwork</i> → <i>good at working in a team</i>：能力形容词用 at + V-ing；teamwork 本身可作名词，但 <i>good at teamwork</i> 略显生硬。</p><p>④ <i>interested to work</i> → <i>interested in working</i>：interested 固定接 in + V-ing。</p><p><b>通用思路：</b>这四个错分别是「动词及物性、数量短语、形容词介词、固定搭配」，属于必须先背下来的高频条目，考场上没有推理空间。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把下面五个规划问题的答案各写成一句英文（每句不超过 20 词）：你是谁、你学什么、你有什么专业经历、你能为对方做什么、你为什么对这个领域有热情。</li><li>用六段结构写一份 140 词的 pitch 稿，并给每段标上预估秒数，合计不超过 60 秒。</li><li>改写为证据句：<i>I’m a fast learner.</i> / <i>I have strong problem-solving skills.</i></li><li>给下列句子标出重读音节与两处停顿：<i>What I can offer your team is hands-on experience with test automation.</i></li><li>判断下列 AI 用法是否被本作业允许，并说明理由：① 让 AI 生成一份示例 pitch 作参考；② 让 AI 把你的中文草稿译成英文当稿子；③ 让 AI 找出你稿子里的介词错误。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 参考：<i>I’m Pauli Salo, an electrical engineering student from Finland.</i> / <i>I’m in my third year, focusing on power systems and automation.</i> / <i>Last summer I interned at a substation maintenance team.</i> / <i>I can help your team turn measurement data into clear reports.</i> / <i>I enjoy this field because every fault has a traceable cause.</i></p><p><b>2.</b> 参考稿（138 词，标注秒数）：钩子 5 秒 <i>Most power cuts start with one loose connection.</i>｜身份 8 秒 <i>I’m Pauli Salo, a third-year electrical engineering student at LUT.</i>｜证据 15 秒 <i>Last summer I interned at a substation team, where I logged and analysed 60 fault reports.</i>｜价值 15 秒 <i>What I can offer is a habit of tracing faults to their source instead of replacing parts.</i>｜差异 10 秒 <i>What sets me apart is that I have worked both in the field and with the data afterwards.</i>｜邀请 7 秒 <i>I’d be glad to show you how I structured those reports.</i></p><p><b>3.</b> <i>I’m a fast learner</i> → <i>I taught myself Python in one semester to automate our weekly measurement reports.</i>；<i>I have strong problem-solving skills</i> → <i>When our test bench kept overheating, I traced it to a blocked filter and redesigned the airflow.</i></p><p><b>4.</b> 重读：<b>OFF</b>er、<b>TEAM</b>、<b>HANDS</b>-on、<b>EX</b>perience、<b>TEST</b>、<b>AU</b>tomation。停顿：<i>What I can offer your team | is hands-on experience | with test automation.</i> 三块，每块 3 至 5 词。</p><p><b>5.</b> ① 允许：作业明确列出 <i>creating an example pitch to use as inspiration</i>。② 不允许：译文当稿子等于让 AI 写稿，属于 <i>writing a script completely or partially</i>。③ 允许：属于 <i>checking your final product for errors</i>，但改完必须自己判断是否接受。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>六段结构与 60 秒时间分配；130 至 150 词／分钟的换算；三个评分维度（language / content / audience）；七个规划问题；AI 允许与禁止的边界。</div><div class="callout warn"><b>易错 1</b>身份段过长，挤掉证据与价值；结尾用 <i>I hope to …</i> 代替行动邀请。</div><div class="callout warn"><b>易错 2</b>形容词堆砌（hard-working、passionate）而无证据；时态混用（<i>I am graduated</i>、<i>I am studying here since</i>）。</div><div class="callout warn"><b>易错 3</b>固定搭配：apply for、interested in + V-ing、two years of experience、good at、responsible for。</div><div class="callout tip"><b>进阶</b>把差异段写成「两种经验的交叉」而不是「我更努力」：<i>I’ve worked both in the field and with the data afterwards</i> 比任何形容词都更能让人记住。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">本讲方法清单</h2><h3 id="s12">60 秒 pitch 五步准备法</h3><ol class="steps"><li>回答七个规划问题，每个答案压成一句，写成思维导图</li><li>按六段结构排句，标出每段秒数，总时长不超过 60 秒</li><li>算词数：目标 130 至 150 词，超了就按「形容词→身份细节→铺垫」删</li><li>大声读三遍并录音，按「清晰度／语速／不自然」三项自评，标出难词</li><li>缩成六张关键词卡，遮稿练习到只靠关键词能说完，再录正式版</li></ol><h3 id="s13">镜头前交付检查</h3><ul class="checklist"><li>眼睛看镜头而不是屏幕，开头结尾各留半秒静默</li><li>手在胸前小幅度动作，不抱臂、不插兜</li><li>每段第一个词重读，段间停顿 0.5 秒</li><li>难词已标重音并单独练过十遍</li><li>稿子是自己写的：AI 只用于示例、语言指导与查错</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置 / 页码</th><th>覆盖内容</th></tr><tr><td>3_Assignments/2_ASSIGNMENT 1 Elevator Pitch [DL Nov 5]/intro/intro.html</td><td>全篇</td><td>定义与使用场景、三个 AIM、三阶段流程、七个规划问题、时长与提交要求、0–100 评分表与三个评分维度、AI 规则</td></tr><tr><td>3_Assignments_2_ASSIGNMENT 1 Elevator Pitch [DL Nov 5]_Submissions_Zishuo Wang_Online text.html</td><td>全篇</td><td>学生提交的 YouTube 链接，仅作提交格式示例</td></tr><tr><td>5_UNIT 2/1_Meeting 8 homework.html</td><td>全篇</td><td>开始构思稿子：你想在职业层面说什么；并指向 Meeting 8 slides 15–21 的 pitch 材料</td></tr><tr><td>5_UNIT 2/3_Meeting 9 homework.html</td><td>全篇</td><td>完成稿子、按 slides 33–37 练习、下次课内完成作业</td></tr><tr><td>5_UNIT 2/6_Meeting 11 homework.html</td><td>全篇</td><td>课上录制后上传 Moodle 返交框、分享链接的技术说明</td></tr><tr><td>（拓展）</td><td>—</td><td>六段结构与秒数分配、130 至 150 词／分钟换算、六组形容词改写、镜头前三个技术点为教学补充</td></tr><tr><td>（跳过）</td><td>—</td><td>slides 15–21 与 33–37 的原始幻灯片不在源文本中，仅按作业描述转述其用途</td></tr></table></section><div class="lnav"><a class="prev" href="l3-vocabulary-grammar-clinic.html">← 第 3 讲 · 词汇与语法诊所</a><a class="next" href="l5-presentation-data.html">第 5 讲 · 工程演讲与图表描述 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

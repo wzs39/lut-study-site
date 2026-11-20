@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 1 讲 · 课程结构与 MOOC 学习路径 · 29911</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BH60A7201 Kiertotalous.nyt 循环经济</a> / <a href="part-1.html">第 1 章 课程结构与写作任务</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">1.1 同一门课，两个语言版本</a><a class="toc-l3" href="#s3">1.2 为什么原文要专门强调「必须用上面的链接」</a><a class="toc-l3" href="#s4">1.3 登录：HAKA 账号，或注册新用户</a><a class="toc-l3" href="#s5">1.4 第 3 步为什么写在括号里</a><a class="toc-l3" href="#s6">1.5 两条求助渠道，别走错门</a><a class="toc-l3" href="#s7">1.6 课程结构：从源文件路径读出版块顺序</a><a class="toc-l3" href="#s8">1.7 学习节奏：三学分、材料自学加期末一篇写作</a><a class="toc-l3" href="#s9">1.8 双平台分工为什么值得理解</a><a class="toc-l3" href="#s10">1.9 本讲与后两讲的关系</a><a class="toc-l2" href="#s11">开课前的操作清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a class="toc-l3" href="c1-mooc-path.html">▸ 第 1 讲 · 课程结构与 MOOC 学习路径</a><a href="c2-written-compilation.html">第 2 讲 · 写作汇编任务与学术写作要求</a><a href="c3-circular-concepts.html">第 3 讲 · 循环经济核心概念导读（背景拓展）</a></div></aside><article><h1>第 1 讲 · 课程结构与 MOOC 学习路径</h1><p class="lead">Course Structure and the MOOC Learning Path <span class="badge mute">29911</span> <span class="badge mute">第 1 / 3 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 课程结构与写作任务</a></p><p class="src">原始文件：<code>Instructions for MOOC login_2026.pdf</code> <code>2_Materials for study/1_Instructions for MOOC login_2026.pdf</code> <code>3_Tasks/2_Written compilation/intro/intro.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>BH60A7201 的内容跑在 DigiCampus 的 MOOC 上，校內 Moodle 只放少量说明与任务入口。第 1 讲只解决一件事：把「去哪学、怎么进、怎么登记、按什么顺序走」讲清楚。这一步看似琐碎，但它决定后面两讲是否成立——进错课程页、或登录了却没点 Enroll，写作任务就无处提交，材料也读的是别的轮次。</p><p>本讲的证据只有两份：一份两页的登录说明，一份写作任务说明页。登录说明给的是入口与登录规则；写作任务说明的路径本身，反过来透露了课程的版块结构。至于课程有几个模块、每周多少学时、什么时候截止，源文件没有写，本讲也不会编。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>区分芬兰语版与英语版课程页，并按自己的语言选择正确入口</li><li>用 HAKA 账号登录，或按开放学习者路径注册新用户</li><li>在页面未自动跳转时，核对课程名并从页面底部完成 Enroll</li><li>说明「MOOC 学材料、校內 Moodle 交任务」的双平台分工</li><li>从源文件路径还原课程版块顺序，并识别版块 1 内容缺失这一事实</li><li>判断登录类问题与提交类问题分别该找哪条支持渠道</li><li>说清本课「三学分、期末一篇 essay」的考核形状，而不臆造时间表</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">1.1 同一门课，两个语言版本</h3><p>登录说明的第一条就是「访问课程页」，并且并列给出两条入口。这不是两门课，而是同一门 BH60A7201 的芬兰语版与英语版：芬兰语版名为 Kiertotalous.nyt – LUT 2026–2027，课程页标识 7580；英语版名为 Circular.now – LUT 2026–2027，课程页标识 7579。</p><table><tr><th>版本</th><th>课程名</th><th>课程页标识</th><th>适合谁</th></tr><tr><td>芬兰语版</td><td>Kiertotalous.nyt – LUT 2026–2027</td><td>7580</td><td>以芬兰语读材料、以芬兰语写 essay</td></tr><tr><td>英语版</td><td>Circular.now – LUT 2026–2027</td><td>7579</td><td>以英语读材料、以英语写 essay</td></tr></table><p>两个版本共享同一套教学内容与同一个写作任务，区别在界面语言、材料语言与讨论区语言。选哪一个由语言能力决定：写作任务明确允许用芬兰语或英语提交（见第 2 讲），但读哪一版会决定你写 essay 时的术语来源。如果你用英语写却读了芬兰语版，术语在脑内要先翻译一遍，写出来的定义容易失真。</p><p>核对课程名时要把学年一起核对。原文的写法是「课程名 + 短横 + LUT + 学年」，即 Kiertotalous.nyt – LUT 2026–2027 与 Circular.now – LUT 2026–2027。同名但年份不同的页面属于别的开课轮次：材料可能变换，Enroll 记录与作业箱也不在本轮，你交的作业可能落到一个没人批改的地方。</p><h3 id="s3">1.2 为什么原文要专门强调「必须用上面的链接」</h3><p>给出链接之后，原文加了一句限定：请使用上面的链接进入正确的课程，因为 LUT 使用自己的课程平台，而不是面向所有人开放的那些平台课程。这句话不是客套，它对应一个很常见的失败场景。</p><p>Kiertotalous.nyt 与 Circular.now 属于气候／循环经济类的共享型 MOOC，同一主题在不同平台、不同年份可能都存在公开版本。若你在搜索引擎里按课程名找入口，容易遇到三种后果：</p><ul><li>材料是旧版本，缺本轮新增的主题；</li><li>作业区是公开平台的讨论区，而不是本轮的成绩记录点；</li><li>完成情况不进 LUT 的成绩册，等于白做一遍。</li></ul><p>所以「入口正确」不是小事，它是整条学习路径的第 0 步。判断入口是否正确，看两个硬指标：课程页标识是否为本讲的 7580 或 7579，页面标题里的学年是否为 2026–2027。</p><h3 id="s4">1.3 登录：HAKA 账号，或注册新用户</h3><p>第二条写的是「用 HAKA 账号登录，或注册为新用户」。HAKA 是芬兰高校共用的身份联合认证方式，用它登录时身份由本校认证，课程平台不必再存一套密码。没有 HAKA 的人（开放大学学员、交换生、旁听者、校外自学者）则走注册路径，平台会为其新建一个独立账号。</p><p>这一步的设计含义是：MOOC 面向非学位学员开放，因此必须同时支持「有学籍」与「无学籍」两类人。对校內学生来说，走 HAKA 是最省事的路径，也最不容易在中途丢记录。</p><div class="callout tip"><b>拓展</b>以下为背景知识，不是源文件的条款：HAKA 是芬兰高校之间通用的身份联合认证方式，由所在学校负责验证身份，课程平台只接收验证结果。这类联合认证的好处是「一个账号走遍多校平台」，代价是账号绑定学校，换了学籍就要重新确认归属。</div><div class="callout warn"><b>易错</b>用哪个账号登录，决定作业记在哪个账号下。常见事故是先用私人邮箱注册、后来想起该用 HAKA，于是两个账号各有一半记录。第一次登录时就选定一个账号，此后不要更换；若已经混用，先确认哪一边有 Enroll 记录与提交记录，再用那个账号继续。</div><h3 id="s5">1.4 第 3 步为什么写在括号里</h3><p>原文的第 3 步是带括号的：如果你没有被自动重定向到课程首页，请先确认课程名是否正确（Kiertotalous.nyt – LUT 2026–2027 / Circular.now – LUT 2026–2027），然后滚到页面最底部，选择 Enroll。</p><p>它被写成条件句而不是必做步骤，是因为多数情况下平台在登录后会直接把你带回课程首页。但一旦没有跳转，你看到的是一个「未登记」的课程视图：部分资源能点开，提交入口与成绩记录却不在。此时最容易误判为「作业还没开放」。</p><p>为什么 Enroll 在页面最底部？Moodle 型平台把「登记／选课」控件放在课程内容区末尾，而不是页首或右上角。新生常默认「登录即报名」，在页首反复找按钮，最后放弃。记住这条经验规则：找不到报名入口，先滚到底。</p><ol class="steps"><li>看地址栏的课程页标识，确认是 7580 或 7579</li><li>读页面标题，确认课程名与学年是 2026–2027</li><li>把页面滚到最底部，找到 Enroll 并点击</li><li>回到课程首页，确认出现活动列表或提交入口</li></ol><h3 id="s6">1.5 两条求助渠道，别走错门</h3><p>登录说明的最后一节给了 DigiCampus 的登录与其它问题的支持站点；写作任务说明的最后一句给了另一个联系人：课程教师 sanni.vaisanen@lut.fi。两条渠道分工不同，走错会浪费时间。</p><table><tr><th>问题类型</th><th>找谁</th><th>依据</th></tr><tr><td>登录失败、账号、页面打不开、平台报错</td><td>DigiCampus 支持库</td><td>登录说明最后一节</td></tr><tr><td>essay 提交失败、文件不被接受、Turnitin 报错</td><td>课程教师 sanni.vaisanen@lut.fi</td><td>写作任务说明最后一句</td></tr></table><p>分不清时先判断问题发生在哪一层：连课程首页都进不去，是平台层，找 DigiCampus；能进课程但提交按钮报错，是任务层，找教师。层级判断清楚，邮件里才能写对问题。</p><h3 id="s7">1.6 课程结构：从源文件路径读出版块顺序</h3><p>这份课程在源文件里只留下三个文件，但路径本身就是结构证据：登录说明位于 2_Materials for study/1_Instructions for MOOC login_2026.pdf，写作任务说明位于 3_Tasks/2_Written compilation/intro/intro.html。把前缀连起来看，校內 Moodle 按编号分版块：</p><ul><li>版块 2「Materials for study」：学习材料区，第 1 项就是 MOOC 登录说明；</li><li>版块 3「Tasks」：任务区，其中第 2 项是写作汇编（Written compilation），其 intro 页给出任务说明。</li></ul><p>这说明课程的组织逻辑是「先给材料入口，再给产出任务」。版块 1 的内容没有出现在源文件里，本讲义不对它作任何推测——它可能是一个欢迎页或总览页，但这是猜测而不是事实，所以不写进结论。</p><div class="callout tip"><b>拓展</b>以下为背景知识，不是本课程规定：Moodle 的「版块（section）」是可折叠的内容容器，每个版块下可放文件、链接、作业（Assignment）、测验（Quiz）、论坛等活动。学校通常把说明性材料放前面、把提交类活动放后面，因为作业活动需要单独配置开放时间、截止时间与评分方式。</div><h3 id="s8">1.7 学习节奏：三学分、材料自学加期末一篇写作</h3><p>写作任务说明里有一句关键的规模信息：At the end of the three credit course, the student writes an essay about the things he or she has learned on the course.（在这门三学分课程结束时，学生写一篇关于自己所学内容的 essay。）这是源文件里唯一交代课程体量与考核形状的句子。</p><p>据此整条路径可以写成闭环：</p><ol class="steps"><li>进入正确课程页并完成 Enroll</li><li>按 MOOC 材料顺序读完所有主题</li><li>边读边记：每个主题的核心概念（这是 essay 第一问的原料）</li><li>写 essay，覆盖所有主题，约两页</li><li>Word 写作、另存为 PDF、提交到 Turnitin</li></ol><p>边界必须说清：源文件没有给截止日期、模块数量、每周学时、评分权重、及格线。这些只能从课程页正文或教师通知获得，不能从本讲义推断。凡是在别处看到「本课共 X 个模块」「占总评 X%」之类的说法，都要回到课程页核对。</p><div class="callout warn"><b>易错</b>把「三学分」读成「三周」或「三次课」。学分是工作量单位，不是时间表；三学分通常对应数十小时的总投入，具体换算按学校规定，源文件没有给出。</div><h3 id="s9">1.8 双平台分工为什么值得理解</h3><p>这门课的内容跑在 DigiCampus，任务与提交跑在校內 Moodle。理解这个分工能省掉两类无谓消耗：</p><ul><li>找材料时不必在校內 Moodle 里反复翻文件，材料在 MOOC 里；</li><li>写 essay 时不必回 MOOC 找提交按钮，提交点在校內 Moodle 的任务区。</li></ul><p>还有一个更实质的含义：essay 要求里明确写了 focus on the MOOC material（以 MOOC 材料为准）。评分看的是你对 MOOC 内容的掌握程度，不是你读了校內 Moodle 里多少说明文字。</p><h3 id="s10">1.9 本讲与后两讲的关系</h3><p>第 1 讲解决「进得去、走得通」，产出是一份可执行的路径表；第 2 讲解决「写得出、交得上」，产出是一份逐条对应的任务规范；第 3 讲给概念层面的背景导读，帮你把 MOOC 里的术语串成能写进 essay 的框架。顺序不能颠倒：入口错了，后两步都建立在错的基础上。</p><div class="callout idea" data-ext="c1-mooc-path-0"><b>常见误解</b><p>本讲反复强调“入口正确”，根源是一种常见误解：<strong>登录成功等于报名成功</strong>。在 Moodle 型平台里，能看到页面只说明你有阅读权限，<code>Enroll</code> 才把作业箱与成绩记录绑定到你的账号；未登记时提交入口常常不显示，却极易被误判为“作业还没开放”。</p><p>另一种误解是把“三学分”读成“三周”。<em>Credit</em> 是工作量单位而非时间表，源文件只给了“期末一篇 essay”，没有模块数与截止日；把估算值当成规定写进计划，正是本课程反复提醒的失分点。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>MOOC</td><td>大规模开放在线课程</td><td>A course delivered online; here the content sits on DigiCampus, not on the internal Moodle.</td></tr><tr><td>DigiCampus</td><td>芬兰高校共享学习平台</td><td>The platform hosting this course. LUT uses its own course platforms.</td></tr><tr><td>HAKA account</td><td>芬兰高校联邦身份账号</td><td>Log in using your HAKA account, or register as a new user.</td></tr><tr><td>register as a new user</td><td>注册新用户</td><td>The route for learners without a HAKA identity.</td></tr><tr><td>course page</td><td>课程首页</td><td>Verify that the course name is correct before enrolling.</td></tr><tr><td>enroll</td><td>登记选课</td><td>Scroll down to the bottom of the page and select Enroll.</td></tr><tr><td>Finnish version</td><td>芬兰语版</td><td>Kiertotalous.nyt – LUT 2026–2027, course page 7580.</td></tr><tr><td>English version</td><td>英语版</td><td>Circular.now – LUT 2026–2027, course page 7579.</td></tr><tr><td>course section</td><td>课程版块</td><td>Numbered content blocks; section 2 holds study materials, section 3 holds tasks.</td></tr><tr><td>Materials for study</td><td>学习材料区</td><td>The section that holds the MOOC login instructions.</td></tr><tr><td>Tasks</td><td>任务区</td><td>The section that holds the written compilation.</td></tr><tr><td>learning path</td><td>学习路径</td><td>Enroll, read the MOOC topics, write the essay, submit the PDF.</td></tr><tr><td>three-credit course</td><td>三学分课程</td><td>The essay is written at the end of the three credit course.</td></tr><tr><td>written compilation</td><td>写作汇编</td><td>The name of the final written task in the task section.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　第一次进入课程：把入口选对并完成登记</div><p><b>情形：</b>你是校內学生，英语材料读得比芬兰语顺，第一次进这门课。</p><p><b>步骤：</b>① 选英语版入口，课程页标识 7579；② 用 HAKA 登录；③ 登录后若直接落到课程首页，读页面标题确认是 Circular.now – LUT 2026–2027；④ 若停在别的页面，核对标题后滚到底部点 Enroll；⑤ 回首页，确认能看到学习材料列表与任务区。</p><p><b>为什么这样选：</b>入口语言要与写作语言一致，否则术语要二次翻译；用 HAKA 而不是新注册，是为了让记录落在学籍账号上；核对学年是因为同名旧轮次的页面也会被搜索引擎索引。</p><p><b>验收：</b>地址栏标识 7579、标题含 2026–2027、页面有 Enroll 后的活动列表。三项都满足才算第 0 步完成。</p></div><div class="qa"><div class="q">例 2　登录成功，但看不到提交入口——按层级排查</div><p><b>情形：</b>你能打开课程页，也能点开几个文件，但任务区里没有提交按钮。</p><p><b>排查顺序：</b>① 课程页标识对不对（7580 / 7579）；② 标题学年对不对；③ 是否真的点了 Enroll（页面底部是否已变成「已登记」状态）；④ 当前登录账号与当初 Enroll 的账号是否同一个；⑤ 若以上都对，问题在平台层，查 DigiCampus 支持库；⑥ 若平台正常但作业活动本身打不开，写邮件给课程教师。</p><p><b>为什么要按这个顺序：</b>前四步都是「你自己能验证的事实」，成本几乎为零；平台与教师是外部依赖，放最后。把外部求助留到确认不是自己的操作问题之后，邮件里也能写清「已确认标识、学年、Enroll 状态、账号一致」。</p></div><div class="qa"><div class="q">例 3　在没有时间表的情况下排出学习计划</div><p><b>情形：</b>课程页只告诉你三学分、期末写一篇 essay，没有给模块清单与截止日期。</p><p><b>做法：</b>① 先数 MOOC 材料的版块数，把它当作主题数 N；② 按「每主题 1–2 小时读 + 20 分钟记概念」估出阅读总量；③ 给 essay 留出「写两页 + 自查 + 转 PDF + 提交」的整块时间，而不是碎片时间；④ 把截止日期从课程页或教师通知里抄下来，抄不到就先按「材料读完后再留一周」倒排。</p><p><b>注意：</b>第 ④ 步的「一周」是本讲给的操作缓冲，不是课程规定。真实截止日期只能来自课程页或教师通知；两者都拿不到时，向教师确认，不要用估算值当日期。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出本课两个语言版本的课程名与课程页标识，并说明选错版本会在哪三处出问题。</li><li>把「进入课程」的完整操作写成有序步骤，并标出哪一步是异常分支。</li><li>登录说明与写作任务说明分别给了哪条求助渠道？各自对应哪类问题？</li><li>从源文件路径推断课程版块结构，并指出哪一部分无法从源文件确定。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 芬兰语版 Kiertotalous.nyt – LUT 2026–2027，标识 7580；英语版 Circular.now – LUT 2026–2027，标识 7579。选错版本的三处后果：材料语言与写作语言不一致、可能落到别的开课轮次（材料与作业箱都不是本轮）、Enroll 与提交记录不在本轮成绩里。</p><p><b>2.</b> ① 打开正确课程页；② 用 HAKA 登录或注册新用户；③（异常分支）未自动跳转时核对课程名，滚到底部点 Enroll；④ 回首页确认活动列表出现。第 ③ 步是条件句，多数情况不触发。</p><p><b>3.</b> 登录说明指向 DigiCampus 支持库，管登录、账号、页面与平台类问题；写作任务说明指向课程教师 sanni.vaisanen@lut.fi，管提交与文件接受类问题。</p><p><b>4.</b> 路径显示版块 2 是 Materials for study（含登录说明），版块 3 是 Tasks（含写作汇编）。版块 1 的内容源文件未提供，无法确定——只能标记为缺口，不能推测为「欢迎页」并当成事实。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>两个语言版本与课程页标识的对应（芬兰语 7580、英语 7579）；登录的两条路径（HAKA / 新用户）；未跳转时的三步（核对课程名、滚到底、Enroll）；两条求助渠道的分工。这些是操作型考点，答错会直接卡住后续任务。</div><div class="callout warn"><b>易错</b>① 用公共平台的同名课程替代本课入口；② 只登录不 Enroll，以为「看到页面就是报上了」；③ 中途换账号，导致记录分裂；④ 把登录问题发邮件给课程教师，或把 Turnitin 报错发给平台支持。</div><div class="callout warn"><b>易错</b>把源文件没有的信息当成规定：截止日期、模块数量、学时、评分比例都不在源文件里。答题或写作时凭空补这些数字，是最典型的失分点。</div><div class="callout tip"><b>进阶</b>能从文件路径反推版块结构，并明确区分「证据推出的结论」与「缺口」，比背下操作步骤更有价值：这门课的可核实信息本来就少，能说清「哪里不知道」才是可靠的学习者。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">开课前的操作清单</h2><ul class="checklist"><li>已选定语言版本（芬兰语 7580 / 英语 7579），且与写作语言一致</li><li>地址栏课程页标识与所选版本相符</li><li>页面标题中的课程名含学年 2026–2027</li><li>已用 HAKA 登录，或已注册并记住所用的那一个账号</li><li>已点击 Enroll，首页出现活动列表</li><li>能看到学习材料区与任务区两个版块</li><li>已把 DigiCampus 支持库与课程教师邮箱分别记在两个位置</li><li>已从课程页抄下真实截止日期（抄不到就先去问，不用估算值）</li><li>已确认 MOOC 材料与校內 Moodle 的分工，不再在错误的平台找东西</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Instructions for MOOC login_2026.pdf</td><td>p1（全篇）</td><td>平台、两个语言版本与课程页标识、HAKA 登录、Enroll、DigiCampus 支持渠道、LUT 自有平台声明</td></tr><tr><td>2_Materials for study/1_Instructions for MOOC login_2026.pdf</td><td>路径前缀</td><td>版块 2 = Materials for study，材料区第 1 项即登录说明</td></tr><tr><td>3_Tasks/2_Written compilation/intro/intro.html</td><td>路径前缀 + 首段</td><td>版块 3 = Tasks；写作汇编是任务区第 2 项；three credit course 的规模信息</td></tr><tr><td>Maa.png（课程配图）</td><td>整图</td><td>地球被切成蓝色城市天际线与绿色森林两半，置于皱褶纸背景、飞鸟环绕；用于说明课程主题的「城市—自然」二元关系</td></tr><tr><td>（拓展）MOOC / HAKA / Moodle 版块</td><td>—</td><td>平台与身份认证的背景解释，标注为拓展，非课程规定</td></tr><tr><td>（跳过）image (2).png</td><td>—</td><td>该图无可读文字内容，未从中提取任何事实，不作为证据</td></tr></table></section><div class="lnav"><span></span><a class="next" href="c2-written-compilation.html">第 2 讲 · 写作汇编任务与学术写作要求 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

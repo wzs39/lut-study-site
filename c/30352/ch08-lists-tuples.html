@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑧ 列表、矩阵与元组 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-4.html">第 4 章 容器与数据组织</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、列表：一个变量装一串值</a><a class="toc-l2" href="#s3">二、遍历列表的三种写法</a><a class="toc-l2" href="#s4">三、可变性：列表能原地改</a><a class="toc-l2" href="#s5">四、列表方法与内置函数</a><a class="toc-l3" href="#s6">4.1 常用方法</a><a class="toc-l3" href="#s7">4.2 内置函数：不修改原列表</a><a class="toc-l2" href="#s8">五、从输入构建列表</a><a class="toc-l2" href="#s9">六、矩阵：列表的列表</a><a class="toc-l2" href="#s10">七、别名、拷贝与浅拷贝</a><a class="toc-l3" href="#s11">7.1 B = A 不是复制</a><a class="toc-l3" href="#s12">7.2 怎样真的复制</a><a class="toc-l2" href="#s13">八、元组：不能改的列表</a><a class="toc-l3" href="#s14">8.1 创建与访问</a><a class="toc-l3" href="#s15">8.2 两个方法与解包</a><a class="toc-l3" href="#s16">8.3 用元组返回多个值</a><a class="toc-l3" href="#s17">8.4 列表与元组怎么选</a><a class="toc-l2" href="#s18">九、常见错误与调试</a><a class="toc-l2" href="#s19">操作清单</a><a class="toc-l3" href="#s20">处理列表之前先想清楚</a><a class="toc-l3" href="#s21">写完后的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a class="toc-l3" href="ch08-lists-tuples.html">▸ ⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑧ 列表、矩阵与元组</h1><p class="lead">Lists, Matrices and Tuples <span class="badge mute">30352</span> <span class="badge mute">第 8 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 容器与数据组织</a></p><p class="src">原始文件：<code>Chapter 6 - Part 4 - List.pdf</code> <code>Chapter 6 - Part 5 - List Builtins and Methods.pdf</code> <code>Chapter 6 - Part 6 - Matrix.pdf</code> <code>tuples.pdf</code> <code>Mutable_vs _immutable .pdf</code> <code>12_Chapter 6_1_Chapter 6 Code Examples_L6E5.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前面的变量一次只能装一个值。这一讲引入容器：列表装一串会变的数据，矩阵装二维表格，元组装一组不该变的值。它们几乎出现在后面每一讲——文件读进来是列表，CSV 是列表的列表，字典的值常常是列表。</p><p>上一讲的对象与这一讲的列表关系密切：列表本身就是对象，<code>append</code>、<code>sort</code> 都是它的方法。下一讲把这些数据落到文件里，让程序关掉之后数据还在。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>创建列表、用正负下标与切片取元素，并解释切片为什么不改原列表</li><li>用三种方式遍历列表，按需要选择取元素还是取下标</li><li>正确使用 <code>append</code> / <code>pop</code> / <code>remove</code> / <code>sort</code>，并说出它们的返回值</li><li>区分 <code>L.sort()</code> 与 <code>sorted(L)</code>、<code>B = A</code> 与 <code>A[:]</code></li><li>用双重下标读写矩阵，写出遍历与转置</li><li>创建元组、用解包一次拿到多个值，并说明元组与列表的取舍</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、列表：一个变量装一串值</h2><p>列表（list）是最常用的容器（Chapter 6 Part 4 p2）：方括号里放若干项，逗号分隔，<code>fruits = ["apple", "banana", "pineapple", "orange"]</code>。一个变量名，装一整串数据。</p><pre><code>fruits = ["apple", "banana", "pineapple", "orange"]
+print(fruits)
+print(len(fruits))
+empty = []
+print(empty)</code></pre><pre><code>['apple', 'banana', 'pineapple', 'orange']
+4
+[]</code></pre><p>列表与字符串有很多共同点（p2）：都能索引、都能切片、都能用 <code>len()</code>、都能被 <code>for</code> 遍历。不同点只有一条，但很关键——<b>列表可变，字符串不可变</b>。</p><pre><code>fruits = ["apple", "banana", "pineapple", "orange"]
+print(fruits[0])
+print(fruits[-1])
+print(fruits[1:3])
+print(fruits[::-1])</code></pre><pre><code>apple
+orange
+['banana', 'pineapple']
+['orange', 'pineapple', 'banana', 'apple']</code></pre><p>切片规则与第 3 讲完全相同：含头不含尾，越界不报错，结果是<b>新列表</b>。所以 <code>fruits[1:3]</code> 得到的是两个元素的新列表，改它不会动到 <code>fruits</code>。</p><h2 id="s3">二、遍历列表的三种写法</h2><p>L6E3 把三种写法摆在一起（Part 4 p4），各自适合不同场景：</p><pre><code>my_list = [1, 2, 3, 4, 5]
+
+for item in my_list:            # 1. 直接取元素
+    print(item, end=" ")
+print()
+
+for i in range(len(my_list)):   # 2. 取下标再取元素
+    print(my_list[i], end=" ")
+print()
+
+i = 0                           # 3. while 手动控制下标
+while i &lt; len(my_list):
+    print(my_list[i], end=" ")
+    i = i + 1
+print()</code></pre><pre><code>1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5</code></pre><table><tr><th>写法</th><th>优点</th><th>什么时候用</th></tr><tr><td><code>for item in L</code></td><td>最短、最不容易出错</td><td>只需要元素值</td></tr><tr><td><code>for i in range(len(L))</code></td><td>能拿到下标</td><td>需要下标做位置运算、或要改元素</td></tr><tr><td><code>while i &lt; len(L)</code></td><td>可以自由控制 i 的推进</td><td>需要跳过、回退或条件式推进</td></tr></table><p>需要同时拿到下标与元素时，Python 还有 <code>enumerate()</code>，写作 <code>for i, item in enumerate(L)</code>。它超出本讲考点，但项目作业里很常见。</p><h2 id="s4">三、可变性：列表能原地改</h2><p>字符串不能改单个字符，列表可以（Part 5 p5）：</p><pre><code>L = [1, 2, 3]
+L[1] = 5
+print(L)</code></pre><pre><code>[1, 5, 3]</code></pre><p>除了按下标改，还能整体替换一段（切片赋值），例如 <code>L[1:3] = [8, 9, 10]</code> 会把中间两个元素换成长度不同的三个。这个写法容易把列表长度搞乱，初学阶段建议只用「按下标改」与下面要讲的列表方法。</p><h2 id="s5">四、列表方法与内置函数</h2><h3 id="s6">4.1 常用方法</h3><p>列表本身也是类（Part 5 p3），每个列表对象都带着一批方法。下表是最常用的十个：</p><table><tr><th>方法</th><th>作用</th><th>返回值</th><th>例子</th></tr><tr><td><code>L.append(x)</code></td><td>在末尾加一个元素</td><td><code>None</code></td><td><code>[1,2].append(3)</code> → <code>[1,2,3]</code></td></tr><tr><td><code>L.extend(M)</code></td><td>把另一个列表的元素逐个加进来</td><td><code>None</code></td><td><code>[1].extend([2,3])</code> → <code>[1,2,3]</code></td></tr><tr><td><code>L.insert(i, x)</code></td><td>在下标 i 处插入 x</td><td><code>None</code></td><td><code>[1,3].insert(1,2)</code> → <code>[1,2,3]</code></td></tr><tr><td><code>L.remove(x)</code></td><td>删掉第一个等于 x 的元素</td><td><code>None</code></td><td>找不到则 <code>ValueError</code></td></tr><tr><td><code>L.pop()</code></td><td>删掉并返回最后一个元素</td><td>被删的元素</td><td><code>[1,2,3].pop()</code> → <code>3</code></td></tr><tr><td><code>L.pop(i)</code></td><td>删掉并返回下标 i 的元素</td><td>被删的元素</td><td><code>[1,2,3].pop(0)</code> → <code>1</code></td></tr><tr><td><code>L.index(x)</code></td><td>x 第一次出现的下标</td><td>整数</td><td>找不到则 <code>ValueError</code></td></tr><tr><td><code>L.count(x)</code></td><td>x 出现的次数</td><td>整数</td><td><code>[1,1,2].count(1)</code> → <code>2</code></td></tr><tr><td><code>L.sort()</code></td><td>原地排序</td><td><code>None</code></td><td>改的是 L 本身</td></tr><tr><td><code>L.reverse()</code></td><td>原地倒序</td><td><code>None</code></td><td>等价于 <code>L = L[::-1]</code>，但不动原对象</td></tr></table><div class="callout warn"><b>这些方法返回 None，不是新列表</b><code>L = L.append(4)</code> 会把 <code>L</code> 变成 <code>None</code>，随后 <code>len(L)</code> 报 <code>TypeError</code>。正确写法是单独一行 <code>L.append(4)</code>。同样，<code>L = L.sort()</code> 会把整个列表弄丢。</div><h3 id="s7">4.2 内置函数：不修改原列表</h3><p>课件把内置函数与列表方法分开讲（Part 5 p2），区别就在「改不改原列表」：</p><pre><code>L = [3, 1, 2]
+print(len(L))
+print(sorted(L))
+print(L)
+print(min(L), max(L), sum(L))</code></pre><pre><code>3
+[1, 2, 3]
+[3, 1, 2]
+1 3 6</code></pre><p><code>sorted(L)</code> 返回排好序的<b>新列表</b>，<code>L</code> 保持原样；<code>L.sort()</code> 直接把 <code>L</code> 排序、返回 <code>None</code>。考试常问「哪个改变了原列表」，答案看返回值是不是 <code>None</code>。</p><p>两个前提：<code>min</code> / <code>max</code> 要求元素之间能比较（全是数字或全是字符串，混着来会 <code>TypeError</code>）；<code>sum</code> 要求元素是数字。空列表上 <code>min</code> / <code>max</code> 会抛 <code>ValueError</code>。</p><h2 id="s8">五、从输入构建列表</h2><p>L6E4 是「输入 → 字符串 → 列表」的标准流水线（Part 5 p6）：<code>input()</code> 拿到一整行，<code>split(",")</code> 切成字符串列表，再逐个 <code>int()</code> 转成数字列表。</p><pre><code>input_string = input("Give integers separated by comma:\n")
+list_of_chars = input_string.split(",")
+print(list_of_chars)
+
+list_of_ints = []
+for piece in list_of_chars:
+    list_of_ints.append(int(piece))
+
+print(list_of_ints)</code></pre><p>输入 <code>3,1,4,1,5</code>，输出：</p><pre><code>['3', '1', '4', '1', '5']
+[3, 1, 4, 1, 5]</code></pre><p>注意两个列表的区别：第一个装的是字符串（打印时带引号），第二个才是整数。若输入里有空格（<code>"3, 1, 4"</code>），<code>int(" 1")</code> 仍能成功（两端空白被忽略），但若用 <code>split()</code> 不带参数，则会按任意空白切分，逗号会留在元素里。</p><h2 id="s9">六、矩阵：列表的列表</h2><p>把列表套进列表，就是矩阵（matrix，Part 6 p2）：外层每个元素是一行，内层每个元素是一格。<code>M = [[1,4,5],[-5,8,9]]</code> 是 2 行 3 列。</p><pre><code>M = [[1, 4, 5], [-5, 8, 9]]
+print(M[0])
+print(M[1])
+print(M[1][0])
+print(len(M), len(M[0]))</code></pre><pre><code>[1, 4, 5]
+[-5, 8, 9]
+-5
+2 3</code></pre><p>读法：<b>第一个下标选行，第二个下标选列</b>。<code>M[1][0]</code> 是第 2 行第 1 列，得 −5。注意 <code>M[1, 0]</code>（逗号写在一个方括号里）对普通列表是错的，那是 NumPy 的写法（第 10 讲）。</p><p>遍历矩阵要两层循环：外层拿行，内层拿格（L6E5）：</p><pre><code>list_of_lists = [[1, 2], [3, 4], [5, 6]]
+for row in list_of_lists:
+    for value in row:
+        print(value, end=" ")
+    print()</code></pre><pre><code>1 2
+3 4
+5 6</code></pre><p>求「每行之和」时，内层用累加器、外层负责清零与输出：</p><pre><code>M = [[1, 4, 5], [-5, 8, 9]]
+for row in M:
+    total = 0
+    for value in row:
+        total = total + value
+    print("row sum:", total)</code></pre><pre><code>row sum: 10
+row sum: 12</code></pre><p>转置（行列互换）需要按下标遍历，且内层用列号取各行的同一列：</p><pre><code>M = [[1, 2, 3], [4, 5, 6]]
+T = []
+for c in range(len(M[0])):
+    new_row = []
+    for r in range(len(M)):
+        new_row.append(M[r][c])
+    T.append(new_row)
+print(T)</code></pre><pre><code>[[1, 4], [2, 5], [3, 6]]</code></pre><p>这个双重循环的「外列内行」顺序是转置的关键：外层走列号，内层走行号，于是新矩阵的第 c 行收集的是原矩阵的第 c 列。</p><h2 id="s10">七、别名、拷贝与浅拷贝</h2><h3 id="s11">7.1 B = A 不是复制</h3><p>课件专门警告（Mutable vs immutable p4）：<code>B = A</code> 只是让两个名字指向<b>同一个对象</b>，通过 B 改内容，A 看到的也变了。</p><pre><code>A = [1, 2, 3]
+B = A
+B[0] = 100
+print(A)
+print(B)
+print(A is B)</code></pre><pre><code>[100, 2, 3]
+[100, 2, 3]
+True</code></pre><p><code>is</code> 比较「是不是同一个对象」，<code>==</code> 比较「内容是否相等」。上面两者 <code>is</code> 为 <code>True</code>，说明根本没有复制。</p><h3 id="s12">7.2 怎样真的复制</h3><pre><code>A = [1, 2, 3]
+B = A[:]        # 切片复制
+C = list(A)     # 用 list() 构造
+D = A.copy()    # 列表方法
+B[0] = 100
+print(A, C, D)</code></pre><pre><code>[1, 2, 3] [1, 2, 3] [1, 2, 3]</code></pre><p>三种写法都产生新列表，但都是<b>浅拷贝</b>（shallow copy）：只复制最外层，内层元素仍是共享的引用。</p><pre><code>M = [[0, 0], [0, 0]]
+N = M[:]
+N[0][0] = 9
+print(M)</code></pre><pre><code>[[9, 0], [0, 0]]</code></pre><p>改 <code>N[0][0]</code> 会改到 <code>M</code>，因为 <code>M[0]</code> 与 <code>N[0]</code> 是同一个内层列表。彻底独立要深拷贝（deep copy），第 12 讲用 <code>copy.deepcopy</code> 处理。</p><div class="callout warn"><b>[[0] * 3] * 3 是三重别名</b><code>[[0] * 3] * 3</code> 里的三行是<b>同一个</b>内层列表的三份引用：改 <code>grid[0][0]</code>，三行一起变。要造独立矩阵，写 <code>[[0] * 3 for _ in range(3)]</code>（列表推导属拓展）或老老实实嵌套 append。</div><h2 id="s13">八、元组：不能改的列表</h2><h3 id="s14">8.1 创建与访问</h3><p>元组（tuple）用圆括号，逗号分隔；有序、可索引、<b>不可变</b>（tuples.pdf p2–p3）。</p><pre><code>t = (1, "two", 3.0)
+print(t[0])
+print(t[-1])
+print(t[1:])
+print(len(t))</code></pre><pre><code>1
+3.0
+('two', 3.0)
+3</code></pre><p>单个元素的元组必须带逗号：<code>(5)</code> 只是数字 5，<code>(5,)</code> 才是元组。空元组写 <code>()</code>。</p><pre><code>print(type((5)))
+print(type((5,)))</code></pre><pre><code>&lt;class 'int'&gt;
+&lt;class 'tuple'&gt;</code></pre><p>元组不可变，所以 <code>t[0] = 9</code> 抛 <code>TypeError</code>；但元组内部若装了列表，那个列表仍可改——「不可变」指的是元组自己的格子不能换。</p><h3 id="s15">8.2 两个方法与解包</h3><p>元组只有两个常用方法（tuples.pdf p6）：<code>count(x)</code> 数出现次数，<code>index(x)</code> 找第一次出现的下标。</p><pre><code>t = (1, 2, 2, 3)
+print(t.count(2))
+print(t.index(3))</code></pre><pre><code>2
+3</code></pre><p>解包（unpacking）是元组最有用的地方：把元组里的值一次分给多个变量。</p><pre><code>point = (3, 7)
+x, y = point
+print(x, y)
+
+a, b = 1, 2
+a, b = b, a
+print(a, b)</code></pre><pre><code>3 7
+2 1</code></pre><p>第二段是交换两个变量的标准写法，<code>a, b = b, a</code> 右边其实是一个元组 <code>(b, a)</code>，左边解包赋值。它比用临时变量更短，考试常考。</p><h3 id="s16">8.3 用元组返回多个值</h3><p>函数一次只能 <code>return</code> 一个对象，于是把多个值装进元组返回（tuples.pdf p7、tuple.py）：</p><pre><code>def area_and_perimeter(length, width):
+    area = length * width
+    perimeter = 2 * (length + width)
+    return (area, perimeter)
+
+result = area_and_perimeter(3, 4)
+print(result)
+a, p = result
+print(a, p)</code></pre><pre><code>(12, 14)
+12 14</code></pre><p>也可以直接 <code>area, perimeter = area_and_perimeter(3, 4)</code>，一步拿到两个值。课件里那句 <code>result[0]</code>、<code>result[1]</code> 的写法更啰嗦，但等价。</p><h3 id="s17">8.4 列表与元组怎么选</h3><table><tr><th>维度</th><th>列表 list</th><th>元组 tuple</th></tr><tr><td>可变性</td><td>可变，能增删改</td><td>不可变，创建后固定</td></tr><tr><td>写法</td><td><code>[1, 2, 3]</code></td><td><code>(1, 2, 3)</code></td></tr><tr><td>方法</td><td>append / sort / pop 等十个以上</td><td>只有 <code>count</code> 与 <code>index</code></td></tr><tr><td>典型用途</td><td>会变化的数据集合</td><td>固定的一组值：坐标、RGB、函数返回的多个值</td></tr><tr><td>性能</td><td>略慢（要支持修改）</td><td>略快、占用更小（tuples.pdf p5）</td></tr></table><div class="callout tip"><b>默认选列表，除非确定要「不许改」</b>元组的价值是表达意图：坐标 <code>(3, 7)</code>、颜色 <code>(255, 0, 0)</code> 本来就不该被改。写进元组，读代码的人立刻知道它不会被修改。</div><h2 id="s18">九、常见错误与调试</h2><div class="callout warn"><b>把返回 None 的方法当函数用</b><code>L = L.append(4)</code>、<code>L = L.sort()</code>、<code>L = L.reverse()</code> 都会把列表变成 <code>None</code>。方法是「对 L 做动作」，不是「返回一个新 L」。</div><div class="callout warn"><b>IndexError 与 off-by-one</b>长度为 n 的列表，合法下标是 0 到 n−1（或 −n 到 −1）。<code>L[len(L)]</code> 一定越界；遍历用 <code>range(len(L))</code> 而不是 <code>range(len(L) + 1)</code>。</div><div class="callout warn"><b>遍历时删除元素</b><code>for x in L: L.remove(x)</code> 会漏掉元素。改成 <code>for x in L[:]</code>（遍历副本）或先收集要删的、再统一删。</div><div class="callout tip"><b>先打印类型再猜</b>分不清元素是字符串还是数字时，<code>print(type(L[0]))</code> 或 <code>print(L)</code> 看有没有引号。字符串列表打印形如 <code>['3', '1']</code>，整数列表是 <code>[3, 1]</code>。</div><div class="callout idea" data-ext="ch08-lists-tuples-0"><b>常见误解</b><p>列表方法 <code>append</code>／<code>pop</code>／<code>sort</code> 大多<strong>原地修改并返回 None</strong>：<code>L = L.append(4)</code> 会把 L 变成 None，随后 <code>len(L)</code> 抛 TypeError。对比 <code>sorted(L)</code> 返回新列表、L 不变——问“哪个改了原列表”，看返回值是不是 None 即可。空列表上 <code>min</code>／<code>max</code> 抛 ValueError。</p></div><div class="callout tip" data-ext="ch08-lists-tuples-1"><b>推导补充</b><p><code>B = A</code> 不是复制：两个名字指向同一对象，<code>is</code> 为 True。真正的复制 <code>A[:]</code>／<code>list(A)</code>／<code>A.copy()</code> 都是<strong>浅拷贝</strong>，内层可变元素仍共享；改 <code>N[0][0]</code> 会动到 M。<code>[[0]*3]*3</code> 的三行是同一列表的三份引用，改一行三行全变。元组不可变指格子不能换，装了列表那个列表仍可改；单元素元组要带逗号 <code>(5,)</code>。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>list</td><td>列表</td><td>An ordered, mutable collection: [1, 2, 3].</td></tr><tr><td>element / item</td><td>元素</td><td>One value stored in the list.</td></tr><tr><td>index</td><td>下标</td><td>L[0] is the first element, L[-1] the last.</td></tr><tr><td>slice</td><td>切片</td><td>L[1:3] returns a new list with two elements.</td></tr><tr><td>mutable</td><td>可变的</td><td>Lists can be changed after creation.</td></tr><tr><td>append</td><td>追加</td><td>L.append(x) adds x at the end and returns None.</td></tr><tr><td>sort / sorted</td><td>排序</td><td>L.sort() sorts in place; sorted(L) returns a new list.</td></tr><tr><td>nested list</td><td>嵌套列表</td><td>A list whose elements are lists; used as a matrix.</td></tr><tr><td>matrix</td><td>矩阵</td><td>M[r][c] selects row r, column c.</td></tr><tr><td>alias</td><td>别名</td><td>B = A makes both names refer to the same object.</td></tr><tr><td>shallow copy</td><td>浅拷贝</td><td>L[:] copies the outer list only.</td></tr><tr><td>tuple</td><td>元组</td><td>An immutable sequence: (1, 2, 3).</td></tr><tr><td>unpacking</td><td>解包</td><td>x, y = point assigns both values at once.</td></tr><tr><td>immutable</td><td>不可变的</td><td>A tuple cannot be changed after creation.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　读入一行逗号分隔的整数，输出列表、总和与平均值。</div><p>流水线：<code>input</code> → <code>split</code> → 逐个 <code>int()</code> 装进新列表 → 用内置函数统计。</p><pre><code>line = input("Give integers separated by comma: ")
+pieces = line.split(",")
+
+numbers = []
+for piece in pieces:
+    numbers.append(int(piece))
+
+print("list:", numbers)
+print("len:", len(numbers))
+print("sum:", sum(numbers))
+print("avg:", sum(numbers) / len(numbers))</code></pre><p>输入 <code>3,1,4,1,5</code>，输出：</p><pre><code>list: [3, 1, 4, 1, 5]
+len: 5
+sum: 14
+avg: 2.8</code></pre><p>解释：<code>split(",")</code> 得到字符串列表；<code>append</code> 在循环里逐个补进 <code>numbers</code>；<code>sum</code> 与 <code>len</code> 是内置函数，不改列表。若输入为空行，<code>split</code> 得到 <code>['']</code>，<code>int('')</code> 会抛 <code>ValueError</code>——真实程序要先判空。</p></div><div class="qa"><div class="q">例 2　给定 3×3 矩阵，输出每行的和与每列的和。</div><p>行和用「外层取行、内层累加」；列和用「外层走列号、内层走行号」。</p><pre><code>M = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+for row in M:
+    total = 0
+    for v in row:
+        total = total + v
+    print("row sum:", total)
+
+for c in range(len(M[0])):
+    total = 0
+    for r in range(len(M)):
+        total = total + M[r][c]
+    print("col", c, "sum:", total)</code></pre><p>输出：</p><pre><code>row sum: 6
+row sum: 15
+row sum: 24
+col 0 sum: 12
+col 1 sum: 15
+col 2 sum: 18</code></pre><p>解释：行和的累加器 <code>total</code> 在<b>外层循环体内</b>清零，所以每行独立；列和的外层是列号 <code>c</code>，内层用 <code>M[r][c]</code> 竖着取值。两段代码的差别只有下标顺序，这正是矩阵题的核心。</p></div><div class="qa"><div class="q">例 3　用元组让函数同时返回面积与周长，并解包使用。</div><p>先把两个结果装进元组返回，再在调用处解包；顺带说明「元组不可变」不影响内部计算。</p><pre><code>def area_and_perimeter(length, width):
+    area = length * width
+    perimeter = 2 * (length + width)
+    return (area, perimeter)
+
+area, perimeter = area_and_perimeter(3, 4)
+print("area:", area)
+print("perimeter:", perimeter)
+
+result = area_and_perimeter(3, 4)
+print(result, type(result))</code></pre><p>输出：</p><pre><code>area: 12
+perimeter: 14
+(12, 14) &lt;class 'tuple'&gt;</code></pre><p>解释：<code>return (area, perimeter)</code> 返回一个二元组；<code>area, perimeter = ...</code> 按位置解包。<code>type(result)</code> 确认它是 <code>tuple</code> 而不是列表——元组更适合「一次性的多值返回」。</p></div><div class="qa"><div class="q">例 4　演示 <code>sort()</code> 与 <code>sorted()</code> 的差别，以及 <code>B = A</code> 的别名效果。</div><p>用 <code>is</code> 判断是不是同一个对象，是最直接的验证手段。</p><pre><code>A = [3, 1, 2]
+B = sorted(A)
+print("A after sorted:", A)
+print("B:", B)
+
+C = A
+C.sort()
+print("A after C.sort():", A)
+print("C is A:", C is A)
+
+D = A[:]
+D[0] = 99
+print("A:", A)
+print("D:", D)
+print("D is A:", D is A)</code></pre><p>输出：</p><pre><code>A after sorted: [3, 1, 2]
+B: [1, 2, 3]
+A after C.sort(): [1, 2, 3]
+C is A: True
+A: [1, 2, 3]
+D: [99, 2, 3]
+D is A: False</code></pre><p>解释：<code>sorted(A)</code> 不动 A；<code>C = A</code> 后 <code>C.sort()</code> 改的是同一个对象，所以 A 也变了；<code>D = A[:]</code> 才是副本，改 D 不影响 A。这三行就是「别名 vs 拷贝」的全部区别。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>读入 5 个整数存入列表，输出最大值、最小值与平均值（不用 <code>max</code> / <code>min</code>，自己写循环）。</li><li>把 <code>[3, 1, 4, 1, 5, 9, 2, 6]</code> 去重后按升序输出（提示：循环 + <code>in</code> 判断）。</li><li>给定 2×3 矩阵，输出它的转置（3×2）。</li><li>写函数 <code>min_max(L)</code>，用元组返回列表中的最小值与最大值。</li><li>解释并修正这段代码：<code>L = [1, 2, 3]; L = L.append(4); print(len(L))</code>。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>nums = []</code> 收集输入；<code>biggest = nums[0]</code>、<code>smallest = nums[0]</code>；循环里逐个比较更新；平均用 <code>sum(nums) / len(nums)</code>。初值取第一个元素而不是 0，才能处理全负数。</p><p><b>2.</b> <code>result = []</code>，<code>for x in L: if x not in result: result.append(x)</code>，再 <code>result.sort()</code>。这是「先判断再追加」的模式；用 <code>in</code> 在列表上查找是线性时间，元素多时更该用第 12 讲的集合。</p><p><b>3.</b> 外层 <code>for c in range(len(M[0]))</code>，内层 <code>for r in range(len(M))</code>，把 <code>M[r][c]</code> 追加到新行，再把新行 <code>append</code> 到结果。</p><p><b>4.</b> 循环比较得两个极值，<code>return (smallest, biggest)</code>，调用处 <code>lo, hi = min_max(L)</code>。空列表要单独处理（返回 <code>None, None</code> 或抛 <code>ValueError</code>）。</p><p><b>5.</b> <code>append</code> 返回 <code>None</code>，所以第三行把 <code>L</code> 变成了 <code>None</code>，<code>len(None)</code> 抛 <code>TypeError</code>。改成 <code>L.append(4)</code> 单独一行，再 <code>print(len(L))</code> 得 4。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>列表的索引与切片（含头不含尾）；<code>append</code> / <code>pop</code> / <code>remove</code> 的行为；<code>sort()</code> 与 <code>sorted()</code> 的差别；矩阵的双下标；元组的不可变与解包。</div><div class="callout warn"><b>易错 1　方法返回 None</b><code>L = L.append(x)</code>、<code>L = L.sort()</code> 会把列表变成 None。要新列表就用 <code>sorted(L)</code> 或 <code>L + [x]</code>。</div><div class="callout warn"><b>易错 2　别名当成拷贝</b><code>B = A</code> 是同一对象；矩阵的 <code>M[:]</code> 只是浅拷贝，改内层会同时改两边；<code>[[0] * 3] * 3</code> 三行共享。</div><div class="callout warn"><b>易错 3　遍历时删除 / 越界</b>遍历中 <code>remove</code> 会跳过元素；<code>L[len(L)]</code> 必然越界。改元素用下标遍历，删元素遍历副本。</div><div class="callout tip"><b>进阶</b>列表推导 <code>[x * 2 for x in L]</code> 与 <code>enumerate</code> 在项目作业里很常见；元组比列表更省内存、遍历更快，所以「固定的一组值」优先用元组。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">操作清单</h2><h3 id="s20">处理列表之前先想清楚</h3><ol class="steps"><li>这份数据会不会变？会变用列表，不变用元组</li><li>我要的是元素还是下标？要下标就 <code>range(len(L))</code></li><li>这个操作是「改原列表」还是「产生新列表」？看方法有没有返回值</li><li>要不要保留原数据？要就先 <code>L[:]</code> 或 <code>sorted(L)</code></li></ol><h3 id="s21">写完后的检查</h3><ul class="checklist"><li>下标范围在 0 到 <code>len(L) - 1</code> 之内</li><li>没有把返回 None 的方法赋回给列表变量</li><li>矩阵用两个下标，先选行再选列</li><li>元组解包时变量个数与元素个数一致</li><li>需要独立副本时用了 <code>L[:]</code> / <code>list(L)</code> / <code>copy.deepcopy</code></li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Chapter 6 - Part 4 - List.pdf</td><td>p2–p4</td><td>列表定义与空列表、索引与切片、遍历列表（L6E3 三种写法）</td></tr><tr><td>Chapter 6 - Part 5 - List Builtins and Methods.pdf</td><td>p2–p6</td><td><code>len/sorted/min/max/sum</code>、列表也是类、常用方法、可变性、输入转列表</td></tr><tr><td>Chapter 6 - Part 6 - Matrix.pdf</td><td>p2–p3</td><td>列表的列表即矩阵、行与列的下标、2×3 类型、矩阵遍历示例</td></tr><tr><td>tuples.pdf</td><td>p2–p7</td><td>元组定义与不可变、索引、用途（坐标/RGB/多返回值）、列表与元组对比、<code>count</code> 与 <code>index</code></td></tr><tr><td>Mutable_vs _immutable .pdf</td><td>p2–p8</td><td>可变/不可变类型、<code>B = A</code> 别名、字符串不可变、列表参数被函数改到</td></tr><tr><td>L6E3.py</td><td>全文</td><td>三种遍历写法对照</td></tr><tr><td>L6E4.py</td><td>全文</td><td><code>split</code> + <code>append</code> 构造整数列表</td></tr><tr><td>L6E5.py</td><td>全文</td><td>矩阵下标与双重循环</td></tr><tr><td>tuple.py</td><td>全文</td><td>用元组返回面积与周长</td></tr></table><p><b>跳过项：</b>Part 5 p4 的方法列表页以表格截图呈现的部分已按正文表格重建；Moodle 的作业说明与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b><code>enumerate</code>、列表推导、<code>copy.deepcopy</code> 的预告、浅拷贝的嵌套陷阱，都是在原知识点边界上的补充；深拷贝的完整讨论放在第 12 讲。</p></section><div class="lnav"><a class="prev" href="ch07-classes.html">← ⑦ 类与对象入门</a><a class="next" href="ch09-files-csv.html">⑨ 文件读写与 CSV →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

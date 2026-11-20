@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 2 · 数制、位置记数法与进制转换 · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-2.html">第 2 章 数制与数据表示</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、先把「数」分类</a><a class="toc-l3" href="#s3">1.1 四类数</a><a class="toc-l3" href="#s4">1.2 为什么现在要分类</a><a class="toc-l2" href="#s5">二、位置记数法</a><a class="toc-l3" href="#s6">2.1 一个看似简单的问题</a><a class="toc-l3" href="#s7">2.2 基决定两件事</a><a class="toc-l3" href="#s8">2.3 展开式与公式</a><a class="toc-l3" href="#s9">2.4 换成十三进制会怎样</a><a class="toc-l2" href="#s10">三、这门课真正要用的几个进制</a><a class="toc-l3" href="#s11">3.1 十进制与二进制</a><a class="toc-l3" href="#s12">3.2 合法性规则（高频考点）</a><a class="toc-l3" href="#s13">3.3 大于 10 的基怎样写数字</a><a class="toc-l2" href="#s14">四、其他进制 → 十进制：按权展开</a><a class="toc-l3" href="#s15">4.1 三个课件算例</a><a class="toc-l3" href="#s16">4.2 二进制的速算法：只加「有 1 的那些位权」</a><a class="toc-l3" href="#s17">4.3 通用解题模板</a><a class="toc-l3" href="#s18">4.4 一个容易忽略的检查</a><a class="toc-l2" href="#s19">五、二进制算术</a><a class="toc-l3" href="#s20">5.1 加法只有四条规则</a><a class="toc-l3" href="#s21">5.2 课件算例</a><a class="toc-l3" href="#s22">5.3 减法与借位</a><a class="toc-l3" href="#s23">5.4 为什么硬件喜欢二进制</a><a class="toc-l2" href="#s24">六、2 的幂进制之间：分组互换</a><a class="toc-l3" href="#s25">6.1 为什么可以分组</a><a class="toc-l3" href="#s26">6.2 二进制 → 八进制：从右往左三位一组</a><a class="toc-l3" href="#s27">6.3 八进制 → 二进制：每个符号换 3 位</a><a class="toc-l3" href="#s28">6.4 二进制 → 十六进制：从右往左四位一组</a><a class="toc-l3" href="#s29">6.5 十六进制 → 二进制：每个符号换 4 位</a><a class="toc-l3" href="#s30">6.6 八进制与十六进制互转：经二进制中转</a><a class="toc-l3" href="#s31">6.7 分组三原则</a><a class="toc-l2" href="#s32">七、十进制 → 其他进制：除基取余</a><a class="toc-l3" href="#s33">7.1 算法（课件给的流程）</a><a class="toc-l3" href="#s34">7.2 十进制 → 八进制：1988</a><a class="toc-l3" href="#s35">7.3 十进制 → 十六进制：3567</a><a class="toc-l3" href="#s36">7.4 十进制 → 二进制：69</a><a class="toc-l2" href="#s37">八、算盘：位置记数法的实物</a><a class="toc-l2" href="#s38">九、位、字节与字长</a><a class="toc-l3" href="#s39">9.1 电压就是位</a><a class="toc-l3" href="#s40">9.2 字节与字长</a><a class="toc-l2" href="#s41">换算方法清单</a><a class="toc-l3" href="#s42">任意进制 → 十进制（三步）</a><a class="toc-l3" href="#s43">十进制 → 任意进制（四步）</a><a class="toc-l3" href="#s44">二进制 ↔ 八进制 ↔ 十六进制（三步）</a><a class="toc-l3" href="#s45">二进制加减检查表</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a class="toc-l3" href="w2-number-systems.html">▸ Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 2 · 数制、位置记数法与进制转换</h1><p class="lead">Binary Values and Number Systems <span class="badge mute">86</span> <span class="badge mute">第 2 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 数制与数据表示</a></p><p class="src">原始文件：<code>Week2- Number systems/Lecture2.pdf</code> <code>Week2- Number systems/Exercise1.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 1 讲说计算机只认 0 和 1，但没说清「一个数怎么只用 0 和 1 写出来」。这一讲就干这件事：先把「数」分成几类，再讲<b>位置记数法</b>（positional notation）这一个统一框架，然后用它把任意进制与十进制互相转换，最后落到二进制算术与字节、字长。</p><p>位置记数法是全课最省力的一个工具：只要会「按位权展开」，二、八、十、十六乃至十三进制都用同一套式子算。反过来，只要会「除基取余」，任何十进制数都能写成任意进制。两个方向各一个公式，覆盖了本周全部计算题。</p><p>本讲与前后两讲的关系：第 1 讲说「一切信息都变成 0/1」，本讲说「数怎么变成 0/1」，第 3 讲说「负数与小数怎么变成 0/1」。三讲连起来，才构成完整的「数据表示」。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说出自然数、负数、整数、有理数的定义与包含关系</li><li>写出位置记数法的展开式，并解释基与位权的作用</li><li>把任意进制的数按权展开换算成十进制（含十三进制这类非主流进制）</li><li>用除基取余法把十进制数换算成二、八、十六进制，并会验算</li><li>判断一个数字串在某个进制下是否合法</li><li>利用 2^3 与 2^4 的关系，做二进制与八进制、十六进制之间的分组互换</li><li>做二进制加法（含连续进位）与减法（含借位）</li><li>说明字节、字长的含义，以及 32 位机与 64 位机的区别</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、先把「数」分类</h2><h3 id="s3">1.1 四类数</h3><p>课件开篇先做分类，原因是后面讲编码时要针对不同类别设计不同格式：整数用补码、小数用浮点、有理数可能要用分数对表示。</p><table><tr><th>类别</th><th>课件定义</th><th>例子</th><th>备注</th></tr><tr><td>自然数（natural numbers）</td><td>零，以及由它反复加 1 得到的数</td><td>100, 0, 45645, 32</td><td>从 0 开始，不含负数</td></tr><tr><td>负数（negative numbers）</td><td>小于 0、带负号的值</td><td>−24, −1, −45645, −32</td><td>符号是人加的，机器里没有负号</td></tr><tr><td>整数（integers）</td><td>自然数或负数</td><td>249, 0, −45645, −32</td><td>自然数与负数的并集</td></tr><tr><td>有理数（rational numbers）</td><td>整数，或两个整数的商</td><td>−249, −1, 0, 3/7, −2/5</td><td>能写成分数的一切数</td></tr></table><p>包含关系要清楚：自然数 ⊂ 整数 ⊂ 有理数。注意课件把 0 算作自然数，这点与某些教材不同，答题按课件口径。</p><h3 id="s4">1.2 为什么现在要分类</h3><p>因为「负号」在硬件里不存在。第 3 讲会让你看到：想让机器表示 −5，只能挪用最高位当符号位，或用补码把减法变成加法。而 3/7 这种有理数，机器通常存成两个整数（分子、分母）或用浮点近似——这正是第 3 讲 0.1 无法精确表示的原因。</p><h2 id="s5">二、位置记数法</h2><h3 id="s6">2.1 一个看似简单的问题</h3><p>课件用一个提问开场：<code>642</code> 里到底有多少个「1」？它给了三个候选答案：</p><pre><code>600 + 40 + 2 ?
+384 + 32 + 2 ?
+1536 + 64 + 2 ?</code></pre><p>三个答案分别对应按十进制读、按八进制读、按十六进制读。同一个符号串，换了基就换了值——这就是位置记数法的全部秘密。</p><h3 id="s7">2.2 基决定两件事</h3><p>课件定义：<b>一个数的基，决定它有多少种不同的数字符号，以及每个位置上的值</b>（"The base of a number determines the number of different digit symbols (numerals) and the values of digit positions"）。</p><table><tr><th>基 R</th><th>可用数字符号</th><th>符号个数</th><th>相邻位权之比</th></tr><tr><td>2（二进制）</td><td>0, 1</td><td>2</td><td>2</td></tr><tr><td>8（八进制）</td><td>0–7</td><td>8</td><td>8</td></tr><tr><td>10（十进制）</td><td>0–9</td><td>10</td><td>10</td></tr><tr><td>13（十三进制）</td><td>0–9 再加三个符号</td><td>13</td><td>13</td></tr><tr><td>16（十六进制）</td><td>0–9 与 A–F</td><td>16</td><td>16</td></tr></table><h3 id="s8">2.3 展开式与公式</h3><p>课件把 642 按位权展开，并强调指数表示的是位置：</p><pre><code>6 × 10^2 = 6 × 100 = 600
+4 × 10^1 = 4 × 10  =  40
+2 × 10^0 = 2 × 1   =   2
+                        = 642 (base 10)</code></pre><p>一般公式（课件原式）：</p><p><b><code>d_n × R^(n−1) + d_(n−1) × R^(n−2) + … + d_2 × R^1 + d_1 × R^0</code></b></p><p>三个符号要认准：<b>R</b> 是基，<b>n</b> 是位数，<b>d</b> 是第 i 位上的数字。课件从左边开始数位数（最左位是第 n 位），与编程里从 0 开始数相反，做题时以「位权」为准，别被下标绕住。</p><p>更常用的等价写法：把最右位的位权记作 <code>R^0</code>，往左每移一位指数加 1。于是小数点左边第 k 位的位权是 <code>R^(k−1)</code>；第 3 讲讲小数时，指数会变成负数。</p><h3 id="s9">2.4 换成十三进制会怎样</h3><p>课件故意用了一个怪基来证明公式的普适性：</p><pre><code>6 × 13^2 = 6 × 169 = 1014
+4 × 13^1 = 4 × 13  =   52
+2 × 13^0 = 2 × 1   =    2
+                     = 1068 (base 10)</code></pre><p>所以 <code>642₁₃ = 1068₁₀</code>。这个例子说明公式里除了 R 没有别的魔法数，R 换成几都能算。考试若给一个不常见的基（13、12、7、5），照这条流程走即可。</p><div class="callout tip"><b>速算技巧</b>把位权从右往左预先写成一列 <code>…, R^3, R^2, R^1, R^0</code>，再把每一位数字写在其下方相乘，最后竖式相加。R = 16 时位权是 1, 16, 256, 4096, 65536；R = 8 时是 1, 8, 64, 512, 4096。背下这两列，换算速度能快一倍。</div><h2 id="s10">三、这门课真正要用的几个进制</h2><h3 id="s11">3.1 十进制与二进制</h3><p>十进制是基 10，有 10 个数字符号 0–9；二进制是基 2，只有 2 个符号 0 和 1。课件在讲二进制时补了一条非常关键的合法性规则。</p><h3 id="s12">3.2 合法性规则（高频考点）</h3><p>课件原话：一个数若要存在于某个基中，它只能含该基的数字，范围从 0 到（但不含）该基（"range from 0 up to (but not including) the base"）。</p><p>于是课件追问：<code>122</code>、<code>198</code>、<code>178</code>、<code>G1A4</code> 分别可能在哪些基里？</p><table><tr><th>数字串</th><th>出现的最大符号</th><th>可能的最小基</th><th>判断依据</th></tr><tr><td>122</td><td>2</td><td>3</td><td>含 2，故基必须大于 2</td></tr><tr><td>198</td><td>9</td><td>10</td><td>含 9，故基必须大于 9</td></tr><tr><td>178</td><td>8</td><td>9</td><td>含 8，故基必须大于 8</td></tr><tr><td>G1A4</td><td>G（第 17 个符号）</td><td>17</td><td>需要 A–G 共七个字母符号</td></tr></table><p>这条规则在考试里常以「这个数能不能是八进制」的形式出现：看到数字 8 或 9 就一定不是八进制；看到字母，基一定大于 10。</p><h3 id="s13">3.3 大于 10 的基怎样写数字</h3><p>课件说：用<b>不同的符号</b>表示 10 及以上的数字。基 16 有 16 个符号：</p><pre><code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F</code></pre><p>对应关系必须背下来：<code>A=10, B=11, C=12, D=13, E=14, F=15</code>。八进制不需要字母，因为 0–7 已经够用。</p><div class="callout warn"><b>别混</b><code>10</code> 在十六进制里是「十六」，不是「十」；<code>F</code> 是「十五」。换算时先把字母换成数值，再乘位权。</div><h2 id="s14">四、其他进制 → 十进制：按权展开</h2><h3 id="s15">4.1 三个课件算例</h3><p><b>八进制 642 → 十进制：</b></p><pre><code>6 × 8^2 = 6 × 64 = 384
+4 × 8^1 = 4 × 8  =  32
+2 × 8^0 = 2 × 1  =   2
+                  = 418 (base 10)</code></pre><p><b>十六进制 DEF → 十进制：</b>先把字母换成数值 D=13、E=14、F=15，再展开：</p><pre><code>D × 16^2 = 13 × 256 = 3328
+E × 16^1 = 14 × 16  =  224
+F × 16^0 = 15 × 1   =   15
+                      = 3567 (base 10)</code></pre><p><b>二进制 1101110 → 十进制：</b>七位，位权从 2^6 到 2^0：</p><pre><code>1 × 2^6 = 1 × 64 = 64
+1 × 2^5 = 1 × 32 = 32
+0 × 2^4 = 0 × 16 =  0
+1 × 2^3 = 1 × 8  =  8
+1 × 2^2 = 1 × 4  =  4
+1 × 2^1 = 1 × 2  =  2
+0 × 2^0 = 0 × 1  =  0
+                = 110 (base 10)</code></pre><h3 id="s16">4.2 二进制的速算法：只加「有 1 的那些位权」</h3><p>二进制展开不必逐位乘 0 或 1，直接看哪一位是 1，把该位的位权加起来即可。位权表要背：</p><table><tr><th>位</th><th>2^7</th><th>2^6</th><th>2^5</th><th>2^4</th><th>2^3</th><th>2^2</th><th>2^1</th><th>2^0</th></tr><tr><td>位权</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr></table><p>例：<code>10110111</code> = 128 + 32 + 16 + 4 + 2 + 1 = 183。这比重複乘 0/1 快得多。</p><h3 id="s17">4.3 通用解题模板</h3><ol class="steps"><li>从右往左，在第 i 位（从 0 计）写下位权 R^i</li><li>把该位的符号换成它的数值（字母换数字）</li><li>数值 × 位权，得到这一位的贡献</li><li>所有贡献相加，结果就是十进制值</li><li>若原数带小数部分，小数点右边第 1 位位权是 R^(−1)，第 2 位是 R^(−2)，依此类推（见第 3 讲）</li></ol><h3 id="s18">4.4 一个容易忽略的检查</h3><p>按权展开的结果一定小于 <code>R^n</code>（n 为位数）。若算出 999 却说是三位八进制数，就一定错了——三位八进制最大只有 777₈ = 511。这类「量级检查」在考试里能立刻抓出乘错位权的错误。</p><h2 id="s19">五、二进制算术</h2><h3 id="s20">5.1 加法只有四条规则</h3><p>课件提醒：二进制只有两个数字符号 0 和 1。于是加法只有四种情况，其中 <code>1 + 1</code> 的结果是 <b>0 并向左进 1</b>：</p><table><tr><th>算式</th><th>结果</th><th>进位</th></tr><tr><td>0 + 0</td><td>0</td><td>无</td></tr><tr><td>0 + 1</td><td>1</td><td>无</td></tr><tr><td>1 + 0</td><td>1</td><td>无</td></tr><tr><td>1 + 1</td><td>0</td><td>向高位进 1</td></tr></table><p>连续进位是最容易算错的地方：<code>1 + 1 + 1 = 1 并进 1</code>（因为 3 = 11₂），<code>1 + 1 + 1 + 1 = 0 并进 10</code>（即 4）。做竖式时把进位写在小横线上方，逐列处理。</p><h3 id="s21">5.2 课件算例</h3><pre><code>进位:  1 0 1 1 1 1 1
+        1 0 1 0 1 1 1
+      + 1 0 0 1 0 1 1
+      ---------------
+      1 0 1 0 0 0 1 0</code></pre><p>验算：<code>1010111₂ = 87</code>，<code>1001011₂ = 75</code>，和 <code>162 = 10100010₂</code>。十进制验算是检查二进制竖式的最好办法，值得花十秒。</p><h3 id="s22">5.3 减法与借位</h3><p>课件用 borrowing 引入减法，规则是<b>借 1 当 2</b>：向高位借一个 1，到本位就变成 2。</p><pre><code>        0 1 2        (借位标记)
+        0 2
+      1 0 1 0 1 1 1
+    -   1 1 1 0 1 1
+    ---------------
+      0 0 1 1 1 0 0</code></pre><p>验算：<code>1010111₂ = 87</code>，<code>111011₂ = 59</code>，差 <code>28 = 0011100₂</code>。前导 0 不影响值，但写成固定位宽（这里是 7 位）便于对齐。</p><h3 id="s23">5.4 为什么硬件喜欢二进制</h3><p>十进制减法的借位是「借 1 当 10」，二进制是「借 1 当 2」——规则同样简单，但二进制的每条规则只涉及 0/1 两种取值，用逻辑门就能实现（第 6 章讲逻辑门）。这也是第 3 讲能把减法变成加法的前提：只要加法器够快，减法就不需要单独的电路。</p><h2 id="s24">六、2 的幂进制之间：分组互换</h2><h3 id="s25">6.1 为什么可以分组</h3><p>因为 <code>8 = 2^3</code> 且 <code>16 = 2^4</code>。三个二进制位恰好能表示 0–7，正好是一个八进制符号；四个二进制位恰好能表示 0–15，正好是一个十六进制符号。于是这三种进制之间的转换不需要除法，只需切段。这就是课件那句「解释 2 的幂进制对计算的重要性」的含义。</p><h3 id="s26">6.2 二进制 → 八进制：从右往左三位一组</h3><pre><code>10101011
+10 101 011   ← 从右往左每 3 位切一刀
+ 2   5   3
+结果：253 (base 8)</code></pre><p>最左边只剩 2 位，要在前面补 0 凑成 <code>010</code>，补出的 0 不影响值。三组分别读作 2、5、3。</p><h3 id="s27">6.3 八进制 → 二进制：每个符号换 3 位</h3><pre><code> 2     5     3
+010   101   011
+→ 10101011</code></pre><h3 id="s28">6.4 二进制 → 十六进制：从右往左四位一组</h3><pre><code>10101011
+1010 1011   ← 每 4 位切一刀
+  A    B
+结果：AB (base 16)</code></pre><h3 id="s29">6.5 十六进制 → 二进制：每个符号换 4 位</h3><pre><code>   A       B
+ 1010    1011
+→ 10101011</code></pre><h3 id="s30">6.6 八进制与十六进制互转：经二进制中转</h3><p>两者之间不存在 3 位与 4 位的整倍数关系，所以必须借二进制当中转站。课件给了两个方向：</p><pre><code>十六进制 → 八进制：AB → 1010 1011 → 10 101 011 → 253
+八进制 → 十六进制：253 → 10 101 011 → 1010 1011 → AB</code></pre><p>两次转换方向相反，切段宽度从 4 变 3 或从 3 变 4，这就是全部技巧。</p><h3 id="s31">6.7 分组三原则</h3><ul class="checklist"><li>一律从<b>右</b>往左切（低位对齐），从左切会错位</li><li>最左一组不足 3 位（或 4 位）时，在<b>最左端</b>补 0</li><li>每组独立换算成一个符号，组间不要跨位借数</li><li>十六进制 → 二进制时每组必须写满 4 位，如 5 要写 0101 而不是 101</li></ul><h2 id="s32">七、十进制 → 其他进制：除基取余</h2><h3 id="s33">7.1 算法（课件给的流程）</h3><p>核心是「除以基、记余数、商继续除、余数倒读」：</p><ol class="steps"><li>用目标基 R 去除这个十进制数，记下余数（这是最低位）</li><li>把商当作新的被除数，继续除以 R</li><li>重复到商为 0 为止</li><li>把余数<b>从最后一个读到第一个</b>（逆序），得到结果</li></ol><p>为什么要逆序？第一次除出的余数是个位（最低位），最后一次除出的是最高位，正好与「从左往右写」相反。</p><h3 id="s34">7.2 十进制 → 八进制：1988</h3><pre><code>8 ) 1988   余 4
+8 )  248   余 0
+8 )   31   余 7
+8 )    3   余 3
+       0</code></pre><p>余数从下往上读：<b>3 7 0 4</b>，所以 <code>1988₁₀ = 3704₈</code>。</p><p>验算：<code>3×512 + 7×64 + 0×8 + 4 = 1536 + 448 + 0 + 4 = 1988</code>。验算不能省，它是唯一能立刻抓出「顺序读反」的办法。</p><h3 id="s35">7.3 十进制 → 十六进制：3567</h3><pre><code>16 ) 3567   余 15 → F
+16 )  222   余 14 → E
+16 )   13   余 13 → D
+        0</code></pre><p>余数逆序读：<b>DEF</b>，所以 <code>3567₁₀ = DEF₁₆</code>。这与第四节「DEF → 3567」互为逆运算，正好互相验证。</p><h3 id="s36">7.4 十进制 → 二进制：69</h3><pre><code>2 ) 69   余 1
+2 ) 34   余 0
+2 ) 17   余 1
+2 )  8   余 0
+2 )  4   余 0
+2 )  2   余 0
+2 )  1   余 1
+     0</code></pre><p>余数逆序读：<b>1000101</b>，所以 <code>69₁₀ = 1000101₂</code>。验算：<code>64 + 4 + 1 = 69</code>。</p><div class="callout tip"><b>更快的方法：先转十六进制</b>十进制转二进制要除七次，转十六进制只要三到四次。可以先转十六进制（3567 → DEF），再把每个十六进制符号展开成 4 位（D=1101、E=1110、F=1111 → 110111101111），比连除快得多。</div><h2 id="s37">八、算盘：位置记数法的实物</h2><p>课件在进制转换之间插入了一页算盘（abacus）：<b>横梁上方的珠子表示 5 个单位，下方的珠子表示 1 个单位</b>。</p><p>为什么讲算盘？因为它把位置记数法的两个要素都做成了实物：每一档是一个位（位权是 10 的幂），每档内的珠子表示该位的数字（上珠 5 加下珠 1–4，正好能拨出 0–9）。这也是「基决定符号数」的物理版本：一档最多表示 9，超过就要向左边一档进 1。</p><h2 id="s38">九、位、字节与字长</h2><h3 id="s39">9.1 电压就是位</h3><p>课件说：计算机的存储单位叫二进制位（binary digit，简称 bit）；<b>低电压 = 0，高电压 = 1</b>。并补了一句很实在的话：反过来定义也可以，但我们不需要关心哪种对应——只要两端一致就行。</p><p>这句话的含义是：位的物理载体可以是电压、磁化方向、光坑、电荷，抽象层面只要求「两个可区分状态」。所以第 1 讲说「两种状态可靠」比「十种状态」容易，这一页给出了它的物理来源。</p><h3 id="s40">9.2 字节与字长</h3><p>课件定义：<b>字节（byte）= 8 位</b>。而一个字（word）包含多少位，决定了这台机器的<b>字长</b>（word length），字长通常是 8 的整数倍：32 位机、64 位机，等等。</p><table><tr><th>术语</th><th>含义</th><th>典型值</th></tr><tr><td>bit（位，b）</td><td>最小单位，取值 0 或 1</td><td>—</td></tr><tr><td>byte（字节，B）</td><td>8 位为一字节</td><td>8 bits</td></tr><tr><td>word（字）</td><td>机器一次处理的一组位</td><td>16 / 32 / 64 位</td></tr><tr><td>word length（字长）</td><td>字的位数，通常为 8 的倍数</td><td>32 位机、64 位机</td></tr></table><p>字长的实际意义：它决定一次运算能并行处理多少位，也决定一个整数能有多大（32 位无符号上限约 42.9 亿，64 位则大到几乎用不完）。第 3 讲讲补码范围时会反复用到「n 位」这个参数，n 就是字长。</p><div class="callout warn"><b>单位大小写</b><code>b</code> 是 bit，<code>B</code> 是 byte，<code>8 b = 1 B</code>。宽带标称 100 Mb/s 与下载速度 12.5 MB/s 是同一个速率，别当成差 100 倍。第 4 章还会讲 KB 与 KiB 的差别。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>natural number</td><td>自然数</td><td>Zero and any number obtained by repeatedly adding one: 0, 32, 100.</td></tr><tr><td>negative number</td><td>负数</td><td>A value less than zero, written with a minus sign: −24, −1.</td></tr><tr><td>integer</td><td>整数</td><td>A natural number or a negative number: 249, 0, −32.</td></tr><tr><td>rational number</td><td>有理数</td><td>An integer or the quotient of two integers: 3/7, −2/5.</td></tr><tr><td>positional notation</td><td>位置记数法</td><td>The value of a digit depends on its position: 6 × 10^2 + 4 × 10^1 + 2 × 10^0.</td></tr><tr><td>base (radix)</td><td>基</td><td>Number of digit symbols and the ratio between neighbouring positions.</td></tr><tr><td>digit symbol</td><td>数字符号</td><td>A single numeral allowed in a base; base 16 uses 0–9 and A–F.</td></tr><tr><td>binary</td><td>二进制</td><td>Base 2, digits 0 and 1.</td></tr><tr><td>octal</td><td>八进制</td><td>Base 8, digits 0–7; one octal digit equals three binary bits.</td></tr><tr><td>hexadecimal</td><td>十六进制</td><td>Base 16, digits 0–9 and A–F; one hex digit equals four binary bits.</td></tr><tr><td>carry</td><td>进位</td><td>In binary 1 + 1 = 0 with a carry of 1 into the next position.</td></tr><tr><td>borrow</td><td>借位</td><td>Borrowing 1 from the next position gives 2 in the current position.</td></tr><tr><td>quotient and remainder</td><td>商与余数</td><td>Repeated division by the base; read the remainders bottom-up.</td></tr><tr><td>byte</td><td>字节</td><td>A group of 8 bits.</td></tr><tr><td>word length</td><td>字长</td><td>Number of bits in a machine word, usually a multiple of 8.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把 <code>642</code> 分别当作十三进制与八进制，求十进制值，并说明差多少倍。</div><p>按权展开（R = 13）：<code>6×13^2 + 4×13^1 + 2×13^0 = 6×169 + 4×13 + 2 = 1014 + 52 + 2 = 1068</code>。</p><p>按权展开（R = 8）：<code>6×8^2 + 4×8^1 + 2×8^0 = 6×64 + 4×8 + 2 = 384 + 32 + 2 = 418</code>。</p><p>两者相差 <code>1068 − 418 = 650</code>，约 2.55 倍。原因很直观：位权从 8 的幂换成 13 的幂，高位被放大得最厉害（169 对 64）。</p><p>这类题的关键是<b>先确认基</b>：同一符号串在不同基下是完全不同的数，写答案时务必标基，如 <code>642₁₃</code>。</p></div><div class="qa"><div class="q">例 2　把 <code>10110111</code> 转成十六进制、八进制与十进制，并用十进制结果互相验算。</div><p><b>十六进制：</b>从右往左四位一组 → <code>1011 | 0111</code> → <code>B | 7</code> → <b>B7</b>。</p><p><b>八进制：</b>从右往左三位一组 → <code>10 | 110 | 111</code> → 最左补 0 成 <code>010</code> → <code>2 | 6 | 7</code> → <b>267</b>。</p><p><b>十进制：</b>只加有 1 的位权：<code>128 + 32 + 16 + 4 + 2 + 1 = 183</code>。</p><p><b>验算：</b><code>B7₁₆ = 11×16 + 7 = 176 + 7 = 183</code>；<code>267₈ = 2×64 + 6×8 + 7 = 128 + 48 + 7 = 183</code>。三个结果指向同一个值，说明切段没错。</p><p>注意八进制那一步：原数 8 位，8 ÷ 3 除不尽，最左只剩 2 位，必须补 0 才能读成 <code>010</code>（值 2）。漏补 0 会把这一组读错。</p></div><div class="qa"><div class="q">例 3　计算 <code>1010111₂ + 1001011₂</code> 与 <code>1010111₂ − 111011₂</code>，并用十进制验算。</div><p><b>加法竖式</b>（从最低位起，注意连续进位）：</p><pre><code>  1 0 1 0 1 1 1
++ 1 0 0 1 0 1 1
+---------------
+1 0 1 0 0 0 1 0</code></pre><p>逐位看：1+1 = 0 进 1；1+1+1 = 1 进 1；1+0+1 = 0 进 1；0+1+1 = 0 进 1；1+0+1 = 0 进 1；0+0+1 = 1；最高位 1+1 写成 10。结果 <code>10100010₂</code>。</p><p>十进制验算：<code>87 + 75 = 162 = 128 + 32 + 2</code>，与二进制一致。</p><p><b>减法</b>（借 1 当 2）：</p><pre><code>  1 0 1 0 1 1 1
+-   1 1 1 0 1 1
+---------------
+  0 0 1 1 1 0 0</code></pre><p>十进制验算：<code>87 − 59 = 28 = 16 + 8 + 4 = 11100₂</code>，与 <code>0011100</code> 同值。</p><p>减法也可以用「加补数」做（第 3 讲）：<code>87 + (−59)</code>，把 −59 写成补码再加，结果相同，而硬件只需要加法器。</p></div><div class="qa"><div class="q">例 4　把 <code>3567₁₀</code> 转成十六进制，再由它得到二进制与八进制，全部验算。</div><p><b>第一步，除 16 取余：</b></p><pre><code>3567 ÷ 16 = 222 余 15 → F
+ 222 ÷ 16 =  13 余 14 → E
+  13 ÷ 16 =   0 余 13 → D</code></pre><p>余数逆序 → <b>DEF₁₆</b>。</p><p><b>第二步，展开成二进制：</b><code>D=1101, E=1110, F=1111</code> → <code>110111101111₂</code>。</p><p><b>第三步，三位一段成八进制：</b><code>110 | 111 | 101 | 111</code> → <code>6 | 7 | 5 | 7</code> → <b>6757₈</b>。</p><p><b>验算：</b><code>DEF₁₆ = 13×256 + 14×16 + 15 = 3328 + 224 + 15 = 3567</code>；<code>6757₈ = 6×512 + 7×64 + 5×8 + 7 = 3072 + 448 + 40 + 7 = 3567</code>。</p><p>这道题把本讲所有工具串了一遍：除基取余 → 四位展开 → 三位切段 → 按权展开验算。遇到「一数多转」的题都按这条链走。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把 <code>777₈</code>、<code>7EC₁₆</code>、<code>101₂</code> 换算成十进制。</li><li>把 <code>45₁₀</code>、<code>901₁₀</code>、<code>1066₁₀</code> 分别换算成二进制、八进制、十六进制。</li><li>把 <code>10101001₂</code> 转成十六进制，把 <code>75₈</code> 转成二进制，把 <code>E7₁₆</code> 转成八进制。</li><li>判断 <code>891</code> 能否分别是十进制、十二进制、十六进制中的数，并求三种情形下的十进制值。</li><li>计算 <code>1110011₂ + 11001₂</code> 与 <code>1010110₂ − 101₂</code>，用十进制验算。</li><li>某班有 37 名学生，要各分配一个互不相同的二进制编号，至少需要几位？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>777₈ = 7×64 + 7×8 + 7 = 448 + 56 + 7 = 511</code>；<code>7EC₁₆ = 7×256 + 14×16 + 12 = 1792 + 224 + 12 = 2028</code>；<code>101₂ = 5</code>。注意 E=14、C=12。</p><p><b>2.</b> 45 连除 2 得 <code>101101₂</code>（验算 32+8+4+1=45）；901 连除 8：余 5、0、6、1 → <code>1605₈</code>（验算 512+384+0+5=901）；1066 连除 16：余 10(A)、2、4 → <code>42A₁₆</code>（验算 4×256+2×16+10=1066）。</p><p><b>3.</b> <code>10101001</code> 四位一组 → <code>A9</code>；<code>75₈</code> → 7=111、5=101 → <code>111101₂</code>；<code>E7₁₆</code> → <code>11100111</code> → 三位一组 <code>011 100 111</code> → <code>347₈</code>。</p><p><b>4.</b> 891 只含 8、9、1，故基必须大于 9，三种都合法。十进制 891；十二进制 <code>8×144 + 9×12 + 1 = 1152 + 108 + 1 = 1261</code>；十六进制 <code>8×256 + 9×16 + 1 = 2048 + 144 + 1 = 2193</code>。若题目问「这些值的二进制表示里有多少个 1」，则 <code>891 = 1101111011</code>（8 个）、<code>1261 = 10011101101</code>（7 个）、<code>2193 = 100010010001</code>（4 个）。</p><p><b>5.</b> <code>1110011₂ = 115</code>，<code>11001₂ = 25</code>，和 140 = <code>10001100₂</code>；<code>1010110₂ = 86</code>，<code>101₂ = 5</code>，差 81 = <code>1010001₂</code>。</p><p><b>6.</b> 需要 <code>2^n ≥ 37</code>。5 位只有 32 种（不够），6 位有 64 种 → 至少 <b>6 位</b>。若要留一个 0 号作未分配，仍需 38 个编号，6 位依旧够。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① 任意进制 → 十进制（按权展开，含字母换数值）；② 十进制 → 任意进制（除基取余、余数逆序）；③ 二进制 ↔ 八进制（三位一组）、二进制 ↔ 十六进制（四位一组）；④ 二进制加减法（连续进位、借位当 2）；⑤ 合法性判断（数字必须小于基）。</div><div class="callout warn"><b>易错 1</b>分组切错方向。必须<b>从右往左</b>切；从左往右切会把 8 位数切成错位的组，结果差好几倍。</div><div class="callout warn"><b>易错 2</b>除基取余把余数<b>正序</b>读了。第一次除出的余数是个位，要最后写。解决办法：每题都用按权展开验算一次。</div><div class="callout warn"><b>易错 3</b>十六进制转二进制时少写前导 0。例如 5 写成 <code>101</code> 而不是 <code>0101</code>，会让整串错位。</div><div class="callout tip"><b>进阶</b>① 十进制转二进制时先转十六进制再展开，步数少一半；② 八进制与十六进制互转必须经二进制，不能「三位对四位」硬凑；③ 大于 10 的基（如 13）照公式算即可，不必另记规则；④ 小数部分的位权是负指数，第 3 讲会用到。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s41">换算方法清单</h2><h3 id="s42">任意进制 → 十进制（三步）</h3><ol class="steps"><li>从右往左标出位权 <code>R^0, R^1, R^2, …</code></li><li>字母换成数值（A=10 … F=15）</li><li>每一位「数值 × 位权」后全部相加，结果即十进制值</li></ol><h3 id="s43">十进制 → 任意进制（四步）</h3><ol class="steps"><li>用基 R 除，记下余数</li><li>商继续除 R，直到商为 0</li><li>余数<b>逆序</b>排列</li><li>用按权展开验算（必做）</li></ol><h3 id="s44">二进制 ↔ 八进制 ↔ 十六进制（三步）</h3><ol class="steps"><li>八进制：从右往左每 3 位一组，最左不足补 0</li><li>十六进制：从右往左每 4 位一组，最左不足补 0</li><li>八 ↔ 十六：先展开成二进制，再按另一宽度重新切组</li></ol><h3 id="s45">二进制加减检查表</h3><ul class="checklist"><li>加法：1+1 = 0 进 1，1+1+1 = 1 进 1</li><li>减法：借 1 当 2，借位后本位加 2 再减</li><li>两个操作数补成同样位宽再竖式对齐</li><li>用十进制重算一遍验算</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p2</td><td>本周目标：数的类别、位置记数法、双向进制转换、2/8/16 的关系</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p3–p4</td><td>自然数、负数、整数、有理数的定义与例子</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p5–p9</td><td>642 的三种读法、基决定符号数与位权、展开式与公式、642₁₃ = 1068</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p10–p12</td><td>十进制与二进制、合法性规则（122/198/178/G1A4）、大于 10 的基与 A–F</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p13–p15</td><td>八进制 642→418、十六进制 DEF→3567、二进制 1101110→110</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p16–p17</td><td>二进制加法（连续进位）、二进制减法（借位）</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p18</td><td>按 2 的幂进制计数（原文该页只有图，无可抽取文字）</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p19–p24</td><td>二→八三位一组、八→二、二→十六四位一组、十六→二、十六↔八经二进制</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p25</td><td>算盘：上珠 = 5，下珠 = 1</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p26–p32</td><td>除基取余算法、1988→3704₈、3567→DEF₁₆、69→1000101₂</td></tr><tr><td>Week2- Number systems/Lecture2.pdf</td><td>p33–p34</td><td>低电压 = 0 / 高电压 = 1、字节 = 8 位、字长与 32/64 位机</td></tr><tr><td>Week2- Number systems/Exercise1.pdf</td><td>第 1–5 题</td><td>二进制加减、进制换算、二/八/十六互转、891 的多基解读，已逐题落到本讲例题与练习</td></tr><tr><td>（跳过）Zishuo Wang 004027128_Exercise1.pdf</td><td>全文</td><td>学生提交版：题干与 Exercise1.pdf 相同，末尾多个人作答与姓名学号，按「只保留题面」处理，不引用其答案</td></tr><tr><td>（补充）</td><td>—</td><td>二进制速算法（只加有 1 的位权）、先转十六进制再展开、按权展开的量级检查，均为提高效率的技巧性拓展，不新增考点</td></tr></table></section><div class="lnav"><a class="prev" href="w1-introduction.html">← Week 1 · 信息、数据、算法、程序与 AI</a><a class="next" href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

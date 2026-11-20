@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 章 · 反函数、指数与对数 · 62</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-3.html">第 3 章 超越函数与极限技巧</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">5.1 反函数</a><a class="toc-l3" href="#s3">5.2 反函数的导数</a><a class="toc-l3" href="#s4">5.3 代数函数与超越函数</a><a class="toc-l3" href="#s5">5.4 指数函数</a><a class="toc-l3" href="#s6">5.5 对数函数</a><a class="toc-l3" href="#s7">5.6 渐近行为对照</a><a class="toc-l3" href="#s8">5.7 指数与对数的运算法则</a><a class="toc-l3" href="#s9">5.8 自然对数：面积定义</a><a class="toc-l3" href="#s10">5.9 (ln x)′ = 1/x 的证明</a><a class="toc-l3" href="#s11">5.10 自然指数 e 与 eˣ</a><a class="toc-l3" href="#s12">5.11 一般底数的指数与对数求导</a><a class="toc-l3" href="#s13">5.12 变底变指数：两种求导方法</a><a class="toc-l3" href="#s14">5.13 关键积分表</a><a class="toc-l3" href="#s15">5.14 增长阶：对数 &lt; 幂 &lt; 指数</a><a class="toc-l3" href="#s16">5.15 指数增长与衰减模型</a><a class="toc-l3" href="#s17">5.16 广义模型：趋向一个固定值 a</a><a class="toc-l3" href="#s18">5.17 Logistic 模型</a><a class="toc-l2" href="#s19">方法与清单</a><a class="toc-l3" href="#s20">求反函数及其导数（三步）</a><a class="toc-l3" href="#s21">解指数/对数方程（三步）</a><a class="toc-l3" href="#s22">建立增长/衰减模型（四步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a href="t2-limits-continuity.html">第 1 章 · 极限与连续性</a><a href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a class="toc-l3" href="t5-inverse-exp-log.html">▸ 第 3 章 · 反函数、指数与对数</a><a href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法</a><a href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 3 章 · 反函数、指数与对数</h1><p class="lead">Inverse Functions, Exponential and Logarithmic Functions <span class="badge mute">62</span> <span class="badge mute">第 5 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 超越函数与极限技巧</a></p><p class="src">原始文件：<code>Topic 5/EMI_Week5_Lecture1.pdf</code> <code>Topic 5/EMI_Week5_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>到此为止，函数库还很贫乏：多项式、有理函数、三角函数。本讲补上最重要的一族——指数函数与对数函数，它们不是靠有限次加减乘除与开方构造出来的，所以叫超越函数（transcendental function）。工程里的充电、冷却、放射性衰变、药物代谢、人口增长，全都要用这族函数描述。</p><p>技术上本讲做了两件事：第一，用反函数把「一一对应的函数」翻过来，并给出反函数的求导公式（它把「求反函数导数」变成「求原函数导数再取倒数」）；第二，把自然对数 ln x 定义为 <code>y = 1/t</code> 下方的面积，由此推出 <code>(ln x)′ = 1/x</code>，再反过来定义 e 与 eˣ。这条「面积 → 对数 → 指数」的逻辑链是本课程最漂亮的一段推导。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>判断反函数是否存在并写出其定义域与值域，用 <code>(f⁻¹)′(y) = 1/f′(x)</code> 求反函数在一点的导数</li><li>区分指数函数与幂函数，写出两者的定义域、值域与渐近线</li><li>熟练运用指数与对数的六条法则化简表达式、解指数方程</li><li>证明 <code>(ln x)′ = 1/x</code> 与 <code>(eˣ)′ = eˣ</code>，并写出对应的积分公式</li><li>用对数求导法处理 <code>x^x</code>、<code>(sin x)^x</code> 这类变底变指数的函数</li><li>建立并求解指数增长/衰减、牛顿冷却与 logistic 三类模型</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">5.1 反函数</h3><p>若 f 是<b>一一对应</b>（one-to-one）的函数，定义域 D、值域 R，则它有<b>反函数</b>（inverse function）<code>f⁻¹</code>，满足</p><p><b><code>y = f⁻¹(x) ⟺ x = f(y)</code></b>。</p><p>要点：<code>f⁻¹</code> 的定义域是 f 的值域 R，<code>f⁻¹</code> 的值域是 f 的定义域 D。注意 <code>f⁻¹</code> 里的 −1 是「反函数」的记号，<b>不是</b>倒数 <code>1/f</code>。</p><p>源文件例子：<code>f(x) = x³</code> 在 ℝ 上严格递增，故一一对应。由 <code>y = x³</code> 解得 <code>x = ∛y</code>，所以 <code>f⁻¹(y) = ∛y</code>，换成自变量记号即 <code>f⁻¹(x) = ∛x</code>。</p><p><b>五条性质</b>：① <code>y = f⁻¹(x) ⟺ x = f(y)</code>；② <code>dom f⁻¹ = range f</code>；③ <code>range f⁻¹ = dom f</code>；④ 消去恒等式 <code>f⁻¹(f(x)) = x</code>（<code>x ∈ dom f</code>）、<code>f(f⁻¹(x)) = x</code>（<code>x ∈ dom f⁻¹</code>）、<code>(f⁻¹)⁻¹ = f</code>；⑤ <code>f⁻¹</code> 的图像是 f 的图像关于直线 <code>y = x</code> 的<b>反射</b>。</p><p>第 ⑤ 条的理由很直接：f 上的点 <code>(a, b)</code> 表示 <code>f(a) = b</code>，而 <code>f⁻¹(b) = a</code>，所以 <code>(b, a)</code> 在 <code>f⁻¹</code> 上。交换两个坐标正是关于 <code>y = x</code> 的对称。要画在同一张图上比较时，必须把 <code>f⁻¹</code> 也写成以 x 为自变量的形式。</p><p>源文件的图例：<code>f(x) = √(2x + 1)</code>（<code>x ≥ −1/2</code>）与 <code>f⁻¹(x) = (x² − 1)/2</code>（<code>x ≥ 0</code>）。两条曲线关于 <code>y = x</code> 对称；把 <code>f⁻¹</code> 限制在 <code>x ≥ 0</code> 是必要的，因为原函数的值域是 <code>[0, ∞)</code>。</p><h3 id="s3">5.2 反函数的导数</h3><p>若 f 在区间 I 上可导、一一对应，且 <code>f′(x) ≠ 0</code> 对一切 <code>x ∈ I</code> 成立，则 <code>f⁻¹</code> 在 <code>y = f(x)</code> 处可导，且</p><p><b><code>(f⁻¹)′(y) = 1/f′(x)</code>，其中 <code>y = f(x)</code></b>。</p><p>证明：由定义 <code>y = f⁻¹(x) ⟺ x = f(y)</code>。两边对 x 求导，左边得 1，右边用链式法则得 <code>f′(y)·(dy/dx)</code>，于是 <code>1 = f′(y)·(f⁻¹)′(x)</code>，即 <code>(f⁻¹)′(x) = 1/f′(y)</code>。</p><p>用 Leibniz 记号更好记：<code>dx/dy = 1/(dy/dx)</code>——反函数的导数等于原函数导数之倒数。几何上，两条关于 <code>y = x</code> 对称的曲线，其切线的倾斜角互补（和为 90°），所以斜率互为倒数。</p><p>源文件例 2：<code>f(x) = x³ + x</code>，证明它在全实数轴上可逆，并求 <code>(f⁻¹)′(2)</code>。</p><p>因为 <code>f′(x) = 3x² + 1 &gt; 0</code> 对一切 x 成立，f 严格递增，故一一对应、可逆。设 <code>y = f⁻¹(x)</code>，则 <code>x = f(y) = y³ + y</code>。要求 <code>(f⁻¹)′(2)</code>，先找 <code>y</code> 使 <code>f(y) = 2</code>：<code>y³ + y = 2</code>，试 <code>y = 1</code> 得 <code>2</code> ✓。于是</p><p><code>(f⁻¹)′(2) = 1/f′(1) = 1/(3·1 + 1) = 1/4</code>。</p><div class="callout tip"><b>关键一步是「找原像」</b>反函数导数公式里出现的是 <code>f′(y)</code>，其中 y 是「输出值对应的输入」。所以必须先解 <code>f(y) = 给定值</code>（通常靠试算），不能直接把给定值代入 <code>f′</code>。这是最常错的地方。</div><h3 id="s4">5.3 代数函数与超越函数</h3><p><b>代数函数</b>（algebraic function）：由多项式经有限次加、减、乘、除与开方构造出来的函数，例如 <code>√(x³ − 1)/(2x + 1)</code>、<code>(x + 1)^{2/5}</code>。</p><p><b>超越函数</b>（transcendental function）：不能用上述方式构造的函数，例如 <code>sin x</code>、<code>cos x</code>、<code>2ˣ</code>、<code>ln x</code>。它们常作为「非代数函数的反函数」或「微分方程的解」出现。</p><p>源文件给的<b>超越判别准则</b>：若 <code>y = f(x)</code> 满足任何形如 <code>pₙ(y)xⁿ + ⋯ + p₁(y)x + p₀(y) = 0</code>（其中 <code>p₀, …, pₙ</code> 是 x 的多项式）的多项式方程都不成立，则它是超越函数。历史注记：术语由 Leibniz 于 1682 年引入，Euler 在 1748 年系统化了函数分类。</p><h3 id="s5">5.4 指数函数</h3><p>指数函数（exponential function）形如 <code>f(x) = aˣ</code>，底数 <code>a &gt; 0</code> 为常数，指数 x 为变量。指数为整数与有理数时的定义：</p><ul><li><code>a⁰ = 1</code>；<code>aⁿ = a·a⋯a</code>（n 个因子，<code>n = 1, 2, 3, …</code>）</li><li><code>a^{−n} = 1/aⁿ</code></li><li><code>a^{m/n} = (a^{1/n})^m = ⁿ√(aᵐ)</code>，其中 <code>a^{1/n}</code> 是满足 <code>bⁿ = a</code> 的正数 b</li></ul><p>指数为无理数时，用有理数逼近取极限：<code>aˣ = lim_{r→x, r 有理} a^r</code>。这个定义保证了 <code>aˣ</code> 在 ℝ 上连续。</p><p>源文件的图显示了不同底数的差别：<code>a &gt; 1</code> 时曲线单调递增、过 <code>(0, 1)</code>、以 x 轴为水平渐近线；<code>0 &lt; a &lt; 1</code> 时单调递减，同样过 <code>(0, 1)</code>。</p><p><b>指数函数与幂函数的区别</b>（源文件专门用一页强调）：</p><table><tr><th>类型</th><th>形式</th><th>变量位置</th><th>例子</th></tr><tr><td>指数函数</td><td><code>aˣ</code></td><td>变量在指数上</td><td><code>2ˣ</code>、<code>(1/2)ˣ</code>、<code>eˣ</code></td></tr><tr><td>幂函数</td><td><code>xᵃ</code></td><td>变量在底数上</td><td><code>x²</code>、<code>√x</code>、<code>x^π</code></td></tr></table><p>这个区分直接决定求导方式：<code>(x²)′ = 2x</code>（幂法则），而 <code>(2ˣ)′ = 2ˣ ln 2</code>（指数法则），两者完全不同。</p><h3 id="s6">5.5 对数函数</h3><p>当 <code>a &gt; 0, a ≠ 1</code> 时 <code>f(x) = aˣ</code> 是一一对应，故有反函数，称为<b>以 a 为底的对数函数</b>（logarithm）：</p><p><b><code>y = log_a x ⟺ x = a^y</code></b>（<code>a &gt; 0, a ≠ 1</code>）。</p><table><tr><th>函数</th><th>定义域</th><th>值域</th></tr><tr><td><code>aˣ</code></td><td><code>(−∞, ∞)</code></td><td><code>(0, ∞)</code></td></tr><tr><td><code>log_a x</code></td><td><code>(0, ∞)</code></td><td><code>(−∞, ∞)</code></td></tr></table><p>消去恒等式：<code>log_a(aˣ) = x</code> 与 <code>a^{log_a x} = x</code>。图像同样是关于 <code>y = x</code> 的反射，所以对数曲线过 <code>(1, 0)</code>，以 y 轴为竖直渐近线。</p><h3 id="s7">5.6 渐近行为对照</h3><table><tr><th>x 的走向</th><th><code>a &gt; 1</code> 时 <code>aˣ</code></th><th><code>0 &lt; a &lt; 1</code> 时 <code>aˣ</code></th><th><code>a &gt; 1</code> 时 <code>log_a x</code></th><th><code>0 &lt; a &lt; 1</code> 时 <code>log_a x</code></th></tr><tr><td><code>x → ∞</code></td><td>→ ∞</td><td>→ 0</td><td>→ ∞</td><td>→ −∞</td></tr><tr><td><code>x → −∞</code></td><td>→ 0</td><td>→ ∞</td><td>—</td><td>—</td></tr><tr><td><code>x → 0⁺</code></td><td>—</td><td>—</td><td>→ −∞</td><td>→ ∞</td></tr></table><p>渐近线：指数函数有<b>水平</b>渐近线 <code>y = 0</code>、没有竖直渐近线；对数函数有<b>竖直</b>渐近线 <code>x = 0</code>、没有水平渐近线。两者恰好互补——这是「互为反函数」在几何上的体现（水平渐近线反射成竖直渐近线）。</p><h3 id="s8">5.7 指数与对数的运算法则</h3><p>指数法则（<code>a &gt; 0, b &gt; 0</code>，x、y 为实数）：</p><ol><li><code>a⁰ = 1</code></li><li><code>a^{x+y} = aˣaʸ</code></li><li><code>a^{−x} = 1/aˣ</code></li><li><code>a^{x−y} = aˣ/aʸ</code></li><li><code>(aˣ)ʸ = a^{xy}</code></li><li><code>(ab)ˣ = aˣbˣ</code></li></ol><p>对数法则（<code>a &gt; 0, a ≠ 1, b &gt; 0, b ≠ 1, x &gt; 0, y &gt; 0</code>）：</p><ol><li><code>log_a 1 = 0</code></li><li><code>log_a(xy) = log_a x + log_a y</code></li><li><code>log_a(x/y) = log_a x − log_a y</code></li><li><code>log_a(1/y) = −log_a y</code></li><li><code>log_a(x^r) = r log_a x</code></li><li><code>log_b x = (log_a x)/(log_a b)</code>（换底公式）</li></ol><p>第 2 条是其余各条的根：它把「乘法」变成「加法」，这正是对数在计算与建模中不可替代的原因（也是对数坐标的由来）。</p><p>源文件三个化简例子：(a) <code>log₂10 + log₂12 − log₂15 = log₂(10·12/15) = log₂8 = 3</code>；(b) <code>3^{log₉4}</code>：因 <code>log₉4 = ln4/ln9 = (2ln2)/(2ln3) = log₃2</code>，故 <code>3^{log₃2} = 2</code>；(c) <code>log_{√2}(2⁵) = log_{√2}32 = ln32/ln√2 = 5ln2/(0.5ln2) = 10</code>。</p><p>源文件例 2：解 <code>3^{x−1} = 2ˣ</code>。两边取对数（任意底）：<code>(x − 1)ln3 = x ln2</code>，即 <code>x(ln3 − ln2) = ln3</code>，故 <code>x = ln3/ln(3/2) = log_{3/2}3</code>。另一条路径：两边除以 <code>3ˣ</code> 得 <code>(2/3)ˣ = 1/3</code>，取对数得 <code>x = log_{2/3}(1/3) = log_{3/2}3</code>，答案一致。</p><h3 id="s9">5.8 自然对数：面积定义</h3><p>对 <code>x &gt; 0</code>，令 <code>A_x</code> 为曲线 <code>y = 1/t</code>、t 轴、竖直线 <code>t = 1</code> 与 <code>t = x</code> 围成的区域面积。<b>自然对数</b>定义为</p><p><b><code>ln x = A_x</code></b>（<code>x ≥ 1</code>），<b><code>ln x = −A_x</code></b>（<code>0 &lt; x &lt; 1</code>）。</p><p>（<code>x &lt; 1</code> 时取负号，是为了让「<code>ln 1 = 0</code>」两侧连续、且保持单调递增。）由定义立即得到：<code>ln 1 = 0</code>；<code>x &gt; 1</code> 时 <code>ln x &gt; 0</code>；<code>0 &lt; x &lt; 1</code> 时 <code>ln x &lt; 0</code>；<code>ln x</code> 是一一对应，定义域 <code>(0, ∞)</code>、值域 <code>(−∞, ∞)</code>。</p><h3 id="s10">5.9 (ln x)′ = 1/x 的证明</h3><p>源文件的证明用面积夹逼。对 <code>x &gt; 0</code> 与 <code>h &gt; 0</code>，<code>ln(x + h) − ln x</code> 是 <code>1/t</code> 在 <code>[x, x+h]</code> 上的面积，它夹在两个矩形之间：</p><p><code>h/(x + h) &lt; ln(x + h) − ln x &lt; h/x</code>。</p><p>三边除以 h 得 <code>1/(x+h) &lt; [ln(x+h) − ln x]/h &lt; 1/x</code>；令 <code>h → 0⁺</code>，两端都趋于 <code>1/x</code>，由夹逼定理得右导数。对 <code>h &lt; 0</code> 同理（此时不等式方向相反，但两端仍趋于 <code>1/x</code>），故</p><p><b><code>d/dx ln x = 1/x</code></b>（<code>x &gt; 0</code>）。</p><p>自然对数的四条性质（源文件给出，并证明第一条）：① <code>ln(xy) = ln x + ln y</code>；② <code>ln(1/y) = −ln y</code>；③ <code>ln(x/y) = ln x − ln y</code>；④ <code>ln(x^r) = r ln x</code>。</p><p>第 ① 条的证法很巧：固定 y，令 <code>g(x) = ln(xy) − ln x</code>。由链式法则 <code>g′(x) = y/(xy) − 1/x = 1/x − 1/x = 0</code>，故 g 为常数；取 <code>x = 1</code> 得 <code>g(1) = ln y</code>，于是 <code>ln(xy) − ln x = ln y</code>。其余各条由 ① 与 ④ 组合推出。</p><p>源文件的例子：证明 <code>d/dx ln|x| = 1/x</code>（<code>x ≠ 0</code>），并求 <code>∫dx/x</code>。当 <code>x &gt; 0</code> 时就是上面的结论；当 <code>x &lt; 0</code> 时 <code>ln|x| = ln(−x)</code>，由链式法则 <code>d/dx = (1/(−x))·(−1) = 1/x</code>。所以</p><p><b><code>d/dx ln|x| = 1/x</code>，<code>∫ dx/x = ln|x| + C</code></b>（<code>x ≠ 0</code>）。绝对值不能省，因为 <code>ln</code> 只接受正数。</p><h3 id="s11">5.10 自然指数 e 与 eˣ</h3><p><b>欧拉数</b> e 定义为使 <code>ln e = 1</code> 的那个底数——也就是让 <code>[1, e]</code> 上 <code>1/t</code> 的面积恰为 1 的右端点。数值上</p><p><code>e = 2.71828 18284 59045…</code>，并可写成级数 <code>e = 1 + 1/1! + 1/2! + 1/3! + 1/4! + ⋯</code>（本课只需知道这个形式，不必证明收敛）。</p><p>由于 <code>ln</code> 是一一对应，它的反函数存在，记作 <code>exp</code> 或 <code>eˣ</code>：</p><p><b><code>y = eˣ ⟺ x = ln y</code></b>（<code>y &gt; 0</code>）。<code>eˣ</code> 的定义域是 <code>(−∞, ∞)</code>，值域是 <code>(0, ∞)</code>。</p><p>五组恒等式及来源：① <code>e⁰ = 1</code>（由 <code>ln 1 = 0</code>）；② <code>ln(eˣ) = x</code>、③ <code>e^{ln x} = x</code>（消去恒等式）；④ <code>e^{x+y} = eˣeʸ</code>、<code>(eˣ)ʸ = e^{xy}</code>；⑤ <code>e^{−x} = 1/eˣ</code>、<code>e^{x−y} = eˣ/eʸ</code>。</p><p>源文件对 ④ 的证明：设 <code>z = eˣeʸ</code>，则 <code>ln z = ln eˣ + ln eʸ = x + y</code>，故 <code>z = e^{x+y}</code>；设 <code>w = (eˣ)ʸ</code>，则 <code>ln w = y ln(eˣ) = xy</code>，故 <code>w = e^{xy}</code>。这种「取对数把指数运算降级为乘法」的手法贯穿整节。</p><h3 id="s12">5.11 一般底数的指数与对数求导</h3><p>把任意底写成 e 的幂：<code>aˣ = e^{x ln a}</code>，由链式法则</p><p><b><code>(aˣ)′ = aˣ ln a</code></b>，<b><code>∫aˣ dx = aˣ/ln a + C</code></b>。</p><p>同理 <code>log_a x = ln x/ln a</code>，故 <b><code>(log_a x)′ = 1/(x ln a)</code></b>。</p><p>对幂函数 <code>xᵃ</code>（<code>x &gt; 0</code>），写成 <code>e^{a ln x}</code>：<code>(xᵃ)′ = e^{a ln x}·(a/x) = a x^{a−1}</code>——这就是第 3 讲幂法则对任意实数指数的严格证明。</p><p>源文件例：<code>f(x) = e^{kx}</code>（<code>k ≠ 0</code>）。各阶导数为 <code>f′ = ke^{kx}</code>、<code>f″ = k²e^{kx}</code>、…、<code>f⁽ⁿ⁾ = kⁿe^{kx}</code>；积分为 <code>∫e^{kx}dx = (1/k)e^{kx} + C</code>。</p><p>源文件任务：(a) <code>f(x) = log₁₀(cos x)</code>，<code>f′ = (1/(cos x·ln10))·(−sin x) = −tan x/ln10</code>；(b) <code>f(x) = xᵃ − aˣ</code>，<code>f′ = a x^{a−1} − aˣ ln a</code>。</p><h3 id="s13">5.12 变底变指数：两种求导方法</h3><p>对 <code>y = f(x)^{g(x)}</code>（要求 <code>f(x) &gt; 0</code>），不能直接套幂法则（底在变）也不能套指数法则（指数在变）。两种方法：</p><ul><li><b>方法 1（改写成 e 的幂）</b>：<code>y = e^{g(x) ln f(x)}</code>，故 <code>y′ = e^{g ln f}·[g′ ln f + g f′/f] = y[g′ ln f + g f′/f]</code></li><li><b>方法 2（对数求导）</b>：两边取对数 <code>ln y = g ln f</code>，再对 x 隐式求导：<code>y′/y = g′ ln f + g f′/f</code>，最后乘回 y</li></ul><p>两法结果完全一致，方法 2 在多因子乘积/商的情形下更快（它把乘除变成加减）。</p><p>源文件例：(a) <code>y = xˣ</code>（<code>x &gt; 0</code>）：<code>y = e^{x ln x}</code>，<code>y′ = xˣ(ln x + x·1/x) = xˣ(ln x + 1)</code>。</p><p>(b) <code>y = (sin x)ˣ</code>（<code>0 &lt; x &lt; π</code>）：取对数 <code>ln y = x ln sin x</code>，求导 <code>y′/y = ln sin x + x·cot x</code>，故 <code>y′ = (sin x)ˣ(ln sin x + x cot x)</code>。</p><p>(c) <code>y = x^{ln x}</code>：<code>ln y = (ln x)²</code>，求导 <code>y′/y = 2 ln x/x</code>，故 <code>y′ = x^{ln x}·2 ln x/x</code>。</p><h3 id="s14">5.13 关键积分表</h3><table><tr><th>积分</th><th>结果</th><th>对应导数</th></tr><tr><td><code>∫ dx/x</code></td><td><code>ln|x| + C</code></td><td><code>(ln|x|)′ = 1/x</code></td></tr><tr><td><code>∫ dx/(x ln a)</code></td><td><code>log_a|x| + C</code></td><td><code>(log_a x)′ = 1/(x ln a)</code></td></tr><tr><td><code>∫ e^{kx} dx</code></td><td><code>e^{kx}/k + C</code></td><td><code>(e^{kx})′ = k e^{kx}</code></td></tr><tr><td><code>∫ a^{kx} dx</code></td><td><code>a^{kx}/(k ln a) + C</code></td><td><code>(a^{kx})′ = k a^{kx} ln a</code></td></tr></table><h3 id="s15">5.14 增长阶：对数 &lt; 幂 &lt; 指数</h3><p>源文件给出链式不等式（<code>x &gt; 0</code>）：</p><p><b><code>ln x ≤ x − 1 &lt; x &lt; x + 1 ≤ eˣ</code></b>，</p><p>等号只在 <code>x = 1</code>（左边）与 <code>x = 0</code>（右边）取得。它说明：对数增长最慢、线性居中、指数最快。</p><p>两个重要极限（<code>a &gt; 0</code>）：</p><p><b><code>lim_{x→∞} ln x/xᵃ = 0</code></b>（幂 beats 对数），<b><code>lim_{x→∞} xᵃ/eˣ = 0</code></b>（指数 beats 幂）。</p><p>第一个的证明：取 <code>α = a/2 &gt; 0</code>，由 <code>ln u ≤ u − 1 &lt; u</code> 得 <code>ln x = (1/α)ln(xᵃ) ≤ (1/α)(xᵃ − 1) &lt; xᵃ/α</code>，故 <code>0 &lt; ln x/xᵃ &lt; 1/(α x^{a/2})</code>，两端夹逼得 0。第二个的证明：令 <code>t = ln x</code>，则 <code>xᵃ/eˣ = (ln x)ᵃ/x = [(ln x)/x^{1/a}]ᵃ</code>，由第一个极限（指数取 <code>1/a</code>）得 0。</p><div class="callout tip"><b>考场用法</b>遇到 <code>ln x/x</code>、<code>x²/eˣ</code>、<code>x e^{−x}</code> 这类「谁长得快」的比较，直接引用这两个极限，不必再求导。源文件把它们列进公式表，说明是允许直接引用的结论。</div><h3 id="s16">5.15 指数增长与衰减模型</h3><p>许多自然过程的「变化率与当前量成正比」。设 <code>y = y(t)</code> 表示某量在时刻 t 的值，则</p><p><b><code>dy/dt = ky</code>，<code>y(0) = y₀</code></b>，</p><p>其中 k 是比例常数。这个初值问题的唯一解是</p><p><b><code>y(t) = y₀ e^{kt}</code></b>。</p><p>验证：<code>y′ = k y₀ e^{kt} = ky</code> ✓，且 <code>y(0) = y₀</code> ✓；唯一性由一阶线性方程的理论保证（本课只需承认）。</p><p><b>k &gt; 0 为增长</b>：人口增长、复利、无限制的繁殖，<code>lim_{t→∞} y = ∞</code>。<b>k &lt; 0 为衰减</b>：放射性衰变、牛顿冷却、药物代谢，<code>lim_{t→∞} y = 0</code>。<code>y₀</code> 是 t = 0 时的初值，曲线都以 <code>y = 0</code> 为水平渐近线（衰减时）。</p><h3 id="s17">5.16 广义模型：趋向一个固定值 a</h3><p>若变化率与「当前值与固定值 a 之差」成正比：</p><p><b><code>dy/dt = k(y − a)</code>，<code>y(0) = y₀</code></b>，</p><p>做变量代换 <code>u = y − a</code>，则 <code>du/dt = dy/dt = ku</code>，化为标准模型，解得 <code>u = (y₀ − a)e^{kt}</code>，故</p><p><b><code>y(t) = a + (y₀ − a)e^{kt}</code></b>。</p><p>当 <code>k &lt; 0</code> 时 <code>y → a</code>（趋向环境温度、趋向稳态浓度）；当 <code>k &gt; 0</code> 时远离 a。</p><p><b>牛顿冷却定律</b>：物体温度的变化率与「物体温度 − 环境温度」成正比，即上式取 <code>a = 环境温度</code>、<code>k &lt; 0</code>。</p><p>源文件例子：室温 20 ℃，咖啡从 80 ℃ 降到 50 ℃ 用 5 分钟，问到 40 ℃ 还需多久。设 <code>T(t) = 20 + 60e^{kt}</code>。由 <code>T(5) = 50</code>：<code>30 = 60e^{5k}</code>，故 <code>e^{5k} = 1/2</code>、<code>k = −ln2/5</code>。</p><p>令 <code>T = 40</code>：<code>20 = 60e^{kt}</code>，即 <code>e^{kt} = 1/3</code>，<code>t = −ln(1/3)/k = 5ln3/ln2 ≈ 7.92</code> 分钟（从开始算）。因此还需 <code>7.92 − 5 ≈ 2.92</code> 分钟。</p><h3 id="s18">5.17 Logistic 模型</h3><p>当增长受环境容量限制时，模型改为</p><p><b><code>dy/dt = k(1 − y/L)y</code>，<code>y(0) = y₀</code></b>，</p><p>其中 <code>L &gt; 0</code> 是<b>承载容量</b>（carrying capacity），<code>k &gt; 0</code> 是增长率。其解为</p><p><b><code>y(t) = Ly₀/(y₀ + (L − y₀)e^{−kt})</code></b>。</p><p>渐近行为：<code>k &gt; 0</code> 时 <code>lim_{t→∞} y = L</code>；<code>k &lt; 0</code> 时 <code>lim_{t→∞} y = 0</code>；<code>k = 0</code> 时恒为 <code>y₀</code>。源文件要求「验证该函数满足模型」，验证方法：把它代回方程两边，或对解取对数线性化后求导（本课只需承认并会用）。</p><p>源文件例：已知 <code>y(0) = 3</code>、<code>y(1) = 5</code>、<code>y(2) = 6</code>，求 L。把三个值代入解式：</p><p><code>5 = 3L/(3 + (L−3)e^{−k})</code>，<code>6 = 3L/(3 + (L−3)e^{−2k})</code>。</p><p>第一式解出 <code>e^{−k} = 3(L−5)/(5(L−3))</code>；第二式解出 <code>e^{−2k} = (L−6)/(2(L−3))</code>。由 <code>(e^{−k})² = e^{−2k}</code>：</p><p><code>9(L−5)²/(25(L−3)²) = (L−6)/(2(L−3))</code>，交叉相乘得 <code>18(L−5)² = 25(L−3)(L−6)</code>。</p><p>展开：<code>18L² − 180L + 450 = 25L² − 225L + 450</code>，即 <code>7L² − 45L = 0</code>，故 <code>L = 45/7 ≈ 6.429</code>（舍去 L = 0）。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>inverse function</td><td>反函数</td><td>y = f⁻¹(x) iff x = f(y); exists only for one-to-one f.</td></tr><tr><td>one-to-one</td><td>一一对应</td><td>f(x₁) ≠ f(x₂) for x₁ ≠ x₂; checked by the horizontal line test.</td></tr><tr><td>cancellation identity</td><td>消去恒等式</td><td>f⁻¹(f(x)) = x and f(f⁻¹(x)) = x.</td></tr><tr><td>derivative of an inverse</td><td>反函数导数</td><td>(f⁻¹)′(y) = 1/f′(x) with y = f(x).</td></tr><tr><td>algebraic function</td><td>代数函数</td><td>Built from polynomials by finitely many operations and roots.</td></tr><tr><td>transcendental function</td><td>超越函数</td><td>Not algebraic: sin x, cos x, aˣ, ln x.</td></tr><tr><td>exponential function</td><td>指数函数</td><td>aˣ with the variable in the exponent; base fixed.</td></tr><tr><td>power function</td><td>幂函数</td><td>xᵃ with the variable in the base; exponent fixed.</td></tr><tr><td>logarithm</td><td>对数</td><td>log_a x is the inverse of aˣ: y = log_a x iff x = a^y.</td></tr><tr><td>natural logarithm</td><td>自然对数</td><td>ln x, the area under 1/t from 1 to x; derivative 1/x.</td></tr><tr><td>Euler number</td><td>欧拉数 e</td><td>The base with ln e = 1; e ≈ 2.718281828….</td></tr><tr><td>logarithmic differentiation</td><td>对数求导法</td><td>Take ln of both sides, differentiate implicitly, then multiply by y.</td></tr><tr><td>exponential growth/decay</td><td>指数增长/衰减</td><td>dy/dt = ky gives y = y₀e^{kt}; k > 0 grows, k < 0 decays.</td></tr><tr><td>Newton law of cooling</td><td>牛顿冷却定律</td><td>dy/dt = k(y − a) gives y = a + (y₀ − a)e^{kt}.</td></tr><tr><td>logistic model</td><td>Logistic 模型</td><td>dy/dt = k(1 − y/L)y gives y = Ly₀/(y₀ + (L−y₀)e^{−kt}).</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p19–p20）　细胞培养以与细胞数成正比的速度增长。初始 500 个，24 小时后 800 个，问再过 12 小时有多少个？</div><p>设 <code>N(t) = N₀e^{kt}</code>，<code>N₀ = 500</code>。由 <code>N(24) = 800</code>：<code>500e^{24k} = 800</code>，故 <code>e^{24k} = 1.6</code>，<code>k = ln1.6/24</code>。</p><p>于是 <code>N(t) = 500e^{t ln1.6/24} = 500·1.6^{t/24}</code>。</p><p>再过 12 小时即 <code>t = 36</code>：<code>N(36) = 500·1.6^{36/24} = 500·1.6^{3/2}</code>。</p><p><code>1.6^{3/2} = 1.6·√1.6 ≈ 1.6 × 1.2649 = 2.0238</code>，故 <code>N(36) ≈ 1012</code> 个。</p><p><b>要点：</b>「再过 12 小时」对应 <code>t = 24 + 12 = 36</code>，不是 <code>t = 12</code>；这是本题唯一的陷阱。另外把解写成 <code>500·1.6^{t/24}</code> 比保留 k 更好算。</p></div><div class="qa"><div class="q">例 2（源文件 p22–p23）　室温 20 ℃，咖啡从 80 ℃ 降到 50 ℃ 用 5 分钟，问冷却到 40 ℃ 还需多久？</div><p>设 <code>T(t) = 20 + 60e^{kt}</code>（<code>a = 20</code>、<code>T₀ = 80</code>）。</p><p>由 <code>T(5) = 50</code>：<code>50 = 20 + 60e^{5k}</code> → <code>e^{5k} = 1/2</code> → <code>k = −ln2/5</code>。</p><p>令 <code>T = 40</code>：<code>40 = 20 + 60e^{kt}</code> → <code>e^{kt} = 1/3</code> → <code>kt = −ln3</code> → <code>t = 5ln3/ln2 ≈ 7.92</code> 分钟。</p><p>这是「从取出时刻算起」的总时间，题目问「还需多久」，故答案为 <code>7.92 − 5 ≈ 2.92</code> 分钟。</p><p><b>精确形式：</b><code>5log₂3 − 5</code> 或 <code>5ln3/ln2 − 5</code>。考试不允许计算器，通常写精确式即可；若要近似，用 <code>ln2 ≈ 0.693</code>、<code>ln3 ≈ 1.099</code>。</p></div><div class="qa"><div class="q">例 3（源文件 p26–p28）　已知 logistic 模型中 y(0) = 3、y(1) = 5、y(2) = 6，求承载容量 L。</div><p>解式 <code>y(t) = 3L/(3 + (L−3)e^{−kt})</code>。</p><p>代 <code>t = 1</code>：<code>5(3 + (L−3)e^{−k}) = 3L</code> → <code>5(L−3)e^{−k} = 3L − 15</code> → <code>e^{−k} = 3(L−5)/(5(L−3))</code>。</p><p>代 <code>t = 2</code>：<code>6(3 + (L−3)e^{−2k}) = 3L</code> → <code>6(L−3)e^{−2k} = 3L − 18</code> → <code>e^{−2k} = (L−6)/(2(L−3))</code>。</p><p>用 <code>(e^{−k})² = e^{−2k}</code> 消去 k：<code>9(L−5)²/(25(L−3)²) = (L−6)/(2(L−3))</code>，即 <code>18(L−5)² = 25(L−3)(L−6)</code>。</p><p>展开化简：<code>18L² − 180L + 450 = 25L² − 225L + 450</code> → <code>7L² − 45L = 0</code> → <code>L(7L − 45) = 0</code>。</p><p>舍去 <code>L = 0</code>（容量必须为正，且此时模型退化），得 <b><code>L = 45/7 ≈ 6.429</code></b>。合理性检查：数据 3 → 5 → 6 单调上升且增量递减（2 然后 1），符合「逼近上限」的形态，上限 6.43 略高于 6，合理。</p></div><div class="qa"><div class="q">例 4（源文件 p23）　解 3^{x−1} = 2ˣ，并求 y = (sin x)ˣ 的导数（0 &lt; x &lt; π）。</div><p>(a) 两边取自然对数：<code>(x−1)ln3 = x ln2</code>。整理：<code>x ln3 − ln3 = x ln2</code>，即 <code>x(ln3 − ln2) = ln3</code>，故 <code>x = ln3/ln(3/2) = log_{3/2}3</code>。</p><p>等价做法：两边同除 <code>3ˣ</code> 得 <code>(2/3)ˣ = 1/3</code>，取对数得 <code>x = ln(1/3)/ln(2/3) = ln3/ln(3/2)</code>，一致。</p><p>(b) 取对数：<code>ln y = x ln sin x</code>。两边对 x 求导：<code>y′/y = ln sin x + x·(cos x/sin x)</code>。</p><p>故 <code>y′ = (sin x)ˣ(ln sin x + x cot x)</code>。</p><p><b>要点：</b>变底变指数的函数必须「先取对数、再求导、最后乘回 y」；直接套幂法则或指数法则都会错。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>f(x) = x³ + x</code> 的反函数在 <code>x = 2</code> 处的导数（即 <code>(f⁻¹)′(2)</code>）。</li><li>化简：<code>log₂10 + log₂12 − log₂15</code>；<code>3^{log₉4}</code>；<code>log_{√2}(2⁵)</code>。</li><li>求导数：<code>y = log₁₀(cos x)</code>；<code>f(x) = xᵃ − aˣ</code>；<code>y = x^{ln x}</code>。</li><li>求积分：<code>∫e^{3x}dx</code>；<code>∫dx/(2x)</code>；<code>∫2^{x}dx</code>。</li><li>某放射性物质每小时衰变 10%（即每小时剩余 90%），求半衰期（精确式）。</li><li>解方程 <code>3^{x−1} = 2ˣ</code>，并把答案写成两种等价形式。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>f′(x) = 3x² + 1 &gt; 0</code>，严格递增，可逆。找 <code>y</code> 使 <code>y³ + y = 2</code>：<code>y = 1</code>。故 <code>(f⁻¹)′(2) = 1/f′(1) = 1/4</code>。</p><p><b>2.</b> <code>log₂(10·12/15) = log₂8 = 3</code>；<code>log₉4 = log₃2</code>，故 <code>3^{log₃2} = 2</code>；<code>ln32/ln√2 = 5ln2/(0.5ln2) = 10</code>。</p><p><b>3.</b> <code>−tan x/ln10</code>；<code>a x^{a−1} − aˣ ln a</code>；<code>x^{ln x}·(2 ln x)/x</code>。</p><p><b>4.</b> <code>e^{3x}/3 + C</code>；<code>(1/2)ln|x| + C</code>；<code>2ˣ/ln2 + C</code>（来自 <code>∫a^{kx}dx = a^{kx}/(k ln a)</code>，此处 k = 1、a = 2）。</p><p><b>5.</b> 设剩余比例为 <code>y(t) = 0.9^t</code>（以小时为单位，因为每小时乘 0.9）。半衰期满足 <code>0.9^t = 1/2</code>，故 <code>t = ln(1/2)/ln0.9 = ln2/ln(10/9)</code>。数值约 6.58 小时。</p><p><b>6.</b> <code>x = ln3/ln(3/2) = log_{3/2}3 = log_{1.5}3</code>；两种写法等价，第二式更便于用换底公式统一。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>①反函数存在性判定 + 反函数导数（找原像）；②指数/对数化简与解指数方程；③<code>(aˣ)′</code> 与 <code>(log_a x)′</code>；④对数求导法处理变底变指数；⑤指数增长/衰减、牛顿冷却（求 k 再求时间）；⑥logistic 模型求 L。</div><div class="callout warn"><b>易错 1</b><b>反函数导数公式里代错点</b>。要算 <code>(f⁻¹)′(2)</code>，必须找 <code>f(y) = 2</code> 的 y，再算 <code>1/f′(y)</code>；直接把 2 代入 <code>f′</code> 是错的。</div><div class="callout warn"><b>易错 2</b><b>指数求导与幂求导混用</b>。<code>d/dx(x²) = 2x</code>，而 <code>d/dx(2ˣ) = 2ˣ ln2</code>；<code>d/dx(x^π) = πx^{π−1}</code>，而 <code>d/dx(πˣ) = πˣ lnπ</code>。看到「变量在指数上」就用 ln，看到「变量在底数上」就用幂法则。</div><div class="callout warn"><b>易错 3</b><b>对数里漏绝对值</b>。<code>∫dx/x = ln|x| + C</code>，<code>∫dx/(ax+b) = (1/a)ln|ax+b| + C</code>；丢掉绝对值会在负区间上给出错误答案。</div><div class="callout warn"><b>易错 4</b><b>建模时把「再过多久」与「总共多久」混淆</b>。牛顿冷却题常问「还需多久」，要用总时间减去已过时间。</div><div class="callout tip"><b>进阶</b>把三类模型写成统一模板：<code>dy/dt = k(y − a)</code> → <code>y = a + (y₀ − a)e^{kt}</code>；令 <code>a = 0</code> 得纯增长/衰减，令 <code>a = L</code> 并把 k 换成 <code>−k</code> 并加入「按比例缩小」的因子就得到 logistic 的骨架。理解模板比记三个公式可靠。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">方法与清单</h2><h3 id="s20">求反函数及其导数（三步）</h3><ol class="steps"><li>先证一一对应（严格单调，通常看 <code>f′ &gt; 0</code> 或 <code>f′ &lt; 0</code>）</li><li>由 <code>y = f(x)</code> 解出 <code>x = f⁻¹(y)</code>，写明定义域（原函数的值域）与值域（原函数的定义域）</li><li>求某点导数时：先解 <code>f(y) = 给定值</code> 得 y，再算 <code>1/f′(y)</code></li></ol><h3 id="s21">解指数/对数方程（三步）</h3><ol class="steps"><li>尽量把两边化成同底，或用换底公式统一底数</li><li>两边取对数，把指数降为乘积，整理出未知量的一次方程</li><li>解出后用原方程代值检验（尤其检查是否在定义域内）</li></ol><h3 id="s22">建立增长/衰减模型（四步）</h3><ol class="steps"><li>判断「变化率与什么成正比」：与自身成正比 → <code>y₀e^{kt}</code>；与「自身减 a」成正比 → <code>a + (y₀−a)e^{kt}</code></li><li>把已知条件逐条代入，先求 k（通常用一次比值或一次对数）</li><li>写出完整的 y(t) 表达式，保留精确形式（ln、e）</li><li>回答题目真正问的量：注意「还需多久」与「总共多久」的差别</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p2–p4</td><td>反函数的概念、一一对应前提、f = x³ 的反函数</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p5–p7</td><td>反函数五条性质、图像关于 y = x 对称、√(2x+1) 与 (x²−1)/2</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p8</td><td>反函数导数公式及其链式法则证明</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p9–p11</td><td>f = x³ + x 的可逆性证明与 (f⁻¹)′(2) = 1/4（p9–p10 为图片页，按 p11 的文字复原）</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p12–p13</td><td>代数函数与超越函数、超越判别准则、Leibniz 与 Euler 的历史注记</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p14–p16</td><td>指数函数定义、整数/有理/无理指数、指数函数与幂函数的区别</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p17–p19</td><td>对数函数作为反函数、定义域值域对照、消去恒等式、渐近行为表</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p20–p23</td><td>指数六法则、对数六法则、三个化简例与 3^{x−1} = 2ˣ</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p24–p29</td><td>ln x 的面积定义、性质、导数 1/x 的夹逼证明、ln(xy) 恒等式证明、ln|x| 与 ∫dx/x</td></tr><tr><td>Topic 5/EMI_Week5_Lecture1.pdf</td><td>p30–p31</td><td>eˣ 作为 ln 的反函数、五组恒等式及其证明</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p2–p3</td><td>指数与对数法则的复习</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p4–p5</td><td>欧拉数 e 的面积定义与级数、eˣ 与 ln x 的图形与渐近线</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p6–p9</td><td>(aˣ)′ 与 ∫aˣ 的隐式推导、一般底对数求导、幂法则的再证明、两道求导任务</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p10–p12</td><td>变底变指数两种方法、xˣ 与 (sin x)ˣ 的求导</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p13</td><td>关键积分表（1/x、1/(x ln a)、e^{kx}、a^{kx}）</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p14–p16</td><td>ln x ≤ x−1 &lt; x &lt; x+1 ≤ eˣ、ln x/xᵃ → 0、xᵃ/eˣ → 0 的证明</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p17–p20</td><td>指数增长/衰减模型、应用清单、细胞培养例题</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p21–p23</td><td>广义模型 dy/dt = k(y−a)、牛顿冷却定律与咖啡例题</td></tr><tr><td>Topic 5/EMI_Week5_Lecture2.pdf</td><td>p24–p28</td><td>logistic 模型的解、渐近行为、由三个数据点求承载容量 L = 45/7</td></tr><tr><td>（跳过）Topic 5 中 p9–p10 等纯图片页</td><td>—</td><td>无文字层，按相邻页文字与例题答案复原；Lecture One/Two.html 为登录页快照，无正文</td></tr><tr><td>（拓展）</td><td>—</td><td>把 <code>ln x ≤ x−1</code> 的证明、e 的级数表示与三类模型的统一模板列为归纳性补充，源文件以结论与例题给出</td></tr></table></section><div class="lnav"><a class="prev" href="t4-higher-order-extrema-implicit.html">← 第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a class="next" href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

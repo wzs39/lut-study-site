@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · AI 使用声明与学术诚信操作流程 · 29913</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BH60A7400 Climate.Now 气候</a> / <a href="part-2.html">第 2 章 学术诚信与 AI 使用声明</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 政策的三条核心判据</a><a class="toc-l3" href="#s3">3.2 25% 门槛的确切含义</a><a class="toc-l3" href="#s4">3.3 披露四要素</a><a class="toc-l3" href="#s5">3.4 官方模板：逐槽位解释</a><a class="toc-l3" href="#s6">3.5 两种使用强度，两套处理</a><a class="toc-l3" href="#s7">3.6 重度情形的引用怎么写</a><a class="toc-l3" href="#s8">3.7 翻译工具属于同一类</a><a class="toc-l3" href="#s9">3.8 记录：证据链要自己保存</a><a class="toc-l3" href="#s10">3.9 幻觉：核实义务在你</a><a class="toc-l3" href="#s11">3.10 与另一门 MOOC 的对照</a><a class="toc-l3" href="#s12">3.11 一次完整的合规流程</a><a class="toc-l2" href="#s13">提交前的 AI 合规清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="c1-course-essay-task.html">第 1 讲 · 课程结构与 Essay Task 要求</a><a href="c2-supplemental-references.html">第 2 讲 · Supplemental Task 与参考资料使用</a><a class="toc-l3" href="c3-ai-disclosure.html">▸ 第 3 讲 · AI 使用声明与学术诚信操作流程</a></div></aside><article><h1>第 3 讲 · AI 使用声明与学术诚信操作流程</h1><p class="lead">Disclosure of AI Use and Academic Integrity Workflow <span class="badge mute">29913</span> <span class="badge mute">第 3 / 3 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 学术诚信与 AI 使用声明</a></p><p class="src">原始文件：<code>Disclosure of AI Use LES.pdf</code> <code>3_AI Use Policy/1_Disclosure of AI Use LES.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这门课与同目录另一门 MOOC 最大的差别就在这里：那门完全禁止 AI 与翻译工具，这门允许使用——但前提是如实披露到你用了什么、怎么生成、用了什么提示、输出怎么进了作业。第 3 讲把这份 LUT 能源系统学院（LES）的政策拆成四要素、两种使用强度、一套记录流程。</p><p>这一讲的价值不在「能不能用 AI」，而在「用了之后如何不被判 fail」。政策写得很清楚：使用本身不违规，未恰当披露才违规；超过 25% 的 AI 使用可能 fail，也可能要求补充评估。理解这两个门槛，比背一句「我用过 ChatGPT」重要得多。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>复述政策的三条核心判据：如实披露、25% 门槛、教师最终裁定</li><li>按四要素（技术、生成方式、提示、用途）写出一份合规声明</li><li>区分「轻度使用（声明即可）」与「重度依赖（引号 + 引用 + 条目）」两种处理</li><li>说明翻译工具在什么情况下被视为引用、什么情况下不必</li><li>保存可核查的证据链：提示、原始提交文本、被工具改善的草稿</li><li>识别 AI 幻觉并说明核实义务落在谁身上</li><li>指出本课与另一门 MOOC 政策的冲突，避免互相套用</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 政策的三条核心判据</h3><p>文件标题是 Disclosure of AI Use，副标题标明它是 LUT School of Energy Systems Policy。开篇三句就把规则立住了：学院监控所有提交作业中的 AI 使用；显示出 AI 使用却没有恰当披露「究竟如何、在哪里」用 AI 生成文本的作业（无论以口头还是书面形式呈现）将判 fail；所有 AI 生成文本的实例都必须记录，包括翻译工具的使用。</p><p>第二句里有两个容易被略读的细节。第一，「exactly how and where」——披露要精确到位置与方法，不是一句「我用了 AI」。第二，「presented by students in spoken or written form」——说明披露可以是口头的，答辩或面谈时的说明同样算数，但同样要求具体。</p><table><tr><th>判据</th><th>原文表述</th><th>操作含义</th></tr><tr><td>如实披露</td><td>未披露具体如何、在哪里用 AI 生成文本 → FAIL</td><td>声明要能定位到段落与方法</td></tr><tr><td>25% 门槛</td><td>AI 使用超过 25% 的文本可能 FAIL 或需补充评估</td><td>「可能」不是自动，但足以触发审查</td></tr><tr><td>教师裁定</td><td>AI 使用是否适当由 LES 课程负责教师最终决定</td><td>不存在「按模板填了就安全」的保证</td></tr></table><h3 id="s3">3.2 25% 门槛的确切含义</h3><p>原文：Texts that show greater than 25% AI use may likewise receive a grade of FAIL or require a supplemental assessment before a passing grade is given, to ensure students are able to achieve the course learning outcomes in the official language of the course.</p><p>这句话有三层。第一层是数字：超过 25% 的 AI 使用进入审查区间。第二层是「may」——它给的是两种可能后果（fail，或先补充评估再决定是否给及格分），不是自动 fail。第三层是目的：确保学生能以课程官方语言达成学习成果。</p><p>第三层最容易被忽略，但它解释了整条政策为什么存在。如果大段文本由 AI 生成，教师无法判断你是否具备用课程语言（这里是英语）写出这些内容的能力；25% 就是一条「能力无法被验证」的警戒线。</p><div class="callout warn"><b>易错</b>把 25% 当成「安全配额」：以为只要控制在 25% 以内就没问题。政策说的是超过 25% 会触发审查，从未说过 25% 以内无需披露——披露义务是全覆盖的。</div><h3 id="s4">3.3 披露四要素</h3><p>原文列出四个必答项。逐条给出写法：</p><table><tr><th>要素</th><th>原文</th><th>写法要求</th><th>不合格写法</th></tr><tr><td>用了什么技术</td><td>What technology was used</td><td>工具名 + 版本 + 链接或平台</td><td>「一个 AI 工具」</td></tr><tr><td>信息如何生成</td><td>How information was generated</td><td>是让它生成段落、解释概念、还是改写句子</td><td>「用它帮了点忙」</td></tr><tr><td>用了什么提示</td><td>What prompts or inputs were used</td><td>列出提示原文，含日期</td><td>「问了几个问题」</td></tr><tr><td>输出如何用在作业里</td><td>How the output was used in the work</td><td>说明用在哪一段、怎么改的</td><td>「参考了一下」</td></tr></table><p>四要素的结构其实是一份证据链：工具可识别、方法可复现、输入可核查、用途可定位。任何一项含糊，都会让教师无法判断这算不算「恰当披露」。</p><h3 id="s5">3.4 官方模板：逐槽位解释</h3><p>文件给出一个可直接套用的通用格式，并说明它来自 Monash University，是一个好用的起点：</p><p><i>I acknowledge the use of [insert AI system(s) and link] to [specific use of generative artificial intelligence]. The prompts used include [list of prompts]. The output from these prompts was used to [explain use].</i></p><p>四个方括号正好对应四要素：第一个填系统与链接，第二个填具体用途，第三个列提示，第四个解释输出用途。这不是形式主义——它把「我说我用了」变成「我证明我怎么用的」。</p><p>文件还给了一个完整示例：承认使用 ChatGPT 生成背景研究材料，于 2023 年 8 月 24 日输入提示「How does a heat pump work?」，并说明输出被改编与修改后用于最终回答。注意示例里连日期都写了：日期是证据的一部分，它让「什么时候问的」可被核对。</p><h3 id="s6">3.5 两种使用强度，两套处理</h3><p>政策把使用分成两种情形，处理方式不同。这是本讲最重要的分岔点。</p><table><tr><th>情形</th><th>特征</th><th>处理方式</th></tr><tr><td>轻度使用</td><td>用工具做背景研究、理解概念、列提纲</td><td>按四要素写声明，不必给生成文本加引号（因为没有生成文本进入作业）</td></tr><tr><td>重度依赖</td><td>大段生成文本进入作业，或工具明显在替你完成写作</td><td>用引号标出生成文本，按科学写作要求给文内引用与文末条目</td></tr></table><p>原文对重度依赖的措辞是警告式的：Overuse of this should be avoided as it may be evidence that the tool is doing the work for the student instead of a student using the tool to supplement or improve their own work. 也就是说，过度使用本身就是「能力无法被验证」的证据，与 25% 门槛互为呼应。</p><p>重度情形还要多做三件事：按 LUT 学术研究伦理指南引用工具输出；用引号标明哪几句是生成的；保留所有提示，包括那些「只是让长文本更流畅」的草稿。第三条最容易被忽略，但它恰恰是证明「改了什么」的唯一材料。</p><h3 id="s7">3.6 重度情形的引用怎么写</h3><p>文件给了一个完整例子：一段关于热泵的说明文字，句末用括号标注 (Open AI, 2023)，文末给出条目 OpenAI. (2023) ChatGPT (August 3 Version) [Large language model] 加可获取地址与访问日期。</p><p>这个例子的结构值得记住：文内是作者—年份，文末是「作者 + 年份 + 版本 + 方括号说明工具类型 + 地址 + 访问日期」。其中「[Large language model]」这个方括号说明很关键——它告诉读者这不是一篇论文，而是一个模型。缺少它，条目会被误读为文献。</p><h3 id="s8">3.7 翻译工具属于同一类</h3><p>原文明确：使用翻译工具（如 Google Translate）也归入这一类。规则分三档：</p><ul><li>整段翻译（例如整段材料译成写作语言）→ 视为引用，要加引号并按规范引用参考；</li><li>单词、单句的翻译，或你自己改写工具输出 → 不必引用；</li><li>若作业里出现多段这类引用 → 可能说明你无法以课程官方语言达成学习目标。</li></ul><p>第三档是政策真正的用意：翻译工具不是禁忌，但连续多段依赖翻译，等于承认这些段落不是你能用课程语言写出来的。这与 25% 门槛的判断逻辑完全一致。</p><h3 id="s9">3.8 记录：证据链要自己保存</h3><p>原文要求：学生必须保存所有提交给 AI 工具的原始文本，并准备在教师要求时提供。这不是建议，是义务。</p><p>可操作的保存清单：</p><ol class="steps"><li>建一个作业专用文件夹，按日期命名子目录</li><li>每次与工具交互后，把提示与完整输出粘贴进一个文本文件（含时间戳）</li><li>保留你提交给工具的原始草稿（尤其是被「改善流畅度」的那一版）</li><li>在作业正文旁留一份声明草稿，随时可粘到提交处</li><li>提交前把上述材料打包备份，确保教师要求时能当场给出</li></ol><h3 id="s10">3.9 幻觉：核实义务在你</h3><p>文件用一整节警告幻觉：AI 工具（包括 ChatGPT）可能生成虚假信息，这种现象常被称为 hallucinations；任何工具给出的回答都可能部分或完全错误，即使看起来很有说服力；用于学习或教育目的时，谨慎与从可靠来源核实至关重要；学生必须确保所获信息的准确与可靠，并用适当的来源引用加以证明。</p><p>这一节与第 1 讲评分表的 0 分档直接咬合：不当使用 AI 生成的参考文献 → 引用项 0 分。AI 编造文献的特征是「格式完美、内容合理、但查不到」——所以核实方法不是读一遍觉得像，而是打开原始来源逐项对。</p><h3 id="s11">3.10 与另一门 MOOC 的对照</h3><p>同一学期另一门 MOOC（BH60A7201 循环经济）的写作任务写着：禁止用 AI 生成文本，连改善文本或翻译也不行；使用任何翻译工具都被禁止；检测到即判 fail 且不能重交。本课则是「允许，但必须披露」。</p><p>两套政策并存，说明了一件事：AI 规则是按课程定的，不是全校一条线。写作业前先确认该课程的政策文件，不要用一门课的规则去推另一门课。</p><div class="callout exam"><b>必考</b>同一所学校里两门课可以给出相反的 AI 规则；判断依据是课程自己的政策文件，而不是「学校一般允许/禁止」。</div><h3 id="s12">3.11 一次完整的合规流程</h3><p>把整讲压成一条流程，就是这门课实际的作业纪律：</p><ol class="steps"><li>动笔前先读课程 AI 政策，确认本课是「禁止」还是「允许但披露」</li><li>决定用途：只用于理解概念与找线索，还是让生成文本进入作业</li><li>每次交互后立刻保存提示与输出（含日期）</li><li>把生成的句子改写成自己的语言，并记录改了哪些部分</li><li>按四要素写声明：工具、生成方式、提示、用途</li><li>若有生成文本进入作业：加引号 + 文内引用 + 文末条目</li><li>逐条核实所有事实与文献，尤其是看起来「太顺」的数字与引用</li><li>提交前复查：声明是否具体到段落、证据是否齐全、有无超过 25% 的段落依赖</li></ol><p>这条流程的重心在第三、五、七步：保存、声明、核实。写作技巧只影响分数高低，这三步决定是否 fail。</p><div class="callout idea" data-ext="c3-ai-disclosure-0"><b>常见误解</b><p>最危险的误解是把 25% 当成“安全配额”。政策从没说过 25% 以内无需披露——<strong>披露义务是全覆盖的</strong>；超过 25% 只是触发审查，后果可能是 fail，也可能要求补充评估，因为大段生成文本让教师无法确认你能否以课程官方语言达成学习成果。</p><p>另一个断层是“生成文本是否进入作业”：只为理解概念、列提纲属轻度使用，按四要素声明即可；一旦句子进入正文，就要加引号并给文内引用与文末条目。<em>I acknowledge the use of…</em> 这个模板把“我说我用了”变成“我证明怎么用”，配合保存的提示与草稿，才构成可核查的证据链。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>disclosure of AI use</td><td>AI 使用披露</td><td>A statement of exactly how and where AI was used to generate text.</td></tr><tr><td>AI-generated text</td><td>AI 生成文本</td><td>Any text produced by a tool; must be documented, and quoted if it enters the work.</td></tr><tr><td>prompt</td><td>提示词</td><td>The input you gave the tool; list it verbatim, with the date.</td></tr><tr><td>translation tool</td><td>翻译工具</td><td>Treated like AI use; whole-paragraph output counts as a quotation.</td></tr><tr><td>hallucination</td><td>幻觉</td><td>Confidently stated but false output; verification is the student duty.</td></tr><tr><td>misconduct</td><td>不端行为</td><td>Plagiarism and undisclosed AI use both fall here.</td></tr><tr><td>plagiarism</td><td>抄袭</td><td>Presenting others text or ideas as your own.</td></tr><tr><td>fail grade</td><td>不及格</td><td>The consequence when AI use is not properly disclosed.</td></tr><tr><td>supplementary assessment</td><td>补充评估</td><td>A possible requirement above the 25% AI-use threshold.</td></tr><tr><td>quotation marks</td><td>引号</td><td>Used to mark text that a tool generated and that stays in the work.</td></tr><tr><td>acknowledgement</td><td>致谢式声明</td><td>The opening formula: I acknowledge the use of ... to ...</td></tr><tr><td>verification</td><td>核实</td><td>Checking every claim against a reliable, openable source.</td></tr><tr><td>official language</td><td>课程官方语言</td><td>The language in which learning outcomes must be demonstrated.</td></tr><tr><td>learning outcomes</td><td>学习成果</td><td>What the 25% threshold is designed to protect.</td></tr><tr><td>record keeping</td><td>记录保存</td><td>Keeping prompts, submitted inputs and improved drafts for inspection.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　填写一份合规的 AI 使用声明</div><p><b>情形：</b>你用 AI 解释「减缓与适应的区别」，并让它列出你所在城市可能的气候压力清单；正文全部由你自己写，没有一句生成文本进入作业。</p><p><b>写法（逐槽位）：</b>① 技术：写出工具名与访问入口，并注明版本与日期；② 具体用途：说明用于「理解概念差异」与「列出可能的气候压力以自查覆盖面」；③ 提示：把两次提示原文抄下来，各带日期；④ 输出用途：说明清单只用于自查，正文表述由自己撰写，未采用生成句子。</p><p><b>示范句：</b>「I acknowledge the use of [工具名与入口] to [解释 mitigation 与 adaptation 的区别，并列出可能适用于我所在城市的气候压力清单]. The prompts used include [提示一；提示二]. The output from these prompts was used to [核对我的答案覆盖面；正文由本人撰写，未直接采用工具生成的句子].」</p><p><b>验收：</b>把声明给一个不了解情况的人看，他能否说出「用了什么、怎么用、问过什么、用在哪」——四项都能说出，才算合格；有一项说不出，就回去补。</p></div><div class="qa"><div class="q">例 2　判断三种情形该怎么处理</div><p><b>情形 A：</b>你让 AI 写了一段关于碳足迹的引言，稍作修改放进第 1 题。→ 重度：这段文本进入作业，必须加引号、给文内引用与文末条目，并在声明里说明用在哪一段。仅写声明而不加引号，等于把生成文本冒充为自己的写作。</p><p><b>情形 B：</b>你用翻译工具把一整段芬兰语材料译成英语，再改写进第 3 题。→ 整段翻译视为引用：改写后仍需标注来源；若连续多段如此，会触发「无法以课程语言达成学习目标」的判断。</p><p><b>情形 C：</b>你用拼写检查修正了五个单词的拼写，没有改句子结构。→ 属于工具对单词层面的修正，通常不必引用；但仍建议在声明中说明，因为政策要求记录所有 AI 生成文本的实例，而透明度越高越安全。</p><p><b>共同规则：</b>判断标准是「生成内容是否以句子形式进入了作业」，而不是「你是否觉得它帮了大忙」。进入就以引号加引用；没进入就写声明。</p></div><div class="qa"><div class="q">例 3　核实一条 AI 给出的「文献」</div><p><b>情形：</b>AI 告诉你某期刊 2020 年有一篇关于城市热岛适应策略的论文，作者、期刊、卷期、页码都齐。</p><p><b>核查步骤：</b>① 用标题在学术检索里查，看是否存在同名论文；② 打开期刊官网核对卷期页码与作者顺序；③ 读摘要，确认它讲的是「城市热岛适应策略」而不是「热岛机制模拟」；④ 确认它的结论能否支撑你要写的那句话（地域与尺度是否匹配）；⑤ 通过后才写进参考文献表，并把访问日期记下。</p><p><b>判据：</b>四项都能对上才算可用。任一项对不上（查不到、页码不符、结论不对位），就不要写进去——评分表 0 分档明确写着「检测到不当使用 AI 生成的参考文献」。</p><p><b>替代方案：</b>若查不到，换一个你能打开并读到的来源；宁可让断言变弱（改成有条件表述），也不要让参考文献表里出现一条无法核实的条目。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>复述政策的 25% 门槛，并说明「may」这个词为什么重要。</li><li>写出披露的四个要素，并给每个要素配一个不合格写法。</li><li>轻度使用与重度依赖在处理上有什么不同？各举一例。</li><li>翻译工具在什么情况下算引用、什么情况下不必？</li><li>为什么「保存提示与原始草稿」是义务而不是建议？</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 超过 25% 的 AI 使用可能判 fail，也可能要求先做补充评估再决定是否给及格分；目的是确认学生能以课程官方语言达成学习成果。「may」重要在于它不是自动 fail，而是触发审查；但披露义务与 25% 无关，全覆盖。</p><p><b>2.</b> ① 技术：须写工具名、版本与入口，不合格写法是「一个 AI 工具」；② 生成方式：须说明是生成段落、解释概念还是改写，不合格是「帮了点忙」；③ 提示：须抄原文并带日期，不合格是「问了几个问题」；④ 用途：须说明用在哪一段、怎么改，不合格是「参考了一下」。</p><p><b>3.</b> 轻度（背景研究、理解概念、列提纲）：按四要素写声明即可，因无生成文本进入作业而无需引号。重度（大段生成文本进入作业）：除声明外还要加引号、给文内引用与文末条目，并保存所有提示与草稿。</p><p><b>4.</b> 整段或成段的翻译视为引用，需加引号并标注来源；单词、单句的翻译或自己改写工具输出则不必。若多段都靠翻译，可能被判断为无法以课程语言达成学习目标。</p><p><b>5.</b> 因为披露的可信度取决于证据：提示能证明你问了什么，原始草稿能证明你改了什么、改了多少。没有这些材料，声明只是一句话；教师在审查时无法验证「你只是用它理解概念」这一说法。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>未恰当披露即 FAIL；四要素（技术、生成方式、提示、用途）；超过 25% 可能 FAIL 或需补充评估；重度使用须引号 + 引用 + 条目；翻译工具整段视为引用；幻觉核实义务在学生。</div><div class="callout warn"><b>易错</b>① 声明写成「I used ChatGPT」，缺四项具体信息；② 只声明不加引号，把生成文本当自己的写作；③ 把 25% 当成安全配额，认为以内不必披露；④ 保留输出却不保留提示，无法自证；⑤ 把 AI 编造的文献写进参考文献表，引用项直接 0 分；⑥ 把另一门 MOOC 的「完全禁止 AI」搬到这里，或反过来。</div><div class="callout tip"><b>进阶</b>把披露写成可核查的证据链：工具可识别、方法可复现、提示可查、用途可定位。做到这一步，AI 使用就从「风险」变成「可解释的方法」——这也是政策真正想训练的能力。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">提交前的 AI 合规清单</h2><ul class="checklist"><li>已读本课程的 AI 政策，确认是「允许但披露」而非「完全禁止」</li><li>声明中写明了工具名称、版本与入口</li><li>声明中写明了用途属于背景研究、概念理解还是文本生成</li><li>声明中逐条列出了提示原文与日期</li><li>声明中说明了输出用在哪一部分、改了什么</li><li>凡有生成文本进入作业的句子，都已加引号</li><li>每段生成文本都有文内引用，并在参考文献表中有对应条目</li><li>条目中包含 [Large language model] 一类工具类型说明与访问日期</li><li>整段翻译已按引用处理，单词句翻译已在声明中说明</li><li>所有提示、原始提交文本与改善前后草稿已保存备份</li><li>所有事实与文献都已打开原始来源逐项核实</li><li>没有任何段落的生成比例高到可能超过 25% 而无法解释</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p1 第 1–4 段</td><td>学院监控所有提交、未恰当披露即 FAIL、所有 AI 生成文本须记录（含翻译工具）、须保存原始文本、超过 25% 可能 FAIL 或需补充评估、教师最终裁定</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p1「How to disclose」四要点</td><td>披露四要素：技术、生成方式、提示、用途</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p1 Monash 模板 + ChatGPT 示例</td><td>声明句式四个槽位、含日期的提示示例、输出被改编修改的说明</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p1 末段 — p2 首段</td><td>过度使用的警告、重度情形须引号 + 引用 + 条目的要求、须保留提示与草稿</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p2 热泵示例与参考条目</td><td>作者—年份文内引用、[Large language model] 方括号说明、访问日期</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p2 翻译工具段</td><td>整段翻译视为引用、单词句与自行改写不必、多段引用暗示语言能力不足</td></tr><tr><td>Disclosure of AI Use LES.pdf</td><td>p2「Be careful when using AI」</td><td>幻觉风险、看似可信但可能全错、核实义务与来源引用要求</td></tr><tr><td>3_AI Use Policy/1_Disclosure of AI Use LES.pdf</td><td>同上（另一路径副本）</td><td>内容与前一份一致，用于确认政策原文未随路径不同而变化</td></tr><tr><td>（跳过）Trailblazer 2020.jpg</td><td>—</td><td>极地夜景与极光宣传图，无可读文字，不含政策条款，未从中提取事实</td></tr></table></section><div class="lnav"><a class="prev" href="c2-supplemental-references.html">← 第 2 讲 · Supplemental Task 与参考资料使用</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

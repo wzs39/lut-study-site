@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 章 · 导数定义与求导法则 · 62</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-2.html">第 2 章 导数与微分</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 从「切线」这个词说起</a><a class="toc-l3" href="#s3">3.2 割线斜率与牛顿商</a><a class="toc-l3" href="#s4">3.3 切线斜率：导数的几何定义</a><a class="toc-l3" href="#s5">3.4 切线方程与一个面积练习</a><a class="toc-l3" href="#s6">3.5 曲线在一点的斜率与法线</a><a class="toc-l3" href="#s7">3.6 竖直切线与尖点：导数不存在的几何形态</a><a class="toc-l3" href="#s8">3.7 导数的记号与求值符号</a><a class="toc-l3" href="#s9">3.8 微分</a><a class="toc-l3" href="#s10">3.9 用定义求导三个基本例子</a><a class="toc-l3" href="#s11">3.10 幂法则</a><a class="toc-l3" href="#s12">3.11 可导必连续，但连续不一定可导</a><a class="toc-l3" href="#s13">3.12 左导数、右导数与区间上的可导性</a><a class="toc-l3" href="#s14">3.13 基本导数表</a><a class="toc-l3" href="#s15">3.14 和、差与常数倍法则</a><a class="toc-l3" href="#s16">3.15 乘积法则</a><a class="toc-l3" href="#s17">3.16 倒数法则</a><a class="toc-l3" href="#s18">3.17 商法则</a><a class="toc-l3" href="#s19">3.18 链式法则</a><a class="toc-l3" href="#s20">3.19 两个基本三角极限</a><a class="toc-l3" href="#s21">3.20 sin 与 cos 的导数</a><a class="toc-l3" href="#s22">3.21 另外四个三角函数</a><a class="toc-l2" href="#s23">方法与清单</a><a class="toc-l3" href="#s24">用定义求导（四步）</a><a class="toc-l3" href="#s25">写切线/法线方程（三步）</a><a class="toc-l3" href="#s26">复合函数求导（由外向内）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a href="t2-limits-continuity.html">第 1 章 · 极限与连续性</a><a class="toc-l3" href="t3-derivatives-rules.html">▸ 第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a href="t5-inverse-exp-log.html">第 3 章 · 反函数、指数与对数</a><a href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法</a><a href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 2 章 · 导数定义与求导法则</h1><p class="lead">Definition of the Derivative and Differentiation Rules <span class="badge mute">62</span> <span class="badge mute">第 3 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 导数与微分</a></p><p class="src">原始文件：<code>Topic 3/EMI_Week3_Lecture1.pdf</code> <code>Topic 3/EMI_Week3_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲用极限求出了瞬时速度，这一讲把这套动作抽象成一个新函数——导数（derivative）。核心只有一句话：导数就是切线斜率，而切线斜率是割线斜率当两点无限靠近时的极限。理解了这句话，后面所有求导公式都只是「把这个极限一次算完，以后直接查表」的产物。</p><p>本讲分两半：前半（Topic 3 第一次课）从几何出发，建立切线、法线、牛顿商、导数定义、微分与和差、常数倍、幂法则，并证明「可导必连续」；后半（第二次课）补齐乘积、倒数、商、链式四大法则与六个三角函数的导数，其中两个基本三角极限的证明是全部三角求导的地基。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用差商极限求曲线在一点的切线方程与法线方程</li><li>用定义（而不是公式）求 x²、1/x、√x 的导数</li><li>写出导数的四种记号，并在一点处正确使用求值符号</li><li>熟练使用乘积、倒数、商、链式法则处理复合表达式</li><li>用面积夹逼证明 lim sin θ/θ = 1，并据此推出 sin、cos 的导数</li><li>识别竖直切线、尖点等「导数不存在」的几何形态</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 从「切线」这个词说起</h3><p>欧几里得对圆的切线给过一个纯几何定义：与圆只交于一点（且不穿过）的直线叫圆的切线。这个定义对圆很好用，但对一般曲线立刻失效——例如抛物线的切线可能与曲线交于两点，拐点处的切线也可能再次穿过曲线。</p><p>所以微积分换了一个可操作的定义：<b>切线是割线的极限位置</b>。在曲线上取定点 P 与动点 Q，过两点的直线叫割线（secant line）；让 Q 沿曲线不断靠近 P，割线会绕 P 旋转并趋于一个极限位置，这个极限位置的直线就是 P 处的切线（tangent line）。</p><h3 id="s3">3.2 割线斜率与牛顿商</h3><p>设 <code>P(x₀, f(x₀))</code>、<code>Q(x₀ + Δx, f(x₀ + Δx))</code>（<code>Δx ≠ 0</code>）。割线 PQ 的斜率为</p><p><b><code>tan φ = Δy/Δx = (f(x₀ + Δx) − f(x₀))/Δx</code></b>。</p><p>这个表达式称为 f 在 <code>x₀</code> 处的<b>牛顿商</b>（Newton quotient）或<b>差商</b>（difference quotient）。它有两个含义：几何上是割线斜率，物理上是区间上的平均变化率。Δx 可正可负（Q 在 P 右侧或左侧），不影响取极限的结果。</p><h3 id="s4">3.3 切线斜率：导数的几何定义</h3><p>若 f 在 <code>x₀</code> 连续，且极限</p><p><b><code>m = lim_{Δx→0} Δy/Δx = lim_{Δx→0} (f(x₀ + Δx) − f(x₀))/Δx</code></b></p><p>存在（有限），则过 <code>P(x₀, f(x₀))</code> 且斜率为 m 的直线就是曲线在 P 处的切线；这个 m 就是 f 在 <code>x₀</code> 处的（瞬时）变化率。</p><p>用 <code>x</code> 代替 <code>x₀</code>、把极限值当成一个新函数，就得到<b>导数</b>：</p><p><b><code>f′(x) = lim_{Δx→0} (f(x + Δx) − f(x))/Δx = lim_{h→0} (f(x + h) − f(x))/h</code></b>，</p><p>前提是这个极限存在；存在时称 f 在 x 处<b>可导</b>（differentiable）。几何上 <code>f′(x₀)</code> 就是曲线 <code>y = f(x)</code> 在 <code>x = x₀</code> 处切线的斜率。</p><h3 id="s5">3.4 切线方程与一个面积练习</h3><p>已知切点 <code>(a, f(a))</code> 与斜率 <code>f′(a)</code>，由点斜式立刻写出切线方程：</p><p><b><code>y = f(a) + f′(a)(x − a)</code></b>。</p><p>源文件例子：求 <code>y = x²</code> 在 <code>(1, 1)</code> 处的切线。<code>f(1) = 1</code>，用定义求斜率：</p><p><code>lim_{Δx→0} ((1+Δx)² − 1)/Δx = lim (2Δx + Δx²)/Δx = lim (2 + Δx) = 2</code>，</p><p>故切线为 <code>y = 2(x − 1) + 1</code>，即 <code>y = 2x − 1</code>。</p><p>源文件随后追问：这条切线与两坐标轴围成的三角形面积是多少？一般地，对 <code>y = x²</code> 在 <code>(x₀, x₀²)</code> 处，斜率 <code>2x₀</code>，切线 <code>y = 2x₀x − x₀²</code>。令 <code>y = 0</code> 得 x 截距 <code>x₀/2</code>；令 <code>x = 0</code> 得 y 截距 <code>−x₀²</code>。于是当 <code>x₀ &gt; 0</code> 时三角形面积</p><p><code>A = (1/2)·(x₀/2)·(x₀²) = x₀³/4</code>。代入 <code>x₀ = 1</code> 得 <code>A = 1/4</code>。</p><div class="callout tip"><b>截距法的通用套路</b>任何「切线围三角形面积」的题都是三步：写出切线方程 → 分别令 x = 0、y = 0 求两个截距 → 面积 = 半个截距乘积的绝对值。绝对值来自「截距可能为负，而面积必须非负」。</div><h3 id="s6">3.5 曲线在一点的斜率与法线</h3><p>曲线 <code>y = f(x)</code> 在 <code>x₀</code> 处的「斜率」就是该点切线的斜率（若存在）。例如 <code>y = 1/x</code> 在 <code>x = 2</code>：</p><p><code>lim_{Δx→0} (1/(2+Δx) − 1/2)/Δx = lim (−Δx)/(2(2+Δx)Δx) = lim −1/(2(2+Δx)) = −1/4</code>。</p><p><b>法线</b>（normal line）是过切点且与切线垂直的直线。若切线斜率 <code>m ≠ 0</code>，法线斜率为 <code>−1/m</code>；若切线水平（<code>m = 0</code>），法线竖直；若切线竖直，法线水平。</p><p>源文件例子：<code>y = x²</code> 在 <code>(1, 1)</code>，切线斜率 2，故法线斜率 <code>−1/2</code>，方程 <code>y = −(1/2)(x − 1) + 1 = −x/2 + 3/2</code>。</p><h3 id="s7">3.6 竖直切线与尖点：导数不存在的几何形态</h3><p>若 <code>f</code> 在 <code>x₀</code> 连续而差商的极限为 <code>±∞</code>，则曲线在该点的切线是<b>竖直线</b> <code>x = x₀</code>（斜率不存在，但切线存在）。若极限既不是有限值、也不是同号的 ±∞（例如左右两侧分别趋于 +∞ 与 −∞），则<b>切线不存在</b>。</p><p>源文件两个对比例子（都在 <code>x = 0</code>）：</p><ul><li><code>f(x) = x^{1/3}</code>：<code>Δy/Δx = (Δx)^{1/3}/Δx = (Δx)^{-2/3} → +∞</code>（两侧都是 +∞），故有<b>竖直切线</b> <code>x = 0</code></li><li><code>f(x) = x^{2/3}</code>：<code>Δy/Δx = (Δx)^{-1/3}</code>，右极限 <code>+∞</code>、左极限 <code>−∞</code>，方向不一致，故<b>没有切线</b>，曲线在原点形成<b>尖点</b>（cusp）</li></ul><div class="callout warn"><b>竖直切线 ≠ 无切线</b><code>x^{1/3}</code> 在 0 处不可导（斜率不是有限数），但切线存在（竖直线）。答题时要区分「导数不存在」与「切线不存在」：前者可能是竖直切线，后者才是真正的几何断裂。</div><h3 id="s8">3.7 导数的记号与求值符号</h3><p>同一个导数有四种常见写法：</p><ul><li><b>Lagrange（撇号）</b>：<code>f′(x)</code>、<code>y′</code>——最简洁，适合写公式</li><li><b>Leibniz</b>：<code>dy/dx</code>、<code>df/dx</code>——强调「y 对 x 的变化率」，链式法则里最方便</li><li><b>Euler（算子）</b>：<code>Df</code>、<code>D_x f</code>——把求导看成作用在函数上的算子</li><li><b>Newton（点号）</b>：<code>ẏ</code>——物理学中表示对时间求导</li></ul><p>在一点 <code>x = x₀</code> 处的取值可写成 <code>f′(x₀)</code>、<code>y′|_{x=x₀}</code>、<code>dy/dx|_{x=x₀}</code>、<code>D_x y|_{x=x₀}</code>，其中竖线 <code>|_{x=x₀}</code> 叫<b>求值符号</b>（evaluation symbol），含义是「先把导数算成含 x 的表达式，再把 x₀ 代入」。</p><div class="callout warn"><b>先求导、后代值</b>求值符号永远作用在已经求完导的函数上。若先把 <code>x = x₀</code> 代进 f 再求导，得到的是常数（导数为 0），整题作废。</div><h3 id="s9">3.8 微分</h3><p><code>dx</code> 表示 x 的一个（任意）改变量。对可导函数 <code>y = f(x)</code>，<b>微分</b>（differential）定义为</p><p><b><code>dy = f′(x) dx</code></b>。</p><p>当 <code>dx</code> 很小时，<code>dy</code> 近似等于真实的改变量 <code>Δy</code>：<code>Δy ≈ f′(x)Δx</code>。这就是「用切线代替曲线」的线性近似，也是误差估计的基础。</p><p>源文件例子：<code>y = x²</code> 时 <code>dy = 2x dx</code>；<code>y = 1/x</code> 时 <code>dy = −dx/x²</code>。注意 <code>dy/dx</code> 因此可以真的当作「两个微分之商」来运算——这正是 Leibniz 记号好用的原因，链式法则 <code>dy/dx = (dy/du)(du/dx)</code> 看起来就像分数约分。</p><h3 id="s10">3.9 用定义求导三个基本例子</h3><p>(a) <code>f(x) = x²</code>：<code>f′(x) = lim ((x+Δx)² − x²)/Δx = lim (2xΔx + Δx²)/Δx = lim (2x + Δx) = 2x</code>。</p><p>(b) <code>f(x) = 1/x</code>：<code>f′(x) = lim (1/(x+Δx) − 1/x)/Δx = lim (−Δx)/(x(x+Δx)Δx) = lim −1/(x(x+Δx)) = −1/x²</code>。</p><p>(c) <code>f(x) = √x</code>：同乘共轭 <code>(√(x+Δx) + √x)</code>，分子变为 <code>Δx</code>，与分母约去，得 <code>f′(x) = lim 1/(√(x+Δx) + √x) = 1/(2√x)</code>（<code>x &gt; 0</code>）。</p><p>三个例子共用同一条流水线：写差商 → 展开或乘共轭 → 约掉分母的 Δx → 令 Δx → 0。这条流水线是「用定义求导」的唯一标准流程。</p><h3 id="s11">3.10 幂法则</h3><p>对正整数 n，<b><code>(xⁿ)′ = n xⁿ⁻¹</code></b>。证明思路：由二项式展开</p><p><code>(x + Δx)ⁿ = xⁿ + n xⁿ⁻¹Δx + O(Δx²)</code>，</p><p>其中 <code>O(Δx)²</code> 是「所有含 <code>(Δx)²、…、(Δx)ⁿ</code> 的项」的简写。代回差商，<code>xⁿ</code> 相消，剩下 <code>n xⁿ⁻¹ + O(Δx)</code>，令 <code>Δx → 0</code> 即得。这个法则对任意实数指数也成立（<code>x^a</code>，<code>x &gt; 0</code>），第 5 讲会用对数求导重新证明。</p><h3 id="s12">3.11 可导必连续，但连续不一定可导</h3><p>定理：若 f 在 x 处可导，则 f 在 x 处连续。证明只需一个变形：</p><p><code>lim_{Δx→0}(f(x+Δx) − f(x)) = lim_{Δx→0} [(f(x+Δx) − f(x))/Δx]·Δx = f′(x)·0 = 0</code>。</p><p>所以 <code>lim_{Δx→0} f(x+Δx) = f(x)</code>，即连续。</p><p>逆命题不成立：<code>f(x) = |x|</code> 在 <code>x = 0</code> 连续，但左导数 <code>−1</code>、右导数 <code>1</code>，导数不存在。连续的曲线可以有「尖角」，尖角处没有切线斜率。</p><h3 id="s13">3.12 左导数、右导数与区间上的可导性</h3><p>对定义在闭区间 <code>[a, b]</code> 上的函数：<b>右导数</b> <code>f′₊(a) = lim_{Δx→0⁺} (f(a+Δx) − f(a))/Δx</code>，<b>左导数</b> <code>f′₋(b) = lim_{Δx→0⁻} (f(b+Δx) − f(b))/Δx</code>。</p><p>称 f 在 <code>[a, b]</code> 上可导，如果 <code>f′₊(a)</code>、<code>f′₋(b)</code> 存在，且对每个内点 <code>x ∈ (a, b)</code> 都有 <code>f′(x)</code> 存在。</p><p>源文件用 <code>f(x) = |x|</code> 演练：<code>f′₊(0) = lim_{Δx→0⁺} (|Δx| − 0)/Δx = 1</code>，<code>f′₋(0) = lim_{Δx→0⁻} (|Δx| − 0)/Δx = −1</code>。两者不等，故 <code>f′(0)</code> 不存在。</p><h3 id="s14">3.13 基本导数表</h3><table><tr><th>f(x)</th><th>f′(x)</th><th>说明</th></tr><tr><td><code>c</code>（常数）</td><td><code>0</code></td><td>水平线斜率为 0</td></tr><tr><td><code>x</code></td><td><code>1</code></td><td>斜率恒为 1</td></tr><tr><td><code>x²</code></td><td><code>2x</code></td><td>幂法则 n = 2</td></tr><tr><td><code>1/x</code></td><td><code>−1/x²</code></td><td>n = −1</td></tr><tr><td><code>√x</code></td><td><code>1/(2√x)</code></td><td>n = 1/2</td></tr><tr><td><code>x^a</code></td><td><code>a x^{a−1}</code></td><td>任意实数指数</td></tr></table><p>这张表必须做到「看到就写」，因为后面所有法则都只是把这张表往外传播一层。</p><h3 id="s15">3.14 和、差与常数倍法则</h3><p>若 f、g 在 x 可导，c 为常数，则 <code>(f ± g)′(x) = f′(x) ± g′(x)</code>，<code>(cf)′(x) = c f′(x)</code>。</p><p>和的证明只需把差商拆开：<code>[(f+g)(x+Δx) − (f+g)(x)]/Δx = [(f(x+Δx) − f(x))/Δx] + [(g(x+Δx) − g(x))/Δx]</code>，再对两项分别取极限。常数倍同理，把 c 提出来即可。</p><p>源文件任务：<code>f(x) = x³ + 4x² − 5x − 9</code>，逐项求导得 <code>f′(x) = 3x² + 8x − 5</code>；<code>y = x⁴/8 − 2x^{5/2}</code>，得 <code>dy/dx = (1/2)x³ − 5x^{3/2}</code>。</p><h3 id="s16">3.15 乘积法则</h3><p><b><code>(fg)′(x) = f′(x)g(x) + f(x)g′(x)</code></b>。</p><p>证明的关键是「加一项再减一项」：把差商写成</p><p><code>[f(x+Δx)g(x+Δx) − f(x+Δx)g(x) + f(x+Δx)g(x) − f(x)g(x)]/Δx</code>，</p><p>前两项提出 <code>f(x+Δx)</code>、后两项提出 <code>g(x)</code>，分别取极限并用 <code>f</code> 的连续性（可导 ⇒ 连续），即得 <code>f′g + fg′</code>。</p><p>源文件例子：<code>d/dx[(x² − 1)(x³ + 3)]</code>。用乘积法则：<code>2x(x³+3) + (x²−1)·3x² = 2x⁴ + 6x + 3x⁴ − 3x² = 5x⁴ − 3x² + 6x</code>。若先展开再求导：<code>(x⁵ − x³ + 3x² − 3)′ = 5x⁴ − 3x² + 6x</code>，结果一致。</p><div class="callout warn"><b>(fg)′ ≠ f′g′</b>这是最经典的错误。乘积的导数要「轮流求导、相加」，不是两个导数相乘。用上面的例子检验：<code>f′g′ = (2x)(3x²) = 6x³</code>，与正确结果 <code>5x⁴ − 3x² + 6x</code> 完全不同。</div><h3 id="s17">3.16 倒数法则</h3><p>若 f 在 x 可导且 <code>f(x) ≠ 0</code>，则 <b><code>(1/f)′(x) = −f′(x)/f(x)²</code></b>。</p><p>证明：<code>[1/f(x+Δx) − 1/f(x)]/Δx = [f(x) − f(x+Δx)]/[Δx·f(x+Δx)f(x)]</code>，第一个因子趋于 <code>−f′(x)</code>，第二个因子趋于 <code>1/f(x)²</code>。</p><p>源文件任务：(a) <code>d/dx[1/(x²+1)] = −2x/(x²+1)²</code>；(b) <code>1/(x + 1/x)</code> 先化简为 <code>x/(x²+1)</code>，再用商法则得 <code>(1 − x²)/(x²+1)²</code>。</p><h3 id="s18">3.17 商法则</h3><p>若 f、g 在 x 可导且 <code>g(x) ≠ 0</code>，则</p><p><b><code>(f/g)′(x) = [f′(x)g(x) − f(x)g′(x)]/g(x)²</code></b>。</p><p>证明：把 <code>f/g</code> 写成 <code>f · (1/g)</code>，用乘积法则与倒数法则：<code>f′·(1/g) + f·(−g′/g²) = (f′g − fg′)/g²</code>。</p><p>记忆口诀：<b>「上导下不导，减去上不导下导，除以分母平方」</b>。分子顺序不能颠倒，否则差一个负号。</p><p>源文件例子：<code>y = (1 − x²)/(1 + x²)</code>，<code>y′ = [(−2x)(1+x²) − (1−x²)(2x)]/(1+x²)² = (−2x − 2x³ − 2x + 2x³)/(1+x²)² = −4x/(1+x²)²</code>。</p><p>源文件法线例子：<code>y = (x+1)/(x−1)</code> 在 <code>x = 2</code>。<code>y′ = [(x−1) − (x+1)]/(x−1)² = −2/(x−1)²</code>，在 2 处为 <code>−2</code>；法线斜率 <code>1/2</code>；切点 <code>(2, 3)</code>；法线 <code>y = (1/2)(x − 2) + 3 = x/2 + 2</code>。</p><h3 id="s19">3.18 链式法则</h3><p>若 g 在 x 可导、f 在 <code>g(x)</code> 可导，则复合函数 <code>f ∘ g</code> 在 x 可导，且</p><p><b><code>(f ∘ g)′(x) = f′(g(x))·g′(x)</code></b>。</p><p>Leibniz 写法：若 <code>y = f(u)</code>、<code>u = g(x)</code>，则 <b><code>dy/dx = (dy/du)·(du/dx)</code></b>。</p><p>这条法则的作用是「由外向内逐层剥」：最外层求导（内层原样保留），乘以内层的导数，如此反复。例如 <code>y = (6x − 7)⁵</code>：外层是 <code>u⁵</code>，内层 <code>u = 6x − 7</code>，故 <code>y′ = 5(6x−7)⁴ · 6 = 30(6x−7)⁴</code>。</p><p>源文件任务：<code>y = √(1 + x²)</code>，外层 <code>√u</code>、内层 <code>1 + x²</code>，<code>dy/dx = (1/(2√(1+x²)))·2x = x/√(1+x²)</code>。</p><div class="callout warn"><b>链式法则的两个高频错法</b>① 忘乘内层导数（写成 <code>5(6x−7)⁴</code> 而不是 <code>30(6x−7)⁴</code>）；② 把复合的顺序弄反（<code>f ∘ g</code> 与 <code>g ∘ f</code> 的导数一般不同，源文件专门用一页强调「Not Commutative」）。逐层写清「外层是谁、内层是谁」再动笔。</div><h3 id="s20">3.19 两个基本三角极限</h3><p>一切三角函数的导数都依赖两个极限。第一个：<b><code>lim_{θ→0} sin θ/θ = 1</code></b>。</p><p>证明（面积夹逼，弧度制）：在单位圆中取 <code>0 &lt; θ &lt; π/2</code>，<code>A(1, 0)</code>、<code>P(cos θ, sin θ)</code>、<code>T(1, tan θ)</code>。比较三块面积：</p><p>三角形 OAP 面积 <code>= (1/2)·1·sin θ = (1/2)sin θ</code>；扇形 OAP 面积 <code>= (1/2)·1²·θ = θ/2</code>；三角形 OAT 面积 <code>= (1/2)·1·tan θ = (1/2)tan θ</code>。</p><p>由「三角形 ⊂ 扇形 ⊂ 三角形」，得 <code>sin θ &lt; θ &lt; tan θ</code>。三边同除以 <code>sin θ &gt; 0</code>：<code>1 &lt; θ/sin θ &lt; 1/cos θ</code>；再取倒数（都为正，不等号反向）：<b><code>cos θ &lt; sin θ/θ &lt; 1</code></b>。令 <code>θ → 0⁺</code>，两端都趋于 1，由夹逼定理得右极限为 1。</p><p>对 <code>−π/2 &lt; θ &lt; 0</code> 用奇偶性：<code>sin θ/θ = sin(−θ)/(−θ)</code>，化为正角情形，故左极限也是 1，于是双侧极限为 1。</p><p>第二个：<b><code>lim_{θ→0} (cos θ − 1)/θ = 0</code></b>。用半角恒等式 <code>cos θ − 1 = −2 sin²(θ/2)</code>：</p><p><code>(cos θ − 1)/θ = −2 sin²(θ/2)/θ = −[sin(θ/2)/(θ/2)]·sin(θ/2) → −1·0 = 0</code>。</p><div class="callout tip"><b>这两个极限的用途</b>它们不只是「两个小题」：<code>sin</code> 与 <code>cos</code> 的导数公式完全由它们推出，而 <code>tan、sec、cot、csc</code> 的导数又由 <code>sin、cos</code> 加商法则推出。所以整章三角求导只有这两个「根」。</div><h3 id="s21">3.20 sin 与 cos 的导数</h3><p><b><code>(sin x)′ = cos x</code></b>。证明：用和角公式 <code>sin(x + Δx) = sin x cos Δx + cos x sin Δx</code>，</p><p><code>(sin(x+Δx) − sin x)/Δx = sin x·(cos Δx − 1)/Δx + cos x·(sin Δx/Δx) → sin x·0 + cos x·1 = cos x</code>。</p><p><b><code>(cos x)′ = −sin x</code></b>。证明：用余角恒等式 <code>cos x = sin(π/2 − x)</code> 与链式法则：</p><p><code>(cos x)′ = cos(π/2 − x)·(−1) = −sin x</code>。</p><div class="callout warn"><b>只在弧度制下成立</b>若用角度制，<code>lim sin θ/θ = π/180</code>，导数会多出一个常数因子。所有公式的正确性都以弧度制为前提，这也是本课一律使用弧度的原因。</div><h3 id="s22">3.21 另外四个三角函数</h3><p>定义与基本性质：</p><table><tr><th>函数</th><th>定义</th><th>定义域</th><th>周期</th><th>奇偶性</th></tr><tr><td><code>tan x</code></td><td><code>sin x/cos x</code></td><td><code>x ≠ π/2 + kπ</code></td><td><code>π</code></td><td>奇函数</td></tr><tr><td><code>cot x</code></td><td><code>cos x/sin x</code></td><td><code>x ≠ kπ</code></td><td><code>π</code></td><td>奇函数</td></tr><tr><td><code>sec x</code></td><td><code>1/cos x</code></td><td><code>x ≠ π/2 + kπ</code></td><td><code>2π</code></td><td>偶函数</td></tr><tr><td><code>csc x</code></td><td><code>1/sin x</code></td><td><code>x ≠ kπ</code></td><td><code>2π</code></td><td>奇函数</td></tr></table><p>四个导数（全部由 sin、cos 加商法则或倒数法则推出）：</p><ul><li><code>(tan x)′ = sec²x</code>：<code>(cos·cos − sin·(−sin))/cos² = 1/cos²</code></li><li><code>(cot x)′ = −csc²x</code>：<code>(−sin·sin − cos·cos)/sin² = −1/sin²</code></li><li><code>(sec x)′ = sec x tan x</code>：<code>−(−sin)/cos² = sin/cos²</code></li><li><code>(csc x)′ = −csc x cot x</code>：<code>−cos/sin²</code></li></ul><p>连续性与可导性：<code>sin</code>、<code>cos</code> 处处连续；其余四个在其定义域内连续（间断只出现在分母为零处）；六个函数都在各自定义域内可导。例如 <code>tan</code> 在 <code>x ≠ π/2 + kπ</code> 处可导。</p><p>源文件的三角导数总表，建议按「谁求导变成谁」记：<code>sin → cos → −sin → −cos → sin</code> 四步循环；<code>tan → sec²</code>、<code>sec → sec·tan</code>、<code>cot → −csc²</code>、<code>csc → −csc·cot</code>。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>tangent line</td><td>切线</td><td>The limiting position of secant lines through a fixed point.</td></tr><tr><td>secant line</td><td>割线</td><td>The line through two distinct points of a curve.</td></tr><tr><td>difference quotient</td><td>差商（牛顿商）</td><td>(f(x+h) − f(x))/h, the slope of the secant and the average rate of change.</td></tr><tr><td>derivative</td><td>导数</td><td>f′(x) = lim_{h→0} (f(x+h) − f(x))/h; the slope of the tangent.</td></tr><tr><td>differentiable</td><td>可导</td><td>The derivative exists at that point; differentiability implies continuity.</td></tr><tr><td>normal line</td><td>法线</td><td>The line through the point perpendicular to the tangent; slope −1/m.</td></tr><tr><td>vertical tangent</td><td>竖直切线</td><td>The difference quotient tends to ±∞ in the same direction; x = a.</td></tr><tr><td>cusp</td><td>尖点</td><td>One-sided slopes tend to +∞ and −∞, so no tangent exists.</td></tr><tr><td>differential</td><td>微分</td><td>dy = f′(x)dx, the linear approximation of the actual change Δy.</td></tr><tr><td>power rule</td><td>幂法则</td><td>(xⁿ)′ = n xⁿ⁻¹, valid for all real exponents.</td></tr><tr><td>product rule</td><td>乘积法则</td><td>(fg)′ = f′g + fg′; never f′g′.</td></tr><tr><td>reciprocal rule</td><td>倒数法则</td><td>(1/f)′ = −f′/f².</td></tr><tr><td>quotient rule</td><td>商法则</td><td>(f/g)′ = (f′g − fg′)/g².</td></tr><tr><td>chain rule</td><td>链式法则</td><td>(f∘g)′ = f′(g(x))g′(x), or dy/dx = (dy/du)(du/dx).</td></tr><tr><td>fundamental trig limit</td><td>基本三角极限</td><td>lim_{θ→0} sin θ/θ = 1 and lim_{θ→0}(cos θ − 1)/θ = 0.</td></tr><tr><td>evaluation symbol</td><td>求值符号</td><td>The bar |_{x=a} meaning substitute x = a after differentiating.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p8–p12）　求 y = x² 在 (1, 1) 处的切线方程，并求该切线与两坐标轴围成的三角形面积。</div><p><b>斜率：</b>用定义，<code>m = lim_{Δx→0} ((1+Δx)² − 1)/Δx = lim (2Δx + Δx²)/Δx = lim (2 + Δx) = 2</code>。</p><p><b>切线：</b><code>y = f(1) + f′(1)(x − 1) = 1 + 2(x − 1) = 2x − 1</code>。</p><p><b>截距：</b>令 <code>y = 0</code> 得 <code>x = 1/2</code>；令 <code>x = 0</code> 得 <code>y = −1</code>。</p><p><b>面积：</b><code>A = (1/2)·|1/2|·|−1| = 1/4</code>。</p><p><b>一般化：</b>切点 <code>(x₀, x₀²)</code> 时切线为 <code>y = 2x₀x − x₀²</code>，截距 <code>x₀/2</code> 与 <code>−x₀²</code>，面积 <code>x₀³/4</code>。这个结论在填空题里常直接考。</p></div><div class="qa"><div class="q">例 2（源文件 p24–p25）　用定义求 (a) x²、(b) 1/x、(c) √x 的导数。</div><p>(a) <code>((x+Δx)² − x²)/Δx = (2xΔx + (Δx)²)/Δx = 2x + Δx → 2x</code>。</p><p>(b) <code>(1/(x+Δx) − 1/x)/Δx = ((x − (x+Δx))/(x(x+Δx)))/Δx = −1/(x(x+Δx)) → −1/x²</code>。</p><p>(c) 同乘共轭：<code>(√(x+Δx) − √x)/Δx = Δx/(Δx(√(x+Δx) + √x)) = 1/(√(x+Δx) + √x) → 1/(2√x)</code>。</p><p><b>统一视角：</b>三题都在做同一件事——把差商化成「分母不含 Δx」的形式。①整式展开约分；②分式通分约分；③根式乘共轭。这三招覆盖了定义法求导的全部初等情形。</p></div><div class="qa"><div class="q">例 3（源文件 p4）　求 d/dx[(x² − 1)(x³ + 3)]，用两种方法并比较。</div><p><b>方法 1（乘积法则）：</b><code>2x(x³ + 3) + (x² − 1)(3x²) = 2x⁴ + 6x + 3x⁴ − 3x² = 5x⁴ − 3x² + 6x</code>。</p><p><b>方法 2（先展开）：</b><code>(x² − 1)(x³ + 3) = x⁵ − x³ + 3x² − 3</code>，逐项求导得 <code>5x⁴ − 3x² + 6x</code>。</p><p>两法一致。当因式较多或次数较高时，乘积法则明显更快；当因式简单（如一次乘一次）时，展开反而省事。判断标准：展开后项数是否可控。</p><p><b>反例警示：</b>若误写 <code>(fg)′ = f′g′ = 6x³</code>，与正确答案相差极大，代 <code>x = 1</code> 检验：正确值 <code>5 − 3 + 6 = 8</code>，错误值 6，立刻暴露。</p></div><div class="qa"><div class="q">例 4（源文件 p16、p26、p30）　求导数：(a) y = √(1 + x²)；(b) y = (6x − 7)⁵；(c) y = x² sin x。</div><p>(a) 外层 <code>√u</code> 的导数为 <code>1/(2√u)</code>，内层 <code>u = 1 + x²</code> 的导数为 <code>2x</code>：<code>dy/dx = 1/(2√(1+x²))·2x = x/√(1+x²)</code>。</p><p>(b) 外层 <code>u⁵ → 5u⁴</code>，内层 <code>6x − 7 → 6</code>：<code>y′ = 5(6x−7)⁴·6 = 30(6x−7)⁴</code>。</p><p>(c) 乘积法则 + 链式法则：<code>y′ = 2x·sin x + x²·cos x</code>。这里 <code>sin x</code> 的内层是 x（导数为 1），所以看不出链式法则的痕迹，但写全应是 <code>2x sin x + x²·cos x·1</code>。</p><p><b>检查方法：</b>把结果在特殊点代值。例如 (a) 在 <code>x = 0</code> 处 <code>y′ = 0</code>（曲线 <code>√(1+x²)</code> 在 0 处有水平切线），与公式一致。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>y = 1/x</code> 在 <code>x = 2</code> 处的切线方程与法线方程。</li><li>求 <code>y = x³</code> 在 <code>(1, 1)</code> 处的法线方程。</li><li>用定义求 <code>f(x) = x³</code> 的导数。</li><li>求导数：<code>f(x) = x³ + 4x² − 5x − 9</code>；<code>y = x⁴/8 − 2x^{5/2}</code>。</li><li>求导数：<code>1/(x² + 1)</code>；<code>x/(x² + 1)</code>；<code>(1 − x²)/(1 + x²)</code>。</li><li>求导数：<code>y = sin(3x)cos x</code>；<code>y = tan(2x)</code>；<code>y = sec(1 − x²)</code>。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>y′ = −1/x²</code>，在 2 处斜率 <code>−1/4</code>，切点 <code>(2, 1/2)</code>；切线 <code>y = −(1/4)(x − 2) + 1/2 = −x/4 + 1</code>；法线斜率 4，<code>y = 4(x − 2) + 1/2 = 4x − 15/2</code>。</p><p><b>2.</b> <code>y′ = 3x²</code>，在 1 处斜率 3，法线斜率 <code>−1/3</code>；<code>y = −(1/3)(x − 1) + 1 = −x/3 + 4/3</code>。</p><p><b>3.</b> <code>((x+Δx)³ − x³)/Δx = (3x²Δx + 3x(Δx)² + (Δx)³)/Δx = 3x² + 3xΔx + (Δx)² → 3x²</code>。</p><p><b>4.</b> <code>f′(x) = 3x² + 8x − 5</code>；<code>dy/dx = (1/2)x³ − 5x^{3/2}</code>（把 <code>x⁴/8</code> 看成 <code>(1/8)x⁴</code>，导数 <code>(4/8)x³</code>）。</p><p><b>5.</b> <code>−2x/(x²+1)²</code>（倒数法则）；<code>x/(x²+1)</code> 用商法则得 <code>(1 − x²)/(x²+1)²</code>；<code>(1−x²)/(1+x²)</code> 用商法则得 <code>−4x/(1+x²)²</code>。注意后两题结构相似但结果不同，代 <code>x = 0</code> 检验：前者为 1、后者为 0。</p><p><b>6.</b> <code>3cos3x·cos x − sin3x·sin x</code>（乘积法则 + 链式法则）；<code>2sec²(2x)</code>；<code>−2x sec(1−x²)tan(1−x²)</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>①用定义求切线/法线（每年至少一小题）；②乘积、商、链式法则的组合求导；③六个三角函数的导数表；④「可导 ⇒ 连续」的证明或反例（<code>|x|</code> 在 0 处）；⑤竖直切线、尖点的判定。</div><div class="callout warn"><b>易错 1</b><b>漏乘内层导数</b>。链式法则是「外导 × 内导」，写 <code>(6x−7)⁵</code> 的导数时漏掉 6 是最常见的失分。</div><div class="callout warn"><b>易错 2</b><b>商法则分子顺序颠倒</b>。分子必须是 <code>f′g − fg′</code>；写成 <code>fg′ − f′g</code> 会整体差一个负号。</div><div class="callout warn"><b>易错 3</b><b>把 <code>(fg)′</code> 当成 <code>f′g′</code></b>，或把 <code>(f/g)′</code> 当成 <code>f′/g′</code>。用具体数字代值检验（如 x = 1）能立刻发现。</div><div class="callout tip"><b>进阶</b>把六个三角函数的导数记成两条链：<code>sin → cos → −sin → −cos</code>（四阶循环）与 <code>tan → sec²</code>、<code>sec → sec·tan</code>（另一条）。考场上推导太慢，记忆更可靠。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s23">方法与清单</h2><h3 id="s24">用定义求导（四步）</h3><ol class="steps"><li>写出差商 <code>(f(x+Δx) − f(x))/Δx</code>，先不要代 Δx = 0</li><li>按结构变形：整式展开、分式通分、根式乘共轭</li><li>约去分母中的 Δx（这是关键一步）</li><li>令 <code>Δx → 0</code>，把结果整理成标准形式并注明定义域</li></ol><h3 id="s25">写切线/法线方程（三步）</h3><ol class="steps"><li>求切点纵坐标 <code>f(a)</code> 与斜率 <code>f′(a)</code>（不可导处先判定切线是否存在）</li><li>切线：<code>y = f(a) + f′(a)(x − a)</code>；法线斜率取 <code>−1/f′(a)</code>（f′(a) = 0 时法线竖直）</li><li>按题目要求整理形式，并用「法线过切点」回代验算</li></ol><h3 id="s26">复合函数求导（由外向内）</h3><ol class="steps"><li>把表达式拆成「外层函数 + 内层函数」两层，必要时多拆几层</li><li>外层求导，内层原样保留</li><li>乘以内层导数；若有三层，继续对内层重复第 2、3 步</li><li>化简并用特殊点代值检查（如 x = 0、x = 1）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p2</td><td>欧几里得的圆切线定义及其局限</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p3–p6</td><td>割线、平均变化率、牛顿商、切线作为割线极限</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p7–p12</td><td>切线方程、y = x² 在 (1,1) 的切线、切线与坐标轴围三角形面积</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p13–p15</td><td>曲线在一点的斜率、1/x 在 x = 2 的斜率、法线及其方程</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p16–p18</td><td>竖直切线（x^{1/3}）与尖点（x^{2/3}）</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p19–p23</td><td>导数定义、四种记号、求值符号、微分 dy = f′(x)dx</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p24–p26</td><td>用定义求 x²、1/x、√x 的导数、幂法则与 O(Δx)² 记号</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p27–p29</td><td>可导 ⇒ 连续、逆不真、左右导数、|x| 在 0 处不可导</td></tr><tr><td>Topic 3/EMI_Week3_Lecture1.pdf</td><td>p30–p32</td><td>基本导数表、和差与常数倍法则及其证明、两道求导任务</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p2–p4</td><td>乘积法则证明与 (x²−1)(x³+3) 的双解法</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p5–p6</td><td>倒数法则及 1/(x²+1)、1/(x+1/x)</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p7–p10</td><td>商法则、两个商法则任务、(x+1)/(x−1) 的法线</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p11–p16</td><td>链式法则、Leibniz 写法、复合不可交换、两道链式任务</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p17–p23</td><td>sin θ/θ = 1 的面积夹逼证明、(cosθ−1)/θ = 0、sin 与 cos 的导数</td></tr><tr><td>Topic 3/EMI_Week3_Lecture2.pdf</td><td>p24–p31</td><td>tan/sec/cot/csc 的定义域周期奇偶、四个导数推导与总表、连续可导性</td></tr><tr><td>（跳过）Topic 3/Lecture One.html、Lecture Two.html</td><td>—</td><td>登录页快照；p8–p10、p12、p15、p18 等为纯图形页，按相邻文字复原</td></tr><tr><td>（拓展）</td><td>—</td><td>「切线与坐标轴围成三角形面积」的一般公式 x₀³/4、切线与法线截距的通用套路为补充；源文件以单题形式出现</td></tr></table></section><div class="lnav"><a class="prev" href="t2-limits-continuity.html">← 第 1 章 · 极限与连续性</a><a class="next" href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

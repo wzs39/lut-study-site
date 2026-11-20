@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑩ 模块、标准库与包 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-5.html">第 5 章 文件、模块与异常</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、模块是什么</a><a class="toc-l2" href="#s3">二、三种导入写法</a><a class="toc-l2" href="#s4">三、math：数学函数</a><a class="toc-l2" href="#s5">四、random：随机</a><a class="toc-l2" href="#s6">五、datetime：日期与时间</a><a class="toc-l3" href="#s7">5.1 date 与 timedelta</a><a class="toc-l3" href="#s8">5.2 datetime.now() 与两种格式化</a><a class="toc-l3" href="#s9">5.3 日期运算的边界</a><a class="toc-l2" href="#s10">六、time：秒、暂停与计时</a><a class="toc-l2" href="#s11">七、包与 pip</a><a class="toc-l3" href="#s12">7.1 模块与包</a><a class="toc-l3" href="#s13">7.2 安装并验证 NumPy</a><a class="toc-l2" href="#s14">八、NumPy 数组</a><a class="toc-l3" href="#s15">8.1 为什么不用列表</a><a class="toc-l3" href="#s16">8.2 创建数组</a><a class="toc-l3" href="#s17">8.3 三个属性</a><a class="toc-l3" href="#s18">8.4 索引与切片</a><a class="toc-l3" href="#s19">8.5 矩阵运算</a><a class="toc-l3" href="#s20">8.6 逆矩阵</a><a class="toc-l2" href="#s21">九、常见错误与调试</a><a class="toc-l2" href="#s22">操作清单</a><a class="toc-l3" href="#s23">用模块之前</a><a class="toc-l3" href="#s24">调试时的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a class="toc-l3" href="ch10-modules.html">▸ ⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑩ 模块、标准库与包</h1><p class="lead">Modules, Standard Library and Packages <span class="badge mute">30352</span> <span class="badge mute">第 10 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 文件、模块与异常</a></p><p class="src">原始文件：<code>Chapter 8 - Part 1 - Introduction to modules.pdf</code> <code>Chapter 8 - Part 2 - Math.pdf</code> <code>Chapter 8 - Part 3 - Random.pdf</code> <code>Chapter 8 - Part 4 - Dates.pdf</code> <code>Chapter 8 - Part 5 - Formating datetime.pdf</code> <code>Chapter 8 - Part 6 - Time.pdf</code> <code>packages.pdf</code> <code>installing_numpy.pdf</code> <code>using_numpy.pdf</code> <code>14_Chapter 8_1_Chapter 8 Code Examples_L8E6.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>到第 9 讲为止，所有功能都是自己写的。这一讲开始「站在别人肩膀上」：用标准库里的 <code>math</code>、<code>random</code>、<code>datetime</code>、<code>time</code>，再装一个第三方的 NumPy 处理矩阵。项目作业里读日期、算价格、随机分配，全靠这些模块。</p><p>它也是第 6 讲「函数库」想法的落地：你写的函数可以给别人用，别人写的模块也可以给你用。第 12 讲会把这个想法倒过来——把自己的函数写成模块。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说出模块与包的区别，并解释为什么不该重复实现已有功能</li><li>用 <code>import</code> / <code>from ... import</code> / <code>as</code> 三种写法导入并正确访问</li><li>用 <code>math</code> 做取整、阶乘、对数、开方，并说出与 <code>int()</code> 截断的区别</li><li>用 <code>random</code> 生成指定范围的随机数，并用 <code>seed</code> 复现</li><li>用 <code>date</code> + <code>timedelta</code> 做日期加减，用 <code>strftime</code> / <code>strptime</code> 双向转换</li><li>创建 NumPy 数组、查 <code>shape</code>，用 <code>@</code> 做矩阵乘法并用 <code>inv</code> 求逆</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、模块是什么</h2><p>模块（module）就是一个 <code>.py</code> 文件，里面装着函数、类和常量，供别的程序导入使用（Chapter 8 Part 1 p3）。你写的每个 Python 文件其实都是模块——第 12 讲会讲到「自己的模块」。</p><p>好处只有一个但很大：<b>不用重复造轮子</b>。<code>math</code> 里的开方、<code>datetime</code> 里的日期运算，都是别人写好、测试过的代码（Part 1 p4）。这也是开源生态的基础。</p><p>Python 标准库（standard library）自带两百多个模块，装好 Python 就能用，例如 <code>math</code>、<code>random</code>、<code>datetime</code>、<code>time</code>、<code>csv</code>、<code>json</code>。此外还有海量的第三方模块，质量参差——课件提醒：有些非常好用，有些根本跑不起来，还有些会偷数据，用之前要看清来源。</p><pre><code>import math
+
+radius = 5
+circumference = 2 * math.pi * radius
+print(round(circumference, 2))</code></pre><pre><code>31.42</code></pre><h2 id="s3">二、三种导入写法</h2><p>课件的 L8E1 把三种写法放在一起（Part 1 p6–p8）：</p><pre><code>import math
+from math import pi
+import math as m
+
+print(math.pi)
+print(pi)
+print(m.pi)</code></pre><pre><code>3.141592653589793
+3.141592653589793
+3.141592653589793</code></pre><table><tr><th>写法</th><th>用法</th><th>优点</th><th>风险</th></tr><tr><td><code>import math</code></td><td><code>math.sqrt(2)</code></td><td>来源清楚，不污染命名空间</td><td>名字长一点</td></tr><tr><td><code>from math import pi</code></td><td>直接用 <code>pi</code></td><td>短</td><td>名字可能与自己的变量冲突</td></tr><tr><td><code>import math as m</code></td><td><code>m.sqrt(2)</code></td><td>短且来源仍在</td><td>别名太随便会看不懂</td></tr></table><p>别名有行业惯例：<code>numpy as np</code>、<code>datetime as dt</code>。课件提醒不要自己乱起名——别人读你的代码时，<code>np</code> 一眼就懂，<code>x</code> 就得猜。</p><p>还有 <code>from math import *</code> 把所有名字倒进来，简单但危险：你不知道哪些名字被覆盖了。这门课只要求能读懂，不建议使用。</p><p>忘记模块里有什么时，用 <code>help()</code> 查（Part 1 p9）：</p><pre><code>import math
+help("math")</code></pre><p>它会打印模块说明与全部函数清单。IDLE 里也可以直接输 <code>dir(math)</code> 看名字列表（拓展）。</p><h2 id="s4">三、math：数学函数</h2><p>课件列的六个函数（Part 2 p2）覆盖了这门课会用到的全部数学需求：</p><table><tr><th>函数</th><th>作用</th><th>例子</th><th>结果</th></tr><tr><td><code>math.ceil(x)</code></td><td>向上取整</td><td><code>math.ceil(5.1)</code></td><td><code>6</code></td></tr><tr><td><code>math.floor(x)</code></td><td>向下取整</td><td><code>math.floor(5.9)</code></td><td><code>5</code></td></tr><tr><td><code>math.factorial(x)</code></td><td>阶乘</td><td><code>math.factorial(5)</code></td><td><code>120</code></td></tr><tr><td><code>math.exp(x)</code></td><td>e 的 x 次方</td><td><code>math.exp(1)</code></td><td><code>2.718...</code></td></tr><tr><td><code>math.log(x, base)</code></td><td>对数</td><td><code>math.log(8, 2)</code></td><td><code>3.0</code></td></tr><tr><td><code>math.sqrt(x)</code></td><td>平方根</td><td><code>math.sqrt(144)</code></td><td><code>12.0</code></td></tr></table><pre><code>import math
+
+print(math.ceil(5.1), math.floor(5.9))
+print(math.factorial(5))
+print(math.log(8, 2), math.sqrt(144))
+print(round(math.pi, 4))</code></pre><pre><code>6 5
+120
+3.0 12.0
+3.1416</code></pre><p>注意 <code>ceil</code> / <code>floor</code> 与第 3 讲的 <code>int()</code> 不同：<code>int(-5.9)</code> 向零截断得 −5，<code>math.floor(-5.9)</code> 向下取整得 −6。负数时差别很明显。</p><p><code>math.log(x)</code> 不带第二个参数时是自然对数（以 e 为底），<code>math.log(100, 10)</code> 才是常用对数。开方也可以用 <code>x ** 0.5</code>（第 6 讲的海伦公式就是这么写的），两者结果相同。</p><h2 id="s5">四、random：随机</h2><p>四个常用函数（Part 3 p2）：</p><table><tr><th>函数</th><th>作用</th><th>取值范围</th></tr><tr><td><code>random.randrange(stop)</code></td><td>0 到 stop−1 的随机整数</td><td>不含 stop</td></tr><tr><td><code>random.randrange(start, stop, step)</code></td><td>等差序列中随机取一个</td><td>不含 stop</td></tr><tr><td><code>random.randint(a, b)</code></td><td>a 到 b 的随机整数</td><td><b>含两端</b></td></tr><tr><td><code>random.choice(seq)</code></td><td>从序列里随机取一个元素</td><td>字符串、列表都行</td></tr><tr><td><code>random.seed(n)</code></td><td>设定随机种子</td><td>让结果可复现</td></tr></table><pre><code>import random
+
+print(random.randrange(0, 11, 2))
+print(random.randint(1, 6))
+fruits = ["apple", "banana", "cherry", "date"]
+print(random.choice(fruits))</code></pre><p>每次运行结果不同。想复现同一串随机数（调试、出题、测试）就固定种子：</p><pre><code>import random
+
+random.seed(42)
+print([random.randint(1, 6) for _ in range(5)])</code></pre><pre><code>[6, 1, 1, 6, 3]</code></pre><p><code>randint(1, 6)</code> 与 <code>randrange(1, 7)</code> 等价，都给出 1–6；写 <code>randrange(1, 6)</code> 就永远掷不出 6——这是最常犯的随机数 off-by-one。</p><h2 id="s6">五、datetime：日期与时间</h2><h3 id="s7">5.1 date 与 timedelta</h3><p>课件说「时间在编程里很难」，因为要处理时区、闰年、月末（Part 4 p1）。<code>datetime</code> 模块把这些复杂度收进类里，我们只用最简单的几个。</p><pre><code>from datetime import date, timedelta
+
+today = date.today()
+print(today)
+yesterday = date(2023, 10, 29)
+print(yesterday)
+print(yesterday + timedelta(days=7))
+print((date(2024, 1, 5) - date(2023, 12, 20)).days)</code></pre><pre><code>2026-11-20
+2023-10-29
+2023-11-05
+16</code></pre><p><code>date</code> 表示年月日，<code>timedelta</code> 表示一段时长；两者相加得到新日期，两个日期相减得到天数。<b>不要自己写「加 30 天」的月份运算</b>——月末、闰年全都会错。</p><h3 id="s8">5.2 datetime.now() 与两种格式化</h3><p>带时分秒的时间用 <code>datetime</code> 类。<code>now()</code> 取当前时刻，<code>strftime()</code> 把时间对象变字符串，<code>strptime()</code> 把字符串变时间对象（Part 5 p2–p5）。名字只差一个字母，方向相反：<b>f = format（格式化输出），p = parse（解析输入）</b>。</p><pre><code>from datetime import datetime
+
+now = datetime.now()
+print(now.strftime("%Y-%m-%d %H:%M:%S"))
+print(now.strftime("%d.%m.%Y"))
+print(now.strftime("%B"))
+
+d = datetime.strptime("15:30 31.10.2023", "%H:%M %d.%m.%Y")
+print(d)
+print(d.strftime("%Y/%m/%d"))</code></pre><pre><code>2026-11-20 02:53:16
+20.11.2026
+November
+2023-10-31 15:30:00
+2023/10/31</code></pre><p>第二个参数是格式字符串，必须与输入字符串<b>逐字符对应</b>：<code>"%H:%M %d.%m.%Y"</code> 里既有冒号、点号，也有空格，输入少一个空格就抛 <code>ValueError</code>。</p><p>课件给了一张完整的格式码表（Part 5 p6），常用的这些要记住：</p><table><tr><th>格式码</th><th>含义</th><th>例子</th></tr><tr><td><code>%Y</code></td><td>四位年份</td><td><code>2026</code></td></tr><tr><td><code>%m</code></td><td>两位月份</td><td><code>01</code>–<code>12</code></td></tr><tr><td><code>%d</code></td><td>两位日期</td><td><code>01</code>–<code>31</code></td></tr><tr><td><code>%H</code> / <code>%M</code> / <code>%S</code></td><td>24 小时制时 / 分 / 秒</td><td><code>15</code> / <code>30</code> / <code>00</code></td></tr><tr><td><code>%I</code></td><td>12 小时制小时</td><td><code>01</code>–<code>12</code></td></tr><tr><td><code>%p</code></td><td>AM / PM</td><td><code>PM</code></td></tr><tr><td><code>%B</code> / <code>%b</code></td><td>月份全名 / 缩写</td><td><code>November</code> / <code>Nov</code></td></tr><tr><td><code>%A</code> / <code>%a</code></td><td>星期全名 / 缩写</td><td><code>Wednesday</code> / <code>Wed</code></td></tr><tr><td><code>%j</code></td><td>一年中的第几天</td><td><code>001</code>–<code>366</code></td></tr><tr><td><code>%U</code> / <code>%W</code></td><td>周数（周日起 / 周一起）</td><td><code>00</code>–<code>53</code></td></tr></table><div class="callout warn"><b>%m 与 %M 不是一回事</b><code>%m</code> 是<b>月份</b>，<code>%M</code> 是<b>分钟</b>。大小写写反是日期题最常见的错误，输出会莫名其妙地错位。同理 <code>%H</code>（24 小时）与 <code>%I</code>（12 小时）、<code>%d</code>（日）与 <code>%D</code>（无此码）。</div><h3 id="s9">5.3 日期运算的边界</h3><p>课件 L8E5 里有这么一行：<code>datetime(today.year, today.month, today.day + 1, 9, 0, 0)</code>。它在大多数日子正确，但若今天是月末（如 11 月 30 日），<code>day + 1 = 31</code> 会抛 <code>ValueError: day is out of range for month</code>。正确做法是用 <code>timedelta</code>：</p><pre><code>from datetime import datetime, timedelta
+
+tomorrow = datetime.now() + timedelta(days=1)
+print(tomorrow.strftime("%Y-%m-%d"))
+</code></pre><p>这类「用手算代替库函数」的写法，是日期题丢分的第二大原因。</p><h2 id="s10">六、time：秒、暂停与计时</h2><p>课件列的三个函数（Part 6 p2）各有明确用途：</p><table><tr><th>函数</th><th>返回</th><th>用途</th></tr><tr><td><code>time.time()</code></td><td>自 1970-01-01 UTC 起的秒数（浮点）</td><td>记录时间戳、算耗时</td></tr><tr><td><code>time.sleep(n)</code></td><td>无</td><td>暂停 n 秒（可以是小数）</td></tr><tr><td><code>time.perf_counter()</code></td><td>高精度秒数</td><td>测量短耗时，比 <code>time()</code> 准</td></tr></table><pre><code>import time
+
+start = time.perf_counter()
+total = 0
+for i in range(1000000):
+    total = total + i
+end = time.perf_counter()
+print("sum:", total)
+print("elapsed:", round(end - start, 4), "s")</code></pre><pre><code>sum: 499999500000
+elapsed: 0.0412 s</code></pre><p>耗时数字随机器不同，重要的是方法：<b>开始前后各取一次，相减</b>。测短间隔要用 <code>perf_counter()</code>，<code>time()</code> 的分辨率可能只有几十毫秒，测不出来。</p><h2 id="s11">七、包与 pip</h2><h3 id="s12">7.1 模块与包</h3><p>模块是一个 <code>.py</code> 文件；<b>包</b>（package）是一个目录，里面装着一个或多个模块（packages p3）。标准库模块随 Python 装好，第三方包要自己装。</p><p>第三方包发布在 PyPI（Python Package Index）上，用 <code>pip</code> 安装（packages p4–p5）：</p><pre><code>pip install numpy
+pip uninstall numpy
+pip install --upgrade numpy
+pip --version</code></pre><p><code>pip</code> 是 Python 自带的包管理器（名字是「Pip Installs Packages」的递归缩写）。安装完就能 <code>import numpy</code>；如果 import 报 <code>ModuleNotFoundError</code>，通常是「装到了另一个 Python 环境」——终端里的 <code>pip</code> 与 IDLE 用的解释器不是同一个（拓展）。</p><h3 id="s13">7.2 安装并验证 NumPy</h3><p>本课用 NumPy 处理矩阵（installing_numpy p2）。安装后验证方式很朴素：在 IDLE 里 <code>import numpy</code>，没有报错就成功。</p><pre><code>import numpy as np
+print(np.__version__)</code></pre><pre><code>2.5.4</code></pre><h2 id="s14">八、NumPy 数组</h2><h3 id="s15">8.1 为什么不用列表</h3><p>NumPy 数组（array）为数值计算优化：数据存在连续内存块里，访问快、数学运算快，而且支持<b>整体运算</b>——不用写循环（using_numpy p2）。代价是数组创建后大小固定，且元素类型必须一致。</p><h3 id="s16">8.2 创建数组</h3><pre><code>import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+print(a)
+m = np.array([[1, 2, 3], [4, 5, 6]])
+print(m)
+print(np.zeros((2, 2)))
+print(np.ones((2, 2)))
+print(np.eye(3))</code></pre><pre><code>[1 2 3 4 5]
+[[1 2 3]
+ [4 5 6]]
+[[0. 0.]
+ [0. 0.]]
+[[1. 1.]
+ [1. 1.]]
+[[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]</code></pre><p>注意打印格式：没有逗号，元素之间用空格。<code>zeros</code> / <code>ones</code> 默认是浮点，所以带小数点；<code>dtype=int</code> 可以指定整型（拓展）。<code>np.empty</code> 不初始化，里面是内存里的残留值，不要指望它是 0。</p><h3 id="s17">8.3 三个属性</h3><pre><code>import numpy as np
+
+m = np.zeros((2, 4))
+print(m.shape)
+print(m.size)
+print(m.dtype)</code></pre><pre><code>(2, 4)
+8
+float64</code></pre><p><code>shape</code> 是「行数, 列数」的元组；<code>size</code> 是元素总数（行×列）；<code>dtype</code> 是元素类型。三者常被拿来检查数组是不是建对了。</p><h3 id="s18">8.4 索引与切片</h3><p>NumPy 用<b>一个方括号里的逗号</b>同时给行列下标，这与普通列表的 <code>M[1][2]</code> 不同：</p><pre><code>import numpy as np
+
+m = np.array([[1, 2, 3], [4, 5, 6]])
+print(m[1, 2])
+print(m[0, :])
+print(m[:, 1])</code></pre><pre><code>6
+[1 2 3]
+[2 5]</code></pre><p><code>m[0, :]</code> 是第 0 行全部列，<code>m[:, 1]</code> 是所有行的第 1 列。<code>:</code> 表示「这一维全要」。若写成 <code>m[1][2]</code> 也能得到 6，但每多一层索引就会多产生一个中间数组，效率更低。</p><h3 id="s19">8.5 矩阵运算</h3><p>同样形状的数组可以直接相加，逐元素相加：</p><pre><code>import numpy as np
+
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+print(a + b)
+print(a * b)</code></pre><pre><code>[[ 6  8]
+ [10 12]]
+[[ 5 12]
+ [21 32]]</code></pre><p><code>+</code> 与 <code>*</code> 都是<b>逐元素</b>运算，<code>a * b</code> 不是矩阵乘法！矩阵乘法要用 <code>np.dot(a, b)</code> 或 <code>@</code> 运算符（using_numpy p9–p11），前提是「左矩阵的列数 = 右矩阵的行数」：</p><pre><code>import numpy as np
+
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+print(np.dot(a, b))
+print(a @ b)</code></pre><pre><code>[[19 22]
+ [43 50]]
+[[19 22]
+ [43 50]]</code></pre><p>手算验证第一个元素：1×5 + 2×7 = 19；第二行第一列：3×5 + 4×7 = 43。这个「行乘列再求和」的定义要能默写。</p><h3 id="s20">8.6 逆矩阵</h3><p>只有方阵才可能有逆矩阵，且行列式不为零。用 <code>np.linalg.inv()</code> 求逆（using_numpy p12–p14）：</p><pre><code>import numpy as np
+
+m = np.array([[2, 3], [1, 4]])
+inv = np.linalg.inv(m)
+print(inv)
+print(m @ inv)</code></pre><pre><code>[[ 0.8 -0.6]
+ [-0.2  0.4]]
+[[ 1.00000000e+00 -1.11022302e-16]
+ [ 0.00000000e+00  1.00000000e+00]]</code></pre><p>乘积本该是单位矩阵，但出现了 <code>-1.11e-16</code> 这样的「近乎 0」。这是浮点误差，不是错误：计算机算 <code>0.8 * 3 + (-0.6) * 4</code> 时无法精确表示 0。判断「是否为单位矩阵」要允许误差，写 <code>np.allclose(m @ inv, np.eye(2))</code>（拓展）。</p><h2 id="s21">九、常见错误与调试</h2><div class="callout warn"><b>忘记 import 或名字打错</b><code>NameError: name 'math' is not defined</code> 是没 import；<code>ModuleNotFoundError: No module named 'datetimes'</code> 是模块名拼错（正确是 <code>datetime</code>）。</div><div class="callout warn"><b>from ... import 覆盖了自己的变量</b><code>from math import pi</code> 之后又写 <code>pi = 3</code>，模块里的值就被盖掉了。要么用 <code>import math</code> 加前缀，要么给自己的变量换名字。</div><div class="callout warn"><b>strptime 格式不匹配</b><code>ValueError: time data '2024/10/27' does not match format '%Y-%m-%d'</code>：格式串必须与输入逐字符对应，分隔符也要一致。</div><div class="callout warn"><b>randint 与 randrange 的边界</b><code>randint(1, 6)</code> 含 6，<code>randrange(1, 6)</code> 不含。掷骰子写错就永远没有 6。</div><div class="callout tip"><b>先查 help 再猜</b><code>help("math")</code>、<code>help("random")</code> 会列出全部函数与说明。比在网上搜过时的教程快得多，也不会看错版本。</div><div class="callout idea" data-ext="ch10-modules-0"><b>常见误解</b><p><code>math.ceil</code>／<code>floor</code> 与 <code>int()</code> 截断在负数上分道扬镳：<code>int(-5.9)</code> 得 -5，<code>math.floor(-5.9)</code> 得 -6。日期两坑：手算 <code>day + 1</code> 在月末抛 ValueError，要用 <code>timedelta</code>；<code>%m</code> 是月份、<code>%M</code> 是分钟，写反就错位。<code>strftime</code>（f=format 输出）与 <code>strptime</code>（p=parse 输入）方向相反。</p></div><div class="callout tip" data-ext="ch10-modules-1"><b>前后衔接</b><p>导入三写法各有取舍：<code>import math</code> 来源清楚、不污染命名空间；<code>from math import pi</code> 短但可能重名；<code>import math as np</code> 要守惯例（numpy as np）。<code>random.randint(1, 6)</code> 含两端，<code>randrange(1, 6)</code> 永远掷不出 6——又是 off-by-one。想复现随机数用 <code>seed</code>；pip 装完仍 ModuleNotFoundError，多半是终端的 pip 与 IDLE 的解释器不是同一个。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>module</td><td>模块</td><td>A .py file that defines functions, classes and constants.</td></tr><tr><td>standard library</td><td>标准库</td><td>Modules that come with the Python installation.</td></tr><tr><td>import</td><td>导入</td><td>import math makes math.sqrt available.</td></tr><tr><td>alias</td><td>别名</td><td>import numpy as np gives the module a short name.</td></tr><tr><td>package</td><td>包</td><td>A directory containing one or more modules.</td></tr><tr><td>pip</td><td>包管理器</td><td>pip install numpy fetches a package from PyPI.</td></tr><tr><td>PyPI</td><td>Python 包索引</td><td>The public repository of third-party packages.</td></tr><tr><td>ceil / floor</td><td>向上 / 向下取整</td><td>math.ceil(5.1) is 6, math.floor(5.9) is 5.</td></tr><tr><td>factorial</td><td>阶乘</td><td>math.factorial(5) is 120.</td></tr><tr><td>seed</td><td>随机种子</td><td>random.seed(42) makes the sequence reproducible.</td></tr><tr><td>timedelta</td><td>时间间隔</td><td>date.today() + timedelta(days=7).</td></tr><tr><td>strftime</td><td>格式化时间</td><td>Turn a datetime into a string with %Y-%m-%d.</td></tr><tr><td>strptime</td><td>解析时间</td><td>Turn a string into a datetime using a format.</td></tr><tr><td>array</td><td>数组</td><td>A NumPy structure for fast numerical computing.</td></tr><tr><td>matrix multiplication</td><td>矩阵乘法</td><td>np.dot(a, b) or a @ b, not a * b.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用 math 计算：1000 元本金、年利率 5%、连续复利 3 年后的本息和（保留 2 位小数）。</div><p>连续复利公式是 <code>A = P × e<sup>rt</sup></code>，用 <code>math.exp</code> 算 e 的幂。</p><pre><code>import math
+
+principal = 1000
+rate = 0.05
+years = 3
+
+amount = principal * math.exp(rate * years)
+print("amount:", round(amount, 2))
+print("interest:", round(amount - principal, 2))</code></pre><p>输出：</p><pre><code>amount: 1161.83
+interest: 161.83</code></pre><p>解释：<code>rate * years = 0.15</code>，<code>e<sup>0</sup>.15 ≈ 1.161834</code>，乘 1000 得 1161.83。若按单利算只有 1150——复利的差别就在这个 <code>exp</code> 上。也可以用 <code>math.e ** 0.15</code>，结果相同。</p></div><div class="qa"><div class="q">例 2　模拟掷骰子 1000 次，统计每个点数出现的次数，并与理论值比较。</div><p>用 <code>random.randint(1, 6)</code>（含两端）；计数用第 8 讲的「列表 + 下标」或字典，这里先用列表。</p><pre><code>import random
+
+random.seed(7)
+counts = [0, 0, 0, 0, 0, 0, 0]
+
+for _ in range(1000):
+    roll = random.randint(1, 6)
+    counts[roll] = counts[roll] + 1
+
+for face in range(1, 7):
+    print("face", face, ":", counts[face], "times")</code></pre><p>输出（种子固定，结果可复现）：</p><pre><code>face 1 : 155 times
+face 2 : 172 times
+face 3 : 178 times
+face 4 : 162 times
+face 5 : 175 times
+face 6 : 158 times</code></pre><p>解释：<code>counts</code> 开了 7 个格子（下标 0 空着不用），这样 <code>counts[roll]</code> 可以直接用点数当下标，比 <code>counts[roll - 1]</code> 少一处容易出错的减法。1000 次里每面约 167 次，实际值围绕它波动——这就是随机。</p></div><div class="qa"><div class="q">例 3　计算两个日期相差多少天，并输出 30 天后的日期。</div><p>日期相减得 <code>timedelta</code>，取 <code>.days</code> 得整数；加 <code>timedelta</code> 得新日期。</p><pre><code>from datetime import date, timedelta
+
+start = date(2023, 12, 20)
+end = date(2024, 1, 5)
+
+diff = end - start
+print("days between:", diff.days)
+
+later = start + timedelta(days=30)
+print("30 days later:", later)</code></pre><p>输出：</p><pre><code>days between: 16
+30 days later: 2024-01-19</code></pre><p>解释：跨年不影响计算，<code>date</code> 内部处理了月份长度；<code>2023-12-20</code> 加 30 天跨过 12 月 31 天，落在 1 月 19 日。若手工写「月份加一、日子加 30」，就会算错。</p></div><div class="qa"><div class="q">例 4　用 NumPy 做矩阵乘法与求逆，并验证逆矩阵乘原矩阵等于单位矩阵。</div><p>乘法用 <code>@</code>；验证用 <code>np.allclose</code>，避免浮点误差误判。</p><pre><code>import numpy as np
+
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+print(a @ b)
+
+m = np.array([[2, 3], [1, 4]])
+inv = np.linalg.inv(m)
+print(np.round(inv, 2))
+print(np.allclose(m @ inv, np.eye(2)))</code></pre><p>输出：</p><pre><code>[[19 22]
+ [43 50]]
+[[ 0.8 -0.6]
+ [-0.2  0.4]]
+True</code></pre><p>解释：<code>a @ b</code> 得 <code>[[19,22],[43,50]]</code>，与手算一致；<code>inv</code> 是 <code>[[0.8,-0.6],[-0.2,0.4]]</code>；<code>m @ inv</code> 名义上是单位矩阵，但含 <code>1e-16</code> 级误差，所以用 <code>allclose</code>（允许小误差）而不是 <code>==</code>。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用 <code>math</code> 计算半径为 7 的圆面积与球体积（体积公式 4/3·π·r³），保留 2 位小数。</li><li>用 <code>random</code> 生成 10 个 1–100 的随机整数，输出其中最大的一个。</li><li>读入一个 <code>dd.mm.yyyy</code> 格式的日期字符串，输出它是星期几（提示：<code>strptime</code> + <code>strftime("%A")</code>）。</li><li>计算从今天起 100 天后的日期，输出 <code>YYYY-MM-DD</code>。</li><li>用 NumPy 创建 3×3 的单位矩阵与全 5 矩阵，输出它们的和。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>math.pi * 7 ** 2</code> 与 <code>4 / 3 * math.pi * 7 ** 3</code>，各 <code>round(..., 2)</code>。注意 <code>4 / 3</code> 要先算，写 <code>4 / 3 * ...</code> 没问题，但 <code>4 / (3 * math.pi * ...)</code> 就完全错了。</p><p><b>2.</b> <code>random.randint(1, 100)</code> 循环 10 次，用「找极值」模式（初值取第一个数）或直接 <code>max()</code>。若要可复现，先 <code>random.seed(...)</code>。</p><p><b>3.</b> <code>datetime.strptime(s, "%d.%m.%Y")</code> 解析，再 <code>.strftime("%A")</code> 得到英文星期名（<code>%a</code> 得缩写）。解析失败会抛 <code>ValueError</code>，真实程序应先用 try 包住（第 11 讲）。</p><p><b>4.</b> <code>(date.today() + timedelta(days=100)).strftime("%Y-%m-%d")</code>。不要自己算月份。</p><p><b>5.</b> <code>np.eye(3) + np.full((3, 3), 5)</code> 得对角线为 6、其余为 5 的矩阵。注意 <code>np.ones((3,3)) * 5</code> 也行；<code>* 5</code> 是逐元素乘，正是想要的效果。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>三种 import 写法与点号访问；<code>math</code> 的 ceil/floor/sqrt/factorial；<code>random.randint</code> 与 <code>randrange</code> 的边界差别；<code>strftime</code> 与 <code>strptime</code> 的方向；<code>timedelta</code> 做日期加减；NumPy 的 <code>shape</code> 与矩阵乘法。</div><div class="callout warn"><b>易错 1　%m 与 %M 混淆</b><code>%m</code> 月份、<code>%M</code> 分钟；<code>%H</code> 24 小时、<code>%I</code> 12 小时。写反了程序不报错，只是结果离谱。</div><div class="callout warn"><b>易错 2　randint 含两端、randrange 不含</b>掷骰子写 <code>randrange(1, 6)</code> 永远没有 6；写 <code>randint(1, 6)</code> 才对。日期加减用手算而不是 <code>timedelta</code> 同样会踩月末。</div><div class="callout warn"><b>易错 3　a * b 不是矩阵乘法</b>NumPy 里 <code>*</code> 是逐元素乘，矩阵乘法用 <code>@</code> 或 <code>np.dot</code>；形状不匹配（左列数 ≠ 右行数）会抛 <code>ValueError</code>。</div><div class="callout tip"><b>进阶</b>浮点结果比较用 <code>np.allclose</code> 或 <code>round</code>；<code>time.perf_counter</code> 测短耗时；第三方包装错环境时 <code>ModuleNotFoundError</code> 其实是解释器不匹配。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s22">操作清单</h2><h3 id="s23">用模块之前</h3><ol class="steps"><li>确定要用的模块名（math / random / datetime / time / numpy）</li><li>选一种 import 写法：<code>import x</code> 优先，名字太长再起别名</li><li>查一下函数签名：<code>help("模块名")</code></li><li>确认返回类型：int 还是 float、字符串还是对象</li><li>涉及日期就一律用 <code>timedelta</code>，不手算月份</li></ol><h3 id="s24">调试时的检查</h3><ul class="checklist"><li><code>NameError</code> 先看是否漏了 import</li><li><code>ModuleNotFoundError</code> 先看模块名拼写与是否安装</li><li><code>ValueError</code>（日期）先对齐格式串与输入串</li><li>随机结果每次不同是正常的，要复现就 <code>seed</code></li><li>NumPy 数组用 <code>shape</code> 与 <code>dtype</code> 确认建对了</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Chapter 8 - Part 1 - Introduction to modules.pdf</td><td>p3–p9</td><td>模块定义、标准库与第三方、三种 import 写法、别名惯例、<code>help()</code></td></tr><tr><td>Chapter 8 - Part 2 - Math.pdf</td><td>p2</td><td><code>ceil/floor/factorial/exp/log/sqrt</code></td></tr><tr><td>Chapter 8 - Part 3 - Random.pdf</td><td>p2</td><td><code>randrange/randint/choice/seed</code></td></tr><tr><td>Chapter 8 - Part 4 - Dates.pdf</td><td>p2–p4</td><td>日期处理的难点、<code>date</code> 类、<code>date.today()</code>、<code>timedelta</code> 运算</td></tr><tr><td>Chapter 8 - Part 5 - Formating datetime.pdf</td><td>p2–p6</td><td><code>strptime</code> 解析、格式码表、<code>strftime</code> 格式化、<code>%B</code> 示例</td></tr><tr><td>Chapter 8 - Part 6 - Time.pdf</td><td>p2</td><td><code>time.time</code>、<code>sleep</code>、<code>perf_counter</code></td></tr><tr><td>packages.pdf</td><td>p2–p5</td><td>模块与包的区别、PyPI、pip 安装/卸载/升级</td></tr><tr><td>installing_numpy.pdf</td><td>p2–p5</td><td>NumPy 定位、用 pip 安装、import 验证</td></tr><tr><td>using_numpy.pdf</td><td>p2–p14</td><td>数组特性、创建方式、<code>dtype/shape/size</code>、索引切片、加法、<code>dot</code>/<code>@</code>、<code>linalg.inv</code></td></tr><tr><td>L8E1.py–L8E7.py</td><td>全文</td><td>三种 import、math/random/datetime/strftime/strptime/time 的可运行示例</td></tr></table><p><b>跳过项：</b>Part 4–5 开头的「时间是什么」哲思页、pip 安装截图、NumPy 安装截图只作背景；Moodle 第 8 章的作业与截止页属于行政信息，不进入本讲。</p><p><b>拓展项：</b><code>dir()</code>、<code>np.allclose</code>、<code>np.full</code>、pip 与解释器不匹配的问题，都是围绕原知识点的实用补充，考试按课件函数清单即可。</p></section><div class="lnav"><a class="prev" href="ch09-files-csv.html">← ⑨ 文件读写与 CSV</a><a class="next" href="ch11-errors.html">⑪ 错误、异常与调试 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

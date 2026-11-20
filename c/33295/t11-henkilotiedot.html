@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Tunti 9–10 · 个人信息与咖啡厅场景 · 33295</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ96 芬兰语1</a> / <a href="part-4.html">第 4 章 属格、个人信息与复习</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">11.1 姓名的四个字段</a><a class="toc-l3" href="#s3">11.2 联系方式：地址、邮编、邮箱、电话</a><a class="toc-l3" href="#s4">11.3 其他登记信息：身份证号、婚姻状态、职业</a><a class="toc-l3" href="#s5">11.4 住在哪里：-ssa 阵营与 -lla 阵营</a><a class="toc-l3" href="#s6">11.5 地名里的辅音交替</a><a class="toc-l3" href="#s7">11.6 完整问答模板</a><a class="toc-l3" href="#s8">11.7 Tunti 10：咖啡厅对话</a><a class="toc-l3" href="#s9">11.8 本讲错误清单</a><a class="toc-l2" href="#s10">报个人信息六步</a><a class="toc-l3" href="#s11">地名格自查清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-tervehdykset.html">Tunti 1 · 问候、姓名与告别</a><a href="t2-aakkoset.html">Tunti 2 · 字母、发音与拼读</a><a href="t3-miten-menee.html">Tunti 3 · 近况问答与元音和谐</a><a href="t4-numerot.html">Tunti 4 · 数字与部分格</a><a href="t5-maat.html">Tunti 5 · 国家、国籍与语言</a><a href="t6-verbit.html">Tunti 6 · 人称代词与第一类动词</a><a href="t7-negatiivi.html">Tunti 7 · 否定式与辅音交替</a><a href="t8-opiskelu.html">Tunti 8 · 学习、工作与 -ko 问句</a><a href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构</a><a href="t10-genetiivi.html">Tunti 9（上）· 属格与所有格</a><a class="toc-l3" href="t11-henkilotiedot.html">▸ Tunti 9–10 · 个人信息与咖啡厅场景</a><a href="t12-kertaus.html">Kertaus · 复习、考试与文化</a><a href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表</a></div></aside><article><h1>Tunti 9–10 · 个人信息与咖啡厅场景</h1><p class="lead">Personal Information, Local Cases and the Café Dialogue <span class="badge mute">33295</span> <span class="badge mute">第 11 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 属格、个人信息与复习</a></p><p class="src">原始文件：<code>10_Tunti 9/3_Henkilötiedot ja asuinpaikka.pdf</code> <code>10_Tunti 9/4_PUHU PARILLE.html</code> <code>10_Tunti 9/1_Genetiivi.pdf</code> <code>11_Tunti 10 (SELF-STUDY)/3_Puhu parin kanssa, kahvilassa.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第十一讲把“填表”这件小事拆开讲：姓名怎么分（etunimi / sukunimi / kutsumanimi）、地址怎么写（katuosoite / postinumero / postitoimipaikka）、邮箱和电话怎么念（piste / alaviiva / ät）。这些词本身不难，难的是它们背后的<b>格</b>——尤其是“住在某地”到底用 <code>-ssa/-ssä</code> 还是 <code>-lla/-llä</code>。</p><p>课件第 6 页用一整页列了 14 个居住地形式：<code>Lahdessa</code>、<code>Helsingissä</code>、<code>Oulussa</code>、<code>Turussa</code>、<code>Imatralla</code>、<code>Tampereella</code>、<code>Vantaalla</code>、<code>Raumalla</code>、<code>Keskustassa</code>、<code>Mukkulassa</code>、<code>Kiveriössä</code>、<code>Laatikkotehtaankadulla</code>……这不是随机排列，而是芬兰语地名格的两大阵营。本讲把这条规律讲清。</p><p>学完本讲你能够：</p><ul class="checklist"><li>说出姓名四个字段的含义，并区分 etunimi 与 kutsumanimi</li><li>用芬兰语报出自己的地址、邮编、邮箱与电话，并读出符号（piste、alaviiva、ät）</li><li>把 8 个课内城市名变成“住在……”的形式，并解释为什么有的用 -ssa、有的用 -lla</li><li>处理地名里的辅音交替（Lahti → Lahdessa、Helsinki → Helsingissä、Turku → Turussa）</li><li>说出 5 种职业、4 种婚姻状态，并放进完整句</li><li>在咖啡厅场景里完成一次点单对话（本讲作为 Tunti 10 自学内容的收束）</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">11.1 姓名的四个字段</h3><table><tr><th>Suomi</th><th>中文</th><th>说明</th></tr><tr><td>etunimi</td><td>名（given name）</td><td>可以有多个，正式文件里全写</td></tr><tr><td>sukunimi</td><td>姓</td><td>family name</td></tr><tr><td>kutsumanimi</td><td>常用名</td><td>日常称呼用的那个名，不是昵称</td></tr><tr><td>aiempi sukunimi</td><td>曾用姓</td><td>复数 aiemmat sukunimet，结婚/离婚后可能出现</td></tr></table><p>相关问句：<code>Mikä on sinun etunimi?</code>（你的名是什么）、<code>Mikä on sinun sukunimi?</code>（你的姓是什么）。口试第 2、3 题就是这两句。</p><p>英文表述：Finnish personal data separates <i>etunimi</i> (given name), <i>sukunimi</i> (surname) and <i>kutsumanimi</i> (the name actually used in daily life, which may differ from the first given name).</p><div class="callout warn"><b>kutsumanimi 不是昵称</b><code>kutsumanimi</code> 是官方登记的“常用名”，例如登记名是 Anna Maria，但 kutsumanimi 是 Maria。昵称（lempinimi）是另一回事，<b>不要混用</b>。</div><h3 id="s3">11.2 联系方式：地址、邮编、邮箱、电话</h3><table><tr><th>Suomi</th><th>中文</th><th>例句</th></tr><tr><td>osoite</td><td>地址</td><td>Minun osoite on Haapakatu 1.</td></tr><tr><td>lähiosoite / katuosoite</td><td>街道地址</td><td>与 osoite 同义</td></tr><tr><td>postinumero</td><td>邮编</td><td>LTI 的邮编是 15210</td></tr><tr><td>postitoimipaikka</td><td>邮政城镇</td><td>kaupunki / paikkakunta 也可</td></tr><tr><td>sähköpostiosoite</td><td>邮箱地址</td><td>Mikä on sinun sähköpostiosoite?</td></tr><tr><td>puhelinnumero</td><td>电话号码</td><td>缩写 Puh. 或 P.</td></tr><tr><td>matkapuhelin</td><td>手机</td><td>matkapuhelinnumero = 手机号</td></tr><tr><td>kotipuhelin</td><td>家庭电话</td><td></td></tr><tr><td>työnumero</td><td>工作电话</td><td></td></tr><tr><td>salainen numero</td><td>保密号码</td><td>号码不公开</td></tr></table><p>报邮箱时的三个符号读法（课件 PUHU PARILLE 明确给出）：<code>.</code> = <code>piste</code>、<code>_</code> = <code>alaviiva</code>、<code>@</code> = <code>ät</code>。例如 <code>liisa.virtanen@lut.fi</code> 读作 “liisa piste virtanen ät lut piste fi”。</p><p>英文表述：When reading an e-mail address aloud, say <i>piste</i> for a dot, <i>alaviiva</i> for an underscore and <i>ät</i> for the at-sign.</p><h3 id="s4">11.3 其他登记信息：身份证号、婚姻状态、职业</h3><table><tr><th>Suomi</th><th>中文</th><th>备注</th></tr><tr><td>henkilötunnus</td><td>个人身份代码</td><td>又称 sosiaaliturvatunnus</td></tr><tr><td>siviilisääty</td><td>婚姻状态</td><td>naimisissa / naimaton / eronnut / leski</td></tr><tr><td>ammatti</td><td>职业</td><td>poliisi、virkailija、rakentaja、lääkäri、kokki</td></tr></table><p>课件给的四个职业示例：<code>poliisi</code>（警察）、<code>virkailija</code>（职员）、<code>rakentaja</code>（建筑工）、<code>lääkäri</code>（医生）、<code>kokki</code>（厨师）。问句用 <code>Mitä sinä teet työksesi?</code> 或 <code>Mikä on sinun ammatti?</code>。</p><div class="callout tip"><b>口试里的“个人信息八连”</b>第 12 讲会给出 20 个口试题。其中第 1–7、16–17、19 题全部属于本讲范围（名字、拼读、年龄、电话、邮箱、家庭）。把本讲词汇表背熟，等于直接拿下口试一半的题目。</div><h3 id="s5">11.4 住在哪里：-ssa 阵营与 -lla 阵营</h3><p>这是本讲的核心语法。同样表示“住在某地”，芬兰语的城市名分两类：</p><table><tr><th>类型</th><th>后缀</th><th>课内例子</th><th>说明</th></tr><tr><td>内格阵营</td><td>-ssa / -ssä</td><td>Lahdessa、Helsingissä、Oulussa、Turussa</td><td>城市被视为“内部空间”</td></tr><tr><td>外格阵营</td><td>-lla / -llä</td><td>Imatralla、Tampereella、Vantaalla、Raumalla</td><td>部分旧地名被视为“表面/开放地”</td></tr></table><p>两类没有语义上的绝对理由，属于历史形成的习惯。但有一条实用线索：<b>以 -la/-lä 结尾或以 -e 结尾的旧地名，常取外格</b>（Imatra、Tampere、Vantaa、Rauma 都属于这类老工业城镇）。而 <b>以 -i、-u、-o 结尾的城市名多取内格</b>（Lahti、Helsinki、Oulu、Turku）。</p><p>英文表述：Most Finnish town names take the inessive (<i>Lahdessa</i>), but a group of older names take the adessive (<i>Tampereella, Vantaalla, Imatralla, Raumalla</i>); the choice is lexical and must be learned per name.</p><p>再往下细分到“区/街道”层级，规律更清楚：</p><table><tr><th>层级</th><th>例子</th><th>格</th></tr><tr><td>城区/区域</td><td>Keskustassa（市中心）、Mukkulassa、Kiveriössä、Asemantaustassa</td><td>-ssa/-ssä</td></tr><tr><td>街道（katu）</td><td>Laatikkotehtaankadulla、Laaksokadulla、Vapaudenkadulla</td><td>-lla/-llä</td></tr><tr><td>小街（raitti）</td><td>Borupinraitilla</td><td>-lla/-llä</td></tr><tr><td>校园（kampus）</td><td>Lappeenrannan kampuksella、Lahden kampuksella</td><td>-lla/-llä</td></tr></table><p>规律：<b>区域用内格（在里面），街道与设施用外格（在表面上）</b>。<code>katu</code>（街）→ <code>kadulla</code> 是固定搭配，因为“在街上”被理解为“在路的表面上”。</p><div class="callout exam"><b>必考</b>口试第 13 题 <code>Missä sinä asut?</code> 与笔试第 4 题（选正确回答，含 <code>Heinolassa</code>）都考这一组。<code>Tampereella</code> 与 <code>Vantaalla</code> 是最常被写错的两个。</div><h3 id="s6">11.5 地名里的辅音交替</h3><p>把城市名变成“住在”形式时，还会触发辅音交替（第十讲刚讲过的那条规则）：</p><table><tr><th>主格</th><th>住在……</th><th>交替</th></tr><tr><td>Lahti</td><td>Lahdessa</td><td>t : d</td></tr><tr><td>Helsinki</td><td>Helsingissä</td><td>k : g</td></tr><tr><td>Turku</td><td>Turussa</td><td>k : 脱落</td></tr><tr><td>Oulu</td><td>Oulussa</td><td>无交替</td></tr><tr><td>Imatra</td><td>Imatralla</td><td>无交替（但取外格）</td></tr><tr><td>Tampere</td><td>Tampereella</td><td>无交替（但取外格）</td></tr></table><p><code>Lahti → Lahde-</code> 与 <code>Helsinki → Helsingi-</code> 都是“词干先变、再加后缀”的例子；<code>Turku → Turu-</code> 则是 k 直接脱落。这三组必须单独记，因为光看主格看不出词干。</p><p>英文表述：Place names undergo consonant gradation before case endings: <i>Lahti → Lahdessa</i> (t : d), <i>Helsinki → Helsingissä</i> (k : g), <i>Turku → Turussa</i> (k drops).</p><div class="callout warn"><b>三个错形</b><code>Lahtissa</code> ✗（应为 <code>Lahdessa</code>）、<code>Helsingissa</code> ✗（应为 <code>Helsingissä</code>）、<code>Turkussa</code> ✗（应为 <code>Turussa</code>）。</div><h3 id="s7">11.6 完整问答模板</h3><p>把本讲所有字段串成一段自我介绍，是口试最稳的准备方式：</p><p><code>Minun etunimi on Liisa. Minun sukunimi on Virtanen. Olen 25 vuotta. Olen suomalainen. Minun äidinkieli on suomi. Minun sähköpostiosoite on liisa.virtanen ät lut piste fi. Olen sinkku. Minä asun Lahdessa, Keskustassa. Minun osoite on Laaksokatu 5.</code></p><p>这段话把 9 个字段全部用上，且每个字段的格都正确：名字用 nominative（表语）、年龄用 partitive（<code>vuotta</code>）、国籍用 <code>-lainen</code>、城市用 inessive、街道用 adessive。</p><h3 id="s8">11.7 Tunti 10：咖啡厅对话</h3><p>Tunti 10 是自学课，内容是一段咖啡厅点单对话。它把前十一讲的句型放进真实场景：</p><table><tr><th>对话</th><th>中文</th><th>语法点</th></tr><tr><td>Hei! Mitä saisi olla?</td><td>你好！您要点什么？</td><td>saisi 是 saada 的条件式，礼貌用语</td></tr><tr><td>Moi! Minulle kahvi ja voileipä.</td><td>你好！给我咖啡和三明治。</td><td>Minulle = allatiivi（给……）</td></tr><tr><td>Tässä! Tuleeko muuta?</td><td>来了！还要别的吗？</td><td>muuta 是 muu 的 partitive</td></tr><tr><td>Ei kiitos.</td><td>不用了，谢谢。</td><td>固定搭配</td></tr><tr><td>Yhteensä 4,50. Kortilla vai käteisellä?</td><td>一共 4,50。刷卡还是现金？</td><td>kortilla / käteisellä = adessiivi（用……方式）</td></tr><tr><td>Kortilla.</td><td>刷卡。</td><td>同上，省略动词</td></tr><tr><td>Kiitos, mukavaa päivää!</td><td>谢谢，祝你有美好的一天！</td><td>mukavaa päivää 用 partitive</td></tr><tr><td>Kiitti, samoin!</td><td>谢了，你也是！</td><td>kiitti 是 kiitos 的口语形</td></tr></table><p>这段对话里有三个语法点值得单独看：<b>Minulle</b>（allatiivi，表示“给我”）、<b>kortilla / käteisellä</b>（adessiivi，表示“用什么工具/方式”）、<b>mukavaa päivää</b>（partitive，祝愿结构，与第一讲 <code>hyvää päivää</code> 同源）。</p><p>英文表述：In the café dialogue, <i>minulle</i> is the allative meaning <i>to me</i>, <i>kortilla / käteisellä</i> are adessives of instrument meaning <i>by card / by cash</i>, and <i>mukavaa päivää</i> is a partitive wish, parallel to <i>hyvää päivää</i>.</p><h3 id="s9">11.8 本讲错误清单</h3><ul><li>把 <code>Tampere</code> 写成 <code>Tampereessa</code>（应为 <code>Tampereella</code>）</li><li><code>Helsingissä</code> 漏 ä 或漏 g</li><li>街道用内格：<code>Laaksokadussa</code> ✗（应为 <code>Laaksokadulla</code>）</li><li>邮箱符号读成英语（dot / at）而不是 piste / ät</li><li>把 <code>kutsumanimi</code> 当昵称用</li><li><code>Minun osoite on</code> 后接属格（地址本身不变格）</li></ul><div class="callout idea" data-ext="t11-henkilotiedot-0"><b>用法对照</b><p><code>kutsumanimi</code> 是官方登记的常用名，不是昵称 lempinimi：登记 Anna Maria 而日常用 Maria，写信填表要分清。报邮箱的三个符号读 <code>piste</code>(.)、<code>alaviiva</code>(_)、<code>ät</code>(@)，<code>liisa.virtanen@lut.fi</code> 读作「liisa piste virtanen ät lut piste fi」。住哪里分两大阵营：城市名多取内格 <code>Lahdessa</code>、<code>Helsingissä</code>，一批旧工业城取上格 <code>Tampereella</code>、<code>Vantaalla</code>、<code>Imatralla</code>；街道与设施一律上格 <code>Laaksokadulla</code>、<code>kampuksella</code>，区域用内格 <code>Keskustassa</code>。地名还带辅音交替：<code>Lahti→Lahdessa</code>(t:d)、<code>Helsinki→Helsingissä</code>(k:g)、<code>Turku→Turussa</code>(k 脱落)。咖啡厅对话把三个格放一处：<code>Minulle kahvi</code>（向格「给我」）、<code>kortilla / käteisellä</code>（上格表方式）、<code>mukavaa päivää</code>（部分格祝愿，与第一讲 <code>hyvää päivää</code> 同源）。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / Finnish</th><th>中文</th><th>English 说明 / 例句</th></tr><tr><td>henkilötiedot</td><td>个人信息</td><td>Personal data on a form.</td></tr><tr><td>etunimi</td><td>名</td><td>Given name.</td></tr><tr><td>sukunimi</td><td>姓</td><td>Surname.</td></tr><tr><td>kutsumanimi</td><td>常用名</td><td>The name used in daily life, not a nickname.</td></tr><tr><td>osoite</td><td>地址</td><td><i>Minun osoite on Haapakatu 1.</i></td></tr><tr><td>katuosoite</td><td>街道地址</td><td>Synonym of <i>lähiosoite</i>.</td></tr><tr><td>postinumero</td><td>邮编</td><td><i>15210</i>.</td></tr><tr><td>postitoimipaikka</td><td>邮政城镇</td><td>The town attached to a postal code.</td></tr><tr><td>sähköpostiosoite</td><td>邮箱地址</td><td>Read . as <i>piste</i>, @ as <i>ät</i>.</td></tr><tr><td>puhelinnumero</td><td>电话号码</td><td>Abbreviated <i>Puh.</i></td></tr><tr><td>matkapuhelin</td><td>手机</td><td>Mobile phone.</td></tr><tr><td>salainen numero</td><td>保密号码</td><td>An unlisted number.</td></tr><tr><td>henkilötunnus</td><td>身份代码</td><td>Also <i>sosiaaliturvatunnus</i>.</td></tr><tr><td>siviilisääty</td><td>婚姻状态</td><td><i>naimisissa, naimaton, eronnut, leski</i>.</td></tr><tr><td>ammatti</td><td>职业</td><td><i>lääkäri, kokki, poliisi</i>.</td></tr><tr><td>asua</td><td>住</td><td>Takes the inessive or adessive of the place.</td></tr><tr><td>Lahdessa</td><td>在拉赫蒂</td><td>t : d gradation, inessive.</td></tr><tr><td>Tampereella</td><td>在坦佩雷</td><td>Adessive place name.</td></tr><tr><td>kadulla</td><td>在街上</td><td>Adessive of <i>katu</i>.</td></tr><tr><td>piste</td><td>点（.）</td><td>Said when reading e-mail addresses.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把“我住在坦佩雷”说对</div><p><b>错：</b><code>Minä asun Tampereessa.</code></p><p><b>对：</b><code>Minä asun Tampereella.</code></p><p><b>分析：</b><code>Tampere</code> 属于外格阵营的旧地名，用 <code>-lla</code> 而不是 <code>-ssa</code>。同类还有 <code>Vantaalla</code>、<code>Imatralla</code>、<code>Raumalla</code>。</p><p><b>对照：</b><code>Helsingissä</code>、<code>Oulussa</code>、<code>Turussa</code> 都是内格。判断靠“记词”而不是靠规则。</p></div><div class="qa"><div class="q">例 2　三个地名的词干变化</div><p><code>Lahti → Lahdessa</code>：t 变 d（t : d），再加 -ssa。</p><p><code>Helsinki → Helsingissä</code>：k 变 g（k : g），再加 -ssä（因为 i 而已，取前元音）。</p><p><code>Turku → Turussa</code>：k 脱落，再加 -ssa。</p><p><b>共同点：</b>三者都必须先改词干，再加后缀；直接拼 <code>Lahtissa</code> / <code>Helsinkissä</code> / <code>Turkussa</code> 都是错的。</p></div><div class="qa"><div class="q">例 3　读一个邮箱地址</div><p><b>地址：</b><code>liisa.virtanen@lut.fi</code></p><p><b>读法：</b>liisa <b>piste</b> virtanen <b>ät</b> lut <b>piste</b> fi</p><p><b>分析：</b>点读 <code>piste</code>，@ 读 <code>ät</code>，下划线读 <code>alaviiva</code>。数字与字母之间不需要额外词。</p><p><b>问句：</b><code>Mikä on sinun sähköpostiosoite?</code>；答句 <code>Minun sähköpostiosoite on …</code>。</p></div><div class="qa"><div class="q">例 4　咖啡厅对话的语法拆解</div><p><code>— Mitä saisi olla?<br>— Minulle kahvi ja voileipä.</code></p><p><b>逐项：</b><code>Mitä</code>（什么，partitive）+ <code>saisi</code>（可以／想要，条件式）+ <code>olla</code>（是）——整句是“您想要点什么”。答句 <code>Minulle</code> 是 allatiivi（“给我”），<code>kahvi ja voileipä</code> 用 nominative，因为是“点单对象”。</p><p><b>再看付款：</b><code>Kortilla vai käteisellä?</code> 两个都是 adessiivi，表示“用（卡/现金）”这种工具格用法，回答时只说出这个词即可：<code>Kortilla.</code></p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出“我住在拉赫蒂”与“我住在坦佩雷”，并说明为什么后缀不同。</li><li>把 <code>Helsinki</code>、<code>Turku</code>、<code>Oulu</code> 变成“住在……”。</li><li>填空：<code>Minun ______ (osoite) on Laaksokatu 5.</code>；<code>Minä asun ______ (Keskusta).</code></li><li>读出：<code>anni_k.koivu@lab.fi</code>（写出每个符号的芬兰语说法）。</li><li>把“我在大学工作，我住在穆库拉”写成芬兰语。</li><li>改错：<code>Minä asun Tampereessa. Minun katuosoite on Vapaudenkadussa.</code></li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>Minä asun Lahdessa.</code>（t : d + -ssa，内格）；<code>Minä asun Tampereella.</code>（外格 -lla）。两者都是“住在”，但地名属于不同阵营。</p><p><b>2.</b> <code>Helsingissä</code>（k : g）、<code>Turussa</code>（k 脱落）、<code>Oulussa</code>（无交替）。</p><p><b>3.</b> <code>Minun osoite on Laaksokatu 5.</code>（osoite 保持 nominative）；<code>Minä asun Keskustassa.</code>（区域用内格）。</p><p><b>4.</b> anni <code>alaviiva</code> k <code>piste</code> koivu <code>ät</code> lab <code>piste</code> fi。</p><p><b>5.</b> <code>Olen töissä yliopistolla. Minä asun Mukkulassa.</code>（机构用 -lla，区域用 -ssa。）</p><p><b>6.</b> 两处：<code>Minä asun Tampereella.</code>（外格）；<code>Minun katuosoite on Vapaudenkatu 5.</code>（地址本身不变格，不能用 kadulla，因为 kadulla 表示“在街上”。）</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>姓名四字段；地址/邮编/邮箱/电话词汇；邮箱符号读法；8 个城市的格（Lahdessa、Helsingissä、Oulussa、Turussa、Imatralla、Tampereella、Vantaalla、Raumalla）；街道用 -kadulla。</div><div class="callout warn"><b>易错 1</b><b>Tampere / Vantaa / Imatra / Rauma 误用 -ssa</b>。这四个是外格阵营，考试常设陷阱。</div><div class="callout warn"><b>易错 2</b><b>地名词干未变</b>：<code>Lahtissa</code>、<code>Helsingissä</code> 写成 <code>Helsingissa</code>、<code>Turkussa</code>。</div><div class="callout warn"><b>易错 3</b><b>把地址当“在街上”变格</b>：<code>Minun osoite on Vapaudenkadulla</code> 错在把“地址是某街 5 号”说成“在街上”。报地址时街道名用 nominative。</div><div class="callout tip"><b>进阶</b>把 14 个居住地形式抄成一张“两列卡”：左列 -ssa/-ssä，右列 -lla/-llä。每天读一遍，两周后就能不假思索地说出任何一个。这比记“规则”更有效，因为这条规则本质上是词汇性的。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s10">报个人信息六步</h2><ol class="steps"><li>名与姓分开说：etunimi / sukunimi</li><li>年龄用 partitive：Olen … vuotta</li><li>国籍用 -lainen，语言用 partitive</li><li>邮箱按符号读：piste / alaviiva / ät</li><li>城市选对格：-ssa 阵营或 -lla 阵营</li><li>街道用 adessive（kadulla），但报地址时街道名用 nominative</li></ol><h3 id="s11">地名格自查清单</h3><ul class="checklist"><li>这个城市名是以 -la/-lä 或 -e 结尾的旧地名吗（若是，多半用 -lla）</li><li>词干是否需要交替（Lahti → Lahde-、Helsinki → Helsingi-、Turku → Turu-）</li><li>说的是“区域”还是“街道/设施”（区域 -ssa，街道 -lla）</li><li>报地址时是否误把街道名变成 kadulla</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>10_Tunti 9/3_Henkilötiedot ja asuinpaikka.pdf</td><td>p2–p3</td><td>联系方式四字段与姓名四字段（etunimi、sukunimi、kutsumanimi、aiempi sukunimi）</td></tr><tr><td>10_Tunti 9/3_Henkilötiedot ja asuinpaikka.pdf</td><td>p4</td><td>osoite、postinumero、postitoimipaikka、sähköpostiosoite、puhelinnumero、salainen numero</td></tr><tr><td>10_Tunti 9/3_Henkilötiedot ja asuinpaikka.pdf</td><td>p5</td><td>henkilötunnus、siviilisääty、ammatti 与四个职业示例</td></tr><tr><td>10_Tunti 9/3_Henkilötiedot ja asuinpaikka.pdf</td><td>p6</td><td>14 个居住地形式：8 个城市 + 区域 + 街道</td></tr><tr><td>10_Tunti 9/4_PUHU PARILLE.html</td><td>全篇</td><td>九个个人信息的问答模板，含邮箱符号读法（piste、alaviiva、ät）</td></tr><tr><td>11_Tunti 10 (SELF-STUDY)/3_Puhu parin kanssa, kahvilassa.docx</td><td>全篇</td><td>咖啡厅点单对话（Mitä saisi olla、Minulle、kortilla vai käteisellä）</td></tr><tr><td>10_Tunti 9/1_Genetiivi.pdf</td><td>p6</td><td>所有格后缀的书面用法，与本讲的“Minun osoite on”形成对照</td></tr><tr><td>（跳过）</td><td>—</td><td>课件 p7 为空白页；p2 的表格式样（Yhteystiedot 表格）本身无语言点</td></tr><tr><td>（拓展）</td><td>—</td><td>11.4 的“两类阵营”划分是对课件 14 个例子的归纳，课件只列形式；11.6 的整段自我介绍是按口试第 1–7 题拼出的模板</td></tr></table></section><div class="lnav"><a class="prev" href="t10-genetiivi.html">← Tunti 9（上）· 属格与所有格</a><a class="next" href="t12-kertaus.html">Kertaus · 复习、考试与文化 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

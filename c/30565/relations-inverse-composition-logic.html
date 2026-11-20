@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · 逆关系与合成、命题逻辑与真值表 · 30565</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-1.html">第 1 章 集合、关系与逻辑</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 逆关系 R⁻¹</a><a class="toc-l3" href="#s3">3.2 合成关系 RS</a><a class="toc-l3" href="#s4">3.3 用语言解释逆与合成</a><a class="toc-l3" href="#s5">3.4 合成与逆的计算实例</a><a class="toc-l3" href="#s6">3.5 性质 (RS)⁻¹ = S⁻¹R⁻¹</a><a class="toc-l3" href="#s7">3.6 拓展：n 元关系与关系数据库</a><a class="toc-l3" href="#s8">3.7 命题与开放公式</a><a class="toc-l3" href="#s9">3.8 五个逻辑运算符</a><a class="toc-l3" href="#s10">3.9 基本真值表</a><a class="toc-l3" href="#s11">3.10 蕴含 ⇒ 的真值：承诺模型</a><a class="toc-l3" href="#s12">3.11 四类重要命题与三种“变形”</a><a class="toc-l3" href="#s13">3.12 ⇒ 与 ⇔ 在解方程中的区别</a><a class="toc-l3" href="#s14">3.13 其他逻辑词：unless 与 neither</a><a class="toc-l3" href="#s15">3.14 原子命题及其独立性</a><a class="toc-l3" href="#s16">3.15 写真值表的步骤与两种排版</a><a class="toc-l3" href="#s17">3.16 两个示范</a><a class="toc-l3" href="#s18">3.17 逻辑谜题（拓展）</a><a class="toc-l2" href="#s19">考点分层</a><a class="toc-l2" href="#s20">方法清单</a><a class="toc-l3" href="#s21">计算 RS 与 R⁻¹</a><a class="toc-l3" href="#s22">写真值表的四步</a><a class="toc-l3" href="#s23">判断命题与否</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a class="toc-l3" href="relations-inverse-composition-logic.html">▸ 第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a href="combinatorics-counting.html">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a href="divisibility-euclidean-algorithm.html">第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a href="modular-inverse-rsa-matrices-intro.html">第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a href="supp-set-proof-workshop.html">补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>第 3 讲 · 逆关系与合成、命题逻辑与真值表</h1><p class="lead">Inverse and Composition of Relations, Propositions and Truth Tables <span class="badge mute">30565</span> <span class="badge mute">第 3 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 集合、关系与逻辑</a></p><p class="src">原始文件：<code>03-lesson.pdf</code> <code>04-exercise.pdf</code> <code>Lecture1_Sets, relations and graphs.pdf</code> <code>Lecture2_Logic, propositions and representation of information.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 3 讲有两个主题：先给关系加上两种“手术”——求逆（inverse）与合成（composition），再把“关系”升级为“命题”（proposition），引入 ∧、∨、¬、⇒、⇔ 与真值表。表面上是两件事，实质是同一件事：关系是集合，命题的真假也可以用集合来刻画。</p><p>从考试看，本讲对应第 1 题的“关系计算”和第 2 或第 3 题的“真值表”，几乎每年必出，且分值高（真值表常为 8 分）。真值表是整门课最机械的得分点，只要步骤规范就不会失分。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出逆关系 R⁻¹，并用“箭头反向”解释它</li><li>计算合成关系 RS，并说明“跳过中间点”的含义</li><li>证明 (RS)⁻¹ = S⁻¹R⁻¹，并解释为什么顺序要反转</li><li>判断一句话是不是命题，区分命题与开放公式（open formula）</li><li>写出 ∧、∨、¬、xor、⇒、⇔ 的真值表，并解释“前件为假时蕴含为真”</li><li>为含 2 个或 3 个原子命题的复合命题构造完整真值表（2ⁿ 行）</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 逆关系 R⁻¹</h3><p>设 R 是 X 与 Y 之间的二元关系。它的逆关系定义是 <code>R⁻¹ = { (y, x) ∈ Y × X : (x, y) ∈ R }</code>，等价说法是 <code>xRy 当且仅当 yR⁻¹x</code>。求逆就是“把所有箭头的方向翻过来”，定义域与值域随之互换：R ⊆ X × Y 时 R⁻¹ ⊆ Y × X。</p><p>例（源文件 p8）：若 R 是 A→B 的一组箭头，则 R⁻¹ 把每条箭头的头尾对调；而 RS 表示“先走 R 再走 S”的捷径。常用性质：<code>(R⁻¹)⁻¹ = R</code>（翻两次回到原样），以及下一节要证的 <code>(RS)⁻¹ = S⁻¹R⁻¹</code>。第 12 讲会看到：用布尔矩阵表示关系时，R⁻¹ 的矩阵就是 R 的矩阵的转置。</p><h3 id="s3">3.2 合成关系 RS</h3><p>设 R 是 X 与 Y 上的关系、S 是 Y 与 Z 上的关系。它们的合成是 X 与 Z 上的关系：<code>RS = { (x, z) ∈ X × Z : 存在 y ∈ Y 使 xRy 且 ySz }</code>。直观说法是“跳过中间点”“抄近路”：从 x 经 R 到某个 y，再经 S 到 z，就把 x 与 z 直接连起来。</p><p>记号并不统一：有人写 <code>R ∘ S</code>，有人写 <code>RS</code>。更要注意顺序约定：函数复合 <code>g ∘ f</code> 表示“先 f 后 g”，写在前面的 g 后执行；而关系的 RS 表示“先 R 后 S”，写在前面的 R 先执行。两个约定相反，是考试里最容易搞混的一处。</p><p>计算 RS 的机械做法：对每个 (x, y) ∈ R 与每个 (y, z) ∈ S，若中间点相同，就把 (x, z) 收进 RS，最后去重。若没有任何中间点能接上，RS 就是空集。</p><h3 id="s4">3.3 用语言解释逆与合成</h3><p>设 H 是全体人类，<code>xPy</code> 表示“x 是 y 的父母”，<code>xBy</code> 表示“x 是 y 的兄弟”。则 <code>xP⁻¹y</code> 表示“x 是 y 的孩子”（因为 yPx 即 y 是 x 的父母）；<code>xB⁻¹y</code> 表示“x 的兄弟姐妹是 y”，即“y 是 x 的兄弟姐妹”。</p><p><code>xPBy</code> 表示“x 是 y 的某个兄弟的父母”，即“x 是 y 的父母且 y 有兄弟”；<code>xBPy</code> 表示“x 是 y 的父母的兄弟”，即“x 是 y 的叔叔/伯伯/舅舅”（uncle）。这两条对照说明：合成不交换，PB 与 BP 是完全不同的关系。</p><h3 id="s5">3.4 合成与逆的计算实例</h3><p>源文件 Ex1：<code>R = {(A, developer), (A, tester), (B, tester), (C, developer)}</code> 表示“人 x 担任角色 y”；<code>P = {(developer, PushCode), (developer, Deploy), (tester, ReportBug)}</code> 表示“角色 y 拥有权限 z”。求 RP 与 P⁻¹P。</p><p>RP：A 有 developer 与 tester 两个角色，故 A 能 PushCode、Deploy、ReportBug；B 只有 tester，只能 ReportBug；C 只有 developer，能 PushCode 与 Deploy。所以 <code>RP = {(A, PushCode), (A, Deploy), (A, ReportBug), (B, ReportBug), (C, PushCode), (C, Deploy)}</code>，语言解释：x 通过其角色拥有权限 z。</p><p>P⁻¹P：<code>P⁻¹ = {(PushCode, developer), (Deploy, developer), (ReportBug, tester)}</code>。合成把“同一角色能执行的两个动作”连起来：developer 能执行 PushCode 与 Deploy，故这两者互相可达（含自身）；tester 只能 ReportBug，故只有 (ReportBug, ReportBug)。结果 <code>P⁻¹P = {(PushCode, PushCode), (PushCode, Deploy), (Deploy, PushCode), (Deploy, Deploy), (ReportBug, ReportBug)}</code>，解释是“存在某个角色同时拥有这两个权限”。</p><h3 id="s6">3.5 性质 (RS)⁻¹ = S⁻¹R⁻¹</h3><p>证明只用定义：<code>(z, x) ∈ (RS)⁻¹ ⇔ (x, z) ∈ RS ⇔ 存在 y 使 xRy 且 ySz ⇔ 存在 y 使 zS⁻¹y 且 yR⁻¹x ⇔ (z, x) ∈ S⁻¹R⁻¹</code>。每一步都是双向翻译，故两个包含同时成立。□</p><p>顺序反转的直观：逆关系把“从哪到哪”对调，而合成是“先 R 后 S”，对调之后自然变成“先 S⁻¹ 后 R⁻¹”。</p><div class="callout warn"><b>别写成 R⁻¹S⁻¹</b>写成 (RS)⁻¹ = R⁻¹S⁻¹ 是错的。取 R = {(1,2)}、S = {(2,3)} 检验：RS = {(1,3)}，(RS)⁻¹ = {(3,1)}；而 R⁻¹S⁻¹ 需先 R⁻¹ 再 S⁻¹，中间点接不上，得到空集。</div><h3 id="s7">3.6 拓展：n 元关系与关系数据库</h3><p>给定 n ∈ Z⁺，集合 A₁, …, Aₙ 上的 n 元关系是 <code>A₁ × … × Aₙ</code> 的任意子集；A₁, …, Aₙ 称为域（domains），n 称为度（degree）。例：<code>Pyth = { (a, b, c) ∈ R³ : a² + b² = c² }</code>，于是 (3,4,5) ∈ Pyth 而 (1,2,1) ∉ Pyth。</p><p>关系数据库就是这一模型的工程化：赫尔辛基出发的列车表，每行是一个 4 元组（发车时间, 车次, 目的地, 站台），全部行构成 <code>R ⊆ Times × Train nbrs × Train stations × Tracks</code>；查询与维护用 SQL。这段是拓展材料，考试不直接考，但它解释了软件工程专业为什么学关系。</p><h3 id="s8">3.7 命题与开放公式</h3><p>命题（proposition）是能够取真值的句子，也就是说，它只能被解释为真或假。疑问句（What is your name?）、祈使句（Do your homework!）、感谢与问候都不是命题——它们有含义，但没有真值。</p><p>判断题（源文件 p18）：(A) “Bye bye!” 不是命题；(B) “x + 7 = 5” 是开放公式（open formula），真值取决于 x；(C) “x + 7 = 5 当 x = −1” 是命题；(D) “存在 x ∈ R 使 x + 7 = 5” 是命题（真，取 x = −2）；(E) Brocard 问题“1·2·…·n + 1 = m² 在 n ∉ {4,5,7} 时有解”是命题——即使没人知道真假，它仍有确定真值。</p><p>开放公式的真值由解释（interpretation）决定。课件用图论例子：命题 Q 是“从 a 到 b 有箭头”，在某个图上为真、在另一个图上为假，所以 Q 本身是开放公式；解释（指定 a、b 与具体图）才给它真值。取值集合写作 {true, false}、{T, F} 或 {1, 0}（另有“多值逻辑”，本课程不涉及）。</p><p>解释必须服从逻辑规则。例：A 表示“外面在下雨”、B 表示“我在吃冰淇淋”、C 表示“外面在下雨且我在吃冰淇淋”。常识告诉我们：若 C 真，则 A 必真，B 也必真。这种“由复合命题的真假推出成分真假”的规则，就是逻辑运算符的解释规则。</p><h3 id="s9">3.8 五个逻辑运算符</h3><p>课件给出的运算符表：<code>∧</code> 读作 and（合取 conjunction）；<code>∨</code> 读作 or（析取 disjunction）；<code>¬</code> 读作 not（否定 negation）；<code>⇒</code> 读作 if A then B 或 A implies B（蕴含 implication）；xor 读作“A or B but not both”（排他或 exclusive or）；另有 <code>⇔</code>（等价 equivalent，读作 if and only if）与 <code>⇐</code>（反向蕴含）。</p><p>每个运算符都有一条解释规则：只要知道成分命题的真值，就能算出复合命题的真值。写法是把所有输入组合列成表，对每种组合给出输出。例 1：“A ∧ B”只在 A、B 都真时为真。例 2：“¬A”取与 A 相反的真值。</p><h3 id="s10">3.9 基本真值表</h3><p>合取（∧）：两个都真才真。析取（∨）：至少一个为真时为真（数学里是包含式或）。否定（¬）：取反。排他或（xor）：恰好一个为真时为真。</p><table><tr><th>A</th><th>B</th><th>A ∧ B</th><th>A ∨ B</th><th>A xor B</th></tr><tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr></table><p>否定只有两行：A = 0 时 ¬A = 1，A = 1 时 ¬A = 0。这四张表是全部真值计算的原子，必须背下来。</p><h3 id="s11">3.10 蕴含 ⇒ 的真值：承诺模型</h3><p>课件的核心例子：早上老师说“如果我的头痛停了，我今天就来上数学 A 的课”。四种情况：(A) 头痛停了、上了课；(B) 头痛停了、没上课；(C) 头痛没停、上了课；(D) 头痛没停、没上课。哪一种算“说谎”？只有 (B)——承诺被违背。</p><p>于是 <code>A ⇒ B</code> 只在 A 真而 B 假时为假。当 B 真时无论 A 真假都为真；当 A 假时也为真。（D）的情形：你没中彩票，也买不起法拉利，我说“如果你中彩票就能买法拉利”并没有撒谎，因为我根本没有对你的购买力作出断言。</p><table><tr><th>A</th><th>B</th><th>A ⇒ B</th><th>说明</th></tr><tr><td>0</td><td>0</td><td>1</td><td>前件假，承诺未被触发</td></tr><tr><td>0</td><td>1</td><td>1</td><td>前件假，结论反而成立</td></tr><tr><td>1</td><td>0</td><td>0</td><td>唯一的违背承诺情形</td></tr><tr><td>1</td><td>1</td><td>1</td><td>承诺兑现</td></tr></table><p><code>⇐</code> 很容易：<code>A ⇐ B</code> 就是 <code>B ⇒ A</code>。等价 <code>⇔</code> 在 A、B 同真或同假时为真（0⇔0 = 1、0⇔1 = 0、1⇔0 = 0、1⇔1 = 1）。当说 A 与 B 逻辑等值时，意思就是 A ⇔ B 为重言式，即两者对所有真值组合都给相同结果。</p><h3 id="s12">3.11 四类重要命题与三种“变形”</h3><p>矛盾式（contradiction）永远为假，例如 P ∧ ¬P。重言式（tautology）永远为真，例如 P ∨ ¬P。等值（equivalent）指 P 与 Q 真值相同，即 P ⇔ Q 为重言式。</p><p>给定 P ⇒ Q，三种变形必须分清：逆否命题（contrapositive）是 ¬Q ⇒ ¬P，与原文等值；逆命题（converse）是 Q ⇒ P，一般不等值；否命题（inverse）是 ¬P ⇒ ¬Q，一般也不等值。第 4 讲会看到：逆否等值是“逆否证明法”的全部依据。</p><h3 id="s13">3.12 ⇒ 与 ⇔ 在解方程中的区别</h3><p>解方程时常用 ⇒：<code>a = b ⇒ a² = b²</code> 成立，但反向不成立（可能 a = −b）。要真正“解出”方程，必须写成 <code>f(x) = g(x) ⇔ x ∈ {…}</code>，两个方向都要成立。只有当两边做的运算可逆（reversible）时，⇐ 才自动成立；平方不可逆，所以必须回代检验。</p><p>源文件 Ex4：在 [−6, ∞[ 上解 <code>√(2x + 12) = x + 2</code>。定义域要求 2x + 12 ≥ 0 即 x ≥ −6（与题设一致）；又因左边是算术平方根，须 x + 2 ≥ 0 即 x ≥ −2。两边平方：<code>2x + 12 = x² + 4x + 4</code>，整理得 <code>x² + 2x − 8 = 0</code>，即 (x + 4)(x − 2) = 0，候选 x = −4 或 x = 2。用 x ≥ −2 筛选：−4 淘汰，2 保留。答案 <code>x ∈ {2}</code>。</p><div class="callout exam"><b>为什么必须回代</b>平方、乘以含未知数的式子、两边取对数，都是不可逆操作。凡用了这类操作，就必须把候选解代回原方程，或事先写清等价条件。考试里“多写一个增根”与“少写一个解”一样扣分。</div><h3 id="s14">3.13 其他逻辑词：unless 与 neither</h3><p>“A unless B”（A 除非 B，例如 I’ll arrive early unless the bus is late）的意思是：当 B 为假时 A 一定为真；B 为真时不作保证。写成逻辑式就是 <code>¬B ⇒ A</code>。“neither A nor B”（既不 A 也不 B）要求两者都为假，等价于 <code>¬A ∧ ¬B</code>。自然语言要先翻译成逻辑式，再写真值表。</p><h3 id="s15">3.14 原子命题及其独立性</h3><p>一个命题由两部分组成：原子命题（其真值由情境解释决定）与逻辑运算符。例 1：“如果下雨且刮风，我就看电影”写成 <code>(R ∧ W) ⇒ M</code>。例 2：“A × B ≠ B × A 除非 A = B 或 A = ∅ 或 B = ∅”写成 <code>¬(Q ∨ R ∨ S) ⇒ P</code>。</p><p>关键要求：原子命题之间必须相互独立，或者完全相同。课件的错误例子：“如果下雨我就看电影；如果不下雨我也看电影”被写成 <code>(R ⇒ M) ∧ (X ⇒ M)</code>，其中 X 表示“不下雨”。但 R 真时 X 必假，两者真值互相决定，不能同时当原子命题。正确写法是 <code>(R ⇒ M) ∧ (¬R ⇒ M)</code>——用同一个原子 R 加否定，而不是新造一个 X。</p><h3 id="s16">3.15 写真值表的步骤与两种排版</h3><p>步骤：① 把命题拆成原子命题与逻辑运算符；② 列出原子命题的所有真值组合（T=1、F=0）；③ 对每种组合按运算符逐步算出复合命题的真值。若有 n 个原子命题，表必须有 2ⁿ 行（不含表头）：1 个原子 2 行，2 个原子 4 行，3 个原子 8 行。</p><p>两种排版：Type 1（中间步骤列）把每个子公式单独列一列，例如 ¬B、A ∧ ¬B，最后算总的；Type 2（运算符列）把运算符写在原子命题之间的列标题里，按优先级从内到外填，用编号 1、2、3… 标出计算顺序。两种都可以，Type 2 更省纸但更容易串行错位。</p><h3 id="s17">3.16 两个示范</h3><p>示范一（源文件 p4）：<code>S: (A ⇒ B) ⇒ (A ⇒ (C ∧ B))</code>。A = 0 时两个蕴含的前件都假，故 S = 1。A = 1、B = 0 时 A ⇒ B = 0，故 S = 1。A = 1、B = 1 时 A ⇒ B = 1，且 C ∧ B = C、A ⇒ (C ∧ B) = C，于是 S = C。所以 S 只在 A = 1、B = 1、C = 0 这一行为 0，其余七行为 1。检查方法：找“前件真、后件假”的唯一组合。</p><p>示范二（Ex5）：证明 <code>P ⇒ Q</code> 与 <code>¬P ∨ Q</code> 等值。四行逐看：P=1,Q=1 两边都 1；P=1,Q=0 时 P⇒Q=0、¬P∨Q=0∨0=0；P=0,Q=1 时 1 与 1∨1=1；P=0,Q=0 时 1 与 1∨0=1。四行全同，故等值。这条等值式是把蕴含化成“或—非”的标准工具，也是 3.13 节 unless 翻译的依据。</p><h3 id="s18">3.17 逻辑谜题（拓展）</h3><p>Ex8 是骑士与无赖（knights and knaves）问题：岛上居民要么总说真话（骑士），要么总说假话（无赖）。A 说“B 与 C 同类型”，随后有人问 C：“A 与 B 同类型吗？”分析要点是把每句话写成逻辑式，再枚举 A、B、C 的类型（2³ = 8 种），检查“话的真假”是否与“说话者类型”一致。这类题不考计算，考的是把语言翻译成真值约束。</p><p>课件最后提到 Boolos 的“最难逻辑谜题”：三位神分别叫 True、False、Random，只能问三个是非题，且回答用含义未知的 da 与 ja。它是拓展阅读，考试不要求。</p><div class="callout idea" data-ext="relations-inverse-composition-logic-0"><b>常见误解</b><p>求逆关系就是把每条箭头方向翻过来，定义域与值域随之互换；翻两次回到原样。合成 RS 是跳过中间点抄近路：存在 y 使 xRy 且 ySz，就把 x 与 z 直接连起来。最易混的是顺序约定：函数复合 g ∘ f 先 f 后 g、写在前的后执行；关系的 RS 却是先 R 后 S、写在前的先执行。用父母 P 与兄弟 B 验证：PB 是父母的兄弟即叔叔，BP 是兄弟的父母，两者完全不同。合成与逆还有 <code>(RS)⁻¹ = S⁻¹R⁻¹</code>。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>inverse relation</td><td>逆关系</td><td>R⁻¹ = { (y, x) : (x, y) ∈ R }; flip all arrows.</td></tr><tr><td>composition</td><td>合成</td><td>RS = { (x, z) : ∃y, xRy and ySz }; skip the middle.</td></tr><tr><td>n-ary relation</td><td>n 元关系</td><td>Any subset of A₁ × … × Aₙ; n is its degree.</td></tr><tr><td>relational database</td><td>关系数据库</td><td>Tables of n-tuples, queried with SQL.</td></tr><tr><td>proposition</td><td>命题</td><td>A sentence that can be interpreted only as true or false.</td></tr><tr><td>open formula</td><td>开放公式</td><td>A formula whose truth depends on unbound variables.</td></tr><tr><td>interpretation</td><td>解释</td><td>An assignment of truth values to a formula.</td></tr><tr><td>conjunction</td><td>合取</td><td>A ∧ B, true only when both are true.</td></tr><tr><td>disjunction</td><td>析取</td><td>A ∨ B, true when at least one is true; inclusive or.</td></tr><tr><td>negation</td><td>否定</td><td>¬A, the opposite truth value of A.</td></tr><tr><td>exclusive or</td><td>排他或</td><td>A xor B, true when exactly one is true.</td></tr><tr><td>implication</td><td>蕴含</td><td>A ⇒ B, false only when A is true and B is false.</td></tr><tr><td>equivalence</td><td>等价</td><td>A ⇔ B, true when A and B share the same truth value.</td></tr><tr><td>tautology</td><td>重言式</td><td>Always true, e.g. P ∨ ¬P.</td></tr><tr><td>contradiction</td><td>矛盾式</td><td>Always false, e.g. P ∧ ¬P.</td></tr><tr><td>contrapositive</td><td>逆否命题</td><td>The contrapositive of P ⇒ Q is ¬Q ⇒ ¬P; equivalent.</td></tr><tr><td>converse</td><td>逆命题</td><td>The converse of P ⇒ Q is Q ⇒ P; not equivalent in general.</td></tr><tr><td>truth table</td><td>真值表</td><td>A table with 2ⁿ rows for n atomic propositions.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 Ex1）设 R = {(A, developer), (A, tester), (B, tester), (C, developer)}、P = {(developer, PushCode), (developer, Deploy), (tester, ReportBug)}，计算 RP 与 P⁻¹P 并解释。</div><p>RP：逐个配对再按中间点合并。A 有 developer 与 tester，得 (A, PushCode)、(A, Deploy)、(A, ReportBug)；B 只有 tester，得 (B, ReportBug)；C 只有 developer，得 (C, PushCode)、(C, Deploy)。</p><p>所以 <code>RP = {(A, PushCode), (A, Deploy), (A, ReportBug), (B, ReportBug), (C, PushCode), (C, Deploy)}</code>，语言解释：人 x 通过其角色拥有权限 z。</p><p>P⁻¹P：先把 P 反向得 {(PushCode, developer), (Deploy, developer), (ReportBug, tester)}，再与 P 合成。PushCode 与 Deploy 都由 developer 执行，故四对互相可达；ReportBug 只与自身相连。</p><p>结果 <code>P⁻¹P = {(PushCode, PushCode), (PushCode, Deploy), (Deploy, PushCode), (Deploy, Deploy), (ReportBug, ReportBug)}</code>，解释：存在某个角色同时拥有这两个权限。</p></div><div class="qa"><div class="q">例 2　（源文件 Ex2）证明 (RS)⁻¹ = S⁻¹R⁻¹。</div><p>一串等价变形即可：</p><p><code>(z, x) ∈ (RS)⁻¹ ⇔ (x, z) ∈ RS ⇔ 存在 y ∈ Y 使 xRy 且 ySz</code>。</p><p>把两个关系各自反向并交换顺序：<code>⇔ 存在 y 使 zS⁻¹y 且 yR⁻¹x ⇔ (z, x) ∈ S⁻¹R⁻¹</code>。</p><p>由于每一步都是“当且仅当”，两个包含同时成立，故相等。□ 直观解释：逆关系把箭头的头尾对调，而合成是“先 R 后 S”，对调后自然成为“先 S⁻¹ 后 R⁻¹”。</p></div><div class="qa"><div class="q">例 3　（源文件 Ex6，2023 年第三次考试第 2 题）计算 (A ∨ ¬B) ⇔ (C ∧ B) 的真值表。</div><p>三个原子命题，故 2³ = 8 行。逐行算 ¬B、A ∨ ¬B、C ∧ B，最后算等价。</p><table><tr><th>A</th><th>B</th><th>C</th><th>¬B</th><th>A ∨ ¬B</th><th>C ∧ B</th><th>结果</th></tr><tr><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr></table><p>只有两行使整个命题为真：(A,B,C) = (0,1,0) 与 (1,1,1)。答题时把中间列都写出来可拿过程分；只写最后一列容易被判跳步。</p></div><div class="qa"><div class="q">例 4　（源文件 Ex4）在 [−6, ∞[ 上解 √(2x + 12) = x + 2。</div><p>第一步，写清定义域与隐含条件：被开方式 2x + 12 ≥ 0 给 x ≥ −6（题设已含）；右边等于算术平方根，故 x + 2 ≥ 0，即 x ≥ −2。</p><p>第二步，两边平方：<code>2x + 12 = (x + 2)² = x² + 4x + 4</code>，整理得 <code>x² + 2x − 8 = 0</code>。</p><p>第三步，因式分解：(x + 4)(x − 2) = 0，候选 x = −4 与 x = 2。</p><p>第四步，用 x ≥ −2 筛选并代回检验：x = 2 时左边 √16 = 4，右边 4，成立；x = −4 不满足条件，舍去。</p><p>结论：解集为 <code>{2}</code>。要点是“平方 ⇒ 增根 ⇒ 必须回代”，这也是把 ⇒ 升级为 ⇔ 的代价。</p></div><div class="qa"><div class="q">例 5　（源文件 Ex5）证明 P ⇒ Q 与 ¬P ∨ Q 逻辑等值。</div><p>列出四行真值：</p><table><tr><th>P</th><th>Q</th><th>P ⇒ Q</th><th>¬P ∨ Q</th></tr><tr><td>0</td><td>0</td><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td><td>1</td></tr></table><p>两列逐行相同，故等值（P ⇔ Q 形式的重言式成立）。</p><p>用法：① 把蕴含改写成“或—非”，便于机器实现；② 求否定得 ¬(P ⇒ Q) ⇔ P ∧ ¬Q，这正是“举反例”的逻辑形式。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>设 R = {(1,2), (2,3), (3,1)} ⊆ {1,2,3}²。写出 R⁻¹ 与 R²（即 RR），并说明 R³ 是什么。</li><li>设 R = {(a,1), (b,1), (b,2)}、S = {(1,x), (2,y)}。计算 RS 与 S⁻¹R⁻¹，并验证 (RS)⁻¹ = S⁻¹R⁻¹。</li><li>判断下列句子是否为命题：(a) 2 + 2 = 5；(b) 请关上门；(c) 存在实数 x 使 x² = −1；(d) x² = −1。</li><li>写出 (A ⇒ B) ∧ (B ⇒ A) 的真值表，并说明它与 A ⇔ B 的关系。</li><li>解方程 √(x + 3) = x − 3，并说明为什么要检验。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> R⁻¹ = {(2,1), (3,2), (1,3)}；R² = RR：1→2→3 给 (1,3)，2→3→1 给 (2,1)，3→1→2 给 (3,2)，故 R² = {(1,3), (2,1), (3,2)} = R⁻¹；R³ = R²R = {(1,1), (2,2), (3,3)}，即单位关系。这是长度为 3 的循环。</p><p><b>2.</b> RS：a→1→x 得 (a,x)；b→1→x 得 (b,x)；b→2→y 得 (b,y)，故 RS = {(a,x), (b,x), (b,y)}。(RS)⁻¹ = {(x,a), (x,b), (y,b)}。S⁻¹ = {(x,1), (y,2)}、R⁻¹ = {(1,a), (1,b), (2,b)}；S⁻¹R⁻¹ 得 (x,a)、(x,b)、(y,b)，一致。</p><p><b>3.</b> (a) 是命题（假）；(b) 不是（祈使句无真值）；(c) 是命题（假，实数平方非负）；(d) 是开放公式，真值取决于 x。</p><p><b>4.</b> (A⇒B)∧(B⇒A) 在 A、B 同真或同假时为 1，否则为 0，正是 A ⇔ B 的真值表，故两者等值。</p><p><b>5.</b> 需 x + 3 ≥ 0 且 x − 3 ≥ 0，即 x ≥ 3。平方得 x + 3 = x² − 6x + 9，即 x² − 7x + 6 = 0，(x−1)(x−6) = 0。x = 1 不满足 x ≥ 3，舍去；x = 6 时左边 3、右边 3，成立。解集 {6}。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s19">考点分层</h2><div class="callout exam"><b>必考</b>① 由两个关系计算 RS 与 R⁻¹（2022 年第二次考试第 1 题、2024 年第一次考试 1(d)、2025 年第二次考试 1(b)）。② 写含 2–3 个原子命题的真值表（几乎每次考试都有，8 分）。③ 判断句子是否为命题或开放公式。④ 证明 (RS)⁻¹ = S⁻¹R⁻¹ 或 P ⇒ Q 与 ¬P ∨ Q 等值。</div><div class="callout warn"><b>易错点</b>① 合成顺序弄反：RS 是“先 R 后 S”，与函数复合 g∘f 相反。② 逆的分配写成 (RS)⁻¹ = R⁻¹S⁻¹，顺序没反转。③ 蕴含真值表把 0⇒0 写成 0。④ 真值表行数不足 2ⁿ，或原子命题不独立（把 ¬R 另立为新原子）。⑤ 解方程平方后不回代，留下增根。</div><div class="callout warn"><b>失分点</b>真值表只写最终一列、不写中间列，会被判跳步；靠“经验”判断而不逐行计算，一旦一行错整题失分。命题判断题只答“是/不是”不说明理由也会扣分。</div><div class="callout tip"><b>进阶</b>① 记住 ¬(P ⇒ Q) ⇔ P ∧ ¬Q，这是“举反例”的形式化。② 会用 P ⇒ Q ⇔ ¬P ∨ Q ⇔ ¬Q ⇒ ¬P 三种写法互换。③ 知道 xor 可写成 (P ∨ Q) ∧ ¬(P ∧ Q)。④ 能读骑士与无赖类谜题并建立真值约束。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">方法清单</h2><h3 id="s21">计算 RS 与 R⁻¹</h3><ol class="steps"><li>把 R 与 S 都按第一坐标分组，便于找中间点</li><li>对每个 (x, y) ∈ R 与每个 (y, z) ∈ S 生成 (x, z)</li><li>去重（关系是集合，重复的对只算一个）</li><li>求逆就把每个 (x, y) 写成 (y, x)，并交换定义域与值域</li><li>检查元素个数：|RS| ≤ |R| · |S|，若超出说明算错</li></ol><h3 id="s22">写真值表的四步</h3><ol class="steps"><li>数出原子命题个数 n，准备 2ⁿ 行并按二进制顺序排列组合</li><li>给每个子公式单独开一列（Type 1），或按优先级标号（Type 2）</li><li>逐行按定义填值：先括号内、再 ¬、∧ 与 ∨、最后 ⇒ 与 ⇔</li><li>检查特殊行：蕴含只有“真⇒假”为假；等价只在同真同假时为真</li></ol><h3 id="s23">判断命题与否</h3><ul class="checklist"><li>是陈述句吗？疑问、祈使、感叹一律不是命题</li><li>含自由变量吗？含则是开放公式，需要解释才有真值</li><li>有量词（存在、对所有）把变量约束住了吗？有则是命题</li><li>即使无人知道真假，只要有确定真值就仍是命题</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>03-lesson.pdf</td><td>p2–p3</td><td>第 2 周关键词回顾、本章目录</td></tr><tr><td>03-lesson.pdf</td><td>p6–p13</td><td>逆关系与合成的定义、箭头图与图例、父母与兄弟的语言解释、Ex1–Ex3</td></tr><tr><td>03-lesson.pdf</td><td>p13–p14</td><td>n 元关系（拓展）、关系数据库与 SQL（拓展）</td></tr><tr><td>03-lesson.pdf</td><td>p17–p20</td><td>命题的定义、非命题例句、A–E 判断、开放公式与解释</td></tr><tr><td>03-lesson.pdf</td><td>p22–p28</td><td>∧ ∨ ¬ xor 的定义与真值表、解释规则的写法</td></tr><tr><td>03-lesson.pdf</td><td>p30–p34</td><td>蕴含的承诺模型与四情形、⇒ ⇐ ⇔ 的真值表</td></tr><tr><td>03-lesson.pdf</td><td>p35–p37</td><td>矛盾式、重言式、等值、逆否/逆/否、⇒ 与 ⇔ 在解方程中的区别、Ex4</td></tr><tr><td>03-lesson.pdf</td><td>p37</td><td>unless 与 neither…nor 的翻译</td></tr><tr><td>03-lesson.pdf</td><td>p39–p42</td><td>原子命题的独立性、真值表的两种排版、2ⁿ 行规则</td></tr><tr><td>03-lesson.pdf</td><td>p43–p44</td><td>Ex5–Ex8：等值证明、真值表、集合运算与逻辑运算对照、骑士与无赖、Boolos 谜题</td></tr><tr><td>04-exercise.pdf</td><td>Ex2、Ex4</td><td>关系合成的图形计算、P ⇒ (Q ⇔ R) 的真值表练习</td></tr><tr><td>（跳过）</td><td>p6、p18、p23、p30、p36</td><td>课堂活动与投票页，结论已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>n 元关系与关系数据库、Boolos 三神谜题、xor 的等价改写</td></tr></table></section><div class="lnav"><a class="prev" href="families-cartesian-relations.html">← 第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a class="next" href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 1 讲 · 课程导论与软件工程概览 · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-1.html">第 1 章 导论与过程模型</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">1.1 这门课怎么组织、怎么算分</a><a class="toc-l3" href="#s3">1.2 软件是什么</a><a class="toc-l3" href="#s4">1.3 通用产品与定制产品：规格归谁所有</a><a class="toc-l3" href="#s5">1.4 好软件的四个本质属性</a><a class="toc-l3" href="#s6">1.5 软件工程的定义</a><a class="toc-l3" href="#s7">1.6 四个驱动力：改一个，动全身</a><a class="toc-l3" href="#s8">1.7 软件工程的历史坐标</a><a class="toc-l3" href="#s9">1.8 软件生产的四项基本活动</a><a class="toc-l3" href="#s10">1.9 影响软件的一般问题与应用类型</a><a class="toc-l3" href="#s11">1.10 职业伦理：不只是守法</a><a class="toc-l3" href="#s12">1.11 为什么软件在「吞噬世界」</a><a class="toc-l2" href="#s13">分析一个软件系统的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a class="toc-l3" href="l01-course-and-se-overview.html">▸ 第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 1 讲 · 课程导论与软件工程概览</h1><p class="lead">Course Introduction and Introduction to Software Engineering <span class="badge mute">30361</span> <span class="badge mute">第 1 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 导论与过程模型</a></p><p class="src">原始文件：<code>07_Week 1/1_SE - Lecture 0 - 2026.pdf</code> <code>08_Week 2/2_SE - Lecture 1 - 2026.pdf</code> <code>08_Week 2/1_Why Software Is Easting The World.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是全课的第一讲，把两件事合并起来讲：一是这门课怎么组织、怎么评分、项目要交付什么（原 Lecture 0）；二是软件工程这门学科的基本框架——软件是什么、好软件有哪些属性、软件工程的定义、软件生产的四项基本活动、影响软件的一般问题、以及工程师的职业伦理（原 Lecture 1）。最后一节用 Andreessen 的《Why Software Is Eating the World》说明：为什么在软件已经渗入一切行业的今天，仍然需要「工程化」地做软件。</p><p>本节是后面所有内容的地基。第 2、3 讲谈过程模型与过程活动，本质是把这里的「四项基本活动」展开成可执行的流程；第 4 至 6 讲分别展开需求、建模、体系结构；第 7 至 10 讲谈测试、演化、项目管理、质量与配置管理。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用 IEEE 2010 的定义准确说出软件工程是什么，并指出它与「写程序」的区别</li><li>区分通用产品（generic product）与定制产品（customized product），并判断需求规格由谁拥有</li><li>说出好软件的四个本质属性，并解释为什么可维护性最关键</li><li>把任意一个软件系统归入八种应用类型之一，并说明理由</li><li>在具体情境中识别违反 ACM/IEEE 伦理准则的行为，并指出对应的原则条款</li><li>解释软件生产的四项基本活动，以及它们在不同过程模型中如何被重新编排</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">1.1 这门课怎么组织、怎么算分</h3><p>课程是 6 ECTS。按芬兰学制，1 ECTS 对应 27 小时工作量，因此全课约 6 × 27 = 162 小时；课程跨度约 14 周，平均每周约 10 小时。课件的建议很直接：<b>每周持续投入，不要期末突击</b>。</p><p>评分结构（Lecture 0 与 Lecture 1 的幻灯片一致）如下：</p><table><tr><th>考核项</th><th>占比</th><th>说明</th></tr><tr><td>每周个人作业 + 同伴评审（3:1）</td><td>20%</td><td>11 次个人作业，周一 10:00 前提交；同伴评审周日 23:59 前提交</td></tr><tr><td>每周课堂小测</td><td>10%</td><td>随堂测验，基于教材第 10 版全球版</td></tr><tr><td>出勤加分</td><td>5%</td><td>课堂参与</td></tr><tr><td>每周校内练习</td><td>10%</td><td>Exercise Sessions，案例讨论与小组任务</td></tr><tr><td>课程项目（报告 + 演示）</td><td>25%</td><td>三次提交：项目提案、状态报告 + 5 分钟 pitch、终期报告 + 7 分钟 pitch</td></tr><tr><td>客座讲座</td><td>5%</td><td>Guest Lecture</td></tr><tr><td>期末考试</td><td>30%</td><td>闭卷笔试（pen and paper）</td></tr></table><p>幻灯片另有一条容易被忽略的硬性规定：<b>课程项目与期末考试各需至少 50 分</b>（表中标 * 的两项）。也就是说，总分再高，项目或期末不及格仍然不能通过。评分等级为 5 = 85–100%、4 = 75–84%、3 = 65–74%、2 = 55–64%、1 = 45–54%、0 = 0–44%。</p><p>课程项目只写<b>需求规格说明书</b>，不要求写代码。课件原话是：</p><p>“The purpose of the project is to create requirements specification document for a software product … You do not need to code/develop anything.”（项目的目的是产出一份软件产品的需求规格说明书……你不需要写任何代码。）</p><p>教材是 Ian Sommerville 的《Software Engineering》第 10 版全球版，所有小测与练习都基于该版本；Moodle 每周另配阅读与视频材料。</p><h3 id="s3">1.2 软件是什么</h3><p>课件给出的定义是：</p><p>“Computer programs and associated documentation. Software products that may be developed for a particular customer or may be developed for a general market.”（计算机程序及与之相关的文档。软件产品既可以是为特定客户开发的，也可以是为通用市场开发的。）</p><p>这句话有两个要点。第一，<b>软件 = 程序 + 文档</b>，不是只有可执行文件；第二，软件产品按「为谁开发」分成两类，这一点直接决定需求由谁说了算（见 1.3）。</p><p>软件按用途可分为五种：</p><table><tr><th>类型</th><th>作用</th><th>例子</th></tr><tr><td>系统软件 system software</td><td>管理硬件、提供运行平台</td><td>操作系统、设备管理程序</td></tr><tr><td>应用软件 application software</td><td>完成用户的具体任务</td><td>办公软件、订票系统</td></tr><tr><td>中间件 middleware</td><td>连接不同系统、屏蔽异构性</td><td>应用服务器、消息队列</td></tr><tr><td>驱动软件 driver software</td><td>让操作系统控制具体硬件</td><td>打印机驱动、显卡驱动</td></tr><tr><td>编程软件 programming software</td><td>辅助开发与调试</td><td>汇编器、编译器、调试器、解释器</td></tr></table><p>课件还补充了一个有趣的观点：软件具有「自然性」（naturalness）——它由人在各种约束下写成，因而和自然语言一样具有重复性与可预测性（Hindle 等，《On the naturalness of software》，Communications of the ACM，2016）。这不是考点，但它解释了为什么代码补全、代码克隆检测这类技术能奏效。</p><h3 id="s4">1.3 通用产品与定制产品：规格归谁所有</h3><p>这是本节最容易被低估、但在项目与考试中反复出现的区分。</p><table><tr><th>维度</th><th>通用产品 generic products</th><th>定制产品 customized products</th></tr><tr><td>定义</td><td>独立系统，卖给任何愿意购买的客户</td><td>受特定客户委托、满足其自身需求</td></tr><tr><td>例子</td><td>图形软件、项目管理工具、CAD、牙医预约系统</td><td>嵌入式控制系统、空管软件、交通监控系统</td></tr><tr><td>规格由谁拥有</td><td>开发者（developer）拥有「软件该做什么」的规格</td><td>客户（customer）拥有规格</td></tr><tr><td>变更由谁决定</td><td>开发者决定是否以及如何变更</td><td>客户决定需要哪些变更</td></tr></table><p>课件原文：“The specification of what the software should do is owned by the software developer and decisions on software change are made by the developer.”（通用产品的规格归开发者所有，变更决策由开发者做出。）定制产品则相反：规格归客户，变更也由客户决定。</p><div class="callout warn"><b>常见误解</b>很多同学把「定制产品」理解成「界面可以定制」或「可以配置」。这里的定制指的是<b>由一个特定客户委托、为其自身业务专门开发</b>，因此需求来源单一、验收标准由该客户掌握。SaaS 产品即使允许换主题，只要规格由厂商拥有，仍然是通用产品。</div><h3 id="s5">1.4 好软件的四个本质属性</h3><p>课件列出四个 essential attributes，并且给出了英文定义，考试常要求逐条解释：</p><table><tr><th>属性</th><th>英文定义（课件原句）</th><th>中文解释</th></tr><tr><td>可维护性 maintainability</td><td>Software should be written in such a way so that it can evolve to meet the changing needs of customers.</td><td>软件应能被修改以适应用户需求变化。课件强调这是 critical attribute，因为业务环境变化使软件变更不可避免。</td></tr><tr><td>可靠性与安全性 dependability and security</td><td>Software dependability includes a range of characteristics including reliability, security and safety. Dependable software should not cause physical or economic damage in the event of system failure.</td><td>包含可靠性、安全性（security）与功能安全（safety）。系统失效时不得造成人身或经济损失，恶意用户不得访问或破坏系统。</td></tr><tr><td>效率 efficiency</td><td>Software should not make wasteful use of system resources such as memory and processor cycles.</td><td>不浪费内存与处理器周期，包括响应速度、处理时间、内存占用等。</td></tr><tr><td>可接受性 acceptability</td><td>Software must be acceptable to the type of users for which it is designed. This means that it must be understandable, usable and compatible with other systems that they use.</td><td>对目标用户而言可理解、可使用，并与其使用的其他系统兼容。</td></tr></table><p>为什么可维护性被放在第一位？因为软件成本的大头在投入使用之后。课件反复强调：“software costs more to maintain than it does to develop”（维护比开发更贵），第 8 讲会用 2 到 100 倍这个量级再展开。</p><div class="callout tip"><b>记忆方法</b>四个属性可以记成「改得动、靠得住、跑得省、用得顺」：maintainability 改得动，dependability &amp; security 靠得住，efficiency 跑得省，acceptability 用得顺。</div><h3 id="s6">1.5 软件工程的定义</h3><p>课件给了两个定义，考试可能要求同时写出并比较：</p><p>Definition 1：“[SE is] the establishment and use of sound engineering principles in order to obtain economically software that is reliable and works efficiently on real machines.”（建立并使用可靠的工程原则，以便经济地获得在真实机器上可靠、高效运行的软件。）</p><p>Definition 2（IEEE）：“Software engineering: (1) The application of a systematic, disciplined, quantifiable approach to the development, operation, and maintenance of software; that is, the application of engineering to software. (2) The study of approaches as in (1).”（把系统化、守纪律、可度量的方法应用于软件的开发、运行与维护，即把工程用于软件；以及对上述方法的研究。）</p><p>IEEE 定义里有三个形容词值得拆开：<b>systematic</b>（有章法，不是凭灵感）、<b>disciplined</b>（守纪律，按既定流程执行）、<b>quantifiable</b>（可度量，能用数据说话）。第 10 讲的质量度量、第 9 讲的估算，都是「quantifiable」的具体化。</p><p>课件还给出一个更贴近实践的四段式定义：软件工程<b>满足客户需求</b>，<b>通过应用系统化、可度量的过程</b>，<b>进行软件产品与服务的开发与演化</b>，<b>并受资源及其他外部约束的限制</b>。这四段正好对应四个驱动力（见 1.6）。</p><p>最后是「工程学科」的完整表述：</p><p>“Software engineering is an engineering discipline that is concerned with all aspects of software production from the early stages of system specification through to maintaining the system after it has gone into use.”（软件工程是一门工程学科，关注从系统规格的早期阶段直到系统投入使用后维护的软件生产的所有方面。）</p><p>课件对这句话作了两点解释：<b>engineering discipline</b> 指在组织与财务约束下，用恰当的理论与方法解决问题；<b>all aspects of software production</b> 指不只是技术开发过程，还包括项目管理，以及支撑软件生产的工具与方法的开发。</p><div class="callout warn"><b>易错</b>把软件工程等同于「编程」是最常见的错误。编程只是 development 活动的一部分；规格、验证、演化，以及项目管理、配置管理、质量管理，都属于软件工程。</div><h3 id="s7">1.6 四个驱动力：改一个，动全身</h3><p>课件用一张图说明项目的四个力：<b>客户与用户</b>（customers, users）、<b>约束与情境</b>（constraints, context）、<b>产品与技术</b>（products, technology）、<b>过程与团队</b>（processes, teams）。关键结论是：</p><p>“A significant change related to any one of them affects all aspects of a project.”（其中任何一个发生显著变化，都会影响项目的所有方面。）</p><p>四者的关系可以记成一句话：<b>需求驱动、约束施压、产品被构建、过程去满足</b>。例如客户临时要求支持离线模式（需求变），会牵动技术选型（产品与技术）、排期与人力（过程与团队），并可能触碰合同与法规（约束与情境）。第 12 讲 IBM 案例中「开发末期插入 4000 万美元需求」就是这条规律的教科书式演示。</p><h3 id="s8">1.7 软件工程的历史坐标</h3><p>课件用一条时间轴把软件工程史串起来，理解这条线有助于解释「为什么会有今天这些方法」：</p><table><tr><th>年代</th><th>标志事件</th><th>意义</th></tr><tr><td>1942</td><td>Konrad Zuse 的 Plankalkül</td><td>第一个高级程序设计语言</td></tr><tr><td>1947</td><td>Kathleen Booth 的 ARC2 汇编语言</td><td>汇编语言出现，机器指令可被符号化表达</td></tr><tr><td>1950–1960</td><td>AUTOCODE（Glennie, 1952）、FORTRAN（Backus, 1957）、ALGOL（Perlis, 1958）、COBOL（Hopper, 1959）、LISP（McCarthy, 1959）</td><td>高级语言家族成型，后来的 Pascal、Ada、C、Java 都源自 ALGOL 一脉</td></tr><tr><td>1960–1970</td><td>软件危机（software crisis）：复杂度上升、成本超支、交付延期；结构化程序设计（Böhm &amp; Jacopini, 1966）</td><td>「写程序」第一次被当作需要工程方法的问题</td></tr><tr><td>1970–1980</td><td>软件危机延续；面向对象（OOP）引入；通过 SSADM 推广 SDLC</td><td>过程模型与结构化方法成为主流</td></tr><tr><td>1980–1990</td><td>美国国防部 1985 年采用瀑布模型；Python（van Rossum, 1989）</td><td>瀑布成为官方标准流程</td></tr><tr><td>1990–2000</td><td>XP（Beck）、Ruby（Matsumoto, 1993）、PHP（Lerdorf, 1994）、Scrum（Schwaber, 1995）、Java（Gosling, 1995）、JavaScript（Eich, 1995）、UML（Booch, 1997）；互联网兴起</td><td>轻量方法与面向对象建模同时爆发</td></tr><tr><td>2000–2010</td><td>Y2K 问题；轻量方法；敏捷宣言（2001，17 位实践者）</td><td>敏捷从边缘实践变成行业主流</td></tr><tr><td>2010–2020</td><td>SOA、云计算、AI4SE 与 SE4AI、LLM</td><td>软件既是被工程化的对象，也成为工程化的工具</td></tr><tr><td>2020–2030</td><td>「你有机会塑造 SE 的版图」</td><td>课件把这一段留给学生</td></tr></table><p>注意「软件危机」出现两次（1960s 与 1970s），说明它不是一次事件，而是一种长期状态：需求越来越复杂，而方法跟不上。第 2 讲的所有过程模型，都是对这场危机的不同回应。</p><h3 id="s9">1.8 软件生产的四项基本活动</h3><p>这是全课出现频率最高的四个词，必须能背出英文并解释：</p><table><tr><th>活动</th><th>英文定义（课件原句）</th><th>产出</th></tr><tr><td>软件规格 software specification</td><td>Customers and engineers define the software that is to be produced and the constraints on its operation.</td><td>需求文档 / SRS</td></tr><tr><td>软件开发 software development</td><td>The software is designed and programmed.</td><td>设计文档 + 可执行系统</td></tr><tr><td>软件验证 software validation</td><td>The software is checked to ensure that it is what the customer requires.</td><td>测试报告、缺陷记录</td></tr><tr><td>软件演化 software evolution</td><td>The software is modified to reflect changing customer and market requirements.</td><td>新版本、补丁</td></tr></table><p>关键的一句话是：这四项活动<b>存在于所有软件过程中</b>，区别只在于它们如何被编排。瀑布模型把它们排成顺序，增量开发把它们交织在一起（第 3 讲详述）。</p><h3 id="s10">1.9 影响软件的一般问题与应用类型</h3><p>课件列出四个 general issues：</p><ul><li><b>异构性 heterogeneity</b>：系统要在包含不同计算机与移动设备的网络上以分布式方式运行。</li><li><b>业务与社会变化 business and social change</b>：新兴经济体发展与新技术出现，使业务与社会变化极快，必须能改旧软件、快速造新软件。</li><li><b>安全与信任 security and trust</b>：软件与生活各方面交织，必须可被信任。</li><li><b>规模 scale</b>：从可穿戴设备中的极小嵌入式系统，到服务全球的互联网级云系统。</li></ul><p>因为问题多样，课件强调「软件工程多样性」：<b>没有一套放之四海皆准的技术</b>；方法与工具的选择取决于应用类型、客户需求、团队背景。</p><p>八种应用类型（考试常以「给一个系统，判断属于哪类」的形式出现）：</p><table><tr><th>应用类型</th><th>英文要点</th><th>典型例子</th></tr><tr><td>独立应用 stand-alone applications</td><td>在本机运行，包含全部功能，不需联网</td><td>PC 上的图像处理软件</td></tr><tr><td>交互式事务型应用 interactive transaction-based applications</td><td>在远端执行，用户通过终端访问</td><td>电子商务网站</td></tr><tr><td>嵌入式控制系统 embedded control systems</td><td>控制和管理硬件设备；数量上可能多于任何其他类型</td><td>家电控制器、汽车 ECU</td></tr><tr><td>批处理系统 batch processing systems</td><td>大批量处理输入、生成对应输出</td><td>工资结算、账单生成</td></tr><tr><td>娱乐系统 entertainment systems</td><td>主要供个人娱乐</td><td>游戏、流媒体播放器</td></tr><tr><td>建模与仿真系统 systems for modeling and simulation</td><td>由科学家与工程师开发，模拟物理过程或情境，含大量相互作用的独立对象</td><td>气象模拟、流体仿真</td></tr><tr><td>数据采集系统 data collection systems</td><td>用传感器从环境采集数据并送往其他系统处理</td><td>环境监测网</td></tr><tr><td>系统的系统 systems of systems</td><td>由若干其他软件系统组合而成</td><td>智慧城市平台</td></tr></table><h3 id="s11">1.10 职业伦理：不只是守法</h3><p>课件明确指出：软件工程涉及的责任超出技术技能；工程师必须以诚实、负责任的方式行事，才能被当作专业人士尊重；伦理行为「more than simply upholding the law」，还要遵循一套道德上正确的原则。</p><p>四项专业责任：</p><table><tr><th>责任</th><th>英文表述</th><th>含义</th></tr><tr><td>保密 confidentiality</td><td>Respect the confidentiality of employers or clients irrespective of whether a formal confidentiality agreement has been signed.</td><td>即使没有签保密协议，也应尊重雇主与客户的机密。</td></tr><tr><td>胜任力 competence</td><td>Should not misrepresent their level of competence; should not knowingly accept work which is not within their competence.</td><td>不夸大自己的能力；不明知超出能力仍接下工作。</td></tr><tr><td>知识产权 intellectual property rights</td><td>Be aware of local laws governing patents, copyright; ensure the IP of employers and clients is protected.</td><td>了解专利、版权等地方法律，保护雇主与客户的知识产权。</td></tr><tr><td>计算机误用 computer misuse</td><td>Should not use technical skills to misuse other people’s computers.</td><td>从上班时间打游戏到传播病毒，都属于误用。</td></tr></table><p>ACM/IEEE 软件工程职业道德准则包含八项原则，按对象排列，非常好记：</p><ol><li><b>Public</b>：与公众利益保持一致。</li><li><b>Client and Employer</b>：以客户与雇主的最佳利益行事，但须与公众利益一致。</li><li><b>Product</b>：确保产品及其修改达到可能的最高专业标准。</li><li><b>Judgment</b>：在专业判断中保持正直与独立。</li><li><b>Management</b>：管理者应支持并推广合乎伦理的开发与维护管理方式。</li><li><b>Profession</b>：增进职业的正直与声誉，与公众利益一致。</li><li><b>Colleagues</b>：公平对待同事并给予支持。</li><li><b>Self</b>：终身学习，并推动职业实践的伦理取向。</li></ol><p>课件还解释了准则的必要性（rationale）：计算在商业、工业、政府、医疗、教育、娱乐与社会中居于核心且日益重要的地位；软件工程师因此有大量「行善或致害」的机会，所以必须承诺让软件工程成为有益且受尊重的职业。准则分「短版」（aspirations，高层抱负）与「长版」（clauses，具体条款）：没有抱负，条款会变成琐碎的法律条文；没有条款，抱负会变成空洞的口号。</p><div class="callout exam"><b>必考提醒</b>八项原则的顺序（Public → Client and Employer → Product → Judgment → Management → Profession → Colleagues → Self）本身就是考点，常以「第 3 项是什么」「哪一项涉及终身学习」的形式出现。</div><h3 id="s12">1.11 为什么软件在「吞噬世界」</h3><p>Andreessen 2011 年的文章是本讲的拓展阅读，用来回答一个朴素的问题：既然软件无处不在，为什么还要强调「工程化」？</p><p>他的核心论断是：我们正处在一场技术与经济的巨变中，软件公司正在接管大片经济领域；从电影到农业到国防，越来越多业务由软件运行、以在线服务交付。原因不是商业模式，而是<b>技术条件终于齐备</b>：宽带用户从十年前的约 5000 万增至 20 亿以上，未来十年至少 50 亿人将拥有智能手机；而启动成本急剧下降——2000 年在 Loudcloud 上运行一个基础互联网应用约需每月 15 万美元，今天在 Amazon 云上运行同样的应用约需每月 1500 美元。</p><p>他给的证据后来大多成了常识：Borders 2001 年把线上业务交给 Amazon，最终破产，而全球最大书店 Amazon 本质是一家软件公司；Netflix 击溃 Blockbuster；音乐、游戏、摄影、招聘、电信、汽车、零售物流（Wal-Mart、FedEx）、金融、农业、国防，都在被软件重写；医疗与教育在他看来是下一批。</p><p>但他也列出三项挑战：一是所有新公司都在经济逆风中创建；二是大量劳动者缺乏参与软件革命所需的教育与技能，而企业又极度缺人；三是新公司必须证明自己的价值——建立文化、取悦客户、建立竞争优势。</p><p>把这篇与 1.4、1.5 连起来看，结论很清楚：<b>软件越重要、规模越大、可靠性要求越高，「靠手艺写代码」就越不够用</b>。这正是软件工程存在的理由。</p><div class="callout idea" data-ext="l01-course-and-se-overview-0"><b>常见误解</b><p>两个高频误区值得先拆开。其一，<strong>定制产品</strong>不是界面可定制或可配置，而是指由某一特定客户委托、为其业务专门开发，规格与变更决策都归客户；SaaS 即使能换主题，只要规格由厂商拥有，仍是通用产品。其二，<strong>软件工程不等于编程</strong>：软件是程序加文档，编程只是开发活动的一环，规格、验证、演化以及项目、配置、质量管理都属工程范畴。四属性可记成改得动、靠得住、跑得省、用得顺；可维护性排第一，正因为维护成本远高于开发。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>software engineering</td><td>软件工程</td><td>The application of a systematic, disciplined, quantifiable approach to the development, operation and maintenance of software.</td></tr><tr><td>generic product</td><td>通用产品</td><td>Stand-alone system marketed and sold to any customer; the developer owns the specification.</td></tr><tr><td>customized product</td><td>定制产品</td><td>Software commissioned by a specific customer; the customer owns the specification.</td></tr><tr><td>maintainability</td><td>可维护性</td><td>Software can evolve to meet changing customer needs.</td></tr><tr><td>dependability</td><td>可靠性（含安全）</td><td>Reliability, security and safety; no physical or economic damage on failure.</td></tr><tr><td>acceptability</td><td>可接受性</td><td>Understandable, usable and compatible with other systems the users rely on.</td></tr><tr><td>software specification</td><td>软件规格</td><td>Defining what the system should do and the constraints on its operation.</td></tr><tr><td>software validation</td><td>软件验证</td><td>Checking that the software is what the customer requires.</td></tr><tr><td>software evolution</td><td>软件演化</td><td>Modifying software to reflect changing customer and market requirements.</td></tr><tr><td>heterogeneity</td><td>异构性</td><td>Systems must operate as distributed systems across different types of device and network.</td></tr><tr><td>embedded control system</td><td>嵌入式控制系统</td><td>Software that controls and manages hardware devices; numerically the most common type.</td></tr><tr><td>system of systems</td><td>系统的系统</td><td>A system composed of a number of other software systems.</td></tr><tr><td>confidentiality</td><td>保密</td><td>Respect client confidentiality even without a signed agreement.</td></tr><tr><td>computer misuse</td><td>计算机误用</td><td>Using technical skills to misuse other people’s computers, from trivial to serious.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　判断产品类型与规格归属</div><p>情境：某医疗器械公司委托一家软件公司，为其新型输液泵开发控制软件；同一家软件公司另有面向所有医院销售的排班系统。请判断两者的产品类型，并说明需求规格与变更由谁决定。</p><p><b>分析：</b>先看「为谁开发」。输液泵控制软件是为一个特定客户（医疗器械公司）专门开发、满足其自身产品需求，属于<b>定制产品</b>；排班系统是打包销售给任何愿意购买的医院，属于<b>通用产品</b>。</p><p>再看规格归属。定制产品的规格由客户拥有，客户决定需要哪些变更——课件原句是 “The specification of what the software should do is owned by the customer”。通用产品的规格由开发者拥有，由开发者决定是否变更。</p><p>最后看后果：定制产品的验收标准写在合同与 SRS 里，需求变更要走变更单（第 4 讲）；通用产品要做市场调研、自己判断哪些功能值得做，需求来自产品经理而非单一客户。</p></div><div class="qa"><div class="q">例 2　把系统归入应用类型</div><p>情境：某城市在地铁站、公交站部署了数千个传感器，实时采集客流与环境数据，汇总到中心平台做拥堵预测，并把预测结果推送给另一个调度系统。请归类并说明理由。</p><p><b>分析：</b>第一步看数据来源——系统通过一组传感器从环境中采集数据，这是 data collection system 的定义特征；第二步看输出——数据被送往其他系统处理，而不是直接面向终端用户；第三步看整体结构——它由采集子系统、分析子系统、调度接口组合而成，符合 systems of systems 的「由若干其他软件系统组成」。</p><p>因此最准确的描述是：<b>以数据采集系统为核心的系统的系统</b>。若题目只允许选一个，选 data collection systems，并把「与其他系统集成」作为补充说明。</p><p><b>通用思路：</b>先判「数据/事件由谁产生」，再判「是否有硬件控制」，再判「是否由多个独立系统组合」，最后判「是否面向个人娱乐」。四步足以覆盖八类。</p></div><div class="qa"><div class="q">例 3　伦理判断：客户要求「先上线，缺陷以后再说」</div><p>情境：你负责的定制产品已通过内部测试，但你知道一个边界条件下会导致数据丢失。客户要求按期上线，并说「出了问题我们自己承担」。你该怎么做？请用 ACM/IEEE 原则说明。</p><p><b>分析：</b>第一步识别受影响方——用户（病患、乘客等最终使用者）、客户、雇主、公众。第二步匹配原则：<b>Product</b> 要求产品达到最高专业标准，明知有数据丢失缺陷仍交付不符合；<b>Public</b> 要求与公众利益一致，若缺陷可能造成人身或经济损失，公众利益优先；<b>Judgment</b> 要求保持专业判断的独立，不能因商业压力放弃技术判断；<b>Client and Employer</b> 要求以客户最佳利益行事——短期上线未必是客户的最佳利益，声誉与法律责任才是。</p><p>第三步给出行动：书面记录缺陷、影响范围与复现条件；提出可选方案（限制功能上线、加临时校验、灰度发布、延期）；把决定提交给有权限的人并留痕；若被要求隐瞒，则援引 Professional 与 Public 两条原则拒绝。</p><p><b>注意：</b>「客户说他们承担」不能免除工程师的责任，这是课件所说 ethical behaviour is more than upholding the law 的具体含义。</p></div><div class="qa"><div class="q">例 4　算一算工作量</div><p>情境：课程为 6 ECTS。若你每周只能投入 6 小时，14 周共投入多少小时？与课程要求相差多少？</p><p><b>解：</b>课程要求 6 × 27 = 162 小时。你的投入为 6 × 14 = 84 小时。差额 162 − 84 = 78 小时，仅达要求的 84/162 ≈ 52%。</p><p><b>结论：</b>每周约需 10 小时（162 ÷ 14 ≈ 11.6，课件取整为 10）。这类计算题的关键是先统一口径——ECTS 是「工作量」而非「课时」。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>软件工程与计算机科学、系统工程的区别是什么？请各用一句话说明，并举一个例子。</li><li>判断：通用产品的需求规格由客户拥有。（对/错，说明理由）</li><li>某银行要在每天夜间批量处理上百万笔交易并生成对账单，应归入哪种应用类型？若该银行要求「处理失败时不得产生重复扣款」，这属于四属性中的哪一个（或哪几个）？</li><li>写出软件生产的四项基本活动，并说明在瀑布模型中它们的排列方式。</li><li>情境设计：你所在的团队要为一家医院开发预约系统，客户提出「下个月必须上线」。请列出至少三项你会用来判断「该不该答应」的工程依据（提示：从四属性、驱动力、过程活动角度）。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 计算机科学关注算法与计算的理论基础（如复杂度、可计算性）；软件工程关注在约束下经济地生产可靠软件的全部活动（含管理）；系统工程关注包含硬件、软件、人员与流程的整体系统。例子：证明排序下界属 CS；为医院排班系统定需求与测试计划属 SE；设计机场行李系统（传送带 + 软件 + 人员）属系统工程。</p><p><b>2.</b> 错。通用产品的规格由<b>开发者</b>拥有，变更也由开发者决定；定制产品才由客户拥有规格。</p><p><b>3.</b> 批处理系统（batch processing systems）。「不得重复扣款」首先是可靠性/正确性问题（dependability），同时涉及数据一致性；若失败会造成经济损失，则 dependability 的定义（不得造成经济损失）直接命中。</p><p><b>4.</b> specification → development → validation → evolution，瀑布模型把它们排成严格顺序，且每个阶段完成后才进入下一阶段，阶段之间没有反馈路径（第 2 讲详述其代价）。</p><p><b>5.</b> 可用的依据包括：需求是否已明确到可验收（否则规格活动无法完成）；上线日期与验证活动所需时间是否冲突（验证不可跳过）；系统的 dependability 要求（医疗场景失效代价高，不能以「先上线」妥协）；团队能力与资源约束（competence 与 constraints）；变更由谁决策（定制产品由客户决策，但工程判断必须独立）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>软件工程的定义（IEEE 2010 三个形容词）、好软件四属性、四项基本活动、通用/定制产品差异、八种应用类型、ACM/IEEE 八项原则。这些是选择题与简答题的高频点。</div><div class="callout warn"><b>易错 1</b>把 validation 与 verification 混为一谈。本讲只出现 validation（确认做的是客户要的东西）；verification（是否按规格做对）在第 7 讲才系统对比。</div><div class="callout warn"><b>易错 2</b>把「可维护性」解释成「系统能正常运行」。可维护性指的是<b>能被修改以适应用户需求变化</b>，与「能跑」无关。</div><div class="callout warn"><b>易错 3</b>认为伦理只与「违法」有关。课件明确说 ethical behaviour is more than simply upholding the law。</div><div class="callout tip"><b>进阶</b>能用一个具体案例把「四个驱动力」串起来（需求变 → 技术选型变 → 排期变 → 合同与法规受触碰），是简答题拿满分的关键；第 12 讲的 IBM 案例可以整段引用。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">分析一个软件系统的清单</h2><ol class="steps"><li>判定产品类型：为特定客户开发（定制）还是面向市场销售（通用）</li><li>判定规格归属与变更决策权：客户还是开发者</li><li>判定应用类型：本机／事务型／嵌入式／批处理／娱乐／仿真／采集／系统的系统</li><li>对照四属性逐条评估：可维护、可靠安全、效率、可接受</li><li>对照四项活动检查项目是否覆盖规格、开发、验证、演化</li><li>识别四个驱动力中当前最不稳定的一项，评估其对排期与范围的影响</li><li>做一次伦理扫描：保密、胜任力、知识产权、计算机误用，以及八项原则中受影响最大的两三项</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>07_Week 1/1_SE - Lecture 0 - 2026.pdf</td><td>p1–p7</td><td>课程人员、教学目标、每周讲座与作业形式、6 ECTS 工作量</td></tr><tr><td>07_Week 1/1_SE - Lecture 0 - 2026.pdf</td><td>p8–p15</td><td>模块日程、评分结构与等级、作业截止、课程项目目的与教材</td></tr><tr><td>07_Week 1/1_SE - Lecture 0 - 2026.pdf</td><td>p16–p25</td><td>软件的经济现实、软件失败的两类原因、两个软件工程定义、四个驱动力</td></tr><tr><td>08_Week 2/2_SE - Lecture 1 - 2026.pdf</td><td>p5–p10</td><td>软件定义、软件类型、通用与定制产品、规格归属</td></tr><tr><td>08_Week 2/2_SE - Lecture 1 - 2026.pdf</td><td>p11–p15</td><td>四个本质属性、IEEE 定义、软件工程史、工程学科与「所有方面」</td></tr><tr><td>08_Week 2/2_SE - Lecture 1 - 2026.pdf</td><td>p16–p22</td><td>四项过程活动、四个一般问题、多样性、八种应用类型</td></tr><tr><td>08_Week 2/2_SE - Lecture 1 - 2026.pdf</td><td>p23–p32</td><td>职业伦理、四项专业责任、ACM/IEEE 八项原则与准则依据</td></tr><tr><td>08_Week 2/2_SE - Lecture 1 - 2026.pdf</td><td>p33–p34</td><td>Key points 汇总</td></tr><tr><td>08_Week 2/1_Why Software Is Easting The World.pdf</td><td>p1–p6</td><td>软件重塑经济的论据、启动成本下降、三类挑战（拓展阅读）</td></tr><tr><td>（跳过）07_Week 1/3_Honor code</td><td>全篇</td><td>课程诚信政策（考试纪律），属行政页，未纳入讲义</td></tr><tr><td>（拓展）</td><td>—</td><td>软件吞噬世界的成本对比（15 万美元/月 → 1500 美元/月）与 Borders/Amazon 案例属背景补充，不构成考点</td></tr><tr><td>（跳过）07_Week 1/2_Exercise Sessions</td><td>全篇</td><td>练习课时间地点与项目启动安排，属行政页</td></tr></table></section><div class="lnav"><span></span><a class="next" href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

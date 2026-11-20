@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 2 讲 · 天气、季节与月份 · 34583</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ99 芬兰语2</a> / <a href="part-1.html">第 1 章 自我介绍与日常时间</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">2.1 本讲的三个话题与一条主线</a><a class="toc-l3" href="#s3">2.2 天气问句与两套答句</a><a class="toc-l3" href="#s4">2.3 sataa：一个只能用于第三人称的动词</a><a class="toc-l3" href="#s5">2.4 其他天气动词与固定搭配</a><a class="toc-l3" href="#s6">2.5 四季：为什么用 -lla</a><a class="toc-l3" href="#s7">2.6 十二个月：为什么用 -ssa</a><a class="toc-l3" href="#s8">2.7 Milloin 问答与「做什么」的搭配</a><a class="toc-l3" href="#s9">2.8 大小写与书写规范</a><a class="toc-l2" href="#s10">天气与时间表达清单</a><a class="toc-l3" href="#s11">说天气三步</a><a class="toc-l3" href="#s12">说时间两步</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-intro-numbers.html">第 1 讲 · 自我介绍、数字与存在句</a><a class="toc-l3" href="t2-weather-seasons-months.html">▸ 第 2 讲 · 天气、季节与月份</a><a href="t3-clock-time-expression.html">第 3 讲 · 钟点、星期与 Milloin 时间格</a><a href="t4-future-plans.html">第 4 讲 · 将来表达与周末计划</a><a href="t5-present-tense-vt1.html">第 5 讲 · 现在时与第一类动词</a><a href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务</a><a href="t7-verb-types-1-6.html">第 7 讲 · 六类动词系统</a><a href="t8-food-shopping.html">第 8 讲 · 食物词汇与购物场景</a><a href="t9-nominative-genitive.html">第 9 讲 · 格系统与属格</a><a href="t10-partitive.html">第 10 讲 · 部分格的构成与用法</a><a href="t11-likes-meals-restaurant.html">第 11 讲 · 喜好表达、餐食与餐厅场景</a><a href="t12-review-exam.html">第 12 讲 · 复习与考试题型</a><a href="supp-interview-task.html">补充 · 食物访谈作业（haastattelu ruoka）</a></div></aside><article><h1>第 2 讲 · 天气、季节与月份</h1><p class="lead">Weather, Seasons and Months <span class="badge mute">34583</span> <span class="badge mute">第 2 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 自我介绍与日常时间</a></p><p class="src">原始文件：<code>03_Tunti 2/1_Milloin, Vuodenajat ja kuukaudet.pdf</code> <code>03_Tunti 2/2_Keskustele Kuukaudet.pdf</code> <code>03_Tunti 2/3_Millainen sää on.pdf</code> <code>03_Tunti 2/4_Sataa.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第二讲把话题从「我是谁」推到「外面怎么样、现在几月」。它看起来只是词汇课，实际上第一次系统展示了芬兰语的两个结构性习惯：<b>时间地点用「格」而不是介词</b>（talvella、tammikuussa），以及<b>形容词作谓语时可能要用部分格</b>（On sateista）。</p><p>本讲之后，第 3 讲会把时间格细化到钟点与星期，第 4 讲再把这些时间短语用于谈计划。因此本讲的重点是先把「季节 -lla、月份 -ssa」这套记忆锚点打牢，后面只是往里加同类。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用 <code>Millainen sää on?</code> 与 <code>Millainen ilma on?</code> 问天气，并给出五种以上天气答句</li><li>解释并正确使用 <code>On aurinkoista</code> 与 <code>On aurinkoinen sää</code> 这两种结构</li><li>说清 <code>sataa</code> 只以第三人称单数出现的原因，并搭配 <code>vettä / lunta / räntää / rakeita</code></li><li>把四季写成 -lla 形式、把十二个月写成 -ssa 形式，并用它们回答 <code>Milloin?</code></li><li>区分「天气形容词」与「天气名词」两类句子的构成，不混用词尾</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 本讲的三个话题与一条主线</h3><p>Tunti 2 的四份材料分工很清楚：<code>1_Milloin, Vuodenajat ja kuukaudet</code> 给四季与十二个月的时间格形式；<code>2_Keskustele Kuukaudet</code> 是看图造句的口语活动；<code>3_Millainen sää on</code> 是天气问答卡；<code>4_Sataa</code> 专门讲一个动词的多义与惯用法。</p><p>主线是：<b>芬兰语没有「在冬天」「在五月」这样的介词短语</b>，而是给名词换词尾。四季用 -lla（talvella、kesällä），月份用 -ssa（tammikuussa）。同一个「在……」，两类词用两个不同后缀，这是本讲最需要背下来的分工。</p><h3 id="s3">2.2 天气问句与两套答句</h3><p>问天气有两个几乎等价的问法：<code>Millainen sää tänään on?</code>（今天天气怎么样？）与 <code>Millainen ilma tänään on?</code>（今天天色怎么样？）。<code>sää</code> 偏「天气状况」，<code>ilma</code> 偏「天、空气」，日常可以互换。</p><p>回答时有两套结构，务必分清：</p><table><tr><th>结构</th><th>例句</th><th>构成说明</th></tr><tr><td>形容词 + sää（名词在）</td><td>On aurinkoinen sää. / On sateinen sää. / On pilvinen sää.</td><td>sää 作主语，形容词用<b>主格</b>并与 sää 一致：aurinkoinen、sateinen、pilvinen、tuulinen、sumuinen</td></tr><tr><td>省略主语 + 形容词部分格</td><td>On aurinkoista. / On sateista. / On pilvistä. / On tuulista. / On sumuista.</td><td>主语被省略，形容词用<b>部分格</b>：-inen → -ista/-istä</td></tr><tr><td>固定短语</td><td>On hyvä sää. / On kaunis sää. / On lämmin sää. / On kuuma sää. / On kylmä sää.</td><td>品质形容词直接修饰 sää，用主格</td></tr><tr><td>温度</td><td>On lämmin sää, +20 astetta. / On kuuma sää, +25 astetta. / On pakkasta, miinus 20 astetta.</td><td>零上直接用 <code>+ N astetta</code>；零下用 <code>On pakkasta</code> + <code>miinus N astetta</code></td></tr><tr><td>特殊天气名词</td><td>On helle. / On sumu. / On ukkosta ja salamoi.</td><td>helle = 酷暑；sumu = 雾；ukkonen 打雷时用部分格 ukkosta</td></tr><tr><td>动词句</td><td>Aurinko paistaa. / Sataa vettä. / Tuulee vähän. / Tuulee paljon, on myrsky.</td><td>用动词直接描述动作，见 2.3</td></tr></table><p>为什么省略主语时形容词要变部分格？因为此时句子的意思是「（天气）是晴朗的（一种状态）」，被陈述的不是一个完整的、可数的个体，而是一种不可数的状态量，芬兰语用部分格标记这种「部分 / 不定量」的谓语。类似结构还有 <code>On kylmä</code>（很冷）、<code>On viileää</code>（有点凉）、<code>On lämmin</code>（暖和）。注意 <code>On kylmä</code> 与 <code>On kylmää</code> 都能听到，前者把「冷」当成一个整体状况，后者强调「冷的感觉弥漫着」，课程材料两种都给，考试一般两者都接受。</p><div class="callout tip"><b>记忆钩子</b>看到 <b>-inen</b> 结尾的天气形容词（aurinkoinen、sateinen、pilvinen、tuulinen、sumuinen），就想到它的部分格是 <b>-ista/-istä</b>：aurinkoista、sateista、pilvistä、tuulista、sumuista。有 sää 时用前者，无 sää 时用后者。</div><h3 id="s4">2.3 sataa：一个只能用于第三人称的动词</h3><p>芬兰语描述「下雨 / 下雪」不用「天」作主语，而用一个无人称动词 <code>sataa</code>。它的完整变位在材料里也给了：<code>minä sadan, sinä sadat, hän sataa, me sadamme, te sadatte, he satavat</code>。但材料同时指出：<b>实际只用第三人称单数，而且不加主语</b>，例如 <code>Ulkona sataa</code>（外面在下雨）。</p><p><code>sataa</code> 本身不说明「下什么」，要说明就得加<b>部分格宾语</b>：</p><table><tr><th>表达</th><th>含义</th><th>格的使用</th></tr><tr><td>Sataa.</td><td>下雨 / 下雪（不指明）</td><td>单独使用，凭窗看就知道是什么</td></tr><tr><td>Sataa vettä.</td><td>在下雨</td><td>vesi → vettä（部分格）</td></tr><tr><td>Sataa lunta.</td><td>在下雪</td><td>lumi → lunta（部分格）</td></tr><tr><td>Sataa räntää.</td><td>在下雨夹雪</td><td>räntä → räntää</td></tr><tr><td>Sataa rakeita.</td><td>在下冰雹</td><td>rae → rakeita（部分格复数）</td></tr><tr><td>Sataa vettä ja lunta.</td><td>雨夹雪（另一种说法）</td><td>两个部分格并列</td></tr><tr><td>Sataa kissoja ja koiria.</td><td>下倾盆大雨（直译「下猫下狗」）</td><td>惯用语，仿英语</td></tr><tr><td>Sataa ukkoja ja akkoja.</td><td>下大雨（旧说法，直译「下老头老太太」）</td><td>惯用语</td></tr><tr><td>Sataa puukkoja.</td><td>下大雨（直译「下刀子」）</td><td>惯用语</td></tr><tr><td>Sataa rahaa.</td><td>钱来得容易（直译「下钱」）</td><td>惯用语</td></tr><tr><td>Sataa tähdenlentoja.</td><td>流星很多</td><td>惯用语</td></tr><tr><td>Sataa onnitteluja.</td><td>收到一大堆祝贺</td><td>惯用语</td></tr></table><p>这条惯用语线索很有用：<code>sataa</code> 的语义核心是「从天上往下落」，所以凡是「大量涌来」的东西都能「下」。反过来说，看到 <code>Sataa + 部分格</code> 就要意识到这不是「下雨」而是「某物大量落下」。</p><div class="callout warn"><b>不要造主语</b>不能说 <code>Taivas sataa</code>（天空下雨）或 <code>Se sataa</code>（它下雨）。直接 <code>Sataa</code> 开头即可，这与英语 It is raining 的 it 不同。</div><h3 id="s5">2.4 其他天气动词与固定搭配</h3><ul><li><code>Aurinko paistaa.</code> —— 太阳在照（paistaa 也可用于「烤肉」）。</li><li><code>Tuulee vähän.</code> —— 有点风；<code>Tuulee paljon, on myrsky.</code> —— 风很大，有暴风雨。</li><li><code>On pakkasta.</code> —— 天寒地冻（pakkasta 是部分格，固定搭配）。</li><li><code>On ukkosta ja salamoi.</code> —— 打雷又闪电（ukkonen 的 partial <code>ukkos</code>ta；salamoida 用于闪电）。</li><li><code>On helle.</code> —— 酷暑（芬兰夏季超过 25 度即称 helle）。</li><li><code>On sumu. / On sumuista.</code> —— 有雾 / 雾蒙蒙。</li><li><code>On viileää.</code> —— 凉爽（viileä 的部分格）。</li></ul><p>温度读法：<code>+20 astetta</code> 读作 <code>plus kaksikymmentä astetta</code>，<code>-20 astetta</code> 读作 <code>miinus kaksikymmentä astetta</code>。<code>astetta</code> 是 <code>aste</code> 的部分格单数，因为温度是量、不是可数个体。</p><h3 id="s6">2.5 四季：为什么用 -lla</h3><p>四季的时间格一律是 <b>-lla/-llä</b>：</p><table><tr><th>季节</th><th>Milloin 形式</th><th>英文</th></tr><tr><td>talvi（冬）</td><td>talvella</td><td>in winter</td></tr><tr><td>kevät（春）</td><td>keväällä</td><td>in spring</td></tr><tr><td>kesä（夏）</td><td>kesällä</td><td>in summer</td></tr><tr><td>syksy（秋）</td><td>syksyllä</td><td>in autumn</td></tr></table><p>-lla 的本义是「在……表面上 / 在……这种活动里」。把季节理解成一段「时间表面」，就顺理成章地用 -lla。同理，一天中的时段也用 -lla：<code>aamulla</code>（早上）、<code>päivällä</code>（白天）、<code>illalla</code>（晚上）、<code>yöllä</code>（夜里）。而 <code>viikonloppuna</code> 例外地用 -na（第 3 讲详述）。</p><p>材料里的示范段落正是把这些格串起来：<code>Kesällä on lämmin. Heinäkuussa minä olen mökillä ja uin joka päivä.</code>（夏天很暖。七月我在木屋，每天游泳。）注意 <code>mökillä</code> 也用 -lla，因为木屋被看成「待在上面的地方」。</p><h3 id="s7">2.6 十二个月：为什么用 -ssa</h3><p>十二个月一律用 <b>-ssa/-ssä</b>，而且月份词本身都以 <code>-kuu</code>（月）结尾：</p><table><tr><th>月份</th><th>Milloin 形式</th><th>英文</th></tr><tr><td>tammikuu</td><td>tammikuussa</td><td>in January</td></tr><tr><td>helmikuu</td><td>helmikuussa</td><td>in February</td></tr><tr><td>maaliskuu</td><td>maaliskuussa</td><td>in March</td></tr><tr><td>huhtikuu</td><td>huhtikuussa</td><td>in April</td></tr><tr><td>toukokuu</td><td>toukokuussa</td><td>in May</td></tr><tr><td>kesäkuu</td><td>kesäkuussa</td><td>in June</td></tr><tr><td>heinäkuu</td><td>heinäkuussa</td><td>in July</td></tr><tr><td>elokuu</td><td>elokuussa</td><td>in August</td></tr><tr><td>syyskuu</td><td>syyskuussa</td><td>in September</td></tr><tr><td>lokakuu</td><td>lokakuussa</td><td>in October</td></tr><tr><td>marraskuu</td><td>marraskuussa</td><td>in November</td></tr><tr><td>joulukuu</td><td>joulukuussa</td><td>in December</td></tr></table><p>月份用 -ssa 的理由与季节不同：月份被视为一个「容器」，事件发生在月份内部，所以是内格。这一点与第 1 讲的 <code>Lahdessa</code> 同源。<b>四季用 -lla、月份用 -ssa</b>，这条分工必须背成条件反射，因为考试里 <code>Milloin olet syntynyt?</code> 的标准答句就是 <code>Olen syntynyt huhtikuussa</code>（我四月出生）。</p><p>顺带记住月份的构词逻辑，比死背十二个词省力：<code>tammi</code>（橡树年轮心材）、<code>helmi</code>（珍珠，二月雪珠）、<code>maalis</code>（三月融雪泥）、<code>huhti</code>（四月焚烧开荒）、<code>touko</code>（五月播种）、<code>kesä</code>（夏）、<code>heinä</code>（干草，七月割草）、<code>elo</code>（收获，八月）、<code>syys</code>（秋）、<code>loka</code>（泥泞，十月）、<code>marras</code>（冻土，十一月）、<code>joulu</code>（圣诞）。</p><h3 id="s8">2.7 Milloin 问答与「做什么」的搭配</h3><p>问「什么时候」用 <code>Milloin?</code>，回答直接把时间词放在句首或句尾，不需要介词：<code>Milloin sinä olet syntynyt? — Olen syntynyt tammikuussa.</code>；<code>Milloin on suomen tunti? — Tiistaina.</code>（星期用 -na，见第 3 讲）。</p><p>把季节与活动连起来时，注意动词搭配：<code>Uin joka päivä</code>（我每天游泳）、<code>Pelaan ulkona sulkapalloa</code>（我在户外打羽毛球，<code>pelata</code> 后面接部分格 <code>sulkapalloa</code>）、<code>grillaamme</code>（我们烧烤）、<code>haravoin pihalla lehtiä</code>（我在院子里耙树叶，<code>haravoida</code> + 部分格复数 <code>lehtiä</code>）、<code>hiihdän ja laskettelen</code>（我滑雪和滑雪橇）、<code>käyn saunassa</code>（我去桑拿，<code>käydä</code> + -ssa）。</p><div class="callout tip"><b>句型模板</b>描述「某季节我做什么」用：<b>季节 -lla + 动词第一人称 + 宾语（部分格或总格）</b>。例：<code>Keväällä kävelen metsässä monta tuntia.</code>（春天我在森林里走好几个小时。）</div><h3 id="s9">2.8 大小写与书写规范</h3><p>芬兰语中<b>星期、月份、季节全部小写</b>：<code>maanantai</code>、<code>tammikuu</code>、<code>kesä</code>。句首才大写。这与英语 Monday / January / Summer 的习惯相反，写作题里写错会扣分。国名、城市名、语言名照常小写（<code>suomi</code>、<code>suomea</code>），只有标题、专名首字母大写。</p><div class="callout warn"><b>高频错误 1</b><code>On sateinen.</code> 缺主语。要么 <code>On sateinen sää</code>，要么 <code>On sateista</code>。</div><div class="callout warn"><b>高频错误 2</b>把季节也写成 -ssa：<code>kesässä</code> 是错的，应为 <code>kesällä</code>；把月份写成 -lla：<code>tammikuulla</code> 也是错的，应为 <code>tammikuussa</code>。</div><div class="callout idea" data-ext="t2-weather-seasons-months-0"><b>常见误解</b><p>天气有两套答句，别混：<code>On aurinkoinen sää</code> 里形容词随 <code>sää</code> 用主格；省略主语就说 <code>On aurinkoista</code>，-inen 变 -ista/-istä，<code>sateinen→sateista</code>、<code>pilvinen→pilvistä</code>。写 <code>On sateinen.</code> 缺主语是高频错误。<code>sataa</code> 是无人称动词，只用第三人称且不加主语：<code>Ulkona sataa</code>，不能造 <code>Taivas sataa</code>；要说明下什么就接部分格——<code>Sataa vettä / lunta / rakeita</code>，语义核心「从天上大量落下」还衍生 <code>Sataa kissoja ja koiria</code>（倾盆大雨）。时间格分两个阵营：<b>四季用 -lla</b>（<code>talvella, keväällä, kesällä, syksyllä</code>），<b>月份用 -ssa</b>（<code>tammikuussa … joulukuussa</code>），写 <code>kesässä</code> 或 <code>tammikuulla</code> 都错。月份词都以 -kuu 结尾，构词有线索：<code>heinäkuu</code> 割草、<code>elokuu</code> 收获、<code>marraskuu</code> 冻土。温度 <code>+20 astetta</code> 里 astetta 是部分格，因为温度是量；星期、月份、季节一律小写。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi</th><th>中文</th><th>English 说明</th></tr><tr><td>sää</td><td>天气</td><td>Weather: Millainen sää on?</td></tr><tr><td>ilma</td><td>天、空气</td><td>Air or weather; interchangeable with sää in small talk.</td></tr><tr><td>Millainen … on?</td><td>……怎么样？</td><td>What kind of … is it?</td></tr><tr><td>aurinkoinen</td><td>晴朗的</td><td>Nominative adjective with sää: On aurinkoinen sää.</td></tr><tr><td>aurinkoista</td><td>晴朗（部分格谓语）</td><td>Partitive predicate without a subject: On aurinkoista.</td></tr><tr><td>sateinen / sateista</td><td>下雨的</td><td>Rainy; the -inen form agrees with sää, the -ista form stands alone.</td></tr><tr><td>pilvinen / pilvistä</td><td>多云的</td><td>Cloudy.</td></tr><tr><td>tuulinen / tuulista</td><td>有风的</td><td>Windy.</td></tr><tr><td>sumuinen / sumuista</td><td>有雾的</td><td>Foggy.</td></tr><tr><td>sataa</td><td>下雨 / 下雪</td><td>Impersonal verb, only 3rd person singular, no subject.</td></tr><tr><td>lumi → lunta</td><td>雪（部分格）</td><td>Sataa lunta = it is snowing.</td></tr><tr><td>vesi → vettä</td><td>水（部分格）</td><td>Sataa vettä = it is raining.</td></tr><tr><td>räntä → räntää</td><td>雨夹雪</td><td>Sataa räntää = it is sleeting.</td></tr><tr><td>rae → rakeita</td><td>冰雹</td><td>Sataa rakeita = it is hailing.</td></tr><tr><td>pakkasta</td><td>零下、严寒</td><td>On pakkasta = it is freezing.</td></tr><tr><td>helle</td><td>酷暑</td><td>On helle = it is very hot (over 25 °C).</td></tr><tr><td>talvella, kesällä</td><td>冬天、夏天</td><td>Seasons take the adessive -lla.</td></tr><tr><td>tammikuussa</td><td>一月（内格）</td><td>Months take the inessive -ssa.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把「今天天气晴朗，气温 +18 度」说成两句芬兰语。</div><p><b>解：</b>第一句用名词结构：<code>Tänään on aurinkoinen sää.</code> 也可以用省略主语的形容词结构：<code>Tänään on aurinkoista.</code> 第二句：<code>On plus kahdeksantoista astetta.</code></p><p><b>要点：</b>18 = <code>kahdeksantoista</code>（8 + toista）；<code>astetta</code> 是部分格，因为温度是量。</p></div><div class="qa"><div class="q">例 2　判断正误并改正：<code>Kesässä sataa paljon vettä.</code></div><p><b>解：</b>两处错。季节不用 -ssa，改为 <code>kesällä</code>。整句：<code>Kesällä sataa paljon vettä.</code></p><p><b>思路迁移：</b>看到「季节 + 格」先查是不是 -lla；看到 <code>sataa</code> 后面的名词先查是不是部分格（vettä 正确，lunta、räntää 同理）。</p></div><div class="qa"><div class="q">例 3　回答 <code>Milloin olet syntynyt?</code>，设定生日是 1999 年 11 月 3 日。</div><p><b>解：</b>月份用 -ssa：<code>marraskuussa</code>。年份用 <code>vuonna 1999</code>（vuonna = vuosi 的样格，固定说法）。完整答句：<code>Olen syntynyt marraskuussa vuonna 1999.</code></p><p><b>要点：</b><code>olen syntynyt</code> 是「出生」的固定完成形式，作为整块记住即可，第 12 讲会说明它的构成来源。</p></div><div class="qa"><div class="q">例 4　把材料中的一句话拆开讲：<code>Syksyllä sataa usein vettä. Minä asun omakotitalossa.</code></div><p><b>解：</b>第一句：季节 -lla（syksyllä）+ 无人称动词（sataa）+ 频率副词（usein）+ 部分格宾语（vettä）。第二句：内格（omakotitalossa = 独栋房子里），因为「住在某建筑内部」用 -ssa。</p><p><b>对比：</b>季节 -lla 与建筑 -ssa 在同一段里并存，正说明芬兰语的格由名词的语义类别决定，不由汉语的「在」决定。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把四季与十二个月分别写成 -lla 与 -ssa 形式，各造一句 <code>Milloin …?</code> 的答句。</li><li>用三种天气结构各写一句：名词句（sää）、省略主语句（部分格）、动词句（sataa / tuulee / paistaa）。</li><li>翻译：「冬天下很多雪，我每天晚上去桑拿。」</li><li>改错：<code>Kesässä on lämmin sää.</code> / <code>On sateinen.</code> / <code>Sataa lumi.</code> / <code>On pakkanen.</code></li><li>写一段 4 句的短文：说明你最喜欢的季节、那个季节的天气、你在那个季节做什么。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 季节：<code>talvella, keväällä, kesällä, syksyllä</code>；月份：<code>tammikuussa … joulukuussa</code>。答句示例：<code>Kesällä minä uin järvessä.</code> / <code>Joulukuussa on paljon lunta.</code></p><p><b>2.</b> 名词句：<code>On tuulinen sää.</code> 部分格句：<code>On pilvistä.</code> 动词句：<code>Ulkona tuulee paljon.</code> 或 <code>Aurinko paistaa.</code></p><p><b>3.</b> <code>Talvella sataa paljon lunta, ja käyn saunassa joka ilta.</code> 注意 <code>lunta</code> 部分格、<code>joka ilta</code> 不加格（joka 后面的时间词用原形）。</p><p><b>4.</b> <code>Kesässä</code> → <code>kesällä</code>；<code>On sateinen.</code> → <code>On sateinen sää.</code> 或 <code>On sateista.</code>；<code>Sataa lumi.</code> → <code>Sataa lunta.</code>；<code>On pakkanen.</code> → <code>On pakkasta.</code></p><p><b>5.</b> 示例：<code>Minun lempivuodenaika on syksy. Syksyllä on viileä ja sateista. Minä kävelen metsässä ja haravoin lehtiä. Illalla luen kirjaa kotona.</code> 自检每句的时间词是否用了正确的格。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>四季 -lla 与月份 -ssa 的形式、<code>Millainen sää on?</code> 的两套答句、<code>sataa + 部分格</code>。听力与口语都直接考这些短语。</div><div class="callout warn"><b>易错 1</b>季节用 -ssa、月份用 -lla，两个后缀互换是最常见的错误。</div><div class="callout warn"><b>易错 2</b><code>sataa</code> 后面忘掉部分格：<code>sataa lumi</code>、<code>sataa vesi</code> 都错。</div><div class="callout warn"><b>易错 3</b>给 <code>sataa</code> 加主语：<code>Se sataa</code>、<code>Taivas sataa</code> 都不成立。</div><div class="callout tip"><b>进阶</b>能主动用 <code>Sataa kissoja ja koiria</code>、<code>Sataa rahaa</code> 这类惯用语解释「sataa 表示大量落下」的语义机制。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s10">天气与时间表达清单</h2><h3 id="s11">说天气三步</h3><ol class="steps"><li>选结构：有 sää 用主格形容词；无主语用部分格形容词；有动作动词直接用第三人称单数</li><li>形容词部分格：-inen → -ista/-istä</li><li>温度：plus / miinus + 数词 + astetta</li><li>降水：sataa + vettä / lunta / räntää / rakeita</li></ol><h3 id="s12">说时间两步</h3><ol class="steps"><li>季节与时段的词先换成 -lla：kesällä、illalla、aamulla</li><li>月份换 -ssa：tammikuussa、huhtikuussa</li><li>星期换 -na：maanantaina（第 3 讲）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖知识点</th></tr><tr><td>03_Tunti 2/1_Milloin, Vuodenajat ja kuukaudet.pdf</td><td>p1–p4</td><td>四季 -lla、天气句型、十二个月 -ssa、季节活动段落</td></tr><tr><td>03_Tunti 2/2_Keskustele Kuukaudet.pdf</td><td>p1</td><td>看图造句任务：Mikä kuukausi / vuodenaika on? Mitä ihmiset tekevät?</td></tr><tr><td>03_Tunti 2/3_Millainen sää on.pdf</td><td>p1</td><td>天气问答卡标题与口语任务形式</td></tr><tr><td>03_Tunti 2/4_Sataa.pdf</td><td>p2–p6</td><td>sataa 的变位与限定用法、部分格搭配、六条惯用语</td></tr><tr><td>（补充）</td><td>2.2、2.5</td><td>形容词谓语部分格的理据、-lla 与 -ssa 的语义分工属解释性拓展</td></tr><tr><td>（跳过）</td><td>—</td><td>3_Millainen sää on 的 p2–p12 为纯图片页，无文字语言点；图片素材不入讲义</td></tr></table></section><div class="lnav"><a class="prev" href="t1-intro-numbers.html">← 第 1 讲 · 自我介绍、数字与存在句</a><a class="next" href="t3-clock-time-expression.html">第 3 讲 · 钟点、星期与 Milloin 时间格 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

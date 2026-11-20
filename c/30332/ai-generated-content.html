@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 5 讲 · 各类 AI 生成内容（音乐、图像、视频） · 30332</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT30A1000 学习工具与AI</a> / <a href="part-3.html">第 3 章 AI 生成内容与使用规范</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、第一原则：你对自己发布的内容负责</a><a class="toc-l3" href="#s3">1.1 三种用途，三种合规强度</a><a class="toc-l2" href="#s4">二、AI 音乐：LUT 的 Copilot 做不了</a><a class="toc-l3" href="#s5">2.1 音乐用在哪儿、要多长</a><a class="toc-l3" href="#s6">2.2 歌词与提示词：先写结构再写词</a><a class="toc-l3" href="#s7">2.3 音乐与视频的合成：三个技术点</a><a class="toc-l2" href="#s8">三、AI 图像：LUT 的 Copilot 可以做</a><a class="toc-l3" href="#s9">3.2 迭代提示词：一次只改一个变量</a><a class="toc-l3" href="#s10">3.3 图像失真的四类检查</a><a class="toc-l3" href="#s11">3.4 图像提示里的“不要什么”</a><a class="toc-l2" href="#s12">四、AI 视频：为什么更贵、更慢</a><a class="toc-l3" href="#s13">4.1 先写分镜，再决定要不要生成</a><a class="toc-l3" href="#s14">4.2 免费额度的现实用法</a><a class="toc-l3" href="#s15">5.1 图注与署名的写法</a><a class="toc-l3" href="#s16">4.3 平台声明与课程声明的区别</a><a class="toc-l2" href="#s17">五、合规使用的一张检查表</a><a class="toc-l2" href="#s18">生成前</a><a class="toc-l2" href="#s19">生成后</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="tools-services.html">第 1 讲 · 学习工具与服务</a><a href="office-ai.html">第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a href="presentation-tools.html">第 3 讲 · 演示工具与 AI</a><a href="drawing-design.html">第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a class="toc-l3" href="ai-generated-content.html">▸ 第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</a><a href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明</a></div></aside><article><h1>第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</h1><p class="lead">Content Produced by Various AIs: Music, Images and Video <span class="badge mute">30332</span> <span class="badge mute">第 5 / 6 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 AI 生成内容与使用规范</a></p><p class="src">原始文件：<code>Lecture 5 Content produced by various AIs.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 2–4 讲用的都是“学校批准的工具”。本讲转向另一类：用 AI 生成音乐、图像与视频。它们大多不在 LUT 的许可范围内，所以本讲的重点不是“哪个工具最好”，而是<b>你发布的内容由你负责</b>——版权、肖像、风格模仿、平台条款，四条都可能让你从“做得漂亮”变成“惹上麻烦”。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>列出使用 AI 生成内容时必须遵守的七条责任规则</li><li>写出包含主体、风格、光线、背景、画幅五要素的图像提示词</li><li>解释为什么视频生成比图像与音乐更贵、更慢</li><li>判断某个工具是否允许商用或公开发布，并知道存疑时怎么做</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、第一原则：你对自己发布的内容负责</h2><p>课件开头只有一句加粗的话：<b>“Remember that you are responsible of the content you publish!”</b> 后面七条是它的展开，每条都对应一种真实风险。</p><ol><li>AI 工具可能有意或无意地产出与他人受版权保护作品相似的内容；</li><li>不要把 AI 生成内容完全当作你自己的创作成果；要透明；</li><li>避免生成过度模仿他人风格的内容，这可能违反知识产权或伦理准则；</li><li>生成真实人物的图像要谨慎，同意（consent）与隐私规则仍然适用；</li><li>确认你使用的工具允许发布生成内容（有些工具限制商业或公开使用）；</li><li>存疑时，注明 AI 工具并说明内容是如何制作的；</li><li>绝不用 AI 生成内容误导、冒充他人，或暗示它是真实的纪实证据。</li></ol><div class="callout warn"><b>两条最容易踩的线</b>一是“风格模仿”——模仿某位在世艺术家的标志性风格并公开发布，风险高于“模仿一种通用风格”（如“扁平插画”）；二是“真实人物”——未经同意生成可识别的人像，即使不商用也可能侵犯人格权与隐私。</div><h3 id="s3">1.1 三种用途，三种合规强度</h3><p>同一张 AI 图，用在不同地方，风险不同：<b>课堂内部</b>（作业、小组讨论）风险最低；<b>公开发布</b>（博客、社团公众号、视频平台）要看工具条款与平台声明；<b>商用</b>（收费课程、外包项目、周边售卖）风险最高，必须确认许可证。</p><p>判断顺序是：先定用途，再选工具，最后才写提示词。反过来做（先生成再看能不能用）往往白做，因为工具条款不允许时，图再好看也不能发。</p><h2 id="s4">二、AI 音乐：LUT 的 Copilot 做不了</h2><p>课件给了一个具体限制：<b>M365 Copilot 不支持插件</b>，因此 LUT 支持的 M365 Copilot <b>不能创作音乐</b>。音乐要用专门的工具。</p><p>课件列出 2025 年 12 月仍有免费档（free-tier）的选择：<b>Suno AI</b>、<b>Udio</b>、<b>Stable Audio</b>。使用建议是：先试、先探索，并用 AI 聊天来写<b>提示词与歌词</b>，这样结果质量更高。</p><p>实务提醒：用歌词生成功能时，注意不要直接提交受版权保护的歌词；发布到视频平台时，平台通常要求你声明使用了 AI 生成音乐。</p><h3 id="s5">2.1 音乐用在哪儿、要多长</h3><p>课程里需要音乐的场合通常是视频片头、播客背景与演示过渡，长度多在 15–60 秒。生成时把“用途”写进提示词，比只写风格更有用：片头要“前 3 秒有记忆点、结尾可淡出”，背景要“无突出旋律、不抢人声”。</p><p>拿到音乐后要试听三件事：循环是否无缝、音量是否盖过人声、有没有突然的鼓点打断讲述。任何一项不合格，就回去改提示词而不是在剪辑里硬修。</p><h3 id="s6">2.2 歌词与提示词：先写结构再写词</h3><p>音乐提示词可以按“风格 + 情绪 + 乐器 + 速度 + 结构”写，例如“calm ambient electronic, hopeful, soft piano and pads, 90 BPM, intro–build–fade out”。结构写清楚，生成结果才不会在 10 秒内突然转调。</p><p>需要歌词时，先把主题、叙事视角与押韵要求写给自己看，再让 AI 扩写；直接用受版权保护的歌词做输入，是明确不能做的事。</p><h3 id="s7">2.3 音乐与视频的合成：三个技术点</h3><p>把 AI 音乐放进视频，要处理三件事：<b>音量</b>（背景音乐通常比人声低 15–20 dB，具体以听感为准）、<b>循环</b>（30 秒音乐配 2 分钟视频要无缝循环，接缝处会有“咔哒”声）、<b>淡出</b>（结尾 2–3 秒渐弱，避免突然截断）。</p><p>这三点都不需要专业软件，剪辑工具里都有对应参数。做完用耳机与手机外放各听一遍：耳机能听出接缝，外放能听出人声是否被盖住。</p><h2 id="s8">三、AI 图像：LUT 的 Copilot 可以做</h2><p>课件明确：<b>LUT 支持的 M365 Copilot 可以创建图像</b>。要做出想要的图，提示词要尽可能清楚地描述场景，包含五类细节：</p><table><tr><th>要素</th><th>英文</th><th>示例</th></tr><tr><td>主体</td><td>Subject</td><td>a person, an object, a landscape</td></tr><tr><td>风格</td><td>Style</td><td>realistic, cinematic, HDR</td></tr><tr><td>光线</td><td>Lighting</td><td>natural light, sunset, studio lighting</td></tr><tr><td>背景</td><td>Background</td><td>forest, city, beach</td></tr><tr><td>画幅</td><td>Orientation</td><td>portrait, landscape, square</td></tr></table><p>课件还列出 2025 年 12 月有免费档的其他图像工具：<b>Google Gemini 3 Nano Banana</b>、<b>ChatGPT</b>、<b>Stable Diffusion</b>、<b>Bing Image Creator（DALL-E 3）</b>、<b>Flux AI</b>。</p><p>用 Copilot 生成图像的操作：开始一个新的 M365 Copilot 聊天 → 写提示词（也可以让 AI 聊天帮你写提示词）→ 把图像下载到电脑 → 复制粘贴到演示、文档、聊天中。</p><ol class="steps"><li>写清主体与用途（“用于课程报告封面，不要文字”）</li><li>补风格、光线、背景、画幅</li><li>生成 2–4 个变体，挑最接近的一个</li><li>检查手部、文字、透视等常见失真</li><li>下载并在文件名或图注里记录工具与提示词</li></ol><h3 id="s9">3.2 迭代提示词：一次只改一个变量</h3><p>生成图像最常见的浪费是“一次改五个词，然后不知道是哪一句起了作用”。有效做法是固定主体与构图，只改一个变量：先只调风格，再只调光线，再只调画幅。每次保留文件名与提示词，最后能复现出满意的那一张。</p><p>另一个技巧是先让 AI 聊天帮你把一句话扩成结构化提示词（主体、风格、光线、背景、画幅），再拿去生成；这比自己在生成框里反复试要快。</p><h3 id="s10">3.3 图像失真的四类检查</h3><p>拿到图先按四类检查：<b>手部</b>（指头数量与关节方向）、<b>文字</b>（招牌、书脊、屏幕上的字）、<b>透视</b>（桌边、窗框是否平行）、<b>物理</b>（阴影方向、反射、物体接触）。四类里任何一类出错，缩略图可能看不出，放大就会被发现。</p><p>课程报告里的图会被打印，所以还要检查对比度与留白：深色图在黑白打印时会糊成一块，浅色文字在白底上会消失。</p><h3 id="s11">3.4 图像提示里的“不要什么”</h3><p>课件给的五要素是“要什么”，实践里还要写“不要什么”：不要文字、不要多余人物、不要品牌标志、不要特定艺术家风格。这些否定条件能显著减少返工，也降低误撞他人作品的风险。</p><p>注意不同工具对否定条件的支持不同：有的用单独字段，有的只能写在提示词里。写之前先看该工具的说明，不要把某个工具的写法套到另一个工具上。</p><h2 id="s12">四、AI 视频：为什么更贵、更慢</h2><p>课件专门解释“为什么生成视频不像其他 AI 任务那么容易”。原因有三层：</p><ol><li><b>计算量大、复杂度高 → 迭代慢。</b>视频是每秒很多帧（30 fps = 每秒 30 张图）。生成一段 10 秒、分辨率尚可的片段，可能需要<b>数百张图</b>，还要处理运动一致性、插帧（interpolation）与放大（upscaling）。</li><li><b>云服务按 GPU 时间、内存与存储计费。</b>即使很短的片段也会很快耗尽免费额度。</li><li><b>免费档限制多。</b>工具通常只给每天或每月很少的短片额度，或者输出带水印。</li></ol><p>课件给出 2025 年 12 月可试的工具与各自的免费条件：<b>Runway ML</b>（可免费测试一段 25 秒视频）、<b>Google Gemini Whisk / VEO</b>、<b>Luma Labs</b>（草稿模式可免费用 8 段视频）、<b>Pika</b>（带水印、额度有限）。</p><div class="callout tip"><b>先算一笔账</b>10 秒 × 30 fps = 300 帧；若分辨率提高、需要重试 3 次，就是上千帧的生成量。这解释了为什么“免费额度只够试两次”，也解释了为什么课程作业更适合用图像 + 剪辑，而不是全片文生视频。</div><h3 id="s13">4.1 先写分镜，再决定要不要生成</h3><p>视频生成的额度很贵，所以顺序要反过来：先写 6–8 个镜头的分镜表（镜号、画面、时长、是否需要人物），再判断哪些镜头必须生成、哪些可以用静态图加运动、哪些可以用屏幕录制。通常只有 1–2 个镜头真的需要文生视频。</p><ul><li>镜号 / 画面描述 / 时长（秒）/ 运动方式（推、拉、摇、静）/ 素材来源（生成、拍摄、截图）</li><li>先做 3 秒测试片段，确认风格与运动一致性再批量生成</li><li>保留每次生成的提示词与版本号，便于替换单镜头</li></ul><h3 id="s14">4.2 免费额度的现实用法</h3><p>免费额度不适合“边想边试”，适合“想清楚再试”。可执行的策略是：先用静态图与文字把分镜定下来，只对最关键的 1–2 个镜头用视频生成；每个镜头只生成一次，失败就改分镜而不是反复抽卡。</p><p>另外要预留“导出与拼接”的时间：生成只是素材，剪辑、配乐、字幕、导出往往比生成更花时间，而免费额度不覆盖这些。</p><h3 id="s15">5.1 图注与署名的写法</h3><p>合规的做法不是“什么都不写”，而是写清楚。图注可以是一句：“Figure 3. Campus at dawn. AI-generated image (M365 Copilot), prompt: autumn lakeside campus, soft morning light; no real persons depicted.” 这一句同时交代了来源、工具与“不含真实人物”。</p><p>如果图经过二次编辑（裁切、调色、拼接），在图注里补一句“cropped and colour-adjusted by the author”。透明度越高，被质疑时越容易解释。</p><h3 id="s16">4.3 平台声明与课程声明的区别</h3><p>平台声明是给观众的：说明这条内容含 AI 生成元素，避免误导。课程声明是给评分的：说明你用了哪个系统、用在哪、你怎么核对。两者不能互相替代——在平台上标了，不等于作业里可以不写 Declaration of AI usage。</p><p>同一份作品可能同时需要两种声明：视频发布到平台要标注，提交到 Moodle 要写课程声明。两者都做，才既合规又可评分。</p><h2 id="s17">五、合规使用的一张检查表</h2><table><tr><th>问题</th><th>若答“是”</th><th>动作</th></tr><tr><td>要公开发布或商用？</td><td>查工具条款是否允许</td><td>不允许就换工具，或只用于课堂内部</td></tr><tr><td>含可识别的真实人物？</td><td>需要本人同意</td><td>改用虚构人物或侧影/背影</td></tr><tr><td>明显模仿某位艺术家风格？</td><td>可能侵犯知识产权/伦理</td><td>改为通用风格描述</td></tr><tr><td>可能被当成真实照片/记录？</td><td>误导风险</td><td>在图注写明“AI-generated image”</td></tr><tr><td>用了 AI 生成音乐/视频？</td><td>平台要求声明</td><td>在发布说明中标注工具</td></tr></table><div class="callout idea" data-ext="ai-generated-content-0"><b>推导补充</b><p>视频贵在帧数：10 秒 × 30 fps = 300 帧，生成 3 个候选约 900 帧，再插帧与放大计算量更高；云服务按 GPU 时间、内存、存储计费，所以免费额度只够试两次。由此推出合规顺序：先定用途（课堂内部／公开发布／商用），再选工具，最后才写提示词——反过来先生成再看能否用往往白做。图像提示按主体、风格、光线、背景、画幅五要素写，并补“不要文字、不要真实人物”。</p></div><div class="callout idea" data-ext="ai-generated-content-1"><b>常见误解</b><p>两条最容易踩的线：模仿某位在世艺术家的标志性风格并公开发布，风险高于“扁平插画”这类通用风格；未经同意生成可识别的真实人像，即使不商用也可能侵犯人格权。还要分清平台声明与课程声明：平台标了“含 AI 内容”，不等于作业里可不写 Declaration of AI usage。图注可写：<em>AI-generated image (M365 Copilot), no real persons depicted.</em></p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>generative AI</td><td>生成式 AI</td><td>AI that produces text, images, music or video.</td></tr><tr><td>copyright</td><td>版权</td><td>Legal protection of original works; AI output may resemble protected works.</td></tr><tr><td>intellectual property</td><td>知识产权</td><td>Rights over creations; style imitation can raise concerns.</td></tr><tr><td>consent</td><td>同意</td><td>Permission from a real person before generating their image.</td></tr><tr><td>free tier</td><td>免费档</td><td>A limited free plan, e.g. a few clips per day.</td></tr><tr><td>watermark</td><td>水印</td><td>A visible mark on free-tier outputs.</td></tr><tr><td>frame rate</td><td>帧率</td><td>Frames per second; 30 fps means 30 images per second.</td></tr><tr><td>motion consistency</td><td>运动一致性</td><td>Keeping objects coherent across frames.</td></tr><tr><td>interpolation</td><td>插帧</td><td>Generating intermediate frames between key frames.</td></tr><tr><td>upscaling</td><td>放大</td><td>Increasing resolution of generated frames.</td></tr><tr><td>GPU time</td><td>GPU 时间</td><td>Computing time billed by cloud providers.</td></tr><tr><td>draft mode</td><td>草稿模式</td><td>A lower-quality mode that uses fewer credits.</td></tr><tr><td>orientation</td><td>画幅方向</td><td>Portrait, landscape or square.</td></tr><tr><td>impersonation</td><td>冒充</td><td>Presenting AI content as a real person or event.</td></tr><tr><td>plugin</td><td>插件</td><td>Add-on capability; M365 Copilot does not support plugins.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　为课程报告封面生成一张配图（合规流程）</div><p><b>提示词：</b>“A wide-angle photograph of a Finnish lakeside campus in early autumn, soft morning light, realistic style, no people, no text, landscape orientation, space on the left for a title.”（主体 + 光线 + 风格 + 画幅 + 留白要求）。</p><p><b>生成后：</b>挑一张没有失真（手、文字、透视）的图；下载并把文件名写成 “cover_ai_copilot_v1.png”；在图注写 “Image generated with M365 Copilot (prompt: …)”。</p><p><b>合规检查：</b>不含真实人物；不模仿特定艺术家；用于课程报告（非商用）；已注明工具。</p><p><b>若要用在公开博客：</b>先确认工具条款允许公开发布，再决定是否使用。</p></div><div class="qa"><div class="q">例 2　做 30 秒片头音乐（Copilot 做不了，换工具）</div><p><b>第 1 步：</b>确认 LUT 的 M365 Copilot 不支持插件，无法生成音乐——不要在这条路上耗时。</p><p><b>第 2 步：</b>从课件列出的免费档工具中选一个（Suno、Udio、Stable Audio），先用 AI 聊天写提示词：风格（如 “calm ambient electronic”）、情绪、时长、是否有鼓点、结尾是否淡出。</p><p><b>第 3 步：</b>生成 2–3 个版本，选一个；下载并记录工具与提示词。</p><p><b>第 4 步：</b>若视频要公开发布，按平台要求声明使用了 AI 生成音乐；不要使用受版权保护的现成歌词。</p></div><div class="qa"><div class="q">例 3　估算一段 10 秒 AI 视频的成本</div><p><b>计算：</b>30 fps × 10 s = <b>300 帧</b>；若生成 3 个候选版本，约 900 帧；若再做一次放大（upscaling）与插帧，实际计算量更高。</p><p><b>对照免费额度：</b>课件说 Runway ML 可免费测试一段 25 秒视频、Luma Labs 草稿模式可免费用 8 段、Pika 带水印且额度有限。</p><p><b>结论：</b>课程作业里，用“AI 图像 + 剪辑/转场 + 文字动画”通常比全片文生视频更可控；若必须用视频生成，先写分镜、只生成必要镜头、保留重试余量。</p></div><div class="qa"><div class="q">例 4　可以用 AI 生成一位老师的形象做课程宣传吗？</div><p><b>不能直接做。</b>课件明确：生成真实人物的图像要谨慎，同意与隐私规则仍然适用；也禁止用 AI 内容冒充他人或暗示其为真实记录。</p><p><b>可行做法：</b>改用虚构人物、背影/侧影、或纯图形化插画；若确实需要本人形象，先取得书面同意，并在图注说明“AI-generated illustration based on a photo used with permission”。</p><p><b>判断标准：</b>被生成的人看到这张图，会不会觉得被冒犯或被误导？会，就不要发。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出使用 AI 生成内容的七条责任规则，并指出哪两条与“公开发布”最相关。</li><li>为一个“课程项目封面图”写提示词，必须包含主体、风格、光线、背景、画幅五要素。</li><li>解释为什么 10 秒 AI 视频比 10 张 AI 图像贵得多（至少三点）。</li><li>LUT 的 M365 Copilot 能生成音乐吗？为什么？替代方案是什么？</li><li>你打算把 AI 生成的图用在公开博客上，需要依次确认哪四件事？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 七条见正文；与公开发布最相关的是“确认工具允许发布生成内容（有些限制商业或公开使用）”与“存疑时注明 AI 工具并说明制作方式”。</p><p><b>2.</b> 示例：“A square illustration of a laptop and a stack of books on a desk, flat vector style, soft daylight from the left, plain light-grey background, square orientation, no text.”</p><p><b>3.</b> ①帧数：30 fps × 10 s = 300 帧，需保证运动一致性与插帧；②算力与云计费：GPU 时间、内存、存储；③免费档限制：短片额度或水印；④重试成本：每次候选都要重新生成。</p><p><b>4.</b> 不能。M365 Copilot 不支持插件，因此 LUT 支持的 Copilot 无法创作音乐。替代：Suno、Udio、Stable Audio（课件列出的免费档工具），并用 AI 聊天写提示词与歌词。</p><p><b>5.</b> ①工具条款是否允许公开发布/商用；②是否含可识别真实人物（需同意）；③是否过度模仿他人风格；④是否需要标注“AI-generated”与声明工具。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>“你对自己发布的内容负责”；七条责任规则；Copilot 能生成图像但不能生成音乐（不支持插件）；图像提示五要素；视频难的三条原因；Runway 25 秒、Luma 8 段草稿、Pika 带水印。</div><div class="callout warn"><b>易错 1</b><b>以为 LUT Copilot 什么都能生成。</b>它可以做图像，不能做音乐（无插件），也不在 Word/Excel 内。</div><div class="callout warn"><b>易错 2</b><b>直接模仿在世艺术家的风格。</b>课件明确要求避免过度模仿他人风格。</div><div class="callout warn"><b>易错 3</b><b>把 AI 图当真实照片发布。</b>课件禁止暗示 AI 内容是真实纪实证据。</div><div class="callout tip"><b>进阶</b>能用“帧数 × 候选数 × 分辨率”估算一次视频生成的算力成本，并据此选择方案。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s18">生成前</h2><ul class="checklist"><li>明确用途：课堂内部 / 公开发布 / 商用</li><li>已读工具条款中关于发布与商用的限制</li><li>提示词包含主体、风格、光线、背景、画幅</li><li>不含可识别的真实人物（或已取得同意）</li><li>没有过度模仿特定艺术家风格</li></ul><h2 id="s19">生成后</h2><ul class="checklist"><li>检查失真：手部、文字、透视、多余肢体</li><li>下载并命名，记录工具与提示词</li><li>在图注写明 “AI-generated”</li><li>公开发布前再次确认平台与工具的声明要求</li><li>课程作业按需写入 Declaration of AI usage</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Lecture 5 Content produced by various AIs.pdf.txt</td><td>p3</td><td>AI 生成内容的七条责任规则</td></tr><tr><td>Lecture 5 Content produced by various AIs.pdf.txt</td><td>p4</td><td>Copilot 不支持插件、不能做音乐；Suno / Udio / Stable Audio</td></tr><tr><td>Lecture 5 Content produced by various AIs.pdf.txt</td><td>p5</td><td>Copilot 可生成图像；提示五要素；五个有免费档的图像工具</td></tr><tr><td>Lecture 5 Content produced by various AIs.pdf.txt</td><td>p6</td><td>Copilot 生成图像的操作：新 chat、提示词、下载、粘贴</td></tr><tr><td>Lecture 5 Content produced by various AIs.pdf.txt</td><td>p7</td><td>视频难的三条原因；Runway / Whisk / VEO / Luma / Pika 的免费条件</td></tr><tr><td>（跳过）</td><td>p1、p8</td><td>封面与结束空白页</td></tr><tr><td>（补充）</td><td>—</td><td>帧数估算（30 fps × 10 s = 300 帧）与合规检查表，属于基于原文事实的推算与操作化整理</td></tr></table></section><div class="lnav"><a class="prev" href="drawing-design.html">← 第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a class="next" href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Tunti 8 · 学习、工作与 -ko 问句 · 33295</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ96 芬兰语1</a> / <a href="part-3.html">第 3 章 否定、学习与家庭</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">8.1 Mitä sinä opiskelet：专业用 partitive</a><a class="toc-l3" href="#s3">8.2 职业与学位：-ksi（translative）</a><a class="toc-l3" href="#s4">8.3 Missä sinä opiskelet：地点格</a><a class="toc-l3" href="#s5">8.4 -ko/-kö 问句：把陈述句变成一般疑问句</a><a class="toc-l3" href="#s6">8.5 否定陈述句怎么变问句：eikö</a><a class="toc-l3" href="#s7">8.6 工作表达：olla töissä 与 työskennellä</a><a class="toc-l3" href="#s8">8.7 疑问词总表与造句</a><a class="toc-l3" href="#s9">8.8 本讲错误清单</a><a class="toc-l2" href="#s10">造 -ko 问句四步</a><a class="toc-l3" href="#s11">学习与工作表达自查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-tervehdykset.html">Tunti 1 · 问候、姓名与告别</a><a href="t2-aakkoset.html">Tunti 2 · 字母、发音与拼读</a><a href="t3-miten-menee.html">Tunti 3 · 近况问答与元音和谐</a><a href="t4-numerot.html">Tunti 4 · 数字与部分格</a><a href="t5-maat.html">Tunti 5 · 国家、国籍与语言</a><a href="t6-verbit.html">Tunti 6 · 人称代词与第一类动词</a><a href="t7-negatiivi.html">Tunti 7 · 否定式与辅音交替</a><a class="toc-l3" href="t8-opiskelu.html">▸ Tunti 8 · 学习、工作与 -ko 问句</a><a href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构</a><a href="t10-genetiivi.html">Tunti 9（上）· 属格与所有格</a><a href="t11-henkilotiedot.html">Tunti 9–10 · 个人信息与咖啡厅场景</a><a href="t12-kertaus.html">Kertaus · 复习、考试与文化</a><a href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表</a></div></aside><article><h1>Tunti 8 · 学习、工作与 -ko 问句</h1><p class="lead">Studies, Work and the -ko Question <span class="badge mute">33295</span> <span class="badge mute">第 8 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 否定、学习与家庭</a></p><p class="src">原始文件：<code>07_Tunti 6/4_Mitä sinä opiskeletS2022.pptx</code> <code>07_Tunti 6/5_Hyviä fraaseja_Useful phrases.html</code> <code>06_Tunti 5/5_KOTITEHTÄVÄHOMEWORK 5 Kirjoita kysymys</code> <code>15_Kokeet_Exams/3_Finnish 1_2024.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第八讲把“学生生活”这条线一次讲完：学什么（专业用 partitive）、要成为什么（职业用 <code>-ksi</code>）、在哪里学（地点用 <code>-ssa/-ssä</code> 或 <code>-lla/-llä</code>）、以及怎么问“你是不是在……”（<code>-ko/-kö</code> 问句）。</p><p>其中 <code>-ko/-kö</code> 是整门课第一次出现的<b>动词疑问句式</b>。它的位置很关键：笔试有一整道 12 分的大题专门考它。而 <code>-ksi</code>（translative，“变成……”）也是本课唯一一个非方位格，之前没见过。</p><p>学完本讲你能够：</p><ul class="checklist"><li>用 <code>Opiskelen …</code> + partitive 说出七个学科方向</li><li>用 <code>Opiskelen …-ksi</code> 说出八个职业/学位目标</li><li>说出 LUT、LAB 两所学校的正确说法与所在校区（<code>LUTissa</code>、<code>Skinnarilassa</code>、<code>LABissä</code>、<code>Mukkulassa</code>）</li><li>把陈述句改成 <code>-ko/-kö</code> 问句并给出简短回答</li><li>用 <code>olla töissä</code> / <code>työskennellä</code> 表达“在某处工作”</li><li>列出十个疑问词并各造一句</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">8.1 Mitä sinä opiskelet：专业用 partitive</h3><p>问专业用 <code>Mitä sinä opiskelet?</code>（你在学什么），答句是 <code>Opiskelen …</code> + <b>partitive</b>。原因是 <code>opiskella</code> 属于“部分格动词”：学的是一个学科的一部分/一个领域，不是把整个学科穷尽。</p><table><tr><th>ala（领域）</th><th>答句</th><th>partitive 形式</th></tr><tr><td>kauppatiede（商学）</td><td>Opiskelen kauppatiedettä.</td><td>kauppatiedettä</td></tr><tr><td>logistiikka（物流）</td><td>Opiskelen logistiikkaa.</td><td>logistiikkaa</td></tr><tr><td>sähkötekniikka（电气工程）</td><td>Opiskelen sähkötekniikkaa.</td><td>sähkötekniikkaa</td></tr><tr><td>energiatekniikka（能源工程）</td><td>Opiskelen energiatekniikkaa.</td><td>energiatekniikkaa</td></tr><tr><td>ympäristötekniikka（环境工程）</td><td>Opiskelen ympäristötekniikkaa.</td><td>ympäristötekniikkaa</td></tr><tr><td>tuotantotalous（工业管理）</td><td>Opiskelen tuotantotaloutta.</td><td>tuotantotaloutta</td></tr><tr><td>yhteiskuntatieteet（社会科学）</td><td>Opiskelen yhteiskuntatieteitä.</td><td>yhteiskuntatieteitä</td></tr></table><p>看最后两行：<code>tuotantotalous → tuotantotaloutta</code>（-us 结尾变 -utta）、<code>yhteiskuntatieteet → yhteiskuntatieteitä</code>（复数词干 + -itä）。这两个形式不能靠简单加 -a 推出，必须单独记。</p><p>英文表述：<i>opiskella</i> takes a partitive object, so the field of study appears in the partitive: <i>Opiskelen logistiikkaa</i>.</p><div class="callout warn"><b>漏 partitive</b><code>Opiskelen sähkötekniikka</code> ✗、<code>Opiskelen logistiikka</code> ✗。这是口试第 15 题最常见的错误。</div><h3 id="s3">8.2 职业与学位：-ksi（translative）</h3><p>问“你在学成什么”，答句用 <code>-ksi</code>：这个格叫 <b>translative</b>，意思是“变成、成为”。</p><table><tr><th>ammatti / tutkinto</th><th>答句</th><th>中文</th></tr><tr><td>fysioterapeutti</td><td>Opiskelen fysioterapeutiksi.</td><td>我在读物理治疗师</td></tr><tr><td>ensihoitaja</td><td>Opiskelen ensihoitajaksi.</td><td>我在读急救护士</td></tr><tr><td>sairaanhoitaja</td><td>Opiskelen sairaanhoitajaksi.</td><td>我在读护士</td></tr><tr><td>insinööri</td><td>Opiskelen konetekniikan insinööriksi.</td><td>我在读机械工程师</td></tr><tr><td>rakennusmestari</td><td>Opiskelen rakennusmestariksi.</td><td>我在读建筑工长</td></tr><tr><td>muotoilija</td><td>Opiskelen muotoilijaksi.</td><td>我在读设计师</td></tr><tr><td>tradenomi</td><td>Opiskelen tradenomiksi.</td><td>我在读工商管理学士</td></tr><tr><td>medianomi</td><td>Opiskelen medianomiksi.</td><td>我在读媒体学士</td></tr></table><p>为什么是 <code>-ksi</code> 而不是 partitive？因为这里说的不是“学习的内容”，而是“学习的目标身份”——毕业时你会<b>成为</b>那个职业。芬兰语的 translative 正好承担“结果状态”这个意思。</p><p>英文表述：Professions and degrees take the translative <i>-ksi</i>, because the studies lead to becoming that professional: <i>Opiskelen sairaanhoitajaksi</i>.</p><div class="callout tip"><b>一句话分清两种说法</b><code>Opiskelen sähkötekniikkaa.</code>（我学电气工程——学的内容，partitive）；<code>Opiskelen insinööriksi.</code>（我在读工程师——学成的身份，-ksi）。同一个 <code>opiskella</code>，宾语格不同，意思就不同。</div><h3 id="s4">8.3 Missä sinä opiskelet：地点格</h3><p>问“在哪里学”用 <code>Missä sinä opiskelet?</code>，答句的地点用 inessive（<code>-ssa/-ssä</code>）或 adessive（<code>-lla/-llä</code>）：</p><table><tr><th>地点</th><th>说法</th><th>格</th></tr><tr><td>LUT-yliopisto（拉彭兰塔理工大学）</td><td>Opiskelen LUT-yliopistossa eli LUTissa.</td><td>-ssa</td></tr><tr><td>Lappeenrannan kampus（拉彭兰塔校区）</td><td>Opiskelen Lappeenrannan kampuksella.</td><td>-lla</td></tr><tr><td>Skinnarila（校区所在地）</td><td>Opiskelen Skinnarilassa.</td><td>-ssa</td></tr><tr><td>LAB-ammattikorkeakoulu</td><td>Opiskelen LAB-ammattikorkeakoulussa eli LABissä.</td><td>-ssa</td></tr><tr><td>Lahden kampus（拉赫蒂校区）</td><td>Opiskelen Lahden kampuksella.</td><td>-lla</td></tr><tr><td>Mukkula（校区所在地）</td><td>Opiskelen Mukkulassa.</td><td>-ssa</td></tr></table><p>规律：<b>学校、校区所在地（地名）用 -ssa/-ssä；“校园”（kampus）这类设施用 -lla/-llä</b>。这与第九讲“在某个城市”用的是同一套方位格逻辑。<code>eli</code> 是“也就是”，用来给出简称。</p><p>注意 <code>LUTissa</code> 的双写 t：<code>LUT</code> 作为缩写，加 <code>-ssa</code> 时按读音补一个 t 再接后缀，形成 <code>LUTissa</code>。同理 <code>LABissä</code>（因为 LAB 读作“lab”，含前元音色彩，课件写作 LABissä）。</p><div class="callout warn"><b>两个易错形</b><code>LUT:ssa</code> ✗（应为 <code>LUTissa</code>）；<code>LABissa</code> ✗（课件写作 <code>LABissä</code>，按元音和谐取 ä）。</div><h3 id="s5">8.4 -ko/-kö 问句：把陈述句变成一般疑问句</h3><p>规则很简单：<b>把动词放在句首，在动词词干后加 <code>-ko</code>（后元音）或 <code>-kö</code>（前元音），主语跟在后面。</b></p><table><tr><th>陈述句</th><th>-ko/-kö 问句</th><th>说明</th></tr><tr><td>Sinä asut Lahdessa.</td><td>Asutko sinä Lahdessa?</td><td>asut + ko</td></tr><tr><td>Te puhutte suomea.</td><td>Puhutteko te suomea?</td><td>puhutte + ko</td></tr><tr><td>Hän opiskelee LUTissa.</td><td>Opiskeleeko hän LUTissa?</td><td>先退回词干 opiskele- 再加 ko</td></tr><tr><td>Me asumme Lahdessa.</td><td>Asummeko me Lahdessa?</td><td>asumme + ko</td></tr><tr><td>He juovat kahvia.</td><td>Juovatko he kahvia?</td><td>juovat + ko</td></tr></table><p>注意第三行：<code>opiskelee</code> 是第三人称单数（长元音 ee），变问句时先退回到词干 <code>opiskele-</code>，再加 <code>-ko</code>，得到 <code>Opiskeleeko hän …?</code>。也就是说，<b>-ko 加在“词干”上，不是加在带长元音的形式上</b>。</p><p>英文表述：Yes/no questions are formed by adding <i>-ko/-kö</i> to the verb stem and placing the verb first: <i>Asutko sinä Lahdessa?</i> The question particle follows vowel harmony.</p><p>回答用动词的肯定或否定形式：</p><table><tr><th>问句</th><th>肯定回答</th><th>否定回答</th></tr><tr><td>Asutko sinä Lahdessa?</td><td>Joo, asun.</td><td>En. Asun Helsingissä.</td></tr><tr><td>Opiskeletko sinä LUTissa?</td><td>Joo, opiskelen.</td><td>En. Opiskelen LABissä.</td></tr><tr><td>Puhutko sinä suomea?</td><td>Joo, puhun.</td><td>En puhu.</td></tr></table><div class="callout exam"><b>必考</b>笔试第 7 题是 12 分的 -ko 问句转换，六小题全部是“陈述 → 问句”。规则只有一条：动词提前、词干 + ko/kö、其余不变。</div><h3 id="s6">8.5 否定陈述句怎么变问句：eikö</h3><p>如果原句本身是否定句，问句有两种做法：</p><table><tr><th>原句</th><th>做法一（中性提问）</th><th>做法二（确认否定）</th></tr><tr><td>Hän ei ole suomalainen.</td><td>Onko hän suomalainen?</td><td>Eikö hän ole suomalainen?</td></tr><tr><td>Minä en puhu ruotsia.</td><td>Puhunko minä ruotsia?</td><td>Enkö minä puhu ruotsia?</td></tr></table><p>做法一把否定句改成肯定问句（“他是芬兰人吗”）；做法二保留否定，把 <code>ei</code> 变成带 <code>-kö</code> 的形式（“他不是芬兰人吗”）。笔试第 3 小题给的是 <code>Hän ei ole suomalainen.</code>，标准答案是 <code>Eikö hän ole suomalainen?</code>——因为题目要求“保持原句意思提问”。</p><p>否定疑问词的形式：<code>enkö, etkö, eikö, emmekö, ettekö, eivätkö</code>。</p><h3 id="s7">8.6 工作表达：olla töissä 与 työskennellä</h3><p>两种说法意思相同（在某处工作），都要求地点格：</p><table><tr><th>说法</th><th>例句</th><th>中文</th></tr><tr><td>olla töissä + -ssa/-ssä</td><td>Olen töissä sairaalassa.</td><td>我在医院工作</td></tr><tr><td>olla töissä + -lla/-llä</td><td>Olen töissä yliopistolla.</td><td>我在大学工作</td></tr><tr><td>olla töissä + -lla/-llä（公司）</td><td>Olen töissä Microsoftilla.</td><td>我在微软工作</td></tr><tr><td>työskennellä + -ssa/-ssä</td><td>Työskentelen sairaalassa.</td><td>我在医院工作</td></tr><tr><td>työskennellä + -lla/-llä</td><td>Työskentelen yliopistolla.</td><td>我在大学工作</td></tr></table><p>另外两个合成词值得记：<code>kesätyö</code>（暑期工）→ <code>Olen kesätöissä Rambolilla.</code>；<code>osa-aikatyö</code>（兼职）→ <code>Olen osa-aikatöissä sairaalassa.</code>。注意 <code>kesätöissä</code> 是 <code>kesätyö</code> 的复数 inessive（<code>töissä</code> 本身是 <code>työ</code> 的复数形式）。</p><p>英文表述：<i>olla töissä</i> and <i>työskennellä</i> both mean “to work at” and take the inessive or the adessive of the workplace.</p><h3 id="s8">8.7 疑问词总表与造句</h3><p>课后作业要求用十个疑问词各造一句。把它们列全，等于把前八讲的所有问句收拢成一张表：</p><table><tr><th>疑问词</th><th>问什么</th><th>例句</th></tr><tr><td>kuka</td><td>谁</td><td>Kuka sinä olet?</td></tr><tr><td>mikä</td><td>什么／哪个</td><td>Mikä on sinun nimi?</td></tr><tr><td>missä</td><td>在哪里</td><td>Missä sinä asut?</td></tr><tr><td>mistä</td><td>从哪里</td><td>Mistä sinä olet kotoisin?</td></tr><tr><td>mihin</td><td>去哪里</td><td>Mihin sinä menet?</td></tr><tr><td>milloin</td><td>什么时候</td><td>Milloin sinä tulet?</td></tr><tr><td>mitä</td><td>什么（partitive）</td><td>Mitä sinä opiskelet?</td></tr><tr><td>millainen</td><td>什么样的</td><td>Millainen sinun perhe on?</td></tr><tr><td>kuinka</td><td>多么／如何</td><td>Kuinka vanha sinä olet?</td></tr><tr><td>kuinka monta</td><td>多少个</td><td>Kuinka monta opiskelijaa luokassa on?</td></tr><tr><td>kenen kanssa</td><td>和谁</td><td>Kenen kanssa sinä asut?</td></tr><tr><td>kenellä</td><td>谁身上（有）</td><td>Kenellä on kynä?</td></tr></table><p>规律：<code>mikä</code> 问“物/名称”，<code>kuka</code> 问“人”；<code>missä</code> 是 inessive（在里面），<code>mistä</code> 是 elative（从里面），<code>mihin</code> 是 illative（进入）。三个词共用一个词干 <code>mi-</code>，只换格后缀。</p><div class="callout tip"><b>造句的模板化做法</b>每个疑问词配一个“我已经会的句型”：<code>Missä</code> + <code>sinä asut</code>；<code>Milloin</code> + <code>sinä tulet</code>；<code>Millainen</code> + <code>sinun perhe on</code>。这样造句不需要新语法，只是把疑问词装到旧句型前面。</div><h3 id="s9">8.8 本讲错误清单</h3><ul><li><code>Opiskelen sähkötekniikka</code> 漏 partitive</li><li><code>Opiskelen insinööri</code> 漏 -ksi</li><li><code>-ko</code> 加在长元音形式上：<code>asuu ko</code> ✗（应为 <code>asuuko</code>）</li><li><code>LUTissa</code> 写成 <code>LUT:ssa</code></li><li>否定句变问句时既保留否定又漏掉 -kö：<code>Ei hän ole suomalainen?</code></li></ul><div class="callout idea" data-ext="t8-opiskelu-0"><b>用法对照</b><p>同一个 <code>opiskella</code> 后面两种格、两层意思：<code>Opiskelen sähkötekniikkaa</code>（学的内容，部分格）对 <code>Opiskelen insinööriksi</code>（学成的身份，<code>-ksi</code> 转化格），后者回答「毕业后成为什么」。<code>tuotantotalous→tuotantotaloutta</code>、<code>yhteiskuntatieteet→yhteiskuntatieteitä</code> 不能靠简单加 -a 推。地点分两类：学校与校区所在地用内格 <code>LUTissa</code>、<code>Skinnarilassa</code>、<code>Mukkulassa</code>，而「校园」<code>kampus</code> 用上格 <code>kampuksella</code>；缩写 LUT 要补 t 再接 -ssa。<code>-ko/-kö</code> 问句把动词提前、加在词干上：陈述 <em>Hän opiskelee LUTissa</em> → <code>Opiskeleeko hän LUTissa?</code>，不是把 -ko 贴到长元音 <code>opiskelee</code> 后面；肯定答 <code>Joo, opiskelen</code>，否定答 <code>En, opiskelen LABissä</code>。原句是否定时用 <code>Eikö hän ole suomalainen?</code> 保留否定意义。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / Finnish</th><th>中文</th><th>English 说明 / 例句</th></tr><tr><td>opiskella</td><td>学习</td><td>Takes a partitive object: <i>opiskelen logistiikkaa</i>.</td></tr><tr><td>ala</td><td>领域、专业</td><td><i>Mitä alaa sinä opiskelet?</i></td></tr><tr><td>tutkinto</td><td>学位</td><td><i>Opiskelen tradenomiksi.</i></td></tr><tr><td>-ksi</td><td>变成（转化格）</td><td>Translative: <i>sairaanhoitajaksi</i>.</td></tr><tr><td>ammatti</td><td>职业</td><td><i>Mikä on sinun ammatti?</i></td></tr><tr><td>Missä opiskelet?</td><td>你在哪里学习？</td><td>Answer with <i>-ssa/-ssä</i> or <i>-lla/-llä</i>.</td></tr><tr><td>kampus</td><td>校区</td><td><i>Lappeenrannan kampuksella</i>.</td></tr><tr><td>-ko / -kö</td><td>疑问助词</td><td>Added to the verb stem to form a yes/no question.</td></tr><tr><td>Asutko sinä Lahdessa?</td><td>你住在拉赫蒂吗？</td><td>Typical -ko question.</td></tr><tr><td>Eikö hän ole…?</td><td>他不是……吗？</td><td>Negative question with <i>eikö</i>.</td></tr><tr><td>olla töissä</td><td>在工作</td><td><i>Olen töissä sairaalassa.</i></td></tr><tr><td>työskennellä</td><td>工作</td><td><i>Työskentelen yliopistolla.</i></td></tr><tr><td>kesätyö</td><td>暑期工</td><td><i>Olen kesätöissä.</i></td></tr><tr><td>osa-aikatyö</td><td>兼职</td><td><i>Olen osa-aikatöissä.</i></td></tr><tr><td>millainen</td><td>什么样的</td><td><i>Millainen sinun perhe on?</i></td></tr><tr><td>kenen kanssa</td><td>和谁</td><td><i>Kenen kanssa sinä asut?</i></td></tr><tr><td>kenellä on</td><td>谁有</td><td>Adessive possession: <i>Kenellä on kynä?</i></td></tr><tr><td>yliopisto</td><td>大学</td><td><i>LUT-yliopistossa</i>.</td></tr><tr><td>ammattikorkeakoulu</td><td>应用科学大学</td><td><i>LAB-ammattikorkeakoulussa</i>.</td></tr><tr><td>eli</td><td>也就是</td><td>Introduces an abbreviation: <i>LUT-yliopistossa eli LUTissa</i>.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　两种 opiskella 句型的差别</div><p><b>句一：</b><code>Opiskelen sähkötekniikkaa.</code>（我学电气工程）</p><p><b>句二：</b><code>Opiskelen insinööriksi.</code>（我在读工程师）</p><p><b>分析：</b>句一的宾语是“学习内容”，用 partitive <code>sähkötekniikkaa</code>；句二的宾语是“学习结果/目标身份”，用 translative <code>insinööriksi</code>。两句都合乎语法，但回答的是不同的问题（Mitä opiskelet / Miksi opiskelet）。</p></div><div class="qa"><div class="q">例 2　把四个陈述句改成 -ko 问句（对应笔试第 7 题）</div><p><b>1.</b> <code>Te puhutte suomea.</code> → <code>Puhutteko te suomea?</code></p><p><b>2.</b> <code>He juovat kahvia.</code> → <code>Juovatko he kahvia?</code></p><p><b>3.</b> <code>Hän ei ole suomalainen.</code> → <code>Eikö hän ole suomalainen?</code></p><p><b>4.</b> <code>Minä olen opiskelija.</code> → <code>Olenko minä opiskelija?</code></p><p><b>分析：</b>动词移到句首；词干后加 -ko/-kö；否定句把 <code>ei</code> 变成 <code>eikö</code>。主语与其余成分保持原来的顺序。</p></div><div class="qa"><div class="q">例 3　第三人称单数变问句时的“退长元音”</div><p><b>陈述：</b><code>Hän opiskelee LUTissa.</code>（他/她在 LUT 学习）</p><p><b>问句：</b><code>Opiskeleeko hän LUTissa?</code></p><p><b>分析：</b><code>opiskelee</code> 的长元音 ee 是第三人称单数的标志；加 -ko 时先退回词干 <code>opiskele-</code>，再加 ko，得到 <code>opiskeleeko</code>（两个 e 相接，读作长音）。</p><p><b>类比：</b><code>asuu → asuuko</code>、<code>puhuu → puhuuko</code>、<code>tulee → tuleeko</code>。</p></div><div class="qa"><div class="q">例 4　工作表达的格选择</div><p><code>Olen töissä sairaalassa.</code>（医院是建筑/机构内部 → inessive）</p><p><code>Olen töissä yliopistolla.</code>（大学作为机构 → adessive，芬兰语习惯用法）</p><p><code>Olen töissä Microsoftilla.</code>（公司名 → adessive，因为是“在公司这个平台上”）</p><p><b>要点：</b>没有一条能覆盖全部的规则，但可以记“建筑内部用 -ssa，机构/公司用 -lla”这个倾向；遇到具体词按课件例句记。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>填空：<code>Opiskelen ______ (logistiikka).</code> 与 <code>Opiskelen ______ (sairaanhoitaja).</code></li><li>把 <code>Sinä rakastat suklaata.</code> 改成 -ko 问句。</li><li>把 <code>Me asumme Lahdessa.</code> 改成 -ko 问句，并给出否定回答。</li><li>翻译：我在 LUT 学习，我学电气工程，我在读工程师。</li><li>用 <code>olla töissä</code> 造两句：在医院、在大学。</li><li>改错：<code>Opiskeletko sinä LUT:ssa? Opiskelen sähkötekniikka.</code></li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>Opiskelen logistiikkaa.</code>（partitive）；<code>Opiskelen sairaanhoitajaksi.</code>（translative -ksi）。</p><p><b>2.</b> <code>Rakastatko sinä suklaata?</code>（<code>rakastat</code> + ko，宾语 <code>suklaata</code> 保持 partitive）。</p><p><b>3.</b> <code>Asummeko me Lahdessa?</code>；否定回答 <code>Emme. Me asumme Helsingissä.</code>（否定词用 emme，因为主语是 me）。</p><p><b>4.</b> <code>Opiskelen LUTissa. Opiskelen sähkötekniikkaa. Opiskelen insinööriksi.</code>（三句分别用到 -ssa、partitive、-ksi。）</p><p><b>5.</b> <code>Olen töissä sairaalassa. Olen töissä yliopistolla.</code></p><p><b>6.</b> 两处：<code>Opiskeletko sinä LUTissa?</code>（缩写不写冒号，直接加 -ssa 并补 t）；<code>Opiskelen sähkötekniikkaa.</code>（补 partitive）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>七个 ala 的 partitive 形式；八个职业的 -ksi 形式；<code>LUTissa</code> / <code>LABissä</code> / <code>kampuksella</code>；-ko/-kö 问句转换（12 分大题）；<code>eikö</code> 否定问句；<code>olla töissä</code> 的地点格。</div><div class="callout warn"><b>易错 1</b><b>专业漏 partitive、职业漏 -ksi</b>。这两处是“同一动词两种宾语格”的经典陷阱，考试常把两句并排考。</div><div class="callout warn"><b>易错 2</b><b>-ko 加在长元音上</b>：<code>asuu ko</code>、<code>opiskelee ko</code>。必须先退回词干再加 -ko。</div><div class="callout warn"><b>易错 3</b><b>否定句变问句丢 -kö</b>：<code>Ei hän ole suomalainen?</code> 应为 <code>Eikö hän ole suomalainen?</code>。</div><div class="callout tip"><b>进阶</b>-ko 问句的位置很灵活：<code>Onko sinulla lapsia?</code> 里 -ko 加在 <code>on</code> 上；<code>Puhutko sinä suomea?</code> 里加在实义动词上。原则不变——把要问的那个成分的动词提到句首。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s10">造 -ko 问句四步</h2><ol class="steps"><li>找到句中的动词（或 olla / ei）</li><li>把动词退回到词干（第三人称单数先去长元音）</li><li>按元音和谐加 -ko 或 -kö，并把该动词提到句首</li><li>其余成分（主语、宾语、地点）保持原顺序；宾语格不变</li></ol><h3 id="s11">学习与工作表达自查</h3><ul class="checklist"><li>学科是否用 partitive（logistiikkaa、tuotantotaloutta）</li><li>职业/学位是否用 -ksi（sairaanhoitajaksi）</li><li>学校/校区是否用对格（LUTissa、kampuksella、Mukkulassa）</li><li>缩写加后缀时是否补音（LUTissa 而不是 LUT:ssa）</li><li><code>töissä</code> 是否写成复数形式（不是 työssä）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>07_Tunti 6/4_Mitä sinä opiskeletS2022.pptx</td><td>slide 2</td><td>七个 ala 与 partitive 答句</td></tr><tr><td>07_Tunti 6/4_Mitä sinä opiskeletS2022.pptx</td><td>slide 3</td><td>八个职业/学位与 -ksi 答句</td></tr><tr><td>07_Tunti 6/4_Mitä sinä opiskeletS2022.pptx</td><td>slide 4</td><td>Missä opiskelet：LUT、Lappeenrannan kampus、Skinnarila、LAB、Lahden kampus、Mukkula</td></tr><tr><td>07_Tunti 6/4_Mitä sinä opiskeletS2022.pptx</td><td>slide 5</td><td>Opiskeletko sinä…? 的 -ko 问句与简短回答</td></tr><tr><td>07_Tunti 6/5_Hyviä fraaseja_Useful phrases.html</td><td>全篇</td><td>olla töissä / työskennellä + -ssa/-llä；kesätyö、osa-aikatyö</td></tr><tr><td>06_Tunti 5/5_KOTITEHTÄVÄHOMEWORK 5 Kirjoita kysymys</td><td>全篇</td><td>十个疑问词的造句作业（kuka、mikä、missä、milloin、mitä、millainen 等）</td></tr><tr><td>15_Kokeet_Exams/3_Finnish 1_2024.docx</td><td>第 7 题</td><td>12 分的 -ko 问句转换六小题</td></tr><tr><td>15_Kokeet_Exams/3_Finnish 1_2024.docx</td><td>第 6 题</td><td>给答案写问句六小题，用于本讲疑问词的实战</td></tr><tr><td>（跳过）</td><td>—</td><td>slide 1 与 slide 4–5 的图片（ARASAAC / Papunet 图库）未随抽取保留，本讲按图注文字还原场景</td></tr><tr><td>（拓展）</td><td>—</td><td>8.5 的 <code>eikö</code> 形式在课件里只以题面出现（Hän ei ole suomalainen），否定疑问词全表为按规则补全</td></tr></table></section><div class="lnav"><a class="prev" href="t7-negatiivi.html">← Tunti 7 · 否定式与辅音交替</a><a class="next" href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

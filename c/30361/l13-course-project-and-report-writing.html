@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 13 讲 · 课程项目与状态报告写作 · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-4.html">第 4 章 实践、案例与课程项目</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">13.1 项目是什么</a><a class="toc-l3" href="#s3">13.2 三次提交与评分</a><a class="toc-l3" href="#s4">13.3 终期报告的骨架</a><a class="toc-l3" href="#s5">13.4 需求怎么写：ID、描述、优先级</a><a class="toc-l3" href="#s6">13.5 被拒绝的需求：附录里最容易被忽略的加分项</a><a class="toc-l3" href="#s7">13.6 用例与用例图</a><a class="toc-l3" href="#s8">13.7 界面设计</a><a class="toc-l3" href="#s9">13.8 项目计划：七段结构</a><a class="toc-l3" href="#s10">13.9 状态报告与反思</a><a class="toc-l3" href="#s11">13.10 从反馈中学到的六条</a><a class="toc-l3" href="#s12">13.11 两次演示</a><a class="toc-l3" href="#s13">13.12 提交前的自查清单</a><a class="toc-l2" href="#s14">提交前的自查清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a class="toc-l3" href="l13-course-project-and-report-writing.html">▸ 第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 13 讲 · 课程项目与状态报告写作</h1><p class="lead">The Course Project: Requirements Specification, Status Report and Project Plan <span class="badge mute">30361</span> <span class="badge mute">第 13 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 实践、案例与课程项目</a></p><p class="src">原始文件：<code>ProjectIntroduction2025.pdf</code> <code>FinalProjectTips.pdf</code> <code>07_Week 1/2_Exercise Sessions/data/Example_project1.pdf</code> <code>20_Course Project/3_Course Project Final Report/intro/files/Project Final Report Template.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这一讲把整门课收束到一件具体的事：交出一份「像真的一样」的需求规格说明书 + 项目计划 + 界面设计，并在两次演示中讲清楚。它不是写作技巧课，而是把第 4 讲（需求）、第 5 讲（用例）、第 9 讲（项目计划）、第 10 讲（质量与配置）落到一份可评分的文档上。</p><p>为什么值得认真对待：项目占 25%，且必须通过（至少 50 分）并完成两次演示。更重要的是，它训练的是工作中最常见的交付物——一份能被客户、开发、测试三方同时读懂的规格。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出项目三次提交的内容、格式要求与截止时间，并据此排自己的进度</li><li>按模板结构写出一份合格的需求规格说明书（含 ≥50 条需求、4 个用例、界面设计与附录）</li><li>把用户故事拆成带 ID、描述与优先级的需求条目，并写出被拒绝需求及理由</li><li>写出状态报告中的「变更表」（日期、动机、描述、影响）与「反思」</li><li>按七段结构写项目计划，并给出可信的任务、检查点、成本与风险表</li><li>用评分标准自查：需求是否合理、计划是否现实、演示是否在时限内讲清重点</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">13.1 项目是什么</h3><p>项目目的：为一个<b>移动应用</b>产出需求规格说明书。课件明确：“You do not need to program anything. Consider the requirements from different perspectives, such as the customer or the developer, and document the requirements as if the application would actually be developed.”（不需要编程；要从客户、开发者等不同视角考虑需求，并像应用真的会被开发一样把需求文档化。）</p><p>学习目标：了解软件项目中要做什么，以及项目计划里包含哪些内容。</p><p>组织形式：5–6 人一组，由课程预先分组；项目是必修的，值 100 分（占成绩 25%）；通过需要至少 <b>50 分</b>，并完成<b>两次演示</b>（状态演示与终期演示）。</p><p>背景故事（写文档时的设定，很重要）：</p><p>「你在一家叫 X Software 的公司工作。这是家有 10 人的小公司，办公室在 Lahti Science Park，专做移动应用。现在公司想开发一款新应用，可能增加收入并让公司有能力多招人。应用要在 6 个月内准备好，会有 6 人团队参与。你的工作是创建这个项目并定义新的移动应用。」</p><p>这个设定决定了三件事：① 团队规模 6 人、周期 6 个月——所有排期与成本估算都要与之一致；② 公司小、要增加收入——商业目标必须写清楚；③ 应用是「产品」而非「某客户的定制系统」——需求来自你们对市场的判断（对应第 1 讲的 generic product）。</p><p>如果没有想法，课件给了三个方向：旅行应用（指路、餐厅、景点、酒店）、烹饪应用（按名称或食材找食谱、收藏、上传、评论）、健康应用（饮食日记、运动记录、每日健康提示）。</p><p>要回答的六个问题：应用如何工作？用户能用它做什么？在什么场景/何时/为何使用？需求是什么？界面长什么样？应用怎么做、项目是什么样的？→ 最终交付：<b>需求规格 + 界面设计 + 项目计划</b>。</p><h3 id="s3">13.2 三次提交与评分</h3><table><tr><th>提交</th><th>内容</th><th>截止/形式</th><th>分值</th></tr><tr><td>项目提案 Project proposal</td><td>应用想法、客户需求、团队角色；用 Moodle 模板</td><td>9 月 25 日</td><td>5 分</td></tr><tr><td>状态报告 Status report</td><td>项目状态、项目目标、干系人、用户群、应用描述、团队反思；用模板</td><td>10 月 30 日；另加 5 分钟演示（10 月 31 日/11 月 1 日，替代该周练习课）</td><td>10 分 + 演示 8 分</td></tr><tr><td>终期报告 Final report</td><td>完整需求规格 + 界面设计 + 项目计划 + 附录</td><td>12 月 11 日；另加 7 分钟演示（12 月 12/13 日）</td><td>需求 25 + 界面 15 + 计划 25 + 演示 12</td></tr></table><p>评分细则（课件原文口径）：</p><table><tr><th>评分项</th><th>分值</th><th>评分要点</th></tr><tr><td>需求规格</td><td>25</td><td>需求合理、说得通；有功能需求也有非功能需求；识别出重要干系人群体；用例清晰</td></tr><tr><td>界面设计</td><td>15</td><td>符合需求；清晰完整；展示最重要的视图；解释了不同界面</td></tr><tr><td>项目计划</td><td>25</td><td>清晰、全面、现实；遵循课程所教原则；与用例和需求一致</td></tr><tr><td>终期演示</td><td>12</td><td>易懂、简明地呈现应用、遵守时限</td></tr><tr><td>状态演示</td><td>8</td><td>同上</td></tr><tr><td>项目提案</td><td>5</td><td>遵循模板、清楚呈现项目想法、初始用户群与干系人合理</td></tr><tr><td>状态报告</td><td>10</td><td>遵循模板、清楚呈现项目想法、初始用户群与干系人合理</td></tr></table><h3 id="s4">13.3 终期报告的骨架</h3><p>模板的章节顺序本身就是一个检查清单：</p><ol><li>Introduction（概述 + 挑战与状态）；</li><li>Project Goals（目标表）；</li><li>Limitations（限制表）；</li><li>Stakeholders（干系人表）；</li><li>User Groups（用户群表）；</li><li>Requirements（需求表，≥50 条）；</li><li>Use Cases（列出 4 个用例，详细描述放附录 1）；</li><li>Assumptions（假设）；</li><li>Team（背景与角色/贡献）；</li><li>Project Plan（七段结构）；</li><li>References；</li><li>附录 1 用例与用例图；附录 2 界面；附录 3 被拒绝的需求；附录 4 反思。</li></ol><p>注意模板里的编号：正文写「Appendix 1. Use cases」「Appendix 2. User interface」「Appendix 4. Rejected requirements」「Appendix 5. Reflection」，而目录与提示里又出现 Appendix 3 界面、Appendix 4 反思——这是模板自身的小不一致。提交前统一编号即可，评分看内容不看编号。</p><h3 id="s5">13.4 需求怎么写：ID、描述、优先级</h3><p>需求表四列：ID、日期、需求（短名）、需求描述、优先级。示例项目的做法值得模仿：ID 用 01–59 连续编号；每条需求一句「The app should …」；优先级用五档——Very important、Important、Quite important、Optional（示例中还出现 Interested，属笔误，不要学）。</p><p>写需求的四条实务规则：</p><ul><li>一条需求只表达一件事——「用户应能登录，并能用邮箱或手机号注册」应拆成两条；</li><li>用「The app should …」句式，避免「可能」「尽量」「友好」这类不可验证的词；</li><li>把非功能需求也编号（示例项目第 17–22 条就是性能、可靠性、安全、可用性、可扩展性、容量）；</li><li>每条需求都能对应到某个用例或界面，否则它可能是「愿望」而不是需求。</li></ul><p>示例项目的非功能需求写法可以直接借鉴：「The application should have an average loading duration under 3 seconds for its functionality.」（性能）「The application should have an uptime of 99.5%.」（可靠性）「The application should be able to handle 1000 requests per second.」（容量）——它们都有度量。</p><h3 id="s6">13.5 被拒绝的需求：附录里最容易被忽略的加分项</h3><p>模板要求单列「被拒绝的需求」表：ID、拒绝日期、需求、理由。示例项目给了五个很好的例子：</p><table><tr><th>被拒需求</th><th>理由</th><th>可取之处</th></tr><tr><td>地图应有明显指南针</td><td>我们不需要这个需求</td><td>直接说明范围外</td></tr><tr><td>用户应能查看区域实时信息（交通、温度）</td><td>需求含糊（ambiguous）</td><td>点出「不可验证」这一根本问题</td></tr><tr><td>平均加载时间低于 1 秒</td><td>实现成本超出预算</td><td>用可行性（realism）拒绝，符合五维检查</td></tr><tr><td>用户应能在应用内订酒店</td><td>功能过于复杂，用户可通过应用跳转酒店网站完成</td><td>给出替代方案，而非简单说「不做」</td></tr><tr><td>付费会员可享更多服务</td><td>应用没有那么多额外服务</td><td>说明与产品定位不符</td></tr></table><p>为什么这张表重要：它证明你们做过<b>范围管理</b>（第 4 讲的 prioritisation and negotiation）与<b>可行性判断</b>（realism）。评审看这份文档时，最想知道的是「你们知不知道自己不做什么、为什么」。</p><p>写理由的三个层次（从差到好）：「我们不想做」→「超出预算/工期」→「该需求与产品定位冲突，或不可验证，且已有替代路径（用户在浏览器完成）」。</p><h3 id="s7">13.6 用例与用例图</h3><p>要求：至少 <b>4 个用例</b>（“You should have at least 4 use cases. Do not describe trivial use cases.”），不要描述琐碎用例；要画一张包含所有用例的用例图。用例表的字段（第 4 讲已给）：ID、名称与版本、参与者、前置条件、描述、异常、结果、其他需求。</p><p>示例项目的四个用例（可作为写法参照）：登录或注册（UC-1）、浏览地图（UC-6）、阅读反馈（UC-8）、切换语言与时区（UC-26）。它们的共同点是：都有明确的前置条件（如「用户已登录」「手机已开启定位并授予权限」）、都有异常分支（如「邮箱已被记录则提示创建失败」）、都有可判定的结果（如「新用户创建成功」）。</p><p>常见失分点：用例写成功能列表（无参与者、无异常、无结果）；前置条件写成「用户打开应用」（这不是前置条件，是描述的一部分）；异常写成「系统出错」（不可判定）。</p><p>用例图要点（第 5 讲）：参与者画在系统边界之外；用例用椭圆；参与者与用例之间用连线；不要把「先登录再下单」的顺序画进用例图——顺序用顺序图或文字描述。</p><h3 id="s8">13.7 界面设计</h3><p>要求：<b>5 个不同设计</b>（展示应用的不同视图，如主视图、个人资料、登录）；说明每个设计展示什么、各按钮与图标的作用；必须<b>符合需求</b>；可用 Miro 的 App wireframe 模板、Figma 或任何设计工具；终期报告里放截图并逐图解释。</p><p>评分逻辑：界面不是「好看」加分，而是「与需求一致」加分。做法：给每个界面标注它实现了哪几条需求 ID；如果某条界面元素没有对应需求，要么补需求，要么删元素。</p><h3 id="s9">13.8 项目计划：七段结构</h3><p>模板要求先做一次选择：<b>瀑布还是敏捷</b>，然后按所选模型填写。七段内容：</p><table><tr><th>段落</th><th>要写什么</th><th>常见错误</th></tr><tr><td>Background</td><td>公司现状、为什么启动这个项目</td><td>写成产品介绍，不写组织动因</td></tr><tr><td>Project Goal</td><td>终点目标与子目标（可量化）</td><td>只写「做一个 App」，无成功判据</td></tr><tr><td>Tasks</td><td>要做哪些任务、与目标的关系</td><td>任务与需求不对应</td></tr><tr><td>Schedule &amp; Checkpoints</td><td>进度表 + 检查点 + 每个检查点评审什么</td><td>检查点只有日期，没有「评审什么」</td></tr><tr><td>Costs</td><td>总成本与成本构成（人力、工具、分发）</td><td>只写一个总数，无构成与依据</td></tr><tr><td>Risk Analysis</td><td>5–10 个风险：风险、概率、严重性、原因、预防</td><td>只写风险名，无原因与预防</td></tr><tr><td>Quality / Change Management / Organization</td><td>质量如何保证与测试；变更如何管理（含版本控制）；项目组与项目板成员及角色</td><td>质量写成「会认真测试」；变更写成「按需修改」</td></tr></table><p>示例项目的计划可以作为「合格线」的参照：</p><ul><li><b>任务与检查点</b>：T00 准备开始（2023-01-02）→ T01 项目启动（工作站与工具就绪，检查点「所有工作站具备所需工具并符合公司标准」）→ T02 城市文字指南（依赖 T01）→ T03 数据库结构（后续地图功能的前置）→ T04 基础地图（检查点：地图框架完成后，其他地图特性可并行）→ T05 路线（依赖 T04）→ T06 搜索与过滤（依赖 T04）→ T07 用户资料（依赖 T03）→ T08 位置信息（依赖 T03）→ T09 实时流与通知（依赖 T08，检查点：用户收到适量且相关的通知）→ T10 本地化（前置：所有文本菜单完成）→ T11 终测（前置：所有任务完成；检查点：无重大缺陷）→ T12 上架（前置：终测完成）。</li><li><b>成本</b>：6 名全职（1 名资深工程师 + 5 名开发者）；工资按芬兰平均水平估算：资深 6 个月 €29 376，5 名开发者共 €104 558，合计 €133 934；工作站 6 × €1 000 = €6 000，开发工具 6 × €500 = €3 000，Apple 开发者计划 €94，Google Play 注册 €25；工具合计 €9 119；<b>总计 €143 053</b>。</li><li><b>风险表</b>（示例给了五个，每个都有概率、严重性、原因、预防）：人员变动（较可能/显著；预防：早期团队建设 + 有吸引力的福利）；不达截止日（可能/可控；预防：遵守冲刺计划 + 明确可选需求清单以便裁剪）；额外成本（不太可能/不严重；预防：不过度排期、任务均衡）；性能问题（中等/显著；预防：用测试确保新特性不显著降低性能）；商家兴趣低（中等/严重；预防：与商家干系人频繁沟通，确保其期望的功能被纳入）。</li><li><b>质量与变更</b>：质量由「每人负责特定需求类别」+ 自动化测试（回归 + 监控构建间性能变化）保证；变更管理依靠「高度模块化 + 可选需求可裁剪」，并设专人做市场调研以确保最有市场的特性被纳入。</li><li><b>组织</b>：6 人，其中 3 人组成项目板（资深工程师兼项目经理、项目秘书、市场与需求分析师），另有 UI 设计师、全栈开发者、后端开发者。</li></ul><p>这套写法的高明之处在于「一致性」：6 人团队、6 个月、€143 053、12 个任务、5 个风险，全部互相对得上；项目板 3 人正好对应「规划与优先级」的职责。评分标准里的「is clear, comprehensive and realistic」说的就是这个。</p><h3 id="s10">13.9 状态报告与反思</h3><p>状态报告的模板结构与终期报告类似，但多了两块：<b>Project Status</b>（第一次迭代的计划是什么、团队完成了什么、自提案以来的重大变更）与 <b>Appendix 1 Reflection</b>（什么顺利、什么不顺、未达目标的原因、如何克服、下一迭代要改什么）。</p><p>变更表必须有四列：变更、日期、动机、变更描述、影响（implications）。示例（Ventura 组的做法）值得学：</p><table><tr><th>变更</th><th>日期</th><th>动机</th><th>描述</th><th>影响</th></tr><tr><td>投资额筛选 Investment Ask Filter</td><td>2026-10-22</td><td>提供更个性化的用户体验</td><td>让投资人按愿意投资的金额筛选机会，而不必看完整个 pitch</td><td>下一迭代需为筛选器投入更多时间</td></tr><tr><td>分享功能 Share Feature</td><td>2026-11-01</td><td>提供更有用的功能</td><td>允许投资人把 pitch 分享给其他投资人</td><td>需在第二迭代实现，因为该功能属于「Feed」标签页，而 Feed 大部分在第一迭代完成</td></tr></table><p>反思怎么写才算好：具体、可归因、前后一致。课程反馈里点名批评过一份状态报告：「Appendix 1 的回答很泛，而且自相矛盾——第一问说『我们团队合作很好、彼此沟通』，第三问却把未达目标归因于『沟通不畅』。」这是最典型的失分方式。</p><p>好的反思长什么样（结构）：① 顺利的事 + 具体做法（「每日 15 分钟站会 + 共享任务板，使阻塞当天暴露」）；② 不顺的事 + 具体机制（「需求在第二周才基线化，导致界面设计与数据模型返工」）；③ 未达目标的原因（用数据或事件，不用「沟通不畅」这类结论）；④ 下一迭代的两个具体改动（可验证）。</p><h3 id="s11">13.10 从反馈中学到的六条</h3><p>课程给出的状态报告反馈（原文摘录与转述）几乎覆盖了所有常见问题，值得逐条对照：</p><ol><li><b>与竞品比较不足</b>（0.5/1）：只描述自己的应用，没有说明「相比现有方案，为什么用户会换」。</li><li><b>干系人与用户群被混用</b>（0.5/1）：同一批人被同时写进两张表，且描述重复。干系人是「受影响的个人或组织」（含投资人、监管、平台方），用户群是「会使用应用的人群」（按需求与场景划分）。</li><li><b>反思泛化且自相矛盾</b>（0.75/1.5）：见 13.9。</li><li><b>目标表的日期应是未来的目标截止日</b>，而不是报告提交日（反馈明确指出「14.11.2026 是提交日，不是目标日」）。</li><li><b>引用不足</b>：终期报告要增加参考文献，并按哈佛格式（LUT 要求学术引用，in-text citation 作者 + 年份，文末 References 列表）。</li><li><b>校对与封面</b>：报告要通读校对、填好标题页；演示要提前练习并预约时段。</li></ol><p>正面反馈也值得注意：「应用描述及其定位非常出色，而且是一个真实的原型！」——这说明「把应用讲清楚、有可点的原型」比堆砌需求更能打动评审。</p><h3 id="s12">13.11 两次演示</h3><p>状态演示（5 分钟）：介绍团队、应用概览、干系人、用户群。终期演示（7 分钟）：简短说明应用是什么、用户能做什么；展示界面设计并简要解释应用如何工作；<b>没有时间讲每个细节，抓重点</b>；提前练习。</p><p>演示的评分点是「易懂、简明、守时」，不是「信息密度」。7 分钟的结构建议：1 分钟问题与用户；2 分钟核心流程（用界面串起来）；1.5 分钟项目计划要点（团队、进度、风险）；1 分钟质量与测试；1 分钟收获与下一步；30 秒缓冲。</p><h3 id="s13">13.12 提交前的自查清单</h3><p>把评分标准翻译成可勾选的动作，比反复读模板有效得多。以下几项是「一定会被检查」的：需求 ≥ 50 条且功能与非功能都有；干系人 5–10 个、用户群 5–10 个且互不重复；4 个用例都有前置条件、异常与结果，并配用例图；5 个界面且每个都对应需求；项目计划七段齐全且数字自洽；被拒需求有理由；反思具体不矛盾；参考文献按哈佛格式；标题页与目录完整。</p><div class="callout idea" data-ext="l13-course-project-and-report-writing-0"><b>前后衔接</b><p>项目设定是 X Software 这家十人小公司要在六个月内用六人团队做一款移动应用，这决定了排期与估算必须与之一致，且应用是通用产品、需求来自团队对市场的判断。终期报告模板的章节顺序本身就是评分清单：需求不少于五十条、四个用例、七段项目计划，缺一节就缺一块分。演示有明确时限，状态演示五分钟、终期七分钟，清晰简明比内容堆砌更重要。写需求时从客户与开发者多视角考虑，像真会开发一样文档化，但本讲不要求写任何代码。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>requirements specification</td><td>需求规格说明书</td><td>The official statement of what is required of the system developers; WHAT, not HOW.</td></tr><tr><td>project proposal</td><td>项目提案</td><td>Application idea, customer needs and team roles; first submission.</td></tr><tr><td>status report</td><td>状态报告</td><td>Project status, goals, stakeholders, user groups, application description and reflection.</td></tr><tr><td>use case table</td><td>用例表</td><td>ID, name and version, actors, preconditions, description, exceptions, result, other requirements.</td></tr><tr><td>requirement priority</td><td>需求优先级</td><td>Very important, important, quite important, optional.</td></tr><tr><td>rejected requirement</td><td>被拒绝的需求</td><td>A requirement deliberately excluded, with a stated reason.</td></tr><tr><td>risk table</td><td>风险表</td><td>Risk, probability, severity, reasons, prevention.</td></tr><tr><td>project plan</td><td>项目计划</td><td>Background, goal, tasks, schedule, checkpoints, costs, risks, quality, change, organisation.</td></tr><tr><td>reflection</td><td>反思</td><td>What went well, what did not, causes and next-iteration changes.</td></tr><tr><td>Harvard referencing</td><td>哈佛引用格式</td><td>In-text author–year citations plus a reference list.</td></tr><tr><td>checkpoint</td><td>检查点</td><td>A scheduled review that states what is reviewed, not just a date.</td></tr><tr><td>assumption</td><td>假设</td><td>Hardware or user-expertise assumptions behind requirements and use cases.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把用户故事拆成需求条目</div><p>情境：用户故事「作为一个经常出差的人，我想在到陌生城市前保存一份两天的行程，这样我下飞机就能直接按计划走」。请拆成 4 条需求（含 1 条非功能），并给优先级。</p><p><b>解：</b></p><table><tr><th>ID</th><th>需求</th><th>描述</th><th>优先级</th></tr><tr><td>R01</td><td>创建行程</td><td>用户应能创建一份带名称与起止日期的行程。</td><td>Very important</td></tr><tr><td>R02</td><td>添加地点</td><td>用户应能把地点（景点、餐厅、酒店）加入某一天的行程。</td><td>Very important</td></tr><tr><td>R03</td><td>离线查看</td><td>用户应能在无网络时查看已保存行程的地点名称、地址与备注。</td><td>Important</td></tr><tr><td>R04</td><td>同步时延</td><td>行程在联网后 30 秒内完成同步，冲突时以最后一次修改为准并提示用户。</td><td>Quite important</td></tr></table><p><b>分析：</b>原故事包含三个可分离的能力（创建、添加、离线查看）与一个隐含的非功能要求（同步）。拆分的判据是「能否独立验收」：R01 与 R02 可以分别演示；R03 需要断网测试；R04 需要构造冲突场景。</p><p><b>注意：</b>不要把「保存行程」写成一条巨型需求——它无法在一个冲刺内验收，也无法定位缺陷。</p></div><div class="qa"><div class="q">例 2　写一张风险表（5 条）</div><p>情境：你的项目是「校园二手书交易 App」，6 人、6 个月、预算约 €140 000。请写出 5 条风险并给概率、严重性、原因、预防。</p><p><b>示例：</b></p><table><tr><th>风险</th><th>概率</th><th>严重性</th><th>原因</th><th>预防</th></tr><tr><td>用户增长不及预期，交易冷启动失败</td><td>高</td><td>严重</td><td>双边市场，先有书还是先有人</td><td>先在一个学院试点，用班级群导流；把「求购」做成可发布需求</td></tr><tr><td>支付/物流对接延期</td><td>中</td><td>显著</td><td>第三方审批周期不可控</td><td>第 1 个月就发起申请；先做「线下自提」兜底</td></tr><tr><td>核心成员期末周不可用</td><td>高</td><td>可控</td><td>学期节奏与项目周期重叠</td><td>排期避开考试周；关键模块双人熟悉</td></tr><tr><td>书籍信息录入质量差</td><td>中</td><td>显著</td><td>用户不愿填 ISBN</td><td>支持扫码录入；缺 ISBN 时用「书名 + 封面照」</td></tr><tr><td>隐私与合规（学生个人信息）</td><td>低</td><td>严重</td><td>涉及个人信息收集</td><td>最小化收集；上线前做一次合规自查并写入质量计划</td></tr></table><p><b>要点：</b>每条都要有「原因」，否则概率无法评估；「预防」要能落到具体动作与时间点，而不是「注意风险」。</p></div><div class="qa"><div class="q">例 3　写一条状态报告的变更行</div><p>情境：项目第 6 周，团队决定把「书籍推荐」从第一版移除，改为「按课程代码筛选」。请写出变更表的四个字段，并说明它如何影响计划。</p><p><b>变更行：</b>变更 = 用「课程代码筛选」替换「书籍推荐」；日期 = 第 6 周（具体日期）；动机 = 推荐算法需要大量交易数据，而冷启动阶段数据不足，推荐质量无法保证；筛选功能直接对应「找同门教材」这一高频场景，且实现成本低。描述 = 在搜索结果页增加课程代码下拉筛选，移除推荐位。影响 = 需求表删除 2 条推荐相关需求、新增 1 条筛选需求；界面设计第 3 屏调整；第三迭代的任务从「推荐服务」改为「筛选索引」，工期减少约 4 人日，可用于补测试；风险表新增「课程代码数据来源不稳定」，预防为「提供手工录入兜底」。</p><p><b>为什么这样写：</b>变更行不只是「记录改了什么」，而是要让读者看出「为什么改、改到哪里、对计划的影响」。这正是模板要求 date / motivation / description / implications 四个字段的原因。</p></div><div class="qa"><div class="q">例 4　用评分标准自查</div><p>情境：你的终期报告已完成。请按 100 分结构做一次自查，列出最可能丢分的三项与补救动作。</p><p><b>自查（按分值权重）：</b></p><table><tr><th>评分项</th><th>自查问题</th><th>若答「否」的补救</th></tr><tr><td>需求 25</td><td>有 ≥50 条？功能与非功能都有？每条可验收？</td><td>补非功能需求（性能、可靠性、安全、容量各一条）；把「友好」「快速」改成度量</td></tr><tr><td>界面 15</td><td>5 个界面？每个都标了对应需求 ID？解释了按钮/图标？</td><td>补第 5 屏；给每个界面加「实现 Rxx」标注</td></tr><tr><td>计划 25</td><td>七段齐全？任务与需求对得上？成本有构成？风险有原因与预防？</td><td>补成本明细；给每个检查点写「评审什么」</td></tr><tr><td>演示 12+8</td><td>7 分钟内讲完？练过 3 次？</td><td>删细节，只留问题—流程—计划—质量</td></tr><tr><td>提案/状态 15</td><td>遵循模板？目标日期是未来？反思具体？</td><td>把目标日期改成真实目标；重写反思</td></tr><tr><td>其他</td><td>哈佛引用？封面？目录页码？</td><td>补参考文献与标题页</td></tr></table><p><b>结论：</b>最常丢分的是「需求不可验收」「界面与需求脱节」「计划数字不自洽」。这三项都能在提交前两小时内修好，收益远大于再写一个新功能。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>项目的三次提交分别是什么？各占多少分？通过项目的两个硬性条件是什么？</li><li>「干系人」与「用户群」的区别是什么？各举三个例子（用你自己的项目）。</li><li>版本控制中的「变更表」四列是什么？为什么「影响」这一列不能省？</li><li>写出项目计划的七个段落，并为「检查点」写一句合格的定义。</li><li>一条需求写成「应用应易于使用」，问题在哪？请改写为可验收的需求。</li><li>状态报告的反思部分，怎样写才算「具体、可归因、前后一致」？给一个反例与一个正例。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 提案（5 分，9/25）、状态报告 + 5 分钟演示（10 + 8 分，10/30 与 10/31–11/1）、终期报告 + 7 分钟演示（需求 25 + 界面 15 + 计划 25 + 演示 12，12/11 与 12/12–13）。硬性条件：总分 ≥ 50，且完成两次演示。</p><p><b>2.</b> 干系人是受系统影响、有正当利益的个人或组织：投资人、学校 IT 部门、支付平台、监管机构；用户群是会使用应用的人群：本校学生、教职工、校外买家。前者关注项目成败与合规，后者关注功能与体验。</p><p><b>3.</b> 变更、日期、动机、描述、影响。「影响」回答「这次变更牵动哪些需求、界面、任务、工期与风险」，没有它，变更记录就只是日志，读者无法据此调整计划。</p><p><b>4.</b> 背景、项目目标、任务、进度、检查点、成本、风险分析、质量管理、变更管理、项目组织（模板把后四项放在计划内）。检查点 = 「在某个日期，由谁评审哪些产物、依据什么标准判定通过」。</p><p><b>5.</b> 问题：不可验证（没有度量、没有条件、没有阈值）。改写：「新用户在无培训条件下，5 分钟内完成首次发布书籍，成功率 ≥ 90%（可用性测试 n ≥ 20）」。</p><p><b>6.</b> 反例：「我们团队合作很好，沟通顺畅……未达目标的主要原因是沟通不畅。」正例：「第一迭代我们做了每日 15 分钟站会与共享任务板，阻塞平均当天暴露，因此 R01–R06 按期完成；但需求在第 2 周才基线化，导致界面第 3 屏与数据模型返工约 3 人日，使 R12 延至第二迭代。下一迭代我们会在冲刺计划前完成需求评审并冻结范围。」</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>三次提交的内容与分值、评分七项、需求表四列与优先级、用例表八字段、项目计划七段、风险表五列、被拒需求表、反思的写法。</div><div class="callout warn"><b>易错 1</b>把干系人与用户群写成同一批人。两张表必须有实质差异。</div><div class="callout warn"><b>易错 2</b>目标表的日期写成报告提交日。应是未来的目标截止日。</div><div class="callout warn"><b>易错 3</b>需求只写功能、不写非功能。评分明确要求两者都有。</div><div class="callout warn"><b>易错 4</b>检查点只写日期。必须写「评审什么、依据什么标准」。</div><div class="callout tip"><b>进阶</b>能用「需求 ID ↔ 界面 ↔ 用例 ↔ 任务 ↔ 测试」的追溯链把整份报告串起来，是本项目最高效的加分方式：评审一眼就能看出文档是「设计出来的」而不是「拼出来的」。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">提交前的自查清单</h2><ol class="steps"><li>需求 ≥ 50 条，功能与非功能都有，每条可验收</li><li>干系人 5–10 个、用户群 5–10 个，两张表不重复</li><li>4 个用例齐全（前置、异常、结果），并配一张用例图</li><li>5 个界面，每个标注实现的需求 ID 与按钮/图标说明</li><li>项目计划七段齐全；任务、进度、检查点、成本、风险互相自洽</li><li>风险 5–10 条，每条有概率、严重性、原因、预防</li><li>被拒需求有理由（不可验证/超预算/与定位冲突/有替代路径）</li><li>变更表四列齐全，影响写到需求、界面、任务与风险</li><li>反思具体、可归因、不矛盾；下一迭代改动 ≤ 2 项且可验证</li><li>哈佛引用、封面、目录、页码、拼写检查</li><li>演示计时练 3 次，7 分钟内讲完</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>ProjectIntroduction2025.pdf</td><td>p2–p8</td><td>项目目的、学习目标、分组与分值、三次检查点、背景故事、应用方向、要回答的六个问题</td></tr><tr><td>ProjectIntroduction2025.pdf</td><td>p9–p15</td><td>需求规格与 50 条要求、界面设计 5 屏、项目计划要点、两次演示的内容、评分细则 100 分</td></tr><tr><td>FinalProjectTips.pdf</td><td>p3–p6</td><td>终期报告三份文档的具体要求、用例与图、被拒需求、反思、界面工具（Miro/Figma）</td></tr><tr><td>FinalProjectTips.pdf</td><td>p7–p11</td><td>哈佛引用格式、in-text citation 与参考列表、终期演示要求、校对与预约</td></tr><tr><td>07_Week 1/2_Exercise Sessions/data/Example_project1.pdf</td><td>p1–p7</td><td>示例项目结构：应用描述、商业目标表、限制表、干系人表、用户群表、用例表、假设</td></tr><tr><td>07_Week 1/2_Exercise Sessions/data/Example_project1.pdf</td><td>p8–p12</td><td>项目计划：背景、目标、12 个任务与检查点、成本明细（€143 053）、风险表、质量与变更管理、组织与项目板</td></tr><tr><td>07_Week 1/2_Exercise Sessions/data/Example_project1.pdf</td><td>p14–p19</td><td>59 条需求（含非功能）、用例与用例图、界面、被拒需求表、贡献分工</td></tr><tr><td>20_Course Project（模板三份与 Ventura 提案/状态报告）</td><td>全篇</td><td>模板章节顺序、需求/目标/干系人/用户群/风险表列结构、变更表四列、反思问题清单、反馈中的六类问题</td></tr><tr><td>（合并）</td><td>—</td><td>三份模板的重复副本（提案模板 3 份、状态模板 2 份）已按内容去重</td></tr><tr><td>（拓展）</td><td>—</td><td>模板附录编号在 1–5 与 1–4 之间存在不一致，提交前统一编号即可</td></tr><tr><td>（跳过）</td><td>—</td><td>Online text 与 Feedback comments 的提交页框架；反馈内容已提炼进 13.10</td></tr></table></section><div class="lnav"><a class="prev" href="l12-case-studies.html">← 第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a class="next" href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

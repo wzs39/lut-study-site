@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 1 讲 · 软件工程系、学习环境与课程要求 · 30331</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT10A9900 学习导论 DD Studies</a> / <a href="part-1.html">第 1 章 学习环境与团队协作</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、这门课是什么</a><a class="toc-l2" href="#s3">二、软件工程系与两个校区</a><a class="toc-l2" href="#s4">三、学位阶梯：学士 → 硕士 → 博士</a><a class="toc-l2" href="#s5">四、职业路径：一张岗位地图</a><a class="toc-l3" href="#s6">4.1 开发与架构</a><a class="toc-l3" href="#s7">4.2 产品管理与支持性职能</a><a class="toc-l3" href="#s8">4.3 领导与其他</a><a class="toc-l2" href="#s9">五、产品公司还是咨询公司</a><a class="toc-l2" href="#s10">六、一位教师的职业故事（Katja Karhu）</a><a class="toc-l2" href="#s11">七、求职与网络：课件的 Key Takeaways</a><a class="toc-l2" href="#s12">八、PSP 与三年默认进度</a><a class="toc-l3" href="#s13">8.1 先修课（prerequisite）</a><a class="toc-l3" href="#s14">8.2 夏季学期</a><a class="toc-l3" href="#s15">8.3 奖学金</a><a class="toc-l3" href="#s16">8.4 按时完成的 tips</a><a class="toc-l2" href="#s17">九、找谁帮忙：三层支持</a><a class="toc-l2" href="#s18">十、AI 使用规则（全课程通用）</a><a class="toc-l3" href="#s19">10.1 Declaration of AI usage 必须写什么</a><a class="toc-l3" href="#s20">10.2 AI 与软件工程学习</a><a class="toc-l2" href="#s21">十一、课程要求：学分、作业与学习成果</a><a class="toc-l2" href="#s22">开学前两周清单</a><a class="toc-l2" href="#s23">提交前 AI 声明自检</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a class="toc-l3" href="sse-intro-environment.html">▸ 第 1 讲 · 软件工程系、学习环境与课程要求</a><a href="sse-teamwork.html">第 2 讲 · 团队协作与多元文化团队</a><a href="degree-structure-psp.html">第 3 讲 · 学位结构、个人学习计划（PSP）与自我管理</a><a href="cv-assignment.html">第 4 讲 · CV 作业：结构、写法与提交</a></div></aside><article><h1>第 1 讲 · 软件工程系、学习环境与课程要求</h1><p class="lead">Software Engineering at LUT, Study Environment and Course Requirements <span class="badge mute">30331</span> <span class="badge mute">第 1 / 4 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 学习环境与团队协作</a></p><p class="src">原始文件：<code>3_Lectures_1_SSEIntro2026.pptx.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>CT10A9900 是双学位（Double Degree）软件与系统工程专业的第一门“学习导论”。它不讲编程，而是把接下来三年要用的东西一次交代清楚：你所在的院系与学位阶梯、毕业后的岗位地图、必须遵守的 AI 规则、四个必做作业，以及遇到问题时该找谁。</p><p>课件把内容分成四块：LUT 的软件工程、软件工程的职业路径、借助个人学习计划（PSP）按时完成学业、课程本身说明。本讲处理第一、二块与课程要求，团队协作、学位结构与 PSP、CV 作业分别放在第 2–4 讲，四讲合起来覆盖整门课。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说清软件工程系的两个校区与学士—硕士—博士三段学位阶梯的年限与学分</li><li>把课件列出的岗位按“开发与架构 / 产品与支持 / 领导与其他”三类归档</li><li>区分产品公司与咨询公司，并判断一个岗位属于哪一类</li><li>在 Sisu 中查一门课的先修要求，并据此判断本学期能否报名</li><li>按 LUT 要求写出合规的 Declaration of AI usage（AI 使用声明）</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、这门课是什么</h2><p>课程全名是 <b>Introduction to DD Studies in Software and Systems Engineering</b>（双学位软件与系统工程学习导论），2025 年 9 月 1 日至 2026 年 4 月 17 日在 Lahti 校区面授。课件署名 Katja Karhu（Junior Researcher）与 Maria Paasivaara（Professor），标注日期 02.09.2025。</p><p>课程页给出的四个内容块是：<span class="chip">Software Engineering at LUT</span><span class="chip">Career Paths in Software Engineering</span><span class="chip">Completing your studies in schedule with the help of personal study plan (PSP)</span><span class="chip">About the course</span>。这不是随手排的顺序：先知道自己在哪个组织里读书，再知道读完之后去哪里工作，然后才知道这三年怎么排课，最后才是这门课怎么考。</p><div class="callout tip"><b>笔记骨架</b>用这四块当四个一级标题做笔记，每听完一讲就把内容归到对应标题下。考试与作业问的都是“你能否用这套框架做决定”，而不是背定义。</div><h2 id="s3">二、软件工程系与两个校区</h2><p>软件工程系（Department of Software Engineering）成立于 <b>2020</b> 年，在 <b>Lappeenranta</b> 与 <b>Lahti</b> 两个校区同时运作。课件用两张城市地图把两地并列，说明同一个系跨校区组织教学与研究。</p><p>对你的实际影响很具体：课程、辅导（tutoring）、自习空间与实习机会可能分布在两个城市；看课表时必须同时确认<b>城市、教室、时间</b>三件事，而不是只看课程代码。第 6 讲的数字导览会说明，上课地点只在 Time-Edit 里给出，这正是一个跨校区院系必须依赖排课系统的原因。</p><div class="callout warn"><b>别把“校区”当成“线上/线下”的同义词</b>同一个课程可能在 Lahti 面授、在 Lappeenranta 直播、又要求线上提交作业。三件事分开确认，缺一项就会跑错教室。</div><h2 id="s4">三、学位阶梯：学士 → 硕士 → 博士</h2><p>学士（Bachelor）之后是本专业方向的硕士项目（Master’s programmes in software engineering）；硕士之后是博士阶段。LUT 的博士教育由 <b>LUT Doctoral School（LUT DS）</b>统筹：它由学校的博士项目组成、在校级运作，在博士项目之间传播良好实践，并对博士教育提出建议。</p><p>课件给出的三个硬数字要记住：博士学位约需 <b>3–4 年</b>全日制学习；<b>licentiate</b>（副博士学位）通常 <b>2 年</b>全日制；博士阶段的学习范围为 <b>30 ECTS cr</b>。LUT 的博士学位按具体研究领域（research fields）规划与组织，不是按课程清单堆出来的。</p><table><tr><th>阶段</th><th>英文</th><th>年限 / 学分（课件原文）</th></tr><tr><td>学士</td><td>Bachelor’s degree</td><td>项目按三年毕业设计（见第八节）</td></tr><tr><td>硕士</td><td>Master’s programmes in software engineering</td><td>学士之后的下一段，具体项目见学位结构</td></tr><tr><td>副博士</td><td>Licentiate degree</td><td>通常 2 年全日制</td></tr><tr><td>博士</td><td>Doctoral degree</td><td>约 3–4 年全日制；博士阶段学习 30 ECTS cr</td></tr></table><div class="callout exam"><b>三个数字</b><b>3–4 年</b>（博士）、<b>2 年</b>（licentiate）、<b>30 ECTS cr</b>（博士阶段学习范围）。这三个数字在课件里各出现一次，是最容易被抽问的硬信息。</div><h2 id="s5">四、职业路径：一张岗位地图</h2><h3 id="s6">4.1 开发与架构</h3><p>软件开发的岗位包括 software developer / designer、DevOps engineer、software tester、test automation developer / architect、UX designer。架构方向包括 solution architect、enterprise architect、technical architect 等。课件用「Etc…」明确表示这只是示例，不是完整清单。</p><h3 id="s7">4.2 产品管理与支持性职能</h3><p>产品管理方向有 product owner、product designer、service designer；支持性活动（supporting activities）包括 information security、IT infrastructure、IT support、IT compliance、operations、sales。注意 sales 被归在支持性活动里——软件公司的销售卖的是技术方案，需要读得懂产品与架构。</p><h3 id="s8">4.3 领导与其他</h3><p>领导方向是 team leader 与各类 managerial roles，另加 business development；其他方向包括 AI specialist、data scientist、agile coach / Scrum master、researcher、university teacher、entrepreneurship。课件的结语是：<b>“Your bachelor’s degree can be a basis for a multitude of different career paths”</b>——学士学位是多种职业路径的共同基础，而不是一条单行道。</p><table><tr><th>类别</th><th>课件列出的岗位</th><th>共同能力</th></tr><tr><td>开发与架构</td><td>developer / designer、DevOps、tester、test automation、UX；solution / enterprise / technical architect</td><td>写代码、读代码、系统分解</td></tr><tr><td>产品与支持</td><td>product owner、product designer、service designer；information security、IT infrastructure、IT support、IT compliance、operations、sales</td><td>理解需求、跨团队沟通</td></tr><tr><td>领导与其他</td><td>team leader、managerial roles、business development；AI specialist、data scientist、agile coach、researcher、teacher、entrepreneur</td><td>组织协作、领域专精</td></tr></table><h2 id="s9">五、产品公司还是咨询公司</h2><p>课件把软件公司分成两类：<b>产品公司（product companies）</b>开发并销售自己的软件产品；<b>咨询公司（consulting companies）</b>向其他公司提供软件顾问（开发者、测试者等）或承接软件项目。第三类容易被忽略：许多“传统”企业与组织内部也有 IT 与软件工程岗位。</p><p>三类雇主的差别不在技术栈，而在你每天面对的对象：产品公司面对自己产品的用户与长期演进；咨询公司面对客户的需求、合同与交付期限；传统企业的 IT 部门面对内部业务流程与遗留系统。</p><table><tr><th>维度</th><th>产品公司</th><th>咨询公司</th><th>传统企业的 IT / SE 岗</th></tr><tr><td>你做的对象</td><td>自家产品的一个模块或一条产品线</td><td>客户项目，按合同交付</td><td>内部系统与业务流程</td></tr><tr><td>节奏来源</td><td>产品路线图与版本发布</td><td>客户排期与验收节点</td><td>业务需求与合规要求</td></tr><tr><td>能力侧重</td><td>长期可维护性、领域深度</td><td>快速理解新领域、沟通与交付</td><td>系统集成、稳定运行</td></tr></table><h2 id="s10">六、一位教师的职业故事（Katja Karhu）</h2><p>课件用一整页讲 Katja 自己的路径，目的是让你看到“职业不是直线”。按年份拆开：</p><table><tr><th>年份</th><th>事件</th></tr><tr><td>1999</td><td>在 LUT 开始学习</td></tr><tr><td>2000</td><td>互联网泡沫（dot-com bubble），实习机会很难找</td></tr><tr><td>2005</td><td>在 LUT 做研究/教学助理</td></tr><tr><td>2007</td><td>从 LUT 硕士毕业</td></tr><tr><td>2008</td><td>进入一家 Nokia 的分包商工作</td></tr><tr><td>2010</td><td>金融危机后 Nokia 收缩业务，被裁员</td></tr><tr><td>2010</td><td>自己创业；她的评价是“这不适合我，如果重来，我希望有一支技能互补的团队”</td></tr><tr><td>2012</td><td>重新求职，进入 Finago Group 做财务管理软件开发</td></tr><tr><td>2012–2024</td><td>在 Finago Group 工作</td></tr><tr><td>2024</td><td>成为 LUT 的博士研究员（doctoral researcher）</td></tr><tr><td>至 2028</td><td>向 Finago Group 请学习假（study-leave）</td></tr></table><p>这段故事给出三条可迁移的结论：第一，行业周期会打断个人路径，实习与第一份工作的时间窗要提前布局；第二，创业失败往往不是技术问题，而是缺少技能互补的团队；第三，读博可以是职业中期的选择，而不是只有应届一条路。</p><h2 id="s11">七、求职与网络：课件的 Key Takeaways</h2><p>课件明确提醒：<b>暑期实习要尽早开始找，有些岗位的申请期早在 12 月就开放</b>。此外，软件工程之外的工作经验同样被高度重视——客服、销售、仓库、教学助理都能证明可靠性与沟通能力。</p><p>网络（networking）不是加好友，而是让自己出现在有人的场合：参加 meetups、活动、招聘会（recruitment fairs），产业讲者来课堂时主动提问与交流。课件把同伴放在最高位置：<b>“Your peers are your most valuable network”</b>——在学习中交朋友，参加 guilds（学生行会）与 student union（学生会）组织的活动与社团。</p><ul class="checklist"><li>每年 12 月起定期查看暑期实习岗位，而不是等到春天</li><li>把非软件岗位的经历也写进 CV，并写清可迁移技能</li><li>每学期至少参加一次招聘会或企业宣讲，并当场提问</li><li>加入一个 guild 或社团，承担一件具体的事（而不只是挂名）</li></ul><h2 id="s12">八、PSP 与三年默认进度</h2><p>学士项目是按“三年毕业”设计的。课件用一句反直觉的话提醒你：<b>“Studying faster does not mean you can graduate faster”</b>——提前修课不等于提前毕业，因为毕业受模块学分、先修链与学期开设限制。按个人学习计划里的默认课表与课程建议走，会让自己的生活更轻松。</p><p>推荐节奏是<b>每学年 60 credits</b>。这个数字不是上限，而是留出余量的设计值：它保证你有时间休息与恢复、管理自己的生活（课件用 <span class="chip">adulting</span> 这个词）、照顾身心健康、维持朋友关系、做职业网络与实习、并按时完成学业。</p><h3 id="s13">8.1 先修课（prerequisite）</h3><p>有些课程必须先完成另一门课才能报名，这些约束必须体现在 PSP 里。Sisu 中能看到某门课是否要求先修课。课件给的例子是：要报名 <b>Object-Oriented Programming</b>，必须先完成 <b>Fundamentals of Programming</b> 与 <b>Software Engineering</b> 两门。9.9.2025 的那次课是 PSP workshop，由学习辅导员 Lotta 带着你现场做自己的学习计划。</p><div class="callout warn"><b>课件原话</b>“Please remember to check that you have done all the pre-required courses when enrolling on the more advanced courses and stick to your study plan!” 毕业延迟常常不是因为难，而是因为没按计划修先修课，结果进阶课报不上。</div><h3 id="s14">8.2 夏季学期</h3><p>学校允许在夏季学期（5–8 月）学习：许多课程 6 月 1 日开始、7 月 31 日结束。夏季学习<b>不是强制</b>的，它的主要用途是补救——如果某门关键课程没过，夏季是唯一不拖慢后续链条的窗口。</p><h3 id="s15">8.3 奖学金</h3><p>按时完成学业有奖学金机会。学校每月通过邮件（发件人 <code>LUT.graduation@lut.fi</code>）向符合条件的毕业生发送问卷；奖学金一般在毕业后两个月内发放，<b>逾期申请不被接受</b>。PHP Foundation 向“在企业完成学士论文”的软件与系统工程学生提供 <b>500 欧元</b>奖学金；同一份在企业完成的学士论文不再获得其他奖学金（课件举例 VITAKO）。</p><p>课件的落脚点很实在：<b>学习的最大动机仍应是拿到一份有趣的工作，薪水总会比这些奖励更好</b>。奖学金是副产品，不是目标。</p><h3 id="s16">8.4 按时完成的 tips</h3><p>先照顾好基本需求：恢复与休息、食物、维生素 D。然后是自己领导自己（lead yourself）：设定清晰目标、尝试不同的学习技巧（但避开“整夜不睡加一壶咖啡”那种）、与同伴分享成果、给任务排优先级、为忙碌期（如考试周）提前减少干扰、提前备餐、设定边界、压力期结束后安排恢复——你不可能一直 100% 运转。如果撑不住，去找帮助，学校有一整套支持服务（课程页面的 Other resources 也放了入口）。</p><h2 id="s17">九、找谁帮忙：三层支持</h2><table><tr><th>角色</th><th>姓名与联系方式</th><th>负责什么</th></tr><tr><td>Study counsellor（学习辅导员）</td><td>Lotta Meriläinen，lotta.merilainen@lut.fi，050 439 9915</td><td>一般学习指导与咨询；PSP 的审阅、咨询与一般指导；先前学习或在外完成学习的学分认定（inclusion 或 replacement）；学习权延期申请</td></tr><tr><td>Study advisor（学习顾问）</td><td>Liam Hallanoro，liam.hallanoro@lut.fi</td><td>由 LUT 在校学生担任，处理实务：Sisu 中课程与考试的报名、逾期报名、与课程相关的问题（如学习计划的排课）</td></tr><tr><td>Academic advisor / Teacher tutor（教师导师）</td><td>Siiri Leppälampi，siiri.leppalampi@lut.fi</td><td>本学位项目的教师，负责专业发展与职业规划相关的问题</td></tr></table><p>Lotta 的服务方式：可通过 Bookings Teams 预约线上咨询（预约时注意选择 Lotta Meriläinen）；自 4.9.2025 起每周四 11–17 在 Lahti 校区 A142 房间，可以邮件预约，也可以路过时直接聊。</p><div class="callout tip"><b>判断规则</b>学分认定、PSP、学习权 → counsellor；Sisu 报名报不上、排课冲突 → advisor；要不要读研、往哪个方向就业 → teacher tutor。问错人不会出错，但会多等一周。</div><h2 id="s18">十、AI 使用规则（全课程通用）</h2><p>课件把规则压缩成一句话：<b>“Rule-of-thumb: always be transparent of your AI usage!”</b> 具体展开为：所有课程都必须披露/声明 AI 使用情况，<b>即使你没有用 AI</b>；每门课有自己的 AI 说明，必须先读；有些课程或作业完全禁止使用 AI；情况不明时联系教师。还要记住 AI 不是所有任务的好工具：<b>永远对 AI 生成的文本做事实核查</b>。课件推荐的读物是 Emily M. Bender 与 Alex Hanna 的 <i>The AI Con</i>。做小组作业前，先读该作业的 AI 说明，并讨论组内偏好（不用 AI / 允许 AI）。</p><h3 id="s19">10.1 Declaration of AI usage 必须写什么</h3><p>LUT 软件工程系实施的课程要求：所有包含设计与写作任务的学生提交作品，都必须附一份 <b>“Declaration of AI usage”</b>（芬兰语 <b>Ilmoitus tekoälyn käytöstä</b>）。声明放进提交的报告，内容二选一：</p><ol><li>列出在本文档内容开发中使用的所有 AI 系统，并逐一说明<b>如何、在哪里</b>使用（插图、校对、获取文本想法、生成图表等）；</li><li>明确声明本次作业<b>没有使用任何 AI 辅助或工具</b>。</li></ol><p>这份声明是提交的<b>强制部分</b>：漏掉即视为作品不完整，不予评分。反过来，声明“没有使用 AI”但 Turnitin 的 AI 检测得分很高，本身就足以构成不合格的理由。课件原话还提醒：Turnitin 同时检查 AI 使用与整体相似度，<b>永远不要把任何内容直接复制粘贴进作业</b>。</p><div class="callout warn"><b>后果是连锁的</b>因 AI 问题挂掉一门课，会影响按时毕业与后续学习计划；而有些课程根本不允许使用 AI。每次提交前先确认该课程的 AI 政策，再写声明。</div><h3 id="s20">10.2 AI 与软件工程学习</h3><p>课件对“AI 会不会取代开发者”的回答是条件式的：你必须学会编程基础；必须能阅读并理解代码，才能定位与修复问题；生成式 AI 不总是产出高质量代码，它更擅长解决已经存在的问题；你还要学会与团队中的人（例如资深开发者）沟通；AI 不一定给出正确答案。企业在持续投入生成式 AI，寻找的是<b>开发功底扎实、同时会用 AI</b>的开发者；同时也要意识到存在 AI 泡沫的可能。Moodle 里有 AI Quiz，用来自测你对 LUT AI 指南的掌握。</p><h2 id="s21">十一、课程要求：学分、作业与学习成果</h2><p>课程的计量方式：<b>1 ECTS 学分约等于 27 小时工作</b>；课程贯穿 Periods 1–4（整个学年）；有<b>四个必做作业</b>，其中作业 1 与 2 在线完成。</p><table><tr><th>作业</th><th>主题</th><th>截止</th></tr><tr><td>Assignment 1</td><td>Information searching and Information Security（信息检索与信息安全）</td><td>9 月底</td></tr><tr><td>Assignment 2</td><td>Personal Study Plan（PSP，在 9.9 课上可获得协助）</td><td>9 月 16 日</td></tr><tr><td>Assignment 3</td><td>CV</td><td>10 月底</td></tr><tr><td>Assignment 4</td><td>Academic ethics（学术伦理）</td><td>1 月</td></tr></table><p>学习成果（Sisu 原文）：学生了解大学学习的要求与目标，包括 LUT 信息安全培训课程的材料；熟悉学习所需的各类工具与数据库；吸收让学习更高效所需的信息与技能；理解创业式学习（entrepreneurial learning）的意义。具体能力有五项：能使用学校的内部与外部数据库获取学习所需的科学知识；能按学术格式报告；能发展自己的学习技能；能设计并管理用于学习的时间；能规划并遵循符合个人职业目标与优势的课程体系。</p><table><tr><th>能力（中文）</th><th>Sisu 英文原句</th></tr><tr><td>使用校内与外部数据库获取科研知识</td><td>is capable of using both internal and external databases of the university for acquiring scientific knowledge</td></tr><tr><td>按学术格式报告</td><td>is capable of reporting in academic format</td></tr><tr><td>发展学习技能</td><td>is capable of developing his/hers learning skills</td></tr><tr><td>设计并管理学习时间</td><td>is able to design and manage the time used for studying</td></tr><tr><td>规划并遵循符合个人目标的课程</td><td>is able to plan and follow a curriculum that meets his/her personal career goals and strengths</td></tr></table><p>课件最后的 Final takeaways 只有六句，但每句都对应一个动作：学会照顾自己的身体与心理；对自己友善；完成 PSP；遵循三年默认课表、不要贪多；9.9 那节课在 Lotta 指导下做 PSP；认识同学——他们是你最重要的职业网络；以及，<b>主动求助</b>。</p><div class="callout exam"><b>本讲必背的五个数字</b>1 ECTS ≈ 27 小时；每学年 60 credits；PSP 截止 9 月 16 日；博士 3–4 年 / licentiate 2 年 / 博士阶段 30 ECTS cr；学位至少 180 credits（见第 3 讲）。</div><div class="callout idea" data-ext="sse-intro-environment-0"><b>前后衔接</b><p>本讲的 AI 规则是全课程底线，三处表述要连读：所有课程都必须声明，<strong>即使没用也要写明“未使用”</strong>；每门课有自己的 AI 说明且优先；声明是提交的强制部分，漏掉即视为不完整不予评分。原话 <em>always be transparent of your AI usage</em> 把判断落在透明，而非“用得巧不巧”。</p><p>把它与后面两门 MOOC 对照会更清楚：循环经济课完全禁用 AI，气候课允许但须披露——同一所学校里规则按课程定。声明中若写“未使用”，而 Turnitin 的 AI 检测得分很高，本身就构成不合格理由，所以“永远不要把任何内容直接复制粘贴进作业”。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>ECTS credit</td><td>学分</td><td>One ECTS credit equals about 27 hours of work.</td></tr><tr><td>personal study plan (PSP)</td><td>个人学习计划</td><td>A plan in Sisu covering the structure of studies and the timeline.</td></tr><tr><td>prerequisite</td><td>先修课</td><td>A course that must be completed before enrolling on a more advanced course.</td></tr><tr><td>Declaration of AI usage</td><td>AI 使用声明</td><td>A mandatory statement listing AI systems used and how, or declaring that none were used.</td></tr><tr><td>study counsellor</td><td>学习辅导员</td><td>Handles PSP review, credit transfer, and extension of study right.</td></tr><tr><td>study advisor</td><td>学习顾问</td><td>A LUT student helping with practical Sisu enrolments and scheduling.</td></tr><tr><td>teacher tutor</td><td>教师导师</td><td>A teacher of the degree programme advising on professional development and career planning.</td></tr><tr><td>doctoral degree</td><td>博士学位</td><td>About 3–4 years of full-time studies; doctoral studies cover 30 ECTS cr.</td></tr><tr><td>licentiate degree</td><td>副博士学位</td><td>Usually two years of full-time studies.</td></tr><tr><td>product company</td><td>产品公司</td><td>Develops its own software product or products.</td></tr><tr><td>consulting company</td><td>咨询公司</td><td>Provides software consultants or software projects to other companies.</td></tr><tr><td>credit transfer</td><td>学分认定</td><td>Inclusion or replacement of studies completed elsewhere.</td></tr><tr><td>Turnitin</td><td>查重与 AI 检测系统</td><td>Checks both AI-generated text and overall similarity.</td></tr><tr><td>study right</td><td>学习权</td><td>The right to study towards a degree; extensions are applied for separately.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　你想本学期直接报名 Object-Oriented Programming，如何判断能不能报？</div><p><b>第一步，查先修。</b>在 Sisu 打开该课程页，看 Prerequisites 栏；课件给的例子是必须先完成 Fundamentals of Programming 与 Software Engineering。</p><p><b>第二步，查状态。</b>在 Sisu 的已完成学习（completed studies）里确认这两门是“已完成”而不是“在修”或“报名中”。</p><p><b>第三步，查学期。</b>在 PSP 的 Timeline 里看这两门先修课是否排在目标学期之前；若排在同学期，则本学年无法满足链条。</p><p><b>第四步，定方案。</b>若先修未完成，本学期不报 OOP，改报可并行且无先修要求的课程，并把 OOP 顺延到下一学年；随后在 PSP 里调整，必要时约 Lotta 审阅。</p><p><b>判断标准：</b>先修课全部“已完成”＋Timeline 顺序正确＋该学期确实开设，三条同时满足才报名。</p></div><div class="qa"><div class="q">例 2　一学年 60 credits 怎么落到四个 period？某门关键课没过，暑期要不要补？</div><p>60 credits 在整个学年（Periods 1–4）里分配，均值是每 period 约 15 credits；实际分配要按课程的先修链与开课周期调整，而不是机械四分。</p><p>若某门关键课没过：先确认它是否<b>后续课程的先修</b>。如果是，暑期（6 月 1 日–7 月 31 日有许多课）补修是唯一不拖慢链条的窗口；暑期学习非强制，但此时属于“补救性投入”。</p><p>若不补，代价是下一学年的进阶课报不上，PSP 的 Timeline 要整体后移，可能影响三年毕业与奖学金资格（按时完成才有奖学金机会）。</p><p><b>决策规则：</b>关键课＝“是后续课程的先修”或“本学年必修模块”。是→暑期补；否→可在下一学年正常学期重修，优先保住暑期休息与实习。</p></div><div class="qa"><div class="q">例 3　小组报告用了 Copilot 改摘要、用 AI 生成一张流程图，声明怎么写？</div><p><b>合格写法：</b>“Declaration of AI usage: Microsoft M365 Copilot was used (1) to shorten and polish the abstract of Section 3 — the original text and all technical claims were written by the authors; (2) to generate the first draft of the process diagram in Figure 2, which was then redrawn and verified by the authors. No AI was used to produce the results or the literature review.”</p><p><b>为什么合格：</b>点明了系统名称（M365 Copilot）、逐一说明用途与位置（摘要、图 2）、并说明人对结果的复核。既没有隐瞒，也没有把 AI 的产出说成自己的分析。</p><p><b>不合格写法：</b>只写“AI was used”，或写“No AI used”但正文有明显 AI 痕迹（Turnitin AI 得分高），或干脆不写声明（作品视为不完整，不予评分）。</p></div><div class="qa"><div class="q">例 4　三个问题，该找谁？</div><p>（a）“我去年在另一所大学修过两门课，能不能算进学位？”→ <b>study counsellor</b>（Lotta），因为她负责 credit transfer 的 inclusion / replacement。</p><p>（b）“Sisu 里这门课报名按钮是灰的，截止了吗？”→ <b>study advisor</b>（Liam），他处理 Sisu 报名、逾期报名与排课问题。</p><p>（c）“我想往数据科学方向就业，硕士该选哪个项目？”→ <b>teacher tutor</b>（Siiri），她负责专业发展与职业规划。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写出你所在学位项目“学士—硕士—博士”三段各自的年限与学分要求，并指出哪一段属于 LUT Doctoral School 统筹。</li><li>把课件列出的岗位归入“开发与架构 / 产品与支持 / 领导与其他”三类，每类至少写三个岗位。</li><li>某同学想用 AI 生成整份实验报告并直接提交。按本讲规则，指出至少三处违规，并写出正确的替代做法。</li><li>你的 PSP 里把 Object-Oriented Programming 排在第一学年第二学期，但 Fundamentals of Programming 排在第二学年第一学期。指出问题并给出修改方案。</li><li>列出你会用到的三个支持角色，并为每个角色写一个“该找他/她”的具体问题。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 学士按项目三年设计；硕士为 software engineering 方向的硕士项目；博士约 3–4 年全日制、博士阶段 30 ECTS cr；licentiate 通常 2 年。博士阶段由 LUT Doctoral School（LUT DS）统筹，它在校级运作、在博士项目间传播良好实践。</p><p><b>2.</b> 开发与架构：software developer/designer、DevOps engineer、software tester、UX designer、solution architect。产品与支持：product owner、product designer、service designer、information security、IT support、sales。领导与其他：team leader、managerial roles、business development、AI specialist、data scientist、agile coach/Scrum master、researcher、entrepreneur。</p><p><b>3.</b> 违规点：①提交 AI 生成的成品作为自己的作品；②未写 Declaration of AI usage（或写了“未使用”而实际使用）；③若课程禁止 AI 则直接违反课程政策；④未对 AI 文本做事实核查。正确做法：自己写报告，用 AI 只做理解与检查（如让它解释错误、做 code review 式点评），在报告中写明所用系统与用途，并核对每条数据与引用。</p><p><b>4.</b> 问题在于先修顺序颠倒：OOP 要求先完成 Fundamentals of Programming 与 Software Engineering，而后者排在其后，第一学年第二学期必然报不上。修改：把 Fundamentals of Programming 与 Software Engineering 前移到第一学年第一/第二学期，OOP 顺延到第二学年；用 PSP 的 timing template 重新排，并检查每学期工作量是否仍接近 30 credits。</p><p><b>5.</b> 示例：counsellor → “我在国外交换修的课能否计入选修模块？”；advisor → “这门课的考试报名我错过了截止日期，还能补报吗？”；teacher tutor → “我更适合走产品方向还是架构方向？”</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>1 ECTS ≈ 27 小时；每学年 60 credits；PSP 截止 9 月 16 日；四个作业的主题与截止月份；Declaration of AI usage 的两类写法。</div><div class="callout warn"><b>易错 1</b><b>“学得快就能早毕业”是错的。</b>课件原文说 studying faster does not mean you can graduate faster，受限的是模块学分、先修链与开课周期。</div><div class="callout warn"><b>易错 2</b><b>“没用 AI 就不用声明”是错的。</b>所有课程都要声明，即使没有使用；声明“未使用”却被 Turnitin 判为高 AI 得分，本身可以导致不合格。</div><div class="callout warn"><b>易错 3</b><b>把作业发到教师邮箱。</b>课程作业与提交都在 Moodle 完成，除非教师明确要求；教师也只回复 LUT 邮箱的来信。</div><div class="callout tip"><b>进阶</b>能解释“为什么先修链会决定毕业时间”，比背年限更有用：它把课程表、PSP 与奖学金资格串成一条因果链。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s22">开学前两周清单</h2><ul class="checklist"><li>在 Sisu 打开自己的 PSP（eHOPS），确认每个模块（general / language / minor studies 等）都有足够学分</li><li>确认学位总学分达到至少 180 credits，且各模块状态为 “Selections done”</li><li>把所有课程排进 Timeline，并启用本学位项目的 timing template</li><li>逐门检查计划中进阶课程的先修课是否已排在更早学期</li><li>9.9 带电脑参加 PSP workshop，当场完成初稿</li><li>9 月 16 日前完成 PSP 并在 Sisu 给 Lotta 发消息</li><li>把四个作业的截止日期写进 LUT Calendar 并设提醒</li><li>保存 Lotta、Liam、Siiri 的邮箱到通讯录</li><li>找到 Moodle 上的 AI Quiz，做完并记录错题</li><li>在第一次小组作业前，与组员约定 AI 使用规则</li></ul><h2 id="s23">提交前 AI 声明自检</h2><ul class="checklist"><li>声明是否已放进提交文件（不是只写在邮件里）</li><li>是否逐一列出 AI 系统名称（Copilot / ChatGPT / 其他）</li><li>是否逐处说明用途（插图、校对、想法、图表）</li><li>是否说明人对 AI 产出的复核方式</li><li>若确实未使用，是否明确写出“no AI assistance or tools were used”</li><li>正文是否存在直接复制粘贴的段落（Turnitin 会同时查相似度）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 2–3</td><td>课程名称、授课教师、时间地点、四块内容</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 5–6</td><td>软件工程系 2020 年成立、Lappeenranta 与 Lahti 两校区</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 8–9</td><td>学士后硕士项目；LUT Doctoral School、博士 3–4 年、licentiate 2 年、30 ECTS cr</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 10–12</td><td>职业路径三类岗位清单</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 13</td><td>产品公司与咨询公司；传统企业的 IT 岗位</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 14–15</td><td>Katja 的职业故事；求职与网络 Key Takeaways</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 16–19</td><td>PSP、三年默认进度、60 credits/年、先修与计划纪律</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 20–23</td><td>先修课与 Sisu 示例、夏季学期、奖学金</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 24–27</td><td>按时完成 tips、counsellor / advisor / teacher tutor 分工</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 28–32</td><td>AI 使用规则、Declaration of AI usage、Turnitin、AI Quiz</td></tr><tr><td>3_Lectures_1_SSEIntro2026.pptx.txt</td><td>slide 33–35</td><td>Sisu 学习成果、1 ECTS≈27h、四个作业、Final takeaways</td></tr><tr><td>（跳过）</td><td>slide 1、4、7、18、36</td><td>空白页或纯图片页，无可抽取文字；slide 18 的“60 credits 长什么样”只有图，未据此推断具体课程</td></tr><tr><td>（补充）</td><td>—</td><td>把 1 ECTS=27 小时换算为“每 period 约 15 credits”的估算、以及“关键课＝后续课程先修”的判断规则，属于基于原文的推算，非课件原文</td></tr></table></section><div class="lnav"><span></span><a class="next" href="sse-teamwork.html">第 2 讲 · 团队协作与多元文化团队 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

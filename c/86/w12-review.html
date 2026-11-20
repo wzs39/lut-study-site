@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Week 12 · 全课整合复习与模拟题 · 86</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-7.html">第 7 章 期末复习与模拟</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、全课地图</a><a class="toc-l2" href="#s3">二、第 1 章回顾：三个判据</a><a class="toc-l2" href="#s4">三、第 2 章回顾：换算与编码两条流水线</a><a class="toc-l3" href="#s5">3.1 进制换算的两条路</a><a class="toc-l3" href="#s6">3.2 三种有符号编码</a><a class="toc-l3" href="#s7">3.3 小数与 IEEE 754</a><a class="toc-l2" href="#s8">四、第 3 章回顾：四层链与三个公式</a><a class="toc-l3" href="#s9">4.1 一条链：字符 → 码位 → 编码 → 字节</a><a class="toc-l3" href="#s10">4.2 三个公式</a><a class="toc-l3" href="#s11">4.3 压缩的判据与两张表</a><a class="toc-l2" href="#s12">五、第 4 章回顾：存储、文件与检索</a><a class="toc-l3" href="#s13">5.1 单位与介质</a><a class="toc-l3" href="#s14">5.2 文件的三条判断</a><a class="toc-l3" href="#s15">5.3 检索三步：索引 → 匹配 → 排序评价</a><a class="toc-l2" href="#s16">六、第 5 章回顾：加密的三层</a><a class="toc-l2" href="#s17">七、第 6 章回顾：一张真值表与八条等价律</a><a class="toc-l2" href="#s18">八、速查表：公式与常数</a><a class="toc-l2" href="#s19">九、模拟题的使用方式</a><a class="toc-l2" href="#s20">十、时间分配</a><a class="toc-l2" href="#s21">十一、十个高频失分点</a><a class="toc-l2" href="#s22">十二、缺口与后续</a><a class="toc-l2" href="#s23">考前与考场清单</a><a class="toc-l3" href="#s24">考前三天（把公式变成手速）</a><a class="toc-l3" href="#s25">考场五步</a><a class="toc-l3" href="#s26">交卷前自查（六问）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a class="toc-l3" href="w12-review.html">▸ Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 12 · 全课整合复习与模拟题</h1><p class="lead">Course Review and Practice Exam <span class="badge mute">86</span> <span class="badge mute">第 12 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-7.html">第 7 章 期末复习与模拟</a></p><p class="src">原始文件：<code>Week1- Introduction/Lecture_0.pdf</code> <code>Week1- Introduction/Lecture_1.pdf</code> <code>Week2- Number systems/Lecture2.pdf</code> <code>Week3- Digital Data Encoding/Lecture3.pdf</code> <code>Week4- Character and Text Encoding/Lecture4.pdf</code> <code>Week5- Image Representation/Lecture5.pdf</code> <code>Week6- Audio and Video Representation/Lecture6.pdf</code> <code>Week7- Data Compression/Lecture7.pdf</code> <code>Week8- Information Storage and File Representation/Lecture8.pdf</code> <code>Week9- Information Retrieval/Lecture9.pdf</code> <code>Week10- Data Encryption/Lecture10.pdf</code> <code>Week11-Logic and Information Processing/Lecture11.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这一讲不引入新知识点，只做一件事：把前 11 讲的公式、判据与套路收成一张可以带进考场的「作战地图」。课程里考试占 50%，且有一条单科下限（考试 ≥ 25 分），所以复习的目标不是「再读一遍」，而是「能在限时内准确算对」。</p><p>本讲按「六章 → 一张速查表 → 十二道模拟题 → 时间分配 → 十个高频失分点」的顺序组织。速查表是全课的骨架；模拟题按考试题型配比（换算、计算、判断、简答）；失分点来自前 11 讲里反复标注的易错项。</p><p>需要说明的缺口：课程安排里 Week 12（数据采集）、Week 13（数据处理）、Week 14（复习）的课件不在本次讲义可用的源文件里，因此本讲<b>不虚构</b>这三周的内容，只整合已讲过的 11 周知识。若后续拿到那三周课件，应把它们补成独立讲次，而不是塞进本讲。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用一张表说出六章各自解决什么问题、核心公式是什么</li><li>在 90 秒内完成一次进制换算或补码运算并自我验算</li><li>看到「图像/音频/视频大小」题型立刻写出对应公式与单位口径</li><li>对给定数据做 RLE、Huffman、倒排索引、P/R 与 RSA 的标准流程</li><li>列出十个高频失分点，并在交卷前逐条自查</li><li>按分值分配时间，先拿稳计算题的分，再写简答题</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、全课地图</h2><p>六章之间有严格的递进关系：先定义「信息与处理」，再把信息变成数字（第 2 章），再把数字组织成可用的编码（第 3 章），再让它们能被存、被找（第 4 章），再保护它们（第 5 章），最后用逻辑去判断它们（第 6 章）。</p><table><tr><th>章</th><th>讲次</th><th>解决的问题</th><th>核心产出</th></tr><tr><td>第 1 章 导论</td><td>Week 1</td><td>计算机在处理什么</td><td>IPO 模型、2^n、算法与数据结构</td></tr><tr><td>第 2 章 数制与表示</td><td>Week 2</td><td>数怎么写成 0/1</td><td>位置记数法、进制互换、二进制算术</td></tr><tr><td>第 2 章 数制与表示</td><td>Week 3</td><td>负数与小数怎么写</td><td>补码、溢出、IEEE 754</td></tr><tr><td>第 3 章 编码与压缩</td><td>Week 4</td><td>字符怎么写</td><td>ASCII、Unicode、UTF-8</td></tr><tr><td>第 3 章 编码与压缩</td><td>Week 5</td><td>图像怎么写</td><td>采样、量化、RGB、数据量公式</td></tr><tr><td>第 3 章 编码与压缩</td><td>Week 6</td><td>声音与视频怎么写</td><td>采样率、位深、帧率、两条数据量公式</td></tr><tr><td>第 3 章 编码与压缩</td><td>Week 7</td><td>怎么变小</td><td>RLE、Huffman、无损/有损</td></tr><tr><td>第 4 章 存储与检索</td><td>Week 8</td><td>放在哪、怎么组织</td><td>存储层次、单位、文件格式、元数据</td></tr><tr><td>第 4 章 存储与检索</td><td>Week 9</td><td>怎么找</td><td>倒排索引、TF-IDF、precision/recall</td></tr><tr><td>第 5 章 加密与安全</td><td>Week 10</td><td>怎么不被看到</td><td>古典密码、OTP、AES、RSA</td></tr><tr><td>第 6 章 逻辑</td><td>Week 11</td><td>怎么判断真假</td><td>六个运算符、真值表、等价律</td></tr></table><h2 id="s3">二、第 1 章回顾：三个判据</h2><p>这一章考的是「会不会分」，不是「会不会算」。三个判据：</p><table><tr><th>概念</th><th>判据</th><th>反例</th></tr><tr><td>数据 vs 信息</td><td>有没有语境、能不能直接支撑决策</td><td><code>165</code> 是数据；「某生身高 165 cm」是信息</td></tr><tr><td>算法 vs 程序</td><td>是否是「有限、明确定义」的步骤，与语言无关</td><td>「逐个比较保留较大者」是算法；一段 for 循环是实现</td></tr><tr><td>AI vs 数据库</td><td>学的是模式与关系，还是存了全部知识</td><td>模型会编造引用，因为它按模式生成</td></tr><tr><td>公式</td><td><code>n 位 → 2^n 种</code>；编号 0 到 <code>2^n − 1</code></td><td><code>2^8 = 256</code>，最大编号 255</td></tr></table><h2 id="s4">三、第 2 章回顾：换算与编码两条流水线</h2><h3 id="s5">3.1 进制换算的两条路</h3><p>往十进制走：<b>按权展开相加</b>（字母先换数值：A=10 … F=15）。</p><p>离开十进制：<b>除基取余、余数逆序</b>；若目标是二进制，可先转十六进制再四位展开，步数更少。</p><p>2 的幂进制之间：<b>三位一组对八进制、四位一组对十六进制，从右往左切、最左补零</b>；八与十六互转必须经二进制。</p><h3 id="s6">3.2 三种有符号编码</h3><table><tr><th>编码</th><th>负数怎么表示</th><th>8 位范围</th><th>零的个数</th></tr><tr><td>符号-数值</td><td>最高位改 1</td><td>−127 … +127</td><td>2</td></tr><tr><td>反码</td><td>数值位取反</td><td>−127 … +127</td><td>2</td></tr><tr><td>补码</td><td>取反加 1</td><td>−128 … +127</td><td>1</td></tr></table><p>补码的加减法只有一条规则：<b>逐位相加（含符号位），最高位进位丢弃</b>；减法改成加负数。</p><p>范围公式 <code>[−2^(n−1), 2^(n−1) − 1]</code>；读补码用「无符号值 − 2^n」。</p><p>溢出：<b>同号相加而结果变号</b>才溢出；硬件判据是 <code>C_in ≠ C_out</code>；「丢弃 MSB 进位」本身不是溢出。</p><h3 id="s7">3.3 小数与 IEEE 754</h3><p>二进制小数位权是 <code>2^(−1) = 0.5</code>、<code>2^(−2) = 0.25</code>…；十进制小数转二进制用<b>乘 2 取整、正序读</b>（与整数的逆序读相反）。</p><p>IEEE 754 单精度：1 位符号 + 8 位指数（偏置 127）+ 23 位尾数（隐藏前导 1）。编码五步：转二进制 → 规格化 → 定符号 → 指数加 127 → 尾数补零。解码反向：切段 → 定符号 → 减 127 → 补隐藏位 → 移位 → 转十进制。</p><h2 id="s8">四、第 3 章回顾：四层链与三个公式</h2><h3 id="s9">4.1 一条链：字符 → 码位 → 编码 → 字节</h3><p>ASCII：7 位 128 个，<code>A=65</code>、<code>a=97</code>、<code>0=48</code>、空格 <code>=32</code>，大小写差 32。扩展 ASCII 8 位 256 个，高位 128 个各厂商自定 → 乱码根源。</p><p>Unicode 是<b>字符集</b>（定码位 U+XXXX），UTF-8 是<b>编码</b>（定字节）。UTF-8 首字节模式：<code>0xxxxxxx</code> 1 字节、<code>110xxxxx</code> 2 字节、<code>1110xxxx</code> 3 字节、<code>11110xxx</code> 4 字节；续字节一律 <code>10xxxxxx</code>。</p><p>字节数判据：码位 ≤ 0x7F → 1；≤ 0x7FF → 2；≤ 0xFFFF → 3；否则 4。乱码 = 用错编码解码，且<b>字节不知道自己是什么编码</b>。</p><h3 id="s10">4.2 三个公式</h3><table><tr><th>对象</th><th>公式</th><th>关键参数解释</th></tr><tr><td>未压缩图像</td><td><code>W × H × B / 8</code> 字节</td><td>B = 每像素位数（8 灰度 / 24 RGB）</td></tr><tr><td>未压缩音频</td><td><code>f_s × B × C × T / 8</code> 字节</td><td>f_s 采样率（Hz）、C 声道数、T 秒</td></tr><tr><td>未压缩视频</td><td><code>W × H × B × F × T / 8</code> 字节</td><td>F 帧率（fps），每帧按图像公式</td></tr></table><p>三个概念的对照：采样 = 离散化<b>位置或时间</b>；量化 = 离散化<b>取值或幅度</b>；编码 = 把值写成位。</p><p>常用常数：<code>2^8 = 256</code>、<code>2^16 = 65 536</code>、<code>2^24 = 16 777 216</code>、<code>256^3 = 16 777 216</code>；<code>1 MiB = 1 048 576</code> 字节。</p><h3 id="s11">4.3 压缩的判据与两张表</h3><p>压缩比 <code>= 原始 / 压缩后</code>；大小缩减 <code>= 1 − 压缩后/原始</code>。两者可互算：缩减 = <code>1 − 1/压缩比</code>。</p><p>无损：ZIP、PNG、FLAC，用于文本、代码、归档；有损：JPEG、MP3、视频 codec，用于照片、音频、视频。判据是「丢掉细节会不会改变结论/人是否感知得到/体积约束有多硬」。</p><p>RLE 编成「值 + 次数」，只在长游程时有效；Huffman 给高频符号短码，建树四步（统计频率 → 反复合并两个最小 → 左 0 右 1 → 读路径），平均码长 <code>Σ(频率×码长)/总频率</code>，靠<b>前缀性质</b>保证解码唯一。</p><h2 id="s12">五、第 4 章回顾：存储、文件与检索</h2><h3 id="s13">5.1 单位与介质</h3><p><code>b</code> 是位、<code>B</code> 是字节（差 8 倍）；KB/MB/GB/TB 按 1000，KiB/MiB/GiB/TiB 按 1024。厂商按十进制标容量，系统按二进制显示，于是「1 TB 硬盘显示约 931 GiB」。</p><p>层次：寄存器 → cache → RAM → SSD/HDD，越往下容量越大、每字节越便宜、延迟越高。RAM 易失、SSD/HDD 非易失。HDD 有机械部件、单位成本低；SSD 无部件、延迟低；U 盘与 SD 卡同为 NAND 闪存，差别在接口与主控。</p><h3 id="s14">5.2 文件的三条判断</h3><table><tr><th>判断</th><th>答案</th><th>依据</th></tr><tr><td>文件是什么</td><td>有名字、由 OS 管理的数据单元</td><td>底层是字节序列</td></tr><tr><td>扩展名可靠吗</td><td>不可靠，只是标签</td><td>改名不换格式；看签名（PNG 签名、<code>%PDF-</code>）</td></tr><tr><td>内容 vs 元数据</td><td>删掉还能重建 → 元数据</td><td>尺寸、时间、作者、权限是元数据；像素值与字符是内容</td></tr></table><p>格式 / codec / 容器：MP4 是容器，H.264 是视频 codec，AAC 是音频 codec，三者可自由组合。备份（分离副本、可回滚）≠ 冗余（RAID 只防单盘故障）。</p><h3 id="s15">5.3 检索三步：索引 → 匹配 → 排序评价</h3><p>倒排索引 = 词项 → 倒排列表（文档 ID）。建索引三步：编号 → 规范化（小写、去标点、去停用词）→ 逐篇填表。布尔查询就是集合运算：<b>AND 交集、OR 并集、NOT 差集</b>。</p><p>TF-IDF：<code>TF × log₁₀(N/DF)</code>，常见词得分低、稀有词得分高。评价：<code>precision = 相关且取回 / 取回</code>、<code>recall = 相关且取回 / 全部相关</code>；二者常互相牵制，学术检索重 recall，找特定文件重 precision。</p><h2 id="s16">六、第 5 章回顾：加密的三层</h2><p>第一层是判据：<b>安全依赖密钥，不依赖算法保密</b>；密钥 ≠ 密码；<code>D(E(M)) = M</code>。</p><p>第二层是方法：替换密码（符号变、位置不变）对置换密码（位置变、符号不变）；OTP 用 XOR 且四条件齐备才完美（随机、等长、一次性、保密）；AES 是分组密码，128 位分组，密钥 128/192/256 位，多轮，最后一轮跳过 MixColumns。</p><p>第三层是体系：对称快但难分发密钥；非对称解决分发与签名，但慢；实际系统用<b>混合加密</b>——公钥协商会话密钥，对称加密数据（HTTPS 即此）。</p><p>RSA 五步：<code>n = pq</code> → <code>φ = (p−1)(q−1)</code> → 选互质的 e → <code>d = e^(−1) mod φ</code> → <code>c = m^e mod n</code>、<code>m = c^d mod n</code>。约束：<code>e ≠ d</code>、e 常用 65537、d 不能太小（Wiener）。</p><h2 id="s17">七、第 6 章回顾：一张真值表与八条等价律</h2><p>六个运算符：¬（翻转）、∧（都真才真）、∨（有一真即真）、⊕（恰好一真）、→（只有 T→F 为假）、↔（同真同假）。</p><p>真值表行数 <code>2^n</code>；优先级 <b>¬ &gt; ∧ &gt; ∨ &gt; → &gt; ↔</b>；有括号按括号。</p><p>八条等价律（考场常客）：<code>P→Q ≡ ¬P∨Q</code>；<code>¬¬P ≡ P</code>；<code>¬(P∧Q) ≡ ¬P∨¬Q</code>；<code>¬(P∨Q) ≡ ¬P∧¬Q</code>；<code>P∧T ≡ P</code>、<code>P∨F ≡ P</code>；<code>P∨T ≡ T</code>、<code>P∧F ≡ F</code>；交换与结合；双向分配。</p><p>落地：程序条件、SQL 的 WHERE、数字电路的 AND/OR/NOT/XOR 门、访问控制 <code>A ∨ (P ∧ R)</code>、规则推理 <code>(P∧Q) → R</code>。</p><h2 id="s18">八、速查表：公式与常数</h2><table><tr><th>出现场景</th><th>公式 / 结论</th></tr><tr><td>位与状态</td><td><code>n 位 → 2^n 种取值</code>，编号 <code>0 … 2^n − 1</code></td></tr><tr><td>补码范围</td><td><code>[−2^(n−1), 2^(n−1) − 1]</code></td></tr><tr><td>补码读值</td><td>符号位为 1 时：无符号值 <code>− 2^n</code></td></tr><tr><td>溢出判断</td><td>同号相加结果变号；或 <code>C_in ≠ C_out</code></td></tr><tr><td>IEEE 754 单精度</td><td>1 + 8 + 23，偏置 127，隐藏前导 1</td></tr><tr><td>UTF-8 字节数</td><td>≤0x7F:1，≤0x7FF:2，≤0xFFFF:3，否则 4</td></tr><tr><td>灰度级数</td><td><code>2^B</code>，8 位 → 256 级（0–255）</td></tr><tr><td>RGB 颜色数</td><td><code>256^3 = 16 777 216</code></td></tr><tr><td>图像大小</td><td><code>W × H × B / 8</code></td></tr><tr><td>音频大小</td><td><code>f_s × B × C × T / 8</code></td></tr><tr><td>视频大小</td><td><code>W × H × B × F × T / 8</code></td></tr><tr><td>奈奎斯特</td><td><code>f_s ≥ 2 f_max</code></td></tr><tr><td>压缩比</td><td><code>原始 / 压缩后</code>；缩减 <code>= 1 − 1/压缩比</code></td></tr><tr><td>Huffman 平均码长</td><td><code>Σ(频率 × 码长) / 总频率</code></td></tr><tr><td>TF-IDF</td><td><code>TF × log₁₀(N / DF)</code></td></tr><tr><td>precision</td><td>相关且取回 / 取回总数</td></tr><tr><td>recall</td><td>相关且取回 / 全部相关数</td></tr><tr><td>RSA 密钥</td><td><code>n = pq</code>、<code>φ = (p−1)(q−1)</code>、<code>e·d ≡ 1 (mod φ)</code></td></tr><tr><td>RSA 加解密</td><td><code>c = m^e mod n</code>、<code>m = c^d mod n</code></td></tr><tr><td>真值表</td><td><code>2^n</code> 行；优先级 ¬ &gt; ∧ &gt; ∨ &gt; → &gt; ↔</td></tr><tr><td>单位</td><td><code>1 KiB = 1 024 B</code>、<code>1 MiB = 1 048 576 B</code>、<code>1 B = 8 b</code></td></tr></table><h2 id="s19">九、模拟题的使用方式</h2><p>下面的四道例题是跨章综合题（换算 + 编码 + 容量），六道练习覆盖检索、压缩、加密、逻辑。建议先自己做，再对答案；每题都要写出中间步骤，因为考试按步骤给分。</p><p>答题模板（适用于所有计算题）：</p><ol class="steps"><li>写出公式或规则（一句话）</li><li>代入数值（写清单位与口径：1000 还是 1024）</li><li>逐步算出中间量（如「每秒字节数」「每帧字节数」）</li><li>写最终结果并标注单位</li><li>做一次反向验算（按权展开、十进制重算、真值表复核）</li></ol><h2 id="s20">十、时间分配</h2><p>考试 50% 权重、单科下限 25 分，意味着「不能空着」。建议按题型分配：</p><table><tr><th>题型</th><th>建议用时占比</th><th>策略</th></tr><tr><td>进制换算与补码</td><td>15%</td><td>先做，最稳，能拿满分</td></tr><tr><td>IEEE 754 与小数</td><td>15%</td><td>按五步走，不要跳步</td></tr><tr><td>容量计算（图/音/视频）</td><td>20%</td><td>先写公式，再代值，注意单位口径</td></tr><tr><td>压缩与 Huffman</td><td>15%</td><td>建树时每次标出「取两个最小」</td></tr><tr><td>检索与 P/R</td><td>15%</td><td>先写两个公式再代值</td></tr><tr><td>加密与 RSA</td><td>10%</td><td>模幂用平方取幂，每步取模</td></tr><tr><td>逻辑与真值表</td><td>10%</td><td>先列全组合再逐列算</td></tr></table><h2 id="s21">十一、十个高频失分点</h2><ol><li>进制换算：分组切错方向（应从右往左），或余数正序读。</li><li>补码：只取反忘记加 1。</li><li>溢出：把「丢弃 MSB 进位」当成溢出。</li><li>IEEE 754：指数位置接填实际指数（忘加 127），或尾数没丢隐藏的 1。</li><li>小数转二进制：把「乘 2 取整」的结果逆序读（应正序）。</li><li>容量计算：忘记除以 8；或单位口径混用（1000 与 1024）。</li><li>压缩：把压缩比当缩减百分比（4:1 是缩减 75%）。</li><li>Huffman：平均码长除以符号种类数（应除以总频率）。</li><li>检索：precision 与 recall 的分母弄反。</li><li>逻辑：前件为假时把蕴含判为假；取反时不换运算符（德摩根）。</li></ol><h2 id="s22">十二、缺口与后续</h2><p>本讲义覆盖 Week 1–Week 11 的全部课件与 7 份 Exercise。课程安排中的 Week 12（数据采集）、Week 13（数据处理）、Week 14（复习）没有可用课件，因此：</p><ul><li>本讲只做已讲内容的整合，不引入新考点；</li><li>若考试范围包含数据采集与处理，应以教师补充材料为准；</li><li>Week 14 的复习课通常会给出题型分布与允许携带的材料，务必以课堂通知为准。</li></ul><p>另需注意：课程行政信息（考核权重 35/15/50、通过条件总分 ≥ 50 且考试 ≥ 25、等级换算）在第 1 讲已完整整理，复习时不必再翻课件。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>revision</td><td>复习</td><td>Consolidating the whole course into formulas, decision rules and procedures.</td></tr><tr><td>formula sheet</td><td>公式速查表</td><td>One table listing every formula and constant used in the course.</td></tr><tr><td>workflow</td><td>解题流程</td><td>A fixed sequence of steps that can be reused on similar problems.</td></tr><tr><td>cross-check</td><td>反向验算</td><td>Verifying a result by an independent route, e.g. expanding weights or recomputing in decimal.</td></tr><tr><td>unit convention</td><td>单位口径</td><td>Whether 1000 (kB) or 1024 (KiB) is meant; check before calculating.</td></tr><tr><td>interval estimate</td><td>量级检验</td><td>Sanity check that the answer has the right order of magnitude.</td></tr><tr><td>bit depth</td><td>位深</td><td>Bits per sample or per pixel; gives 2^n levels.</td></tr><tr><td>compression ratio</td><td>压缩比</td><td>Original size divided by compressed size.</td></tr><tr><td>inverted index</td><td>倒排索引</td><td>Term to posting list mapping used for fast retrieval.</td></tr><tr><td>precision and recall</td><td>精确率与召回率</td><td>Two complementary measures of retrieval quality.</td></tr><tr><td>two's complement range</td><td>补码范围</td><td>The interval [−2^(n−1), 2^(n−1) − 1].</td></tr><tr><td>truth table row count</td><td>真值表行数</td><td>2^n rows for n independent propositions.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（跨章）一张 3000 × 2000、24 位色的照片：① 未压缩多少 MiB？② 存成 JPEG 后体积约为原来的 1/10，是多少 MB（10^6 字节）？③ 若转成 8 位灰度，未压缩又是多少 MiB？</div><p><b>① 未压缩：</b><code>3000 × 2000 = 6 000 000</code> 像素；每像素 <code>24/8 = 3</code> 字节 → <code>18 000 000</code> 字节。</p><p><code>18 000 000 / 1 048 576 ≈</code> <b>17.17 MiB</b>（十进制约 18 MB）。</p><p><b>② 压缩到 1/10：</b><code>18 000 000 / 10 = 1 800 000</code> 字节 = <b>1.8 MB</b>。这就是「手机照片一两 MB」的量级来源。</p><p><b>③ 8 位灰度：</b>每像素 1 字节 → <code>6 000 000</code> 字节；<code>/ 1 048 576 ≈</code> <b>5.72 MiB</b>。正好是彩色的 1/3（通道数之比）。</p><p><b>跨章要点：</b>这题同时用到第 5 讲（<code>W×H×B/8</code>、通道数与字节数的关系）、第 8 讲（MiB 与 MB 的口径）、第 7 讲（压缩比）。三道口径任何一处错，答案就差 5% 或 3 倍。</p></div><div class="qa"><div class="q">例 2（跨章）一段 3 分钟、48 kHz、24 位、立体声的音频：① 未压缩多少字节、多少 MiB？② 若用有损编码压到原始码率的 1/4，压缩后多少 MB？</div><p><b>① 未压缩：</b>先把 3 分钟换成 180 秒，再代公式：</p><pre><code>f_s × B × C × T / 8 = 48 000 × 24 × 2 × 180 / 8
+= 51 840 000 字节</code></pre><p><code>51 840 000 / 1 048 576 ≈</code> <b>49.44 MiB</b>（十进制约 51.84 MB）。</p><p><b>中间量验算：</b>每秒 <code>48 000 × 3 × 2 = 288 000</code> 字节；乘 180 得 51 840 000，一致。</p><p><b>② 压到 1/4：</b><code>51 840 000 / 4 = 12 960 000</code> 字节 = <b>12.96 MB</b>（约 12.36 MiB）。</p><p><b>跨章要点：</b>kHz 必须乘 1000；立体声必须乘 2；分钟必须换成秒。这三个「换算陷阱」在第 6 讲都标注过，考试里几乎年年出现。</p></div><div class="qa"><div class="q">例 3（跨章）RSA：p = 11、q = 13，e = 7，明文 m = 5。求 n、φ(n)、d、密文 c（用十进制与二进制表示），并验证解密。</div><p><b>密钥生成：</b><code>n = 11 × 13 = 143</code>；<code>φ(n) = 10 × 12 = 120</code>；<code>gcd(7,120) = 1</code> ✓。</p><p>求 d：解 <code>7d ≡ 1 (mod 120)</code>，得 <b>d = 103</b>（<code>7 × 103 = 721 = 6 × 120 + 1</code>）。</p><p><b>加密：</b><code>c = 5^7 mod 143</code>。用平方取幂：</p><pre><code>5^2 = 25
+5^4 ≡ 625 mod 143 = 625 − 4×143 = 53
+7 = 4 + 2 + 1 → 53 × 25 × 5 mod 143
+53×25 = 1325 ≡ 1325 − 9×143 = 38；38×5 = 190 ≡ 190 − 143 = 47</code></pre><p>密文 <b>c = 47</b>，二进制 <code>101111₂</code>（32 + 8 + 4 + 2 + 1）。</p><p><b>解密验证：</b><code>m = 47^103 mod 143</code> 应回到 5。由 <code>e·d ≡ 1 (mod φ(n))</code> 可保证 <code>m^(ed) ≡ m (mod n)</code>，所以只要密钥生成没算错，解密必然正确。</p><p><b>跨章要点：</b>这题把第 10 讲（RSA 五步）与第 2 讲（十进制转二进制）串在一起；模逆、平方取幂、每步取模是三个必须练熟的动作。</p></div><div class="qa"><div class="q">例 4（跨章）对频率 X 50、Y 25、Z 15、W 10 建 Huffman 码，算平均码长，并与定长编码比较压缩比。</div><p><b>建树（每次取两个最小）：</b></p><ol class="steps"><li>Z(15) + W(10) = 25</li><li>Y(25) + 25 = 50</li><li>X(50) + 50 = 100</li></ol><p><b>码字（左 0 右 1）：</b>X = <code>0</code>（1 位）、Y = <code>10</code>（2 位）、Z = <code>111</code>（3 位）、W = <code>110</code>（3 位）。同一节点内左右分支的 0/1 可以互换，只要保持前缀性质，码长与平均码长都不变。</p><p><b>平均码长：</b><code>(50×1 + 25×2 + 15×3 + 10×3) / 100 = (50 + 50 + 45 + 30)/100</code> = <b>1.75 位/符号</b>。</p><p><b>定长编码：</b>4 个符号需要 <code>⌈log₂4⌉ = 2</code> 位，平均 2 位/符号。</p><p><b>压缩比：</b><code>2 / 1.75 ≈</code> <b>1.14:1</b>；大小缩减 <code>1 − 1.75/2 = 12.5%</code>。</p><p><b>前缀校验：</b>0、10、111、110——0 不是其他码的前缀，10 不是 111/110 的前缀，111 与 110 互不为前缀。可唯一解码。</p><p><b>跨章要点：</b>这题用第 7 讲的 Huffman 流程 + 第 1 讲的 <code>2^n</code>（4 个符号 → 2 位定长）+ 第 7 讲的压缩比公式。三个知识点必须能自由组合。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把 <code>891</code> 当作十二进制，求十进制值；再把该值写成八进制。</li><li>按 8 位补码计算 <code>−37 + 37</code>，说明结果与是否溢出。</li><li>一张 1280 × 1024、8 位灰度图，未压缩多少 KiB？若存成 PNG 只有 1/6，约多少 KiB？</li><li>对 <code>AAAAABCCCC</code> 做 RLE，并说明它比原串省了多少组。</li><li>集合有 200 篇文档，词 t 出现在 40 篇中、在 D1 中出现 6 次。求 IDF 与 TF-IDF。</li><li>用德摩根律把 <code>¬(P ∨ (Q ∧ R))</code> 化成只含 ¬、∧、∨ 且否定只作用于单个命题的形式。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>8×144 + 9×12 + 1 = 1152 + 108 + 1 = 1261</code>。再转八进制：1261 ÷ 8 = 157 余 5；157 ÷ 8 = 19 余 5；19 ÷ 8 = 2 余 3；2 ÷ 8 = 0 余 2 → 逆序读 <b>2355₈</b>。验算 <code>2×512 + 3×64 + 5×8 + 5 = 1024 + 192 + 40 + 5 = 1261</code>。</p><p><b>2.</b> <code>−37</code>：<code>37 = 0010 0101</code>，取反 <code>1101 1010</code>，加 1 得 <code>1101 1011</code>。相加：<code>1101 1011 + 0010 0101 = 1 0000 0000</code>，丢弃 MSB 进位得 <code>0000 0000</code> = 0。这是正确结果，<b>不是溢出</b>——异号相加永不溢出，且 <code>C_in = C_out = 1</code> 也说明无溢出。</p><p><b>3.</b> <code>1280 × 1024 = 1 310 720</code> 像素 × 1 字节 = 1 310 720 字节；<code>/1024 = 1280 KiB</code>。PNG 压到 1/6 → 约 <b>213.3 KiB</b>。这类「大片同色或规则图案」的图像无损压缩比通常很高，正好印证第 7 讲「PNG 适合示意图与截图，压缩不掉画质」。</p><p><b>4.</b> 游程：A 5 个、B 1 个、C 4 个 → <code>5A 1B 4C</code>，3 组。原串 10 个字符若逐字符存是 10 个单位，编码后 6 个单位（值 + 计数），省了 4 个单位。注意中间那个单个 B 是「反例游程」——它让 RLE 的收益变小，说明 RLE 的收益取决于游程长度分布。</p><p><b>5.</b> <code>IDF = log₁₀(200/40) = log₁₀5 ≈ 0.699</code>；<code>TF-IDF = 6 × 0.699 ≈ 4.19</code>。解读：t 在 20% 的文档里出现，区分力中等；在 D1 里出现 6 次，所以得分偏高。若 DF 变成 200（每篇都有），IDF = 0，无论 TF 多大得分都是 0。</p><p><b>6.</b> <code>¬(P ∨ (Q ∧ R)) ≡ ¬P ∧ ¬(Q ∧ R) ≡ ¬P ∧ (¬Q ∨ ¬R)</code>。两步都用德摩根：先把最外层「或」的否定拆成「与」，再把内层「与」的否定拆成「或」。结果里每个 ¬ 只作用于单个命题，符合要求。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>考试结构与通过线</b><b>作业 35% + 项目 15% + 考试 50%</b>，出勤另有 5 分加分。<b>通过条件：总分 ≥ 50 且考试 ≥ 25</b>。所以「考试空着」是最危险的策略——平时分再高也补不上单科下限。</div><div class="callout exam"><b>必考题型</b>① 进制换算（任意方向，含二/八/十六互转）；② 补码加减与溢出判断；③ 小数与 IEEE 754 编码/解码；④ 图像/音频/视频数据量与单位换算；⑤ RLE 与 Huffman；⑥ 倒排索引与 precision/recall；⑦ RSA 五步；⑧ 真值表与等价律化简。</div><div class="callout warn"><b>最高频的四个错误</b>① 进位与溢出混淆；② IEEE 754 忘加偏置；③ 容量公式忘除 8 或单位口径混用；④ 蕴含在 P 为假时判成假。这四条几乎每份卷子都出现。</div><div class="callout tip"><b>答题顺序建议</b>先做换算与容量计算（确定性高、分值稳），再做 IEEE 754 与 RSA（步骤多但套路固定），最后写真值表与简答。凡是「说明理由/解释区别」的题，先写判据再写例子，比堆砌术语得分高。</div><div class="callout tip"><b>进阶准备</b>若能熟练用「反向验算」自查（按权展开、十进制重算、真值表复核、<code>D(E(M)) = M</code>），就能把大量「算错一步全错」的失分挡在交卷之前。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s23">考前与考场清单</h2><h3 id="s24">考前三天（把公式变成手速）</h3><ul class="checklist"><li>进制换算各做 5 题（含十三进制与字母换数值）</li><li>补码：写 3 个负数的三种编码，做 2 道加减并判溢出</li><li>IEEE 754：编码 3 个数、解码 3 个十六进制串</li><li>容量：图像/音频/视频各算 2 题，两种单位口径各一遍</li><li>Huffman：完整建树 2 次，每次标「取两个最小」</li><li>RSA：手算 2 次模幂（平方取幂 + 每步取模）</li><li>真值表：三命题 8 行写 2 张，等价律化简 5 题</li></ul><h3 id="s25">考场五步</h3><ol class="steps"><li>先扫一遍全卷，标出「会做/要算/不会」三类</li><li>先做会做的与计算题，把分数拿稳</li><li>计算题一律写公式 → 代值 → 中间量 → 结果 → 验算</li><li>简答题先给判据或定义，再给例子</li><li>留 5 分钟逐条过「十个高频失分点」</li></ol><h3 id="s26">交卷前自查（六问）</h3><ul class="checklist"><li>单位写了吗？（B / b、KB / KiB、MB / MiB）</li><li>「未压缩」标注了吗？</li><li>补码的进位与溢出区分了吗？</li><li>IEEE 754 的指数加偏置了吗？</li><li>真值表行数是 <code>2^n</code> 吗？</li><li>结论与过程一致吗？（有没有算出 150 却写「无溢出」）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>对应讲次</th></tr><tr><td>Week1- Introduction/Lecture_0.pdf、Lecture_1.pdf</td><td>全篇</td><td>第 1 讲（导论、课程信息、考核）</td></tr><tr><td>Week2- Number systems/Lecture2.pdf、Exercise1.pdf</td><td>全篇</td><td>第 2 讲（数制与换算）</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf、Exercise 2.pdf</td><td>全篇</td><td>第 3 讲（补码、溢出、IEEE 754）</td></tr><tr><td>Week4- Character and Text Encoding/Lecture4.pdf</td><td>全篇</td><td>第 4 讲（ASCII、Unicode、UTF-8）</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>全篇</td><td>第 5 讲（图像表示与数据量）</td></tr><tr><td>Week6- Audio and Video Representation/Lecture6.pdf、Exercise 3.pdf</td><td>全篇</td><td>第 6 讲（音频与视频表示）</td></tr><tr><td>Week7- Data Compression/Lecture7.pdf、Exercise 4.pdf</td><td>全篇</td><td>第 7 讲（RLE、Huffman、无损/有损）</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>全篇</td><td>第 8 讲（存储、文件、元数据）</td></tr><tr><td>Week9- Information Retrieval/Lecture9.pdf、Exercise 5.pdf</td><td>全篇</td><td>第 9 讲（倒排索引、TF-IDF、P/R）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf、Exercise6.pdf</td><td>全篇</td><td>第 10 讲（古典密码、OTP、AES、RSA）</td></tr><tr><td>Week11-Logic and Information Processing/Lecture11.pdf、Exercise7.pdf</td><td>全篇</td><td>第 11 讲（命题逻辑、真值表、等价律）</td></tr><tr><td>（跳过）General/Timetable.html、_info 系列 HTML</td><td>全篇</td><td>仅有跳转链接、Moodle 外壳、空公告与问卷，无知识内容；行政信息已在第 1 讲整理</td></tr><tr><td>（跳过）Zishuo Wang 系列提交版</td><td>全篇</td><td>学生提交版：题面与 Exercise 相同，仅多姓名学号与个人答案；按「只保留题面」处理</td></tr><tr><td>（缺口）Week12 数据采集、Week13 数据处理、Week14 复习</td><td>无文件</td><td>本次抽取的源文件不含这三周课件，本讲不虚构内容；若后续取得，应补为独立讲次</td></tr><tr><td>（补充）</td><td>—</td><td>本讲的所有公式表、模拟题与失分点清单均为对前 11 讲内容的整合与重组，不引入新考点</td></tr></table></section><div class="lnav"><a class="prev" href="w11-logic.html">← Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

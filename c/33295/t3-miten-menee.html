@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Tunti 3 · 近况问答与元音和谐 · 33295</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ96 芬兰语1</a> / <a href="part-1.html">第 1 章 入门：问候、字母与近况</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 两个问句的分工：mennä 要 adessiivi，kuulua 要 allatiivi</a><a class="toc-l3" href="#s3">3.2 肯定回答：Hyvin 与 Hyvää 的分工</a><a class="toc-l3" href="#s4">3.3 否定回答：一定要给理由</a><a class="toc-l3" href="#s5">3.4 口语形式：sulla、sulle、mulla、mulle</a><a class="toc-l3" href="#s6">3.5 adessiivi 与 allatiivi 的完整人称表</a><a class="toc-l3" href="#s7">3.6 元音和谐：一条规则决定所有后缀的 a/ä</a><a class="toc-l3" href="#s8">3.7 复合词与借词：和声看哪一部分</a><a class="toc-l3" href="#s9">3.8 本讲词汇与课文</a><a class="toc-l3" href="#s10">3.9 本讲错误清单</a><a class="toc-l2" href="#s11">近况问答四步</a><a class="toc-l3" href="#s12">判断后缀 a 还是 ä 的三步</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-tervehdykset.html">Tunti 1 · 问候、姓名与告别</a><a href="t2-aakkoset.html">Tunti 2 · 字母、发音与拼读</a><a class="toc-l3" href="t3-miten-menee.html">▸ Tunti 3 · 近况问答与元音和谐</a><a href="t4-numerot.html">Tunti 4 · 数字与部分格</a><a href="t5-maat.html">Tunti 5 · 国家、国籍与语言</a><a href="t6-verbit.html">Tunti 6 · 人称代词与第一类动词</a><a href="t7-negatiivi.html">Tunti 7 · 否定式与辅音交替</a><a href="t8-opiskelu.html">Tunti 8 · 学习、工作与 -ko 问句</a><a href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构</a><a href="t10-genetiivi.html">Tunti 9（上）· 属格与所有格</a><a href="t11-henkilotiedot.html">Tunti 9–10 · 个人信息与咖啡厅场景</a><a href="t12-kertaus.html">Kertaus · 复习、考试与文化</a><a href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表</a></div></aside><article><h1>Tunti 3 · 近况问答与元音和谐</h1><p class="lead">How Are You? Vowel Harmony in Suffixes <span class="badge mute">33295</span> <span class="badge mute">第 3 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 入门：问候、字母与近况</a></p><p class="src">原始文件：<code>04_Tunti 3/3_Diat, miten menee, korjattu.pdf</code> <code>04_Tunti 3/1_KOTITEHTÄVÄ 2 TEKSTI 1, sanasto (vocabulary)</code> <code>04_Tunti 3/4_KOTITEHTÄVÄ 3 Vokaaliharmonia</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第一讲学了“见面说什么”，本讲学“见面之后问什么”。芬兰人日常最常用的两个近况问句是 <code>Miten menee?</code> 与 <code>Mitä kuuluu?</code>。它们意思几乎一样（How are you），但<b>语法要求不同的格</b>，回答的用词也略有分工——这正是本讲的语法核心。</p><p>第二个核心是 <b>vokaaliharmonia</b>（元音和谐）。第二讲已经把元音分成前、中、后三组，本讲把它落到“后缀到底加 -ssa 还是 -ssä”这个具体动作上。<code>Miten sinulla menee</code> 里的 <code>-lla</code> 与 <code>hänellä</code> 里的 <code>-llä</code>，就是同一条规则的两个结果。这条规则会一路影响到第 5 讲的 <code>-sta/-stä</code>、<code>-lainen/-läinen</code>，第 10 讲的属格，以及考试里的每一道变格题。</p><p>学完本讲你能够：</p><ul class="checklist"><li>用 <code>Miten menee?</code> 与 <code>Mitä kuuluu?</code> 分别提问，并说出两者对格的要求不同</li><li>给出五到六种肯定回答，并区分 <code>Hyvin</code> 与 <code>Hyvää</code> 该配哪个问句</li><li>在否定回答里补一个理由（<code>Olen väsynyt</code> / <code>Olen flunssassa</code>），符合芬兰人的交际习惯</li><li>背出 adessiivi（-lla/-llä）与 allatiivi（-lle）两套人称形式</li><li>用元音和谐规则判断任何一个后缀该取 a 还是 ä，包括复合词</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 两个问句的分工：mennä 要 adessiivi，kuulua 要 allatiivi</h3><p>两句问话看起来同义，但动词不同，要求的“经历者”格也不同：</p><table><tr><th>问句</th><th>字面</th><th>经历者用什么格</th><th>完整形式</th></tr><tr><td>Miten menee?</td><td>事情进行得怎样</td><td>adessiivi（-lla/-llä）</td><td>Miten <b>sinulla</b> menee?</td></tr><tr><td>Mitä kuuluu?</td><td>（向你）传来什么</td><td>allatiivi（-lle）</td><td>Mitä <b>sinulle</b> kuuluu?</td></tr></table><p>记忆办法：<code>mennä</code>（to go）是“在某人身上/身边进行”，所以用 adessiivi（“-lla 上”）；<code>kuulua</code>（to be heard, to belong）是“朝向某人传来”，所以用 allatiivi（“-lle 向”）。</p><p>英文表述：<i>Miten menee?</i> takes the adessive of the person (<i>sinulla</i>), while <i>Mitä kuuluu?</i> takes the allative (<i>sinulle</i>). The two questions are near-synonyms but not interchangeable in their case government.</p><div class="callout warn"><b>不能混用</b><code>Miten sinulle menee?</code> ✗、<code>Mitä sinulla kuuluu?</code> ✗ 都是典型错误。判断口诀：<b>menee 配 -lla，kuuluu 配 -lle</b>。</div><p>反问时也同样分两套：回答 <code>Miten menee</code> 之后说 <code>Entä sinulla?</code>（你呢）；回答 <code>Mitä kuuluu</code> 之后说 <code>Entä sinulle?</code>。课件把这两种反问并列写出，正是提醒不要用错格。</p><h3 id="s3">3.2 肯定回答：Hyvin 与 Hyvää 的分工</h3><table><tr><th>问句</th><th>可用的回答</th><th>中文</th></tr><tr><td>Miten menee?</td><td>Hyvin.</td><td>我很好</td></tr><tr><td>Miten menee?</td><td>Ihan hyvin.</td><td>还不错</td></tr><tr><td>Miten menee?</td><td>Siinähän se.</td><td>还那样／马马虎虎</td></tr><tr><td>Miten menee?</td><td>Ihan okei.</td><td>还行</td></tr><tr><td>Mitä kuuluu?</td><td>Hyvää.</td><td>我挺好</td></tr><tr><td>Mitä kuuluu?</td><td>Ihan hyvää.</td><td>还不错</td></tr><tr><td>Mitä kuuluu?</td><td>Ei ihmeellistä.</td><td>没什么特别的</td></tr><tr><td>Mitä kuuluu?</td><td>Ihan okei.</td><td>还行</td></tr></table><p>差别在词形：<code>menee</code> 的回答用<b>副词</b> <code>hyvin</code>（well）；<code>kuuluu</code> 的回答用<b>部分格形容词</b> <code>hyvää</code>（(something) good）。这是因为 <code>kuulua</code> 后面接的是“被听到的东西”，宾语位置要用 partitive。</p><p>英文表述：Answers to <i>Miten menee?</i> use the adverb <i>hyvin</i>; answers to <i>Mitä kuuluu?</i> use the partitive adjective <i>hyvää</i>, because <i>kuulua</i> takes a partitive complement.</p><div class="callout exam"><b>必考搭配</b>口试第 8 题会连着问 <code>Miten (sinulla) menee? Mitä (sinulle) kuuluu?</code>。回答必须与问句配套：问 menee 答 <code>Hyvin, kiitos. Entä sinulla?</code>；问 kuuluu 答 <code>Hyvää, kiitos. Entä sinulle?</code>。</div><h3 id="s4">3.3 否定回答：一定要给理由</h3><table><tr><th>问句</th><th>否定回答</th><th>补充理由</th></tr><tr><td>Miten menee?</td><td>Ei kovin hyvin.</td><td>Olen väsynyt.（我累了）</td></tr><tr><td>Mitä kuuluu?</td><td>Vähän huonoa.</td><td>Olen flunssassa.（我感冒了）</td></tr></table><p>注意 <code>Ei kovin hyvin</code> 用副词，<code>Vähän huonoa</code> 用 partitive——与 3.2 的分工一致。理由句 <code>Olen flunssassa</code> 里的 <code>-ssa</code> 表示“处于某种状态中”（inessive），<code>flunssa</code>（flu）是名词，不是形容词。</p><p>文化提示（课件 p5 专门加注）：芬兰人不会对这两个问题给出很负面的回答。真要说负面，通常要补一个笼统的理由；而且负面回答更可能出现在亲友之间。对不熟的人一律 <code>Hyvin, kiitos</code> 即可。</p><div class="callout tip"><b>最安全的答法</b>不管对方问哪一句，回答 <code>Kiitos, hyvin</code> 或 <code>Kiitos, ihan hyvin</code> 都不会出错，再补一句 <code>Entä sinulle/sinulla?</code> 就把话轮交回去。</div><h3 id="s5">3.4 口语形式：sulla、sulle、mulla、mulle</h3><table><tr><th>书面</th><th>口语</th><th>含义</th></tr><tr><td>sinulla</td><td>sulla</td><td>你身上（adessiivi）</td></tr><tr><td>sinulle</td><td>sulle</td><td>向你（allatiivi）</td></tr><tr><td>minulla</td><td>mulla</td><td>我身上</td></tr><tr><td>minulle</td><td>mulle</td><td>向我</td></tr><tr><td>hänellä</td><td>sillä</td><td>他/她身上</td></tr><tr><td>heillä</td><td>niillä</td><td>他们身上</td></tr></table><p>口语把 <code>sinä</code> 类代词的词干缩短（sinä → sä → su-），再加同样的格后缀。课件把 <code>Miten (sulla/sinulla) menee?</code> 并列写，是让你“听懂两种、写作只用书面一种”。</p><h3 id="s6">3.5 adessiivi 与 allatiivi 的完整人称表</h3><p>两个格都属于“外部方位格”（外格）：adessiivi 表示“在……上／在某人身边”，allatiivi 表示“到……上／向某人”。人称代词的形式是不规则的，必须整组背：</p><table><tr><th>人称</th><th>adessiivi（-lla/-llä）</th><th>allatiivi（-lle）</th><th>中文</th></tr><tr><td>minä</td><td>minulla</td><td>minulle</td><td>我／向我</td></tr><tr><td>sinä</td><td>sinulla</td><td>sinulle</td><td>你／向你</td></tr><tr><td>hän</td><td>hänellä</td><td>hänelle</td><td>他/她</td></tr><tr><td>me</td><td>meillä</td><td>meille</td><td>我们</td></tr><tr><td>te</td><td>teillä</td><td>teille</td><td>你们</td></tr><tr><td>he</td><td>heillä</td><td>heille</td><td>他们</td></tr></table><p>注意 <code>hänellä</code> 用 <code>-llä</code>，因为 <code>hän</code> 里有前元音 ä；其余五个人称都用 <code>-lla</code>。这不是“例外”，正是元音和谐在起作用：<code>hän</code> 是前元音词，后缀取 ä 形式。</p><div class="callout warn"><b>两个高频错形</b><code>hänella</code> ✗（应为 hänellä）、<code>heillä</code> ✗（应为 heillä，因为 <code>he</code> 只有中性元音 e，按规则取前元音形式）。</div><h3 id="s7">3.6 元音和谐：一条规则决定所有后缀的 a/ä</h3><p>规则只有一句话：<b>一个词里如果出现 A、O、U 中任何一个，后缀就用 a 形式；如果只出现 Ä、Ö、Y（以及中性的 I、E），后缀就用 ä 形式。</b></p><table><tr><th>词</th><th>词内元音</th><th>后缀选择</th><th>结果</th></tr><tr><td>talo（房子）</td><td>a, o</td><td>后元音 → -ssa</td><td>talossa</td></tr><tr><td>piha（院子）</td><td>i, a</td><td>有 a → -lla</td><td>pihalla</td></tr><tr><td>käsi（手）</td><td>ä, i</td><td>前元音 → -ssä</td><td>kädessä</td></tr><tr><td>pöytä（桌子）</td><td>ö, y, ä</td><td>前元音 → -ssä</td><td>pöydässä</td></tr><tr><td>pieni（小）</td><td>i, e（仅中性）</td><td>取前元音 → -ssä</td><td>pienessä</td></tr><tr><td>piiri（圈）</td><td>i, i（仅中性）</td><td>取前元音 → -ssä</td><td>piirissä</td></tr></table><p>英文表述：Vowel harmony — a word containing any of <i>a, o, u</i> takes back-vowel suffixes; a word containing only <i>ä, ö, y</i> (plus the neutral <i>i, e</i>) takes front-vowel suffixes. Neutral vowels <i>i, e</i> alone pattern with the front series.</p><p>这条规则管的不只是 <code>-ssa/-ssä</code>，而是所有“含 a/ä 的后缀”：<code>-sta/-stä</code>（从……来）、<code>-lla/-llä</code>（在……上）、<code>-lainen/-läinen</code>（……人）、<code>-a/-ä</code>（partitive）、<code>-ko/-kö</code>（疑问）。第 5 讲的三组后缀全部由它决定。</p><h3 id="s8">3.7 复合词与借词：和声看哪一部分</h3><p>复合词（yhdyssana）按<b>最后一个构词成分</b>决定和谐：</p><table><tr><th>复合词</th><th>拆解</th><th>和谐依据</th><th>带后缀的形式</th></tr><tr><td>polkupyörä（自行车）</td><td>polku + pyörä</td><td>pyörä 是前元音词</td><td>polkupyörässä</td></tr><tr><td>työhuone（工作室）</td><td>työ + huone</td><td>huone 只有 o, u, e → 后元音</td><td>työhuoneessa</td></tr><tr><td>olympialaiset（奥运会）</td><td>借词 olympia-</td><td>按固定习惯取后元音</td><td>olympialaisissa</td></tr></table><p>课后作业把 <code>olympialaiset</code> 与 <code>polkupyörä</code> 列为“例外”，其实两者机制不同：<code>polkupyörä</code> 是标准复合词规则（看末成分），<code>olympialaiset</code> 是固定借词的整体读法（尽管 <code>olympia</code> 听起来像外语，仍按后元音处理，不能写 <code>olympiäläiset</code>）。</p><div class="callout tip"><b>判别顺序</b>先看是不是复合词 → 是则只看最后一个成分；不是复合词 → 看全词有没有 a、o、u；只有 i、e → 一律取 ä 形式。</div><h3 id="s9">3.8 本讲词汇与课文</h3><table><tr><th>Suomi</th><th>中文</th><th>说明</th></tr><tr><td>Miten menee?</td><td>你好吗／近来怎样</td><td>回答用 hyvin</td></tr><tr><td>Mitä kuuluu?</td><td>你好吗</td><td>回答用 hyvää</td></tr><tr><td>mennä (menee)</td><td>去；进行</td><td>第三代单数 menee，用于问句</td></tr><tr><td>sinä (sinulla)</td><td>你（你身上）</td><td>括号里是 adessiivi 形式</td></tr><tr><td>ihan</td><td>相当、挺</td><td>ihan hyvin = 还不错</td></tr><tr><td>vähän</td><td>一点</td><td>vähän huonoa = 有点不好</td></tr><tr><td>väsynyt</td><td>累的</td><td>Olen väsynyt.</td></tr><tr><td>yrittää (yritä)</td><td>尝试</td><td>括号里是命令式 yritä</td></tr><tr><td>levätä</td><td>休息</td><td>Hän haluaa levätä. 他/她想休息</td></tr><tr><td>joo</td><td>是的（口语）</td><td>书面用 kyllä</td></tr></table><p>TEKSTI 1 的词汇表就是上面这一组，课文本身围绕“两个同学见面互问近况”展开。抽取文本只保留了词汇表，因此本讲以词汇 + 问答句型覆盖该课文，课文原文不在讲义中复述。</p><h3 id="s10">3.9 本讲错误清单</h3><ul><li>把 <code>Miten menee</code> 的回答说成 <code>Hyvää</code>（应为 <code>Hyvin</code>）</li><li>把 <code>Mitä kuuluu</code> 的回答说成 <code>Hyvin</code>（应为 <code>Hyvää</code>）</li><li>反问用错格：问 menee 却回 <code>Entä sinulle</code></li><li>把 <code>hänellä</code> 写成 <code>hänella</code>，或把 <code>heillä</code> 写成 <code>heillä</code> 之外的 <code>hella</code></li><li>否定回答只说 <code>Ei</code> 不给理由 —— 芬兰人习惯补一句原因</li></ul><div class="callout idea" data-ext="t3-miten-menee-0"><b>用法对照</b><p>两句「你好吗」近义却不能换格：<code>Miten sinulla menee?</code> 的 <code>mennä</code>（进行）要求 adessiivi <code>-lla</code>；<code>Mitä sinulle kuuluu?</code> 的 <code>kuulua</code>（传来）要求 allatiivi <code>-lle</code>。答句也分工：问 menee 用副词 <code>Hyvin / Ihan hyvin</code>，问 kuuluu 用部分格形容词 <code>Hyvää / Ihan hyvää</code>，混答是必考点。反问须同格：<code>Entä sinulla?</code> 对 menee，<code>Entä sinulle?</code> 对 kuuluu。口语把 sinä 词干缩短成 <code>sulla / sulle / mulla / mulle</code>，听力两种都要懂，写作只用书面。否定回答习惯补理由：<code>Olen väsynyt</code>、<code>Olen flunssassa</code>。元音和谐一句话管住所有后辍：词里出现 a/o/u 取 -lla/-ssa，只有 ä/ö/y 或纯 i/e 取 -llä/-ssä，所以 <code>hänellä</code> 用 ä 而 <code>meillä</code>、<code>heillä</code> 也取前元音形式——后者正是中性 e 随前的例子。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / Finnish</th><th>中文</th><th>English 说明 / 例句</th></tr><tr><td>Miten menee?</td><td>你好吗</td><td>Answered with an adverb: <i>Hyvin</i>.</td></tr><tr><td>Mitä kuuluu?</td><td>你好吗</td><td>Answered with a partitive: <i>Hyvää</i>.</td></tr><tr><td>menee</td><td>进行、去</td><td>3rd person singular of <i>mennä</i>.</td></tr><tr><td>kuulua</td><td>被听到；属于</td><td>Takes the allative of the person: <i>sinulle kuuluu</i>.</td></tr><tr><td>hyvin</td><td>好（副词）</td><td>Adverb used with <i>menee</i>.</td></tr><tr><td>hyvää</td><td>好（部分格）</td><td>Partitive adjective used with <i>kuuluu</i>.</td></tr><tr><td>ihan</td><td>相当、挺</td><td><i>ihan hyvin</i> = quite well.</td></tr><tr><td>vähän</td><td>一点</td><td><i>vähän huonoa</i> = a bit bad.</td></tr><tr><td>väsynyt</td><td>累的</td><td><i>Olen väsynyt.</i> I am tired.</td></tr><tr><td>flunssa</td><td>感冒</td><td><i>Olen flunssassa.</i> I have a flu (inessive).</td></tr><tr><td>adessiivi</td><td>上格／在格</td><td>-lla/-llä: <i>minulla, sinulla, hänellä</i>.</td></tr><tr><td>allatiivi</td><td>向格</td><td>-lle: <i>minulle, sinulle, hänelle</i>.</td></tr><tr><td>vokaaliharmonia</td><td>元音和谐</td><td>Back-vowel words take -a suffixes, front-vowel words take -ä.</td></tr><tr><td>etuvokaali</td><td>前元音</td><td>ä, ö, y.</td></tr><tr><td>takavokaali</td><td>后元音</td><td>a, o, u.</td></tr><tr><td>yhdyssana</td><td>复合词</td><td>Harmony follows the last component: <i>polkupyörä</i>.</td></tr><tr><td>Entä sinulla?</td><td>你呢？</td><td>Follow-up after <i>Miten menee</i>.</td></tr><tr><td>Entä sinulle?</td><td>那你呢？</td><td>Follow-up after <i>Mitä kuuluu</i>.</td></tr><tr><td>Siinähän se</td><td>还那样</td><td>Neutral, slightly resigned answer.</td></tr><tr><td>Ei ihmeellistä</td><td>没什么特别的</td><td>Reply to <i>Mitä kuuluu</i>.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　给问句配回答（逐句标注格）</div><p><b>问：</b><code>Moi, Anna! Miten menee?</code></p><p><b>答：</b><code>Hyvin, kiitos. Entä sinulla?</code></p><p><b>分析：</b><code>Miten</code>（如何）+ <code>menee</code>（进行）。回答用副词 <code>hyvin</code>，因为修饰的是动词 <code>menee</code>；反问 <code>Entä sinulla?</code> 重复问句隐含的 adessiivi。</p><p><b>若换成：</b><code>Moi, Anna! Mitä kuuluu?</code> → <code>Hyvää, kiitos. Entä sinulle?</code>。这里 <code>hyvää</code> 是 partitive，<code>sinulle</code> 是 allatiivi。</p></div><div class="qa"><div class="q">例 2　把否定回答补成完整话轮</div><p><b>问：</b><code>Miten menee?</code></p><p><b>答（不完整）：</b><code>Ei kovin hyvin.</code></p><p><b>补理由：</b><code>Ei kovin hyvin. Olen väsynyt.</code>（不是很好，我累了。）</p><p><b>分析：</b><code>Ei kovin hyvin</code> 是否定 + 副词；<code>Olen väsynyt</code> 用 <code>olla</code> + 形容词（nominative），因为 <code>väsynyt</code> 作表语。若说感冒，用 <code>Olen flunssassa</code>，此时 <code>flunssa</code> 是名词，要加 inessive <code>-ssa</code>。</p></div><div class="qa"><div class="q">例 3　判断后缀该用 -ssa 还是 -ssä</div><p><code>metsä</code>（森林）→ <code>metsässä</code>：词内只有 ä、e，前元音 → <code>-ssä</code>。</p><p><code>talo</code> → <code>talossa</code>：有 a、o → <code>-ssa</code>。</p><p><code>keittiö</code> → <code>keittiössä</code>：ö、i → <code>-ssä</code>。</p><p><code>koulu</code> → <code>koulussa</code>：o、u → <code>-ssa</code>。</p><p><code>kylppäri</code>（浴室，口语）→ <code>kylppärissä</code>：ä、i → <code>-ssä</code>。</p><p><b>要点：</b>先找 a/o/u；找不到就取 ä 形式。</p></div><div class="qa"><div class="q">例 4　复合词的和谐判断</div><p><code>polkupyörä</code> = <code>polku</code>（小径）+ <code>pyörä</code>（自行车）。前半有 o、u（后元音），后半有 y、ö、ä（前元音）。</p><p>按“末成分决定”规则，取 <code>pyörä</code> 的前元音：<code>polkupyörässä</code>，不是 <code>polkupyörassa</code>。</p><p><b>对照：</b><code>työhuone</code> = <code>työ</code> + <code>huone</code>，末成分 <code>huone</code> 有 o、u → <code>työhuoneessa</code>。同一个词首成分是前元音，也不影响结果。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>填空：<code>Miten ______ menee?</code> 与 <code>Mitä ______ kuuluu?</code>（填人称代词的格形式）</li><li>给回答配对：a) <code>Miten menee?</code> b) <code>Mitä kuuluu?</code> —— ① <code>Ihan hyvää.</code> ② <code>Siinähän se.</code></li><li>写出 hän 的 adessiivi 与 allatiivi，并说明为什么后缀不同。</li><li>加后缀：<code>käsi</code> + <code>-ssa/-ssä</code>；<code>pöytä</code> + <code>-lla/-llä</code>；<code>koulu</code> + <code>-ssa/-ssä</code>。</li><li>改错：<code>Miten sinulle menee? Mitä sinulla kuuluu?</code></li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>Miten sinulla menee?</code>（adessiivi，因为 menee 要求 -lla/-llä）；<code>Mitä sinulle kuuluu?</code>（allatiivi，因为 kuulua 要求 -lle）。</p><p><b>2.</b> a → ② <code>Siinähän se.</code>（副词性回答）；b → ① <code>Ihan hyvää.</code>（partitive 回答）。</p><p><b>3.</b> <code>hänellä</code> / <code>hänelle</code>。两个后缀都因 <code>hän</code> 含前元音 ä 而取 ä 形式（<code>-llä</code> / <code>-lle</code>），其中 <code>-lle</code> 本身两种词都写作 <code>-lle</code>，只有 adessiivi 才显出 a/ä 的对立。</p><p><b>4.</b> <code>kädessä</code>（ä → -ssä）、<code>pöydällä</code>（ö、y、ä → -llä）、<code>koulussa</code>（o、u → -ssa）。</p><p><b>5.</b> 两处格用反了：<code>Miten sinulla menee?</code>、<code>Mitä sinulle kuuluu?</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>两个问句的格分工（menee + adessiivi / kuuluu + allatiivi）；五组肯定回答；<code>Hyvin</code> 与 <code>Hyvää</code> 的配法；hän 的 <code>hänellä/hänelle</code>；元音和谐决定 <code>-ssa/-ssä</code>。</div><div class="callout warn"><b>易错 1</b><b>后缀 a/ä 选错</b>：<code>metsässa</code>、<code>talossä</code>、<code>hänella</code>。判断永远从“词内有没有 a/o/u”开始。</div><div class="callout warn"><b>易错 2</b><b>把 Hyvin 与 Hyvää 混用</b>。menee 配副词，kuuluu 配 partitive；这两个词形只差一个字母，但语法角色完全不同。</div><div class="callout warn"><b>易错 3</b><b>复合词看错成分</b>：<code>polkupyörä</code> 按末成分 <code>pyörä</code> 取前元音，不是按首成分 <code>polku</code>。</div><div class="callout tip"><b>进阶</b>元音和谐不只是“加后缀”，它还解释了为什么 <code>hänellä</code> 与 <code>minulla</code> 后缀不同、为什么第 5 讲的国籍后缀有 <code>-lainen/-läinen</code> 两套、为什么第 10 讲属格后的所有格后缀也有 <code>-nsa/-nsä</code> 两种。把这条规则当成“全局开关”，不要当成零散例外。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">近况问答四步</h2><ol class="steps"><li>判断对方问的是 menee 还是 kuuluu</li><li>选对人称的格：menee → -lla/-llä；kuuluu → -lle</li><li>选对回答词形：menee → hyvin；kuuluu → hyvää</li><li>反问同一格：Entä sinulla? / Entä sinulle?</li></ol><h3 id="s12">判断后缀 a 还是 ä 的三步</h3><ul class="checklist"><li>第一步：看是不是复合词 —— 是则只看最后一个成分</li><li>第二步：在词里找 a、o、u —— 找到就用 a 形式</li><li>第三步：没有 a/o/u（只剩 ä ö y i e）—— 用 ä 形式</li><li>记住中性元音 i、e 单独出现时跟 ä 走（pienessä、piirissä）</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>04_Tunti 3/3_Diat, miten menee, korjattu.pdf</td><td>p2</td><td>Miten menee 的问答与 Entä sinulla</td></tr><tr><td>04_Tunti 3/3_Diat, miten menee, korjattu.pdf</td><td>p3–p4</td><td>两种问句的五组回答、Mitä kuuluu 与 Entä sinulle</td></tr><tr><td>04_Tunti 3/3_Diat, miten menee, korjattu.pdf</td><td>p5</td><td>否定回答 + 理由，以及“芬兰人不给过度负面回答”的交际习惯</td></tr><tr><td>04_Tunti 3/1_KOTITEHTÄVÄ 2（Sanasto, miten menee.docx）</td><td>全篇</td><td>mennä / sinulla / ihan / vähän / väsynyt / yrittää / levätä / joo 八个词</td></tr><tr><td>04_Tunti 3/4_KOTITEHTÄVÄ 3 Vokaaliharmonia</td><td>全篇</td><td>-ssa/-ssä 选择练习、复合词与 olympialaiset / polkupyörä 两个“例外”</td></tr><tr><td>03_Tunti 2/1_Suomen aakkoset ja äänteet.pdf</td><td>p4</td><td>元音和谐规则的原始出处（talossa、pihalla、kädellä、pöydässä、pienessä、piirissä）</td></tr><tr><td>（跳过）</td><td>—</td><td>TEKSTI 1 课文正文未随抽取保留（只有词汇表），故不复述原文，仅覆盖其词汇与问答句型</td></tr><tr><td>（拓展）</td><td>—</td><td>3.5 的完整人称表在课件里以例句出现（sinulla/sulla），此处补全六个人称；3.6 的“中性元音跟 ä 走”是从课件例词归纳出的规则表述，课件只给例词</td></tr></table></section><div class="lnav"><a class="prev" href="t2-aakkoset.html">← Tunti 2 · 字母、发音与拼读</a><a class="next" href="t4-numerot.html">Tunti 4 · 数字与部分格 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

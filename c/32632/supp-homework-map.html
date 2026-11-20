@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>补遗 · 十三次课的作业地图、交付通道与考核节点 · 32632</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">KE00DA03 大学英语</a> / <a href="part-4.html">未分章</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">学完本讲你能够</a><a class="toc-l2" href="#s3">一、时间轴：十三次课各自留了什么</a><a class="toc-l2" href="#s4">二、交付通道：五个口子，五种规矩</a><a class="toc-l2" href="#s5">三、Office Forms 做测验：八步与四个坑</a><a class="toc-l2" href="#s6">四、词典与翻译工具：选对来源，用对方向</a><a class="toc-l2" href="#s7">五、两个有固定时间窗的节点</a><a class="toc-l3" href="#s8">5.1 发音测试：11 月 18 日，当天 10:00–22:00</a><a class="toc-l3" href="#s9">5.2 Yle News 幻灯片：一页、三要素、一分钟</a><a class="toc-l2" href="#s10">六、素材页：有清单、没有正文的那几页</a><a class="toc-l2" href="#s11">关键词</a><a class="toc-l2" href="#s12">例 1 · 从空白 Forms 到可玩链接，走一遍并对照错误</a><a class="toc-l2" href="#s13">例 2 · 查一个工程词：bearing 的四步流程</a><a class="toc-l2" href="#s14">例 3 · 一页 Yle 幻灯片加一分钟讲稿</a><a class="toc-l2" href="#s15">练习</a><a class="toc-l2" href="#s16">考核怎么看</a><a class="toc-l2" href="#s17">自查清单</a><a class="toc-l2" href="#s18">材料对照</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l1-launch-self-intro.html">第 1 讲 · 开课、自我介绍与学习资源</a><a href="l2-reading-chunking.html">第 2 讲 · 朗读、分块与技术文本阅读</a><a href="l3-vocabulary-grammar-clinic.html">第 3 讲 · 词汇与语法诊所</a><a href="l4-elevator-pitch.html">第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a href="l5-presentation-data.html">第 5 讲 · 工程演讲与图表描述</a><a href="l6-meetings-negotiation.html">第 6 讲 · 会议沟通、协商与专业简报</a><a class="toc-l3" href="supp-homework-map.html">▸ 补遗 · 十三次课的作业地图、交付通道与考核节点</a></div></aside><article><h1>补遗 · 十三次课的作业地图、交付通道与考核节点</h1><p class="lead">Homework Map, Submission Channels and Assessment Points Across 13 Meetings <span class="badge mute">32632</span> <span class="badge mute">第 7 / 7 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">未分章</a></p><p class="src">原始文件：<code>UNIT 1 Building Know-how/Meeting 1 homework.html</code> <code>UNIT 1 Building Know-how/Meeting 2 homework.html</code> <code>UNIT 1 Building Know-how/Meeting 3 homework.html</code> <code>UNIT 1 Building Know-how/Meeting 4 homework.html</code> <code>UNIT 1 Building Know-how/Meeting 5 homework.html</code> <code>UNIT 1 Building Know-how/Meeting 7 homework.html</code> <code>UNIT 2 Expressing Opinions/Meeting 8 homework.html</code> <code>UNIT 2 Expressing Opinions/Meeting 9 homework.html</code> <code>UNIT 2 Expressing Opinions/Meeting 11 homework.html</code> <code>UNIT 2 Expressing Opinions/Meeting 12 homework.html</code> <code>UNIT 3 Communicating Professionally/Meeting 13 homework.html</code> <code>Resources/Online dictionaries.html</code> <code>UNIT 1 Building Know-how/Food material.html</code> <code>UNIT 2 Expressing Opinions/GRAMMAR Online Exercises.html</code> <code>UNIT 2 Expressing Opinions/EXERCISE Pair work (agreeing and disagreeing).html</code> <code>UNIT 1 Building Know-how/EXERCISE Computers  Phones.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这门课的内容在正文里是按能力组织的：朗读与分块、词汇与语法、电梯演讲、图表描述、会议沟通。但课程实际是按「Meeting 1 到 Meeting 13」一节一节推进的，每一节的作业页分散在三个 UNIT 目录下，每页只有三五句，却各自带着不同的交付通道（Moodle return box、Padlet、Office Forms、Moodle 录音）和不同的截止方式（DL Sep 10、下次课前、下周四、11 月 18 日当天开放）。</p><p>本讲把这些散页收成一张表：第几次课交什么、交到哪里、什么时候交、拿什么评判。它不重复正文已经讲透的语言点（语块、介词、词序、电梯演讲结构都在 1–6 讲里），只补三件正文没有的事：<b>时间轴</b>、<b>交付通道的机械细节</b>、<b>两个有固定时间窗的考核节点</b>（发音测试与新闻幻灯片）。</p><p>另外两类材料一并收录：一是 <code>Resources/Online dictionaries</code> 给的词典与翻译工具清单及其使用纪律——它决定了你查词时该信哪个来源；二是 <code>Food material</code> 与 <code>EXERCISE Computers / Phones</code> 这类「素材页」，页面本身只有清单与外部链接，没有正文可抽，需要标注清楚以免误以为漏读。</p><h3 id="s2">学完本讲你能够</h3><ul><li>按会议编号复述整门课的作业链：哪一次课要交什么、交到哪个通道、截止口径是日期还是「下次课前」；</li><li>在 Office Forms 里从零做出一个 2–4 题、任何人可作答、链接能贴进 Padlet 的测验，并说清四个最常见的配置错误；</li><li>按「查词 / 查搭配 / 查语域 / 翻整句」四类需求选对词典与翻译工具，并解释为什么 wiki 词典与整句机翻在语言课上不能当答案；</li><li>说清 11 月 18 日发音测试的时间窗（当天 10:00–22:00 在 Moodle 开放）、考试范围（课上材料）与两份复习材料（recap + Padlet 句子）；</li><li>把一篇 Yle News 英文报道压成一页幻灯片：标题、作者、日期三要素齐备，版式经得起投影，配一分钟口头稿；</li><li>识别三个口头产出（脱稿自我介绍、电梯演讲、新闻幻灯片）各自的时间长度与评分关注点，提前排练习次序。</li></ul><div class="callout tip"><b>和正文的分工</b>正文六讲回答「这个语言点怎么用」；本讲回答「哪天交、交到哪、按什么标准算过」。复习语言点回 1–6 讲，赶截止日期看本讲第 1 节与第 2 节。</div></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s3">一、时间轴：十三次课各自留了什么</h2><p>课程页面按会议编号建，实际存在作业页的是 1、2、3、4、5、7、8、9、11、12、13 共十一次；第 6 与第 10 次没有独立作业页（内容并入相邻会议的练习与展示），所以看到编号跳号不是漏页。下表按会议顺序排，最后一列是原文给的时间口径——原页大多写「下次课前」而不给日期，只有少数写了具体日（DL Sep 10、Fri Sep 25、November 18），这个差别在排计划时很关键。</p><table><tr><th>会议</th><th>课堂主线</th><th>留的作业</th><th>时间口径</th></tr><tr><td>1</td><td>开课、自我介绍、学习资源</td><td>完成 Moodle 上的 Start of the Course Survey；完成 Baseline assignment；想好芬兰的 pros and cons（喜欢什么 / 不喜欢什么）；下次带笔记本或平板，<b>不许用手机</b></td><td>两项都标 DL Sep 10</td></tr><tr><td>2</td><td>朗读与发音诊断</td><td>在 Padlet 上练单词朗读（下次一起复述）；自己找一篇短文本朗读，列出新词与难发音词，例子里给的来源是 YLE news in English；把笔记带到课堂</td><td>下次课前</td></tr><tr><td>3</td><td>分块阅读与技术文本</td><td>完成 reading exercise：Supercell（advanced）或 Supercell（simplified）二选一；准备把这些短语用进对话；复习与 studies 相关的说法，下次<b>脱稿</b>谈自己的学习</td><td>下次课前；下次上半节是 ICC 课，三个河北组同堂，可用手机翻译</td></tr><tr><td>4</td><td>线上课与专业领域练习</td><td>周五 Sep 25 8:15 的 Zoom 课，先测麦克风与摄像头；从自己其他课（物理、数学等）选一道练习带到周四的课，课上一起看这道题的语言与措辞</td><td>Zoom 定在 Fri Sep 25 8:15AM</td></tr><tr><td>5</td><td>CEE 练习与专业词表</td><td>完成 Moodle 上的 CEE exercises；把专业练习里出现的词汇填进指定在线文档（打开即编辑）；语法：完成全部 online exercises，共九项——地点时间状语词序、肯定句词序、词序总览、一般过去时否定句词序、一般现在时频率副词否定句词序、Wh- 问句、Yes/No 问句、间接问句、反意疑问句</td><td>下次课前</td></tr><tr><td>7</td><td>词序语法与中华美食测验</td><td>语法仍是最上面那九项 online exercises；用 Office Forms 做一个关于中国传统与家乡食物的测验（2–4 题、带选项、标出正确答案），把链接贴到 Padlet，下次课一起玩</td><td>下次课前</td></tr><tr><td>8</td><td>技术文本、发音作业与电梯演讲起步</td><td>完成 CEE 材料里的 12E 与 12F；Moodle 上的发音作业——练习并<b>录音</b>，下次课前完成；开始想电梯演讲脚本：职业意义上的自己有什么可讲；读 Data Centers 文本（另给简化版），收集词与语块，准备下次讨论</td><td>下次课前</td></tr><tr><td>9</td><td>图表描述与脚本定稿</td><td>玩页面上那个 graph 小游戏；到 British Council 网站读文本并完成 task 1–3；找一张自己觉得有意思的图表，准备介绍并讨论；电梯演讲脚本定稿，按 slides 33–37 练，下周四课上完成这项作业</td><td>FOR NEXT THURSDAY</td></tr><tr><td>11</td><td>电梯演讲提交与介词</td><td>把电梯演讲上传并把链接分享到 Moodle 的 return box（技术说明在页面内链）；介词练习 Ex.3–Ex.5：混合介词、时间表达里的介词、Moodle 上的介词练习</td><td>下次课前</td></tr><tr><td>12</td><td>发音测试准备</td><td>准备 11 月 18 日的发音测试：当天在 Moodle 上 10:00–22:00 开放；范围是课上讲过的材料；复习用 recap 材料加上 Padlet 里的句子</td><td>November 18</td></tr><tr><td>13</td><td>新闻幻灯片与小组展示</td><td>从 Yle News 选一篇报道读完；做<b>一页</b> PowerPoint 或 Canva，写清标题、作者、日期，注意这页的视觉版式；交到 return box；下次小组内展示，每人一分钟，之后讨论视觉呈现</td><td>下次课前；展示时长 1 分钟</td></tr></table><div class="callout warn"><b>「下次课前」不是「不用管」</b>十一次作业里只有三项给了硬日期（Sep 10、Sep 25、Nov 18），其余全靠课堂节奏。这类课最容易出现的失误不是写错，而是<b>上课才发现要带东西</b>：Meeting 1 要带设备、Meeting 3 要能脱稿谈学习、Meeting 4 要带一道专业课练习、Meeting 9 要带一张图表。把这三条写进日历提醒（课前两小时），比事后补交省事。</div><h2 id="s4">二、交付通道：五个口子，五种规矩</h2><p>作业看着零散，交付通道其实只有五种。认错通道的代价是「做了但没交」，而这门课的口头与写作产出都靠这些通道留痕。</p><table><tr><th>通道</th><th>本课用在哪</th><th>机械要求</th></tr><tr><td>Moodle return box</td><td>电梯演讲（Meeting 11）、新闻幻灯片（Meeting 13）</td><td>上传文件并按要求分享链接；提交后可在同一处看到状态，别把文件留在本地</td></tr><tr><td>Padlet</td><td>单词朗读（Meeting 2）、Office Forms 测验链接（Meeting 7）、发音测试复习句子（Meeting 12）</td><td>班级共享墙；贴链接时确认是可点的 URL，不是一段带空格的文字</td></tr><tr><td>Office Forms</td><td>中华美食测验（Meeting 7）</td><td>必须是「Anyone can respond」；题量 2–4；每题 Points 保持默认 1</td></tr><tr><td>Moodle 录音 / 测验</td><td>发音作业（Meeting 8）、发音测试（Meeting 12）</td><td>录音在 Moodle 内完成；测试有固定时间窗，当天 10:00–22:00</td></tr><tr><td>Zoom</td><td>Meeting 4 的线上课</td><td>课前测麦克风与摄像头；这是唯一一次明确要求线上出席的课</td></tr></table><p>两个容易忽略的点。第一，return box 与 Padlet 不是二选一：电梯演讲要求上传到 return box，而测验要求把链接贴到 Padlet，两处都在用。第二，Padlet 上的内容会被当成课堂材料复用——发音测试的复习句子就来自 Padlet，所以你在 Padlet 上写下的朗读词，等于给自己出了复习题。</p><h2 id="s5">三、Office Forms 做测验：八步与四个坑</h2><p>Meeting 7 的作业页把技术步骤写全了，照抄即可。顺序不能颠倒，尤其是最后两步——很多人卡在「链接贴进 Padlet 但别人打不开」，原因几乎都在第 6、7 步。</p><ol class="steps"><li>打开 Office Forms，选 Create a new quiz（新建测验），先给它起名，名字会成为分享标题；</li><li>Add new question，题型选 <b>Choice</b>（选择题）；</li><li>写题干，再写 2–4 个选项，并勾选其中正确的那一个；</li><li>Points 保持默认 1（每题 1 分，四题满分 4 分）；</li><li>确认总题量落在 2–4 题之间——这是作业要求，不是建议；</li><li>点 Collect responses（收集回答）；</li><li>在权限里选 <b>Anyone can respond</b>（任何人可作答）；</li><li>点 Copy link 复制链接，粘到课程的 Padlet 上，并在贴子里说明这是哪一次课的什么测验。</li></ol><table><tr><th>症状</th><th>原因</th><th>处理</th></tr><tr><td>同学点链接提示无权访问</td><td>第 7 步仍停在「仅组织内」或「仅我」，没改成 Anyone can respond</td><td>回 Collect responses 改权限，重新 Copy link 后再贴一次（旧链接不变但权限已生效，贴新链接更稳）</td></tr><tr><td>分数显示成 0 或没有正确答案</td><td>第 3 步没勾正确选项，或第 4 步把 Points 改成了 0</td><td>回题目里补勾正确答案，Points 恢复 1</td></tr><tr><td>贴到 Padlet 上是一长串不可点的文字</td><td>复制成了题干或备注，而不是 Copy link 的结果</td><td>重新 Copy link，直接粘贴，不要手打</td></tr><tr><td>题量被扣分</td><td>只做 1 题，或做成 6 题的问卷</td><td>压到 2–4 题；多选题也按题数算，不按选项数算</td></tr></table><div class="callout tip"><b>内容怎么出题</b>题目要求是「中国传统食物 + 你家乡的食物」。最省事又最像样的出法是三层：一层认名字（英文名对中文名）、一层认做法（steamed / stir-fried / deep-fried）、一层认场合（节日、日常、待客）。每层一题，正好三题，答案选项里放一个同族干扰项（比如 dumpling 与 wonton），课堂玩起来才有讨论。</div><h2 id="s6">四、词典与翻译工具：选对来源，用对方向</h2><p><code>Resources/Online dictionaries</code> 这一页把工具分成三组，并给了使用纪律。分组本身比清单更有用：它其实在说「不同问题问不同来源」。</p><table><tr><th>组别</th><th>具体来源</th><th>适用</th></tr><tr><td>芬兰语—英语—芬兰语</td><td>Sanakirja.fi（用 LUT / LAB 账号登录可用全部功能）</td><td>芬兰语词条、芬兰语用法；这是本课唯一指定的芬英双向词典</td></tr><tr><td>英英词典</td><td>Merriam-Webster（美式）、Merriam-Webster's Learner's Dictionary、Cambridge（英式）、Oxford（英式）、Collins（英式）、Longman</td><td>查英文释义、搭配、语域、发音；Learner's 版释义最浅、例句最多，写作用它起步</td></tr><tr><td>翻译工具</td><td>Sanakirja.fi translator、DeepL、Google Translate</td><td>只用来「看懂大意」；原文明确说它们准确度不够，芬英方向尤其弱</td></tr></table><p>页面上还有两句态度很强的话，必须照做，否则作业会被打回。第一句：对手机上的词典 app 与免费 wiki 类词典要保持批判，它们不一定是深入学习的好选择——wiki 词典能给译名，给不了搭配与语域。第二句：翻译工具可以用来打底，但不能替你写；<b>Always write your own texts yourself</b>。</p><table><tr><th>你要解决的问题</th><th>先查哪个</th><th>再看哪个</th><th>不要用</th></tr><tr><td>这个词中文是什么意思</td><td>Learner's Dictionary（浅释义 + 例句）</td><td>Cambridge（看英式发音与常见搭配）</td><td>整句机翻后反推词义</td></tr><tr><td>这个词在工程语境里怎么用</td><td>Cambridge / Collins 的例句与搭配栏</td><td>自己课文里的原句（CEE、Data Centers、Supercell）</td><td>只看中文对应词</td></tr><tr><td>这句英文写得对不对</td><td>自己按课文句式重写一遍</td><td>用词典确认介词与搭配，不看整句翻译</td><td>把中文丢进 DeepL 直接交</td></tr><tr><td>芬兰语材料看不懂</td><td>Sanakirja.fi（登录后全功能）</td><td>先抓主干再看细节，别逐词翻</td><td>用英文词典猜芬兰语词形</td></tr></table><h2 id="s7">五、两个有固定时间窗的节点</h2><h3 id="s8">5.1 发音测试：11 月 18 日，当天 10:00–22:00</h3><p>Meeting 12 的作业页把这件事说清了：测试在 <b>November 18</b>，当天在 Moodle 上从 <b>10:00 开到 22:00</b>，范围是课上讲过的材料，复习用 recap 材料加上 Padlet 里的句子。这三点合起来意味着：它考的不是「你会不会读生词」，而是「课上练过的那些词与句子，你的读法有没有到位」。</p><ul><li>时间窗是 12 小时，不是全天：错过 22:00 就没有补做入口，别把这件事排到晚上十点以后；</li><li>复习材料只有两份且都在课内：recap（课上回顾材料）+ Padlet 上贴过的朗读词与句子，没有额外题库；</li><li>范围是「课堂上覆盖过的材料」，所以 Meeting 2 的 Padlet 朗读、Meeting 8 的录音作业、课上纠正过的词，就是你的题库——翻自己那几次的笔记比找新词有用；</li><li>录音类作业的共同陷阱是环境噪声与麦克风距离：先在 Moodle 里试录一段，确认能听清再正式录。</li></ul><h3 id="s9">5.2 Yle News 幻灯片：一页、三要素、一分钟</h3><p>Meeting 13 要求从 Yle News 选一篇报道：Yle 是芬兰的公共广播公司（public service media company），它把主要新闻做成英文版，所以这是本课唯一「真实新闻语料」的来源。作业形态是一页幻灯片，写清标题、作者、日期，<b>注意版面</b>，交到 return box，下次小组内每人讲一分钟，之后讨论视觉呈现。</p><table><tr><th>要素</th><th>要求</th><th>为什么被单列出来</th></tr><tr><td>标题</td><td>报道原标题，不改写</td><td>课堂讨论会对照原文，改写等于换了论点</td></tr><tr><td>作者</td><td>署名作者；只有通讯社署名就写通讯社</td><td>新闻的可信度判断从这里开始，也是引用规范的一部分</td></tr><tr><td>日期</td><td>报道发布日</td><td>同一事件不同日期的报道结论会变，缺日期无法核对时效</td></tr><tr><td>版面</td><td>一页之内，字号能投影看清，图文不互相压</td><td>评分明确提到 visual layout，最后一栏讨论的就是「视觉呈现」</td></tr></table><div class="callout exam"><b>三个口头产出别混为一谈</b>课程里共有三次开口：Meeting 3 的脱稿谈学习（无准备稿，考的是能不能连续说）、Meeting 11 的电梯演讲（有定稿脚本，考的是结构与 60 秒控制）、Meeting 13 的新闻幻灯片（一页视觉 + 一分钟讲解，考的是信息压缩）。三者的准备方式完全不同：第一个靠背语块，第二个靠改稿，第三个靠删字。</div><h2 id="s10">六、素材页：有清单、没有正文的那几页</h2><p>有几页打开只有清单与外链，没有可读正文，容易被误判成「内容缺失」。实际它们的用途是「指路」，正文里已经把对应的语言点讲过了。</p><table><tr><th>页面</th><th>页面里有什么</th><th>怎么用</th></tr><tr><td>Food material</td><td>六份食物词汇表（蔬菜 33、谷物豆类坚果 33、水果浆果 45、动物制品与替代品 33、厨房用具 33、烹饪动词 24）加「菜品」一节；四个外部测验（烹饪与厨具 level 2、食物与饮料 level 3、果蔬香草香料 level 2、烹饪动词）</td><td>词汇本体是图片册，页面只给入口；本讲与第 3 讲按主题收过词，练习去外部测验做</td></tr><tr><td>EXERCISE Computers / Phones</td><td>二选一：Option A 电脑（部件、组件），Option B 手机（部件、移动连接）</td><td>选一个方向把部件名认全即可，两页都只有外链，没有题面</td></tr><tr><td>EXERCISE Pair work (agreeing and disagreeing)</td><td>A/B 两人的材料入口，先分角色再各开各的</td><td>课堂内完成；正文第 6 讲已给同意与反对的句式梯度</td></tr><tr><td>GRAMMAR Online Exercises</td><td>两组介词练习：at/in/on 在句子中的用法、at/in/on 在时间表达中的用法</td><td>与 Meeting 11 的 Ex.3–Ex.5 是同一主题的延伸，正文第 3 讲已给判断规则</td></tr></table><div class="callout warn"><b>外部链接不在本站范围内</b>Food material 的六份词汇册是图片/PDF 形态，四个测验在 Cambridge 等外部站点，这两个来源都不随本站离线打包。也就是说：清单与主题已收录，图片与题面要在有网时打开原页。这不影响复习——课上真正考的是你能不能用这些词说出一段话，而不是刷完几套外部测验。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><h2 id="s11">关键词</h2><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>homework</td><td>作业</td><td>Homework for lesson 2 — the page title pattern of every meeting.</td></tr><tr><td>return box</td><td>提交箱</td><td>Upload your elevator pitch and share the link in the Moodle return box.</td></tr><tr><td>Padlet</td><td>共享墙</td><td>Paste the link to your quiz on our Padlet.</td></tr><tr><td>quiz</td><td>测验</td><td>Create a quiz about traditional Chinese and your local foods.</td></tr><tr><td>Collect responses</td><td>收集回答</td><td>Click Collect responses, then select Anyone can respond.</td></tr><tr><td>Points</td><td>分值</td><td>Keep Points at 1 (the default) for each question.</td></tr><tr><td>baseline assignment</td><td>基线作业</td><td>The baseline assignment is due on Sep 10.</td></tr><tr><td>chunk</td><td>语块</td><td>Collect words and chunks before you discuss the text.</td></tr><tr><td>elevator pitch</td><td>电梯演讲</td><td>A 60-second professional self-introduction.</td></tr><tr><td>word order</td><td>词序</td><td>Word order in statements with expressions of place and time.</td></tr><tr><td>preposition</td><td>介词</td><td>at, in, on — prepositions of time and place.</td></tr><tr><td>recap material</td><td>回顾材料</td><td>Use the recap material plus the sentences from Padlet.</td></tr><tr><td>public service media</td><td>公共广播</td><td>Yle is the Finnish public service media company.</td></tr><tr><td>visual layout</td><td>版面 / 视觉版式</td><td>Pay attention to the visual layout of this slide.</td></tr><tr><td>gist</td><td>大意</td><td>Translation tools are good for the gist, not for accuracy.</td></tr><tr><td>field-specific</td><td>专业领域的</td><td>Choose one exercise from your other courses (physics, math).</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><h2 id="s12">例 1 · 从空白 Forms 到可玩链接，走一遍并对照错误</h2><p>把第 3 节的八步压成一条时间线，附带每一步「做错的症状」，方便自查。假设题目是三道关于中国食物的选择题。</p><pre><code>新建测验 -&gt; 命名 Chinese food quiz
+Add new question -&gt; Choice
+  题干: Which of these is usually steamed?
+  选项: dumpling / steamed bun / fried rice / roast duck   (正确: steamed bun)
+  Points: 1
+重复两次，总题数控制在 3（要求 2-4）
+Collect responses -&gt; Anyone can respond -&gt; Copy link
+Padlet 贴子: Meeting 7 quiz - 3 questions - please try before Thursday</code></pre><table><tr><th>步骤</th><th>做对了的表现</th><th>做错了会看到</th></tr><tr><td>命名</td><td>Padlet 上显示的标题就是测验名</td><td>贴出来是 Untitled quiz，同学不知道点哪个</td></tr><tr><td>选题型</td><td>选项前有单选圆点</td><td>变成填空或评分题，无法自动判分</td></tr><tr><td>标正确答案</td><td>题目旁出现对勾</td><td>答题后所有人都显示 0 分</td></tr><tr><td>Points = 1</td><td>满分等于题数</td><td>满分 0 分或 40 分</td></tr><tr><td>题量 2–4</td><td>符合作业要求</td><td>超出范围按未达标处理</td></tr><tr><td>Collect responses</td><td>出现分享面板</td><td>找不到 Copy link 按钮</td></tr><tr><td>Anyone can respond</td><td>陌生账号也能打开</td><td>提示需要登录或无权访问</td></tr><tr><td>Copy link + 粘贴</td><td>Padlet 上是蓝色可点链接</td><td>一长串黑色文字，点不开</td></tr></table><div class="callout tip"><b>验收方式</b>贴出去之前，用浏览器无痕窗口打开那个链接自测一次：能答题、能提交、能看到对错，三条都成立才算完成。无痕窗口没有你的登录态，正好模拟同学的环境。</div><h2 id="s13">例 2 · 查一个工程词：bearing 的四步流程</h2><p>课文里出现 bearing，中文直觉是「轴承」，但它还能表示「举止」与「方位」。按第 4 节的选源规则走一遍，四步之内能把词定死，而且每一步都不依赖整句机翻。</p><ol class="steps"><li>先查 Learner's Dictionary：拿到最浅释义（a part of a machine that supports a moving part）与一个例句，确认机械义是主义；</li><li>再查 Cambridge：看英式发音（近似 BEH-ring，词尾是 ng 的鼻音）与常见搭配（ball bearing、roller bearing），确认它在复合名词里怎么出现；</li><li>回课文原句，把搭配抄下来：<code>the bearing was replaced</code> 说明它是可数名词、可被替换的零件；</li><li>最后用 Sanakirja.fi 反查芬兰语对应词，确认在芬兰语材料里它落在同一个义项上（避免把「方位」义带进来）。</li></ol><table><tr><th>来源</th><th>给你的东西</th><th>这一步的判据</th></tr><tr><td>Learner's</td><td>浅释义 + 一个生活化例句</td><td>主义是不是机械义</td></tr><tr><td>Cambridge</td><td>英式音标 + 搭配</td><td>作定语时的固定搭配形式</td></tr><tr><td>课文原句</td><td>真实语境的句法位置</td><td>可数性、可替换性、与动词的搭配</td></tr><tr><td>Sanakirja.fi</td><td>芬兰语对应词</td><td>跨语言义项是否收敛到同一处</td></tr></table><p>反例也值得记：如果第一步就去 DeepL 翻「轴承坏了」，会得到一句语法通顺但搭配奇怪的英文，而你说不出它为什么怪——因为机翻替你做完了选择，你失去了判据。查词的目的是拿到判据，不是拿到句子。</p><h2 id="s14">例 3 · 一页 Yle 幻灯片加一分钟讲稿</h2><p>Meeting 13 的成品是一页幻灯片加一分钟口头。一页能放的东西很少，所以取舍规则要提前定：标题三要素、三条要点、一条「为什么和我们有关」。下面这版可以直接当模板改。</p><pre><code>标题栏: &lt;article title&gt;  (as published, not rewritten)
+副行:   By &lt;author&gt; - &lt;date&gt;  |  Yle News
+要点 1: 发生了什么（一句，含数字或地点）
+要点 2: 为什么发生 / 谁受影响（一句）
+要点 3: 一个可讨论的问题（一句，留给听众）
+页脚:   Source: Yle News, &lt;date&gt;   (小字号)
+视觉:   左文右图或上文下图，留白不少于四分之一页；正文不小于 20 pt</code></pre><table><tr><th>时间段</th><th>说什么</th><th>时长控制</th></tr><tr><td>0:00–0:10</td><td>报道标题 + 作者 + 日期，一句交代来源</td><td>10 秒，不要念全文</td></tr><tr><td>0:10–0:40</td><td>三条要点按顺序讲，每条一句</td><td>每条 10 秒</td></tr><tr><td>0:40–0:55</td><td>为什么这条新闻和工程 / 我们专业相关</td><td>这段是加分项</td></tr><tr><td>0:55–1:00</td><td>把要点 3 的问题抛给听众</td><td>停住，别再补充</td></tr></table><div class="callout idea"><b>为什么强调版面</b>同一页内容，字号 14 pt 投影后基本看不清，正文一多听众就开始读屏而不是听你讲。把字删到 20 pt 还能放下，是「信息已被压缩」的可靠信号；这也是评分里单列 visual layout 的原因。</div></section>
+<section id="sec-practice" class="card" data-type="practice"><h2 id="s15">练习</h2><ol><li>不看表，按会议编号写出十一次作业各自交到哪个通道（Moodle return box / Padlet / Forms / Moodle 录音 / Zoom），写完再对第 1 节与第 2 节。</li><li>把 Meeting 5 与 Meeting 7 的九项语法练习按「词序」与「问句」两类重排，说明为什么反意疑问句被放在问句一组。</li><li>用 Office Forms 做出三题食物测验，按第 3 节八步配置，用无痕窗口自测并截图留证。</li><li>取一个你专业课的术语（如 torque、viscosity、impeller），按例 2 的四步流程查一遍，写下四个来源各给了什么判据。</li><li>把一段中文作业描述（三句）先用 DeepL 翻，再自己按课文的句式重写，逐句标出机翻在搭配或语域上错在哪。</li><li>选一篇 Yle News 英文报道，按例 3 的模板做一页幻灯片，掐表讲一次，记录实际时长与超时的那一句。</li><li>为 11 月 18 日的发音测试列一份 20 词清单：从 Meeting 2 的 Padlet 词、Meeting 8 的录音作业、课上被纠正过的词里各取若干。</li><li>写一份「课前两小时」提醒清单，覆盖 Meeting 1 的设备、Meeting 3 的脱稿、Meeting 4 的专业课练习、Meeting 9 的图表。</li></ol><div class="qa"><div class="q">Meeting 6 与 Meeting 10 为什么没有作业页？</div><p>页面只建在 1、2、3、4、5、7、8、9、11、12、13 上，第 6 与第 10 次的内容并入了相邻会议的练习与展示（例如 Meeting 3 明确说下次上半节是 ICC 课）。这不是漏读，也不需要去找替代页——把相邻两次的作业按时间顺序接上即可。</p></div><div class="qa"><div class="q">said「下次课前」到底指哪一天？</div><p>原文只写 before the next lesson，没有日期。可靠读法是：把当次课的下课时间当作起点，下一次同周次的课当作终点，中间不含周末。若遇到线上课或展示周（Meeting 4、9、13），以页面上写明的那个日子为准（Sep 25 / next Thursday / 小组展示当天）。</p></div><div class="qa"><div class="q">发音测试能补考吗？</div><p>页面只写了当天 10:00–22:00 开放、范围是课上材料，没有提供补做入口，也没有给替代日期。按「只有一次窗口」来安排：把复习放在测试前两天，别押在最后两小时——录音类任务在截止前集中提交最容易出设备问题。</p></div></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s16">考核怎么看</h2><p>这门课没有纸面期末，成绩来自过程产出。把页面里出现过的评分口径归拢，实际被看的是四类东西：课堂参与与准备（能不能脱稿谈、有没有带该带的东西）、发音（作业录音与 11 月 18 日测试）、口头产出（电梯演讲、新闻幻灯片各一分钟）、以及按时交付（通道对不对、链接能不能打开）。</p><table><tr><th>产出</th><th>形式</th><th>看什么</th><th>常见失分</th></tr><tr><td>发音作业 / 发音测试</td><td>Moodle 录音；测试当天 10:00–22:00</td><td>课上材料的读法是否到位，词重音与句重音</td><td>错过时间窗；环境噪声盖住尾音；只练生词不练句子</td></tr><tr><td>电梯演讲</td><td>定稿脚本 + 上传 return box + 分享链接</td><td>60 秒内说清「我是谁、我能做什么」；结构清楚</td><td>超时；堆履历不讲能力；链接未分享</td></tr><tr><td>新闻幻灯片</td><td>一页 PPT/Canva + 一分钟讲解</td><td>标题/作者/日期齐备；版面可投影；一分钟内讲完</td><td>改写标题；缺日期；字号过小；念稿</td></tr><tr><td>日常作业</td><td>Padlet、Forms、九项语法练习、CEE 12E/12F</td><td>是否按时、是否按格式（题量、权限、链接）</td><td>通道错、权限没开、题量越界</td></tr></table><div class="callout exam"><b>优先级排序</b>如果时间只够做三件事：先把 11 月 18 日的发音复习材料（recap + Padlet 句子）过两遍，再把电梯演讲脚本改到 60 秒整，最后把新闻幻灯片压到一页。这三项都是「有时间窗或一次性交付」的产出，补不回来；语法练习与词汇表可以随时补。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s17">自查清单</h2><ul class="checklist"><li>能按会议编号说出十一次作业各自的内容与通道，不看表；</li><li>知道只有 Sep 10、Sep 25、Nov 18 三个硬日期，其余是「下次课前」；</li><li>Meeting 1 的「带笔记本或平板，不许用手机」记在日历里；</li><li>能用 Office Forms 在十分钟内做出 2–4 题、Anyone can respond、链接可点的测验；</li><li>知道 Forms 四个常见坑：权限、正确选项、Points、题量；</li><li>查词时先 Learner's 拿浅释义、再 Cambridge 拿搭配，不用整句机翻反推词义；</li><li>能说出 wiki 词典与翻译工具在这门课里为什么不能当答案（缺搭配与语域判断）；</li><li>11 月 18 日的窗口是 10:00–22:00，复习材料只有 recap 与 Padlet；</li><li>Yle 幻灯片三要素（标题、作者、日期）与版式要求都写进了模板；</li><li>三个口头产出（脱稿谈学习 / 电梯演讲 / 新闻幻灯片）各自的时长与准备方式分得清；</li><li>知道 Food material 与 Computers/Phones 是清单页，图片与外部测验不在离线包内；</li><li>所有交付都自测过一次：链接在无痕窗口能打开、录音能听清、文件在 return box 里有状态。</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s18">材料对照</h2><p>本讲只做归拢与补白，不重复正文的语言点。下表说明每份材料被用在哪里、抽出了什么、以及有没有缺口。</p><table><tr><th>材料</th><th>抽取内容</th><th>去处 / 覆盖说明</th></tr><tr><td>Meeting 1 / 2 / 3 / 4 / 5 homework</td><td>五页作业原文（Survey、Baseline、Padlet 朗读、Supercell、Zoom、CEE、九项语法）</td><td>第 1 节时间轴逐条收录；语言点已在第 2、3 讲讲过</td></tr><tr><td>Meeting 7 / 8 / 9 / 11 / 12 / 13 homework</td><td>六页作业原文（Forms 测验、12E/12F、录音、电梯演讲、图表、介词、发音测试、Yle）</td><td>第 1 节时间轴 + 第 3 节 Forms 八步 + 第 5 节两个节点；电梯演讲结构与图表描述在正文第 4、5 讲</td></tr><tr><td>Resources/Online dictionaries</td><td>三组工具清单（Sanakirja、六部英英词典、三个翻译工具）与两句使用纪律</td><td>第 4 节整节；选源表为新增，正文未覆盖</td></tr><tr><td>Food material</td><td>六份词汇表标题与词量、菜品一节、四个外部测验名称</td><td>第 6 节素材页表；词汇本体是图片册，正文第 3 讲按主题收过词</td></tr><tr><td>EXERCISE Computers / Phones</td><td>Option A 电脑 / Option B 手机 两条路径与外链</td><td>第 6 节素材页表；无题面可抽</td></tr><tr><td>EXERCISE Pair work (agreeing and disagreeing)</td><td>A/B 双材料、先分角色的流程</td><td>第 6 节素材页表；句式梯度见正文第 6 讲</td></tr><tr><td>GRAMMAR Online Exercises</td><td>两组 at/in/on 介词练习</td><td>第 6 节素材页表；判断规则见正文第 3 讲</td></tr><tr><td>UNIT 2 的两份 DIALOGUE 与 Meeting 课件正文</td><td>对话全文与课件段落</td><td>已由正文第 2、5、6 讲覆盖，本讲不重复</td></tr><tr><td>—（缺口说明）</td><td>Food material 的六份词汇册为图片/PDF，四个测验在 Cambridge 等外部站点</td><td>离线站内不收图片与外部题面；清单与主题已收录，需要时按原页入口打开</td></tr></table><div class="callout tip"><b>两处口径差异，别被绕住</b>第一，作业页写「下次课前」的地方，正文与总览页可能按周次表述，两者不冲突——以本讲第 1 节的时间口径为准。第二，发音测试只出现在 Meeting 12 的作业页与课程总页，正文第 1 讲提到过考核构成但没有时间窗，时间窗以 11 月 18 日 10:00–22:00 为准。</div></section><div class="lnav"><a class="prev" href="l6-meetings-negotiation.html">← 第 6 讲 · 会议沟通、协商与专业简报</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

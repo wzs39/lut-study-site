@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 5 讲 · 现在时与第一类动词 · 34583</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ99 芬兰语2</a> / <a href="part-2.html">第 2 章 动词系统与爱好</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">5.1 人称代词与「动词要跟着变」</a><a class="toc-l3" href="#s3">5.2 第一类动词的变位规则</a><a class="toc-l3" href="#s4">5.3 否定式：ei + 词干</a><a class="toc-l3" href="#s5">5.4 辅音交替（astevaihtelu / KPT change）总则</a><a class="toc-l3" href="#s6">5.5 第一类动词里谁用强级、谁用弱级</a><a class="toc-l3" href="#s7">5.6 第一类动词常用词表</a><a class="toc-l3" href="#s8">5.7 元音和谐与前缀词尾的选择</a><a class="toc-l3" href="#s9">5.8 拼写与发音细节</a><a class="toc-l2" href="#s10">第一类动词变位清单</a><a class="toc-l3" href="#s11">变位五步</a><a class="toc-l3" href="#s12">否定两步</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-intro-numbers.html">第 1 讲 · 自我介绍、数字与存在句</a><a href="t2-weather-seasons-months.html">第 2 讲 · 天气、季节与月份</a><a href="t3-clock-time-expression.html">第 3 讲 · 钟点、星期与 Milloin 时间格</a><a href="t4-future-plans.html">第 4 讲 · 将来表达与周末计划</a><a class="toc-l3" href="t5-present-tense-vt1.html">▸ 第 5 讲 · 现在时与第一类动词</a><a href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务</a><a href="t7-verb-types-1-6.html">第 7 讲 · 六类动词系统</a><a href="t8-food-shopping.html">第 8 讲 · 食物词汇与购物场景</a><a href="t9-nominative-genitive.html">第 9 讲 · 格系统与属格</a><a href="t10-partitive.html">第 10 讲 · 部分格的构成与用法</a><a href="t11-likes-meals-restaurant.html">第 11 讲 · 喜好表达、餐食与餐厅场景</a><a href="t12-review-exam.html">第 12 讲 · 复习与考试题型</a><a href="supp-interview-task.html">补充 · 食物访谈作业（haastattelu ruoka）</a></div></aside><article><h1>第 5 讲 · 现在时与第一类动词</h1><p class="lead">Present Tense and Verb Type 1 <span class="badge mute">34583</span> <span class="badge mute">第 5 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 动词系统与爱好</a></p><p class="src">原始文件：<code>06_Tunti 5/1_Fi2, preesens.pdf</code> <code>06_Tunti 5/2_Verbejä, tyyppi1.pdf</code> <code>06_Tunti 5/3_Astevaihtelu.pdf</code> <code>06_Tunti 5/4_KOTITEHTÄVÄ Kirjoita 10 lausetta_/intro/Kirjoita 10 lausetta, VT1.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>从这一讲开始进入动词体系。Tunti 5 只做一件事：把第一类动词（-a/-ä 结尾）的现在时肯定式、否定式和辅音交替（astevaihtelu）讲透。第一类动词占芬兰语常用动词的绝大多数，掌握它就能开口说大部分日常动作。</p><p>这一讲也是整套课程的方法论奠基：后面第 7 讲把六类动词一次讲完时，用的正是本讲的三个工具——<b>去词尾得词干</b>、<b>加人称词尾</b>、<b>判强弱级</b>。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>按六个主语人称正确变位任意第一类动词，并说明每个人称词尾的来源</li><li>用 <code>ei</code> 的六个人称形式构成否定句，且不误用 <code>eivät</code> 搭配单数主语</li><li>判断一个第一类动词在变位时是否发生辅音交替，以及哪个人称用强级</li><li>背出 kk→k、pp→p、tt→t、k→∅、p→v、t→d 等主要交替对，并给例词</li><li>解释为什么 <code>hän puhuu</code> 是两个 u 而 <code>minä puhun</code> 只有一个</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">5.1 人称代词与「动词要跟着变」</h3><p>材料开篇就点明：<code>Finnish verbs don’t always look the same. We call this conjugation.</code> 芬兰语动词必须与人称一致，这一点与英语只有第三人称加 -s 不同，芬兰语六个人称各有词尾。</p><table><tr><th>人称</th><th>单数</th><th>复数</th></tr><tr><td>第一人称</td><td>minä = I</td><td>me = we</td></tr><tr><td>第二人称</td><td>sinä = you</td><td>te = you（复数 / 敬称）</td></tr><tr><td>第三人称</td><td>hän = she/he</td><td>he = they</td></tr></table><p><code>hän</code> 不分性别，既可指她也可指他；<code>te</code> 既可指「你们」，也可用于对一位长辈或客户的敬称（类似法语 vous）。口语里 <code>hän</code> 常说成 <code>se</code>，<code>he</code> 常说成 <code>ne</code>，考试书面语仍用 hän / he。</p><h3 id="s3">5.2 第一类动词的变位规则</h3><p>规则只有一句：<b>去掉不定式末尾的 -a/-ä，得到词干，再加人称词尾</b>。材料写作 <code>–a/ä pois (-a/ä off)</code>。</p><p><code>puhua</code> → 词干 <code>puhu-</code>；<code>asua</code> → 词干 <code>asu-</code>；然后：</p><table><tr><th>人称</th><th>词尾</th><th>puhua</th><th>asua</th><th>yrittää</th></tr><tr><td>minä</td><td>-n</td><td>puhun</td><td>asun</td><td>yritän</td></tr><tr><td>sinä</td><td>-t</td><td>puhut</td><td>asut</td><td>yrität</td></tr><tr><td>hän</td><td>长元音（词干元音双写）</td><td>puhuu</td><td>asuu</td><td>yrittää</td></tr><tr><td>me</td><td>-mme</td><td>puhumme</td><td>asumme</td><td>yritämme</td></tr><tr><td>te</td><td>-tte</td><td>puhutte</td><td>asutte</td><td>yritätte</td></tr><tr><td>he</td><td>-vat / -vät</td><td>puhuvat</td><td>asuvat</td><td>yrittävät</td></tr></table><p>第三人称单数是唯一「不加辅音词尾」的人称，它靠<b>延长词干末元音</b>表示：<code>puhu + u</code> = <code>puhuu</code>，<code>asu + u</code> = <code>asuu</code>，<code>yritä + ä</code> = <code>yrittää</code>。这也解释了为什么 <code>hän</code> 后面常出现双元音。</p><p>第三人称复数 <code>-vat/-vät</code> 的选择由<b>元音和谐</b>决定：词干里有 a、o、u 时用 -vat（puhuvat、asuvat、ostavat）；词干里只有 ä、ö、y 时用 -vät（yrittävät、kysyvät、ymmärtävät）。<code>e</code> 与 <code>i</code> 是中性的，看词干其他元音决定。</p><div class="callout tip"><b>一句口诀</b>「一 n 二 t，三拉长，四 mme，五 tte，六 vat/vät」。把六个人称词尾按顺序念熟，变位就不会漏。</div><h3 id="s4">5.3 否定式：ei + 词干</h3><p>材料给了否定式的「两个配料」：<b>否定动词 <code>ei</code> 的变位形式</b> + <b>动词词干</b>（不带人称词尾）。</p><table><tr><th>人称</th><th>否定词</th><th>puhua 否定</th><th>asua 否定</th></tr><tr><td>minä</td><td>en</td><td>en puhu</td><td>en asu</td></tr><tr><td>sinä</td><td>et</td><td>et puhu</td><td>et asu</td></tr><tr><td>hän</td><td>ei</td><td>ei puhu</td><td>ei asu</td></tr><tr><td>me</td><td>emme</td><td>emme puhu</td><td>emme asu</td></tr><tr><td>te</td><td>ette</td><td>ette puhu</td><td>ette asu</td></tr><tr><td>he</td><td>eivät</td><td>eivät puhu</td><td>eivät asu</td></tr></table><p>关键认识：<b>否定句里主动词永远只有一种形式（词干）</b>，人称信息全部由 <code>ei</code> 承担。所以 <code>ei puhu</code> 里的 <code>puhu</code> 与 <code>hän puhuu</code> 的长元音不同 —— 否定式不拉长。</p><p>材料还给了一个非常实用的「反推词干」技巧：<b>先把动词变成肯定式第一人称单数，再去掉 -n</b>。<code>minä leikin</code> → <code>leiki</code> → <code>en leiki</code>。这样即使不确定词干，也能保证否定式正确。</p><p>这个技巧之所以有效，是因为第一人称单数的词尾 -n 是唯一一个「纯粹外加」的辅音词尾，去掉它不会影响词干内部结构（包括已经发生的辅音交替）。</p><h3 id="s5">5.4 辅音交替（astevaihtelu / KPT change）总则</h3><p>材料对辅音交替的定义是：<code>Sometimes when Finnish words are conjugated or suffixes are added to them the word itself slightly changes.</code> 发生条件是词里含 <b>K、P、T</b> 这三个「危险字母」，或含其中一个的辅音组合。名词与动词都受影响。</p><p>术语：<b>vahva = strong（强级）</b>、<b>heikko = weak（弱级）</b>。材料给的判据很直白：<code>In weak version of the verb core, there is less of K, P or T</code> —— 弱级里 K/P/T 更少或消失。</p><table><tr><th>交替对（强 → 弱）</th><th>例词</th><th>说明</th></tr><tr><td>kk → k</td><td>nukkua → nukun</td><td>双写 k 变单 k</td></tr><tr><td>pp → p</td><td>kaappi → kaapin</td><td>双写 p 变单 p</td></tr><tr><td>tt → t</td><td>tyttö → tytön</td><td>双写 t 变单 t</td></tr><tr><td>k → ∅</td><td>jalka → jalan；Turku → Turussa</td><td>k 直接消失</td></tr><tr><td>p → v</td><td>leipä → leivän；tavata → tapaan</td><td>p 变 v；反向时 v → p</td></tr><tr><td>t → d</td><td>katu → kadun；Lahti → Lahdessa</td><td>t 变 d</td></tr><tr><td>nt → nn</td><td>antaa → annan</td><td>nt 变 nn</td></tr><tr><td>nk → ng</td><td>kenkä → kengän；Helsinki → Helsingissä</td><td>nk 变 ng</td></tr><tr><td>lt → ll</td><td>ilta → illan</td><td>lt 变 ll</td></tr><tr><td>rt → rr</td><td>ymmärtää → ymmärrän</td><td>rt 变 rr</td></tr><tr><td>mp → mm</td><td>kampa → kamman</td><td>mp 变 mm</td></tr><tr><td>lk → l</td><td>kulkea → kuljen</td><td>lk 变 l</td></tr><tr><td>rk → r</td><td>arki → arjen</td><td>rk 变 r</td></tr><tr><td>ht → hd</td><td>lähteä → lähden</td><td>ht 变 hd</td></tr></table><h3 id="s6">5.5 第一类动词里谁用强级、谁用弱级</h3><p>这是本讲最重要的操作规则：<b>第一类动词变位时，hän 与 he 用强级，其余四个人称用弱级</b>（材料原文：<code>In verbtype 1, weak version of verb is used with all other pronouns but hän and he</code>）。</p><table><tr><th>人称</th><th>nukkua 的变位</th><th>级别</th></tr><tr><td>minä</td><td>nukun</td><td>弱（kk → k）</td></tr><tr><td>sinä</td><td>nukut</td><td>弱</td></tr><tr><td>hän</td><td>nukkuu</td><td>强</td></tr><tr><td>me</td><td>nukumme</td><td>弱</td></tr><tr><td>te</td><td>nukutte</td><td>弱</td></tr><tr><td>he</td><td>nukkuvat</td><td>强</td></tr></table><p>为什么这样分？可以用音节结构解释：<code>-n</code>、<code>-t</code>、<code>-mme</code>、<code>-tte</code> 都以辅音开头，把词干音节「关住」（闭音节），闭音节要求弱级；而 hän 的词尾是元音延长、he 的词尾 -vat 以元音开头，音节保持开放，所以保留强级。这条解释同样适用于名词属格（第 9 讲）。</p><div class="callout warn"><b>别把规则用反</b>很多教材先说「第三人称强、其他人称弱」，学生容易背成「第三人称弱」。判断时记住 <b>hän/he 是开口音节 → 强级</b>，其余闭音节 → 弱级。</div><p>否定式中主动词用词干，而词干本身通常就是弱级形式：<code>en nuku</code>、<code>et nuku</code>、<code>ei nuku</code>、<code>emme nuku</code>、<code>ette nuku</code>、<code>eivät nuku</code>。材料用 <code>katua</code> 示范了带交替的否定式：<code>katua → kadu</code>，故 <code>en kadu</code>、<code>et kadu</code>、<code>ei kadu</code>。</p><h3 id="s7">5.6 第一类动词常用词表</h3><p>材料的动词表列了 25 个第一类动词，是口语与写作的高频词库。下面按语义分组，并给出第一人称单数形式（便于直接造句）：</p><table><tr><th>动词</th><th>含义</th><th>minä 形式</th><th>备注</th></tr><tr><td>puhua</td><td>说、讲</td><td>puhun</td><td>puhua suomea</td></tr><tr><td>sanoa</td><td>说（某句话）</td><td>sanon</td><td>sanoa jotain</td></tr><tr><td>kysyä</td><td>问</td><td>kysyn</td><td>kysyä kysymys</td></tr><tr><td>ymmärtää</td><td>理解</td><td>ymmärrän</td><td>rt → rr 交替</td></tr><tr><td>tietää</td><td>知道</td><td>tiedän</td><td>t → d 交替</td></tr><tr><td>asua</td><td>住</td><td>asun</td><td>asua Lahdessa</td></tr><tr><td>istua</td><td>坐</td><td>istun</td><td>istua tuolilla</td></tr><tr><td>seisoa</td><td>站</td><td>seison</td><td>seisoa jonossa</td></tr><tr><td>katsoa</td><td>看</td><td>katson</td><td>katsoa elokuva / elokuvaa</td></tr><tr><td>lukea</td><td>读</td><td>luen</td><td>lukea kirjaa</td></tr><tr><td>kirjoittaa</td><td>写</td><td>kirjoitan</td><td>tt → t</td></tr><tr><td>ostaa</td><td>买</td><td>ostan</td><td>ostaa ruokaa</td></tr><tr><td>maksaa</td><td>付钱</td><td>maksan</td><td>maksaa kortilla</td></tr><tr><td>odottaa</td><td>等</td><td>odotan</td><td>odottaa bussia</td></tr><tr><td>etsiä</td><td>找</td><td>etsin</td><td>etsiä avainta</td></tr><tr><td>harrastaa</td><td>爱好、从事</td><td>harrastan</td><td>harrastaa tanssia</td></tr><tr><td>matkustaa</td><td>旅行</td><td>matkustan</td><td>matkustaa junalla</td></tr><tr><td>rakastaa</td><td>爱</td><td>rakastan</td><td>rakastaa sinua</td></tr><tr><td>nauraa</td><td>笑</td><td>nauran</td><td>nauraa ääneen</td></tr><tr><td>itkeä</td><td>哭</td><td>itken</td><td>itkeä ilosta</td></tr><tr><td>tanssia</td><td>跳舞</td><td>tanssin</td><td>tanssia tangoa</td></tr><tr><td>laulaa</td><td>唱歌</td><td>laulan</td><td>laulaa karaokea</td></tr><tr><td>ajaa</td><td>开车、骑</td><td>ajan</td><td>ajaa pyörällä</td></tr><tr><td>saunoa</td><td>洗桑拿</td><td>saunon</td><td>saunoa joka ilta</td></tr><tr><td>kalastaa</td><td>钓鱼</td><td>kalastan</td><td>kalastaa järvellä</td></tr><tr><td>televisiota</td><td>（看电视的搭配）</td><td>—</td><td>katsoa televisiota</td></tr></table><p>最后一行 <code>televisiota</code> 不是动词，而是材料特意列出的搭配：<code>katsoa televisiota</code>（看电视），宾语用部分格，因为「看电视」被视为持续、非整体的活动。</p><p>材料还给了两条写作要求：<code>Kirjoita 10 lausetta. Käytä jokaisessa lauseessa yhtä alla olevista verbeistä. Muista taivuttaa. Muista KPT-vaihtelu.</code>（写 10 句，每句用一个动词，记得变位与辅音交替。）范例是 <code>Me saunomme lauantaina.</code>（我们周六洗桑拿）——注意 <code>saunoa</code> 的 me 形式是 <code>saunomme</code>，不是 <code>saunomme</code> 之外的什么特殊形式，规则照常。</p><h3 id="s8">5.7 元音和谐与前缀词尾的选择</h3><p>芬兰语的词尾有前后两套：后元音版（a、o、u 类）与前元音版（ä、ö、y 类）。一个词内部通常只出现一套。规则是：</p><ul><li>词干里若有 a、o、u 中任意一个 → 词尾用后元音版：<code>-vat</code>、<code>-a</code>、<code>-ssa</code>。</li><li>词干里只有 ä、ö、y（以及中性的 e、i）→ 词尾用前元音版：<code>-vät</code>、<code>-ä</code>、<code>-ssä</code>。</li><li>例：<code>puhuvat</code>（有 u）、<code>yrittävät</code>（只有 ä/i）、<code>kysyvät</code>（只有 y）、<code>ymmärtävät</code>（ä）。</li></ul><p>这条规则解释了为什么 <code>yrittää</code> 的 hän 形式是 <code>yrittää</code>（ä + ä），而 <code>puhua</code> 是 <code>puhuu</code>（u + u）。复合词按最后一个构词成分决定和谐：<code>kirjoittaa</code>（o 为主）用后元音。</p><h3 id="s9">5.8 拼写与发音细节</h3><ul><li>双字母表示长音：<code>puhuu</code> 的两个 u 都要读长；<code>tulee</code> 的 ee 是长 e。</li><li>ä 与 a 是不同音位：<code>yrittää</code> 与 <code>yrittää</code> 中的 ä 不能写成 a。</li><li>ö 与 o 不同：<code>tyttö</code>、<code>kylmä</code>。</li><li>y 是圆唇前元音，接近汉语「ü」但更松：<code>kysyä</code>、<code>yrittää</code>。</li></ul><div class="callout warn"><b>高频错误 1</b><code>hän puhu</code> 少一个 u。第三人称单数必须双写词干末元音。</div><div class="callout warn"><b>高频错误 2</b><code>he puhuu</code>。第三人称复数要 -vat/-vät：<code>he puhuvat</code>。</div><div class="callout warn"><b>高频错误 3</b><code>minä puhuu</code>。第一人称单数是 -n：<code>puhun</code>。</div><div class="callout tip"><b>自检三步</b>写完一句变位句，按顺序查：① 人称词尾对不对；② 该弱化的词干有没有弱化（hän/he 除外）；③ 元音和谐是否前后一致。</div><div class="callout idea" data-ext="t5-present-tense-vt1-0"><b>常见误解</b><p>口诀「一 n 二 t，三拉长，四 mme，五 tte，六 vat/vät」覆盖第一类动词全部词尾。<code>hän puhuu</code> 双 u 是因为第三人称单数不加辅音词尾、改为拉长词干末元音；<code>minä puhun</code> 只有一个 u。<code>he</code> 的 -vat 还是 -vät 看元音和谐：词干有 a/o/u 用 -vat（<code>asuvat</code>），只有 ä/ö/y 用 -vät（<code>kysyvät</code>）。否定式 <code>ei</code> 也变位（<code>en, et, ei, emme, ette, eivät</code>），后面只接裸词干（<code>en puhu</code>）；词干不确定就先变 minä 再去掉 -n。辅音交替 KPT 的强弱别用反：第一类里 <code>hän</code> 与 <code>he</code> 保留强级（<code>nukkuu, nukkuvat</code>），其余四人称弱级（<code>nukun</code>，kk→k），因为后接辅音词尾把音节关住了。常见对子 kk:k、pp:p、tt:t、k:∅、p:v、t:d、nk:ng、rt:rr。<code>ymmärtää→ymmärrän</code>、<code>tietää→tiedän</code> 是考试常挖空的词。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi</th><th>中文</th><th>English 说明</th></tr><tr><td>puhua</td><td>说、讲</td><td>Type 1 verb; stem puhu-.</td></tr><tr><td>puhun</td><td>我说</td><td>1st person singular ending -n.</td></tr><tr><td>puhuu</td><td>他/她说</td><td>3rd person singular lengthens the final vowel.</td></tr><tr><td>puhuvat</td><td>他们说</td><td>3rd person plural ending -vat.</td></tr><tr><td>en puhu</td><td>我不说</td><td>Negative: ei + verb stem, no personal ending on the verb.</td></tr><tr><td>astevaihtelu</td><td>辅音交替</td><td>Consonant gradation, the KPT change.</td></tr><tr><td>vahva aste</td><td>强级</td><td>Strong grade: more K, P or T.</td></tr><tr><td>heikko aste</td><td>弱级</td><td>Weak grade: less K, P or T.</td></tr><tr><td>kk → k</td><td>双写 k 变单 k</td><td>nukkua → nukun, but hän nukkuu.</td></tr><tr><td>pp → p</td><td>双写 p 变单 p</td><td>kaappi → kaapin.</td></tr><tr><td>tt → t</td><td>双写 t 变单 t</td><td>tyttö → tytön.</td></tr><tr><td>k → ∅</td><td>k 消失</td><td>jalka → jalan; Turku → Turussa.</td></tr><tr><td>p → v</td><td>p 变 v</td><td>leipä → leivän.</td></tr><tr><td>t → d</td><td>t 变 d</td><td>katu → kadun; Lahti → Lahdessa.</td></tr><tr><td>vartalo</td><td>词干</td><td>The stem that personal endings are attached to.</td></tr><tr><td>yrittää</td><td>尝试</td><td>Type 1 with tt → t: minä yritän.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　变位 <code>ostaa</code>（买）的六个人称，并标出强弱级。</div><p><b>解：</b>词干 <code>osta-</code>。minä <code>ostan</code>（弱，st 保留）、sinä <code>ostat</code>、hän <code>ostaa</code>（长元音）、me <code>ostamme</code>、te <code>ostatte</code>、he <code>ostavat</code>。</p><p><b>说明：</b><code>ostaa</code> 不含 K/P/T 交替对，所以六个形式都没有强弱差别；但词尾规律完全一致。若换成 <code>maksaa</code>（付），hän 形式 <code>maksaa</code> 仍不交替，而 <code>lukea</code> 的 k 在 minä 形式 <code>luen</code> 中消失（k → ∅）。</p></div><div class="qa"><div class="q">例 2　把「我不喝咖啡，但我丈夫每天喝」译成芬兰语，注意否定式。</div><p><b>解：</b><code>juoda</code> 属第二类，但否定式规则相同：<code>en juo</code>。整句：<code>Minä en juo kahvia, mutta minun mies juo kahvia joka päivä.</code></p><p><b>要点：</b>否定句主动词用词干 <code>juo</code>；宾语 <code>kahvia</code> 部分格（否定句要求）。肯定句 <code>juo kahvia</code> 也用部分格，因为咖啡是不可数名词（第 10 讲）。</p></div><div class="qa"><div class="q">例 3　判断 <code>ymmärtää</code> 在 he 形式里是否交替，并写出六个形式。</div><p><b>解：</b>含 rt 组合，强级 rt、弱级 rr。he 用强级：<code>he ymmärtävät</code>（保持 rt）。其余人称弱化：<code>minä ymmärrän</code>、<code>sinä ymmärrät</code>、<code>me ymmärrämme</code>、<code>te ymmärrätte</code>。hän 用强级并拉长：<code>hän ymmärtää</code>。</p><p><b>核对：</b>六个形式里，只有 hän 与 he 保留 rt，其余都是 rr。</p></div><div class="qa"><div class="q">例 4　改错并说明理由：<code>He ei puhu suomea.</code> / <code>Minä puhuu suomea.</code> / <code>Hän nukun hyvin.</code></div><p><b>解：</b>第一句 <code>ei</code> 应改 <code>eivät</code>（he 对应 eivät）：<code>He eivät puhu suomea.</code> 第二句第一人称应为 <code>puhun</code>：<code>Minä puhun suomea.</code> 第三句第三人称应为 <code>nukkuu</code>：<code>Hän nukkuu hyvin.</code></p><p><b>共性：</b>三句都是人称与词尾不匹配。否定句要同时检查「否定词的人称」和「主动词用词干」两件事。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>变位 <code>nukkua</code>、<code>kirjoittaa</code>、<code>ymmärtää</code> 的六个人称，并标出强弱级。</li><li>把下列句子改成否定句：<code>Minä asun Oulussa.</code> / <code>Hän ostaa ruokaa.</code> / <code>He puhuvat suomea.</code></li><li>写出下列动词的第一人称单数：<code>katsoa、lukea、odottaa、etsiä、ajaa、saunoa、tietää、ymmärtää</code>。</li><li>翻译：「我们周六洗桑拿，然后看电视。」</li><li>用五个第一类动词各写一句关于你日常生活的句子，至少两句含辅音交替。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>nukkua</code>：nukun / nukut / nukkuu / nukumme / nukutte / nukkuvat（弱、弱、强、弱、弱、强）。<code>kirjoittaa</code>：kirjoitan / kirjoitat / kirjoittaa / kirjoitamme / kirjoitatte / kirjoittavat（tt 只在 hän/he 保留）。<code>ymmärtää</code>：ymmärrän / ymmärrät / ymmärtää / ymmärrämme / ymmärrätte / ymmärtävät。</p><p><b>2.</b> <code>Minä en asu Oulussa.</code> / <code>Hän ei osta ruokaa.</code> / <code>He eivät puhu suomea.</code> 注意宾语在否定句里仍为部分格（ruokaa、suomea）。</p><p><b>3.</b> <code>katson, luen, odotan, etsin, ajan, saunon, tiedän, ymmärrän</code>。<code>lukea → luen</code> 是 k → ∅ 交替；<code>tietää → tiedän</code> 是 t → d；<code>ymmärtää → ymmärrän</code> 是 rt → rr。</p><p><b>4.</b> <code>Me saunomme lauantaina ja katsomme televisiota.</code> 两个动词都按 me 变位，<code>televisiota</code> 部分格。</p><p><b>5.</b> 示例：<code>Minä juon kahvia aamulla.</code>（juoda 属第二类，仅示意）／<code>Minä luen kirjaa illalla.</code>（lukea，k → ∅）／<code>Hän puhuu suomea hyvin.</code>（puhua，强级 + 长元音）／<code>Me odotamme bussia.</code>／<code>He ymmärtävät minua.</code>（ymmärtää，强级）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>第一类动词六个人称变位、<code>ei</code> 的六个人称与否定式词干、KPT 交替方向（hän/he 强、其余弱）。动词填空是本课程最稳定的题型。</div><div class="callout warn"><b>易错 1</b><code>hän</code> 形式忘记双写词干末元音：<code>hän puhu</code>。</div><div class="callout warn"><b>易错 2</b><code>he</code> 用 <code>ei</code> 而非 <code>eivät</code>：<code>he ei puhu</code> 错。</div><div class="callout warn"><b>易错 3</b>强弱级方向用反：把 <code>minä nukkuun</code> 当正确，或把 <code>hän nukuu</code> 当正确。</div><div class="callout tip"><b>进阶</b>能用「闭音节 → 弱级、开音节 → 强级」的音节原理解释交替方向，而不是死记「第三人称强」。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s10">第一类动词变位清单</h2><h3 id="s11">变位五步</h3><ol class="steps"><li>确认是 -a/-ä 结尾的第一类动词</li><li>去掉 -a/-ä 得词干</li><li>按人称加词尾：n / t / 长元音 / mme / tte / vat-vät</li><li>判断有无 K/P/T 交替：除 hän、he 外都要弱化</li><li>检查元音和谐：a o u 用后元音词尾，ä ö y 用前元音词尾</li></ol><h3 id="s12">否定两步</h3><ol class="steps"><li>按人称选 en / et / ei / emme / ette / eivät</li><li>主动词只留词干（可用「第一人称去 -n」反推）</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖知识点</th></tr><tr><td>06_Tunti 5/1_Fi2, preesens.pdf</td><td>p2–p6</td><td>人称代词表、第一类动词肯定变位、否定式 ei + 词干、去 -n 反推词干技巧</td></tr><tr><td>06_Tunti 5/2_Verbejä, tyyppi1.pdf</td><td>p1</td><td>25 个第一类动词词表，含 katsoa televisiota、ajaa pyörällä 等搭配</td></tr><tr><td>06_Tunti 5/3_Astevaihtelu.pdf</td><td>p2–p5</td><td>辅音交替定义、K/P/T 触发条件、nukkua 强弱对照、weak/strong 术语</td></tr><tr><td>06_Tunti 5/4_KOTITEHTÄVÄ … Kirjoita 10 lausetta, VT1.docx</td><td>全篇</td><td>写作要求：每句用一个动词、必须变位、必须体现 KPT</td></tr><tr><td>（补充）</td><td>5.4、5.7</td><td>14 组交替对与元音和谐规则表为归纳性拓展，原文只给 kk/pp/tt 与 nukkua 一例</td></tr><tr><td>（跳过）</td><td>—</td><td>preesens.pdf 的版面装饰与讲义封面不含语言点</td></tr></table></section><div class="lnav"><a class="prev" href="t4-future-plans.html">← 第 4 讲 · 将来表达与周末计划</a><a class="next" href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

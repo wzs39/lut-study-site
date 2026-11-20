@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑦ 类与对象入门 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-3.html">第 3 章 函数与面向对象</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、面向对象：先摆正预期</a><a class="toc-l2" href="#s3">二、四个术语</a><a class="toc-l2" href="#s4">三、定义一个类</a><a class="toc-l3" href="#s5">3.1 语法骨架</a><a class="toc-l3" href="#s6">3.2 构造函数 __init__ 与 self</a><a class="toc-l3" href="#s7">3.3 点号访问</a><a class="toc-l2" href="#s8">四、多个实例，各自独立</a><a class="toc-l2" href="#s9">五、完整的类：Person</a><a class="toc-l2" href="#s10">六、对象作为参数</a><a class="toc-l2" href="#s11">七、类、字典、函数：什么时候用哪个</a><a class="toc-l2" href="#s12">八、类属性与实例属性</a><a class="toc-l2" href="#s13">九、检查对象里到底有什么</a><a class="toc-l2" href="#s14">十、常见错误与调试</a><a class="toc-l2" href="#s15">操作清单</a><a class="toc-l3" href="#s16">定义类之前</a><a class="toc-l3" href="#s17">写完后的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a class="toc-l3" href="ch07-classes.html">▸ ⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑦ 类与对象入门</h1><p class="lead">Classes and Objects <span class="badge mute">30352</span> <span class="badge mute">第 7 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 函数与面向对象</a></p><p class="src">原始文件：<code>Chapter 6 Part 1 - Introduction to Classes.pdf</code> <code>Chapter 6 Part 2 - More on classes.pdf</code> <code>Chapter 6 - Part 3 - More Code Examples on Classes.pdf</code> <code>12_Chapter 6_1_Chapter 6 Code Examples_L6E1.py</code> <code>12_Chapter 6_1_Chapter 6 Code Examples_L6E2.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前六讲的数据都是「一个变量装一个值」，函数是「一段代码做一件事」。当一组数据要配上一组操作、还要被很多地方重复使用时，就需要类：把数据（属性）和行为（方法）打包成一个对象。</p><p>这一讲只讲最浅的一层——够读课件、够写项目作业里的 Car / Person / Transaction。真正的 OOP（继承、多态、封装）是另一门课的内容，本课不考。下一讲回到容器：列表、矩阵与元组。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>解释类与实例的关系，并说出「类是模板、对象是实例」</li><li>写出带 <code>__init__</code> 的类，用 <code>self</code> 把参数装成属性</li><li>定义方法并用点号调用，读写的都是当前对象的属性</li><li>创建多个实例，并说明它们的状态为什么互不影响</li><li>把对象作为参数传给普通函数，在函数里调用它的方法</li><li>认出漏写 <code>self</code>、<code>__init__</code> 拼错、类属性误当实例属性这三类错误</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、面向对象：先摆正预期</h2><p>课件第一句话很坦率：这是「回到 1980 年代的编程」（Chapter 6 Part 1 p2）。面向对象编程（object-oriented programming，OOP）本身是一门独立课程，这门课只讲最浅的一层——会定义类、会创建对象、会用对象的属性与方法。</p><p>核心比喻只有两个：<b>类</b>（class）是模板或模型，<b>对象</b>（object）是按模板造出来的东西，也叫<b>实例</b>（instance）。课件用汽车举例：<code>Car</code> 是类，Fiat 与 Audi 是它的实例；两者都是车，但各自有品牌、颜色、年份（Part 1 p3）。人也一样：<code>Human</code> 是类，Janne 是一个实例。</p><p>Python 是面向对象的语言，而且「一切皆对象」（Part 1 p4）：字符串、列表、整数都各自属于某个类。你早就在用对象了——<code>"abc".upper()</code> 里的 <code>.upper()</code> 就是字符串对象的方法。本讲只是学会自己造类。</p><h2 id="s3">二、四个术语</h2><p>课件把术语压到四个（Part 2 p2–p4），这四个词必须能互相解释清楚：</p><table><tr><th>术语</th><th>英文解释</th><th>中文说明</th></tr><tr><td>类 class</td><td>A template that defines structure and behaviour.</td><td>定义对象「有哪些数据、能做什么」的模板</td></tr><tr><td>对象 / 实例 object, instance</td><td>One concrete thing created from the class.</td><td>按模板造出来的具体个体</td></tr><tr><td>属性 attribute</td><td>A variable stored in the object; its properties.</td><td>对象自己的数据，如 <code>brand</code>、<code>year</code></td></tr><tr><td>方法 method</td><td>A function defined inside the class.</td><td>对象能执行的动作，如 <code>start_engine()</code></td></tr></table><p>课件给的属性例子是 <code>age</code>、<code>year</code>、<code>size</code>、<code>weight</code>、<code>color</code>、<code>location</code>；方法例子是 <code>get_age()</code>、<code>start_engine()</code>、<code>calculate_distance()</code>、<code>close()</code>、<code>run()</code>（Part 2 p4）。规律很清楚：<b>属性是名词，方法是动词</b>。</p><h2 id="s4">三、定义一个类</h2><h3 id="s5">3.1 语法骨架</h3><pre><code>class ClassName:
+    def __init__(self, parameters):
+        self.attribute = parameters
+
+    def method_name(self):
+        # do something with self.attribute
+        return something</code></pre><p>三件事要注意：类名用<b>首字母大写</b>的驼峰写法（<code>Car</code>、<code>Person</code>、<code>BankAccount</code>），与函数的小写下划线区分开；<code>class</code> 行末有冒号；类里的所有方法都要缩进一层，而方法体再缩进一层。</p><h3 id="s6">3.2 构造函数 __init__ 与 self</h3><p><code>__init__</code> 是特殊方法，叫<b>构造函数</b>（constructor）：创建对象时会被<b>自动调用</b>，用来把初始数据装进对象（Part 2 p6）。名字前后各有两个下划线，写错一个就退化成普通方法，创建对象时不会执行。</p><p><code>self</code> 指「当前这个对象」。在类里访问自己的属性或调用自己的方法，都必须写 <code>self.xxx</code>。调用时 <code>self</code> <b>不用传</b>，Python 自动把对象塞进去。</p><pre><code>class Car:
+    def __init__(self, brand, color, year):
+        self.brand = brand
+        self.color = color
+        self.year = year
+
+    def start_engine(self):
+        print(self.brand + " says WROOM!")
+
+car1 = Car("Tesla", "Black", 2019)
+car1.start_engine()</code></pre><pre><code>Tesla says WROOM!</code></pre><p>追踪一下 <code>Car("Tesla", "Black", 2019)</code>：Python 新建一个空对象；把对象作为 <code>self</code>、把三个实参依次给 <code>brand</code>、<code>color</code>、<code>year</code>；执行 <code>__init__</code> 的函数体，把三个值挂到对象上；最后把对象交回给 <code>car1</code>。</p><h3 id="s7">3.3 点号访问</h3><p>点号（dot notation）是「走进对象内部」的唯一入口（Part 2 p5）：<code>对象.属性</code> 读或写数据，<code>对象.方法()</code> 执行动作。</p><pre><code>class Car:
+    def __init__(self, brand, year):
+        self.brand = brand
+        self.year = year
+
+car = Car("Skoda", 2012)
+print(car.brand)
+print(car.year)
+car.year = 2015
+print(car.year)</code></pre><pre><code>Skoda
+2012
+2015</code></pre><p>最后一步说明属性是可写的：直接给 <code>car.year</code> 赋新值就行。想控制「怎么改」时，就写一个方法（如 <code>update_year(new_year)</code>），把规则集中在类里。</p><h2 id="s8">四、多个实例，各自独立</h2><p>同一个类可以造出无数个对象，每个对象有自己的属性值——这是类与「一个装着数据的字典」最大的区别（Part 1 p3）。L6E1 造了两辆车：</p><pre><code>class Car:
+    def __init__(self, brand, color, year):
+        self.brand = brand
+        self.color = color
+        self.year = year
+
+    def start_engine(self):
+        print(self.brand + " says WROOM!")
+
+car1 = Car("Tesla", "Black", 2019)
+car2 = Car("Skoda", "Grey", 2012)
+
+print("car1 is of brand", car1.brand)
+print("car2 is of brand", car2.brand)
+car1.start_engine()
+car2.start_engine()</code></pre><pre><code>car1 is of brand Tesla
+car2 is of brand Skoda
+Tesla says WROOM!
+Skoda says WROOM!</code></pre><p><code>car1</code> 与 <code>car2</code> 是两个不同的对象：改 <code>car1.year</code> 不会影响 <code>car2.year</code>。方法里的 <code>self</code> 决定「操作哪一个对象」——<code>car1.start_engine()</code> 时 <code>self</code> 就是 <code>car1</code>。</p><h2 id="s9">五、完整的类：Person</h2><p>课件的 L6E2 给出一个更完整的例子（Part 3 p2）：三个属性、五个方法，既有只读的 getter，也有修改状态的 updater，还有一个做判断的 <code>is_adult()</code>。</p><pre><code>class Person:
+    def __init__(self, name, age, country):
+        self.name = name
+        self.age = age
+        self.country = country
+
+    def get_name(self):
+        return self.name
+
+    def get_age(self):
+        return self.age
+
+    def get_country(self):
+        return self.country
+
+    def is_adult(self):
+        return self.age &gt;= 18
+
+    def update_age(self, new_age):
+        self.age = new_age
+
+    def update_country(self, new_country):
+        self.country = new_country
+
+person1 = Person("Alice", 30, "USA")
+person2 = Person("Pekka", 17, "Finland")
+
+print(person1.get_name(), person1.get_age(), person1.get_country())
+person1.update_country("Canada")
+print(person1.get_country())
+print(person2.get_name(), "adult?", person2.is_adult())
+person2.update_age(18)
+print(person2.get_name(), "adult?", person2.is_adult())</code></pre><pre><code>Alice 30 USA
+Canada
+Pekka adult? False
+Pekka adult? True</code></pre><p>读这段代码要注意三点：<code>get_*</code> 方法只是把属性值交出去，没有副作用；<code>update_*</code> 方法改的是 <code>self.age</code>，所以改完之后同一个对象的后续查询会看到新值；<code>is_adult()</code> 把判断规则写在类里，外部调用者不必知道「18 岁」这个阈值。</p><h2 id="s10">六、对象作为参数</h2><p>对象可以像普通值一样传给函数。L6E2 的后半段定义了一个普通函数，参数是一个 Person 对象：</p><pre><code>def can_buy_alcohol(human):
+    if human.is_adult():
+        print(human.get_name() + " can buy alcohol in Finland")
+    else:
+        print(human.get_name() + " cannot buy alcohol in Finland")
+
+can_buy_alcohol(person2)</code></pre><pre><code>Pekka cannot buy alcohol in Finland</code></pre><p>函数里直接调用 <code>human.is_adult()</code>：它不关心对象内部有几个属性，只依赖对象「会做什么」。这就是把数据与行为放在一起的好处——调用方代码更短，规则变化时只改类。</p><h2 id="s11">七、类、字典、函数：什么时候用哪个</h2><table><tr><th>需求</th><th>推荐做法</th><th>原因</th></tr><tr><td>只是把几个字段捆在一起传</td><td>字典 <code>{"brand": "Ford", "year": 2015}</code></td><td>第 12 讲；轻量、可直接打印、适合读 JSON</td></tr><tr><td>一组数据要配上一组操作，且要被多处复用</td><td>类</td><td>属性和方法绑在一起，调用方只需知道接口</td></tr><tr><td>纯计算，不保存状态</td><td>普通函数</td><td>最简单，不必造对象</td></tr></table><p>课件的项目作业（汽车租赁系统）里，车辆、客户、交易都是「一条记录 + 若干操作」，用字典列表也能做，用类会更整齐。考试两种都可能出现，读得懂就行。</p><h2 id="s12">八、类属性与实例属性</h2><p>课件没有展开这一点，但它是最容易「看起来能跑、其实错了」的地方。写在 <code>__init__</code> 里、带 <code>self.</code> 的是<b>实例属性</b>，每个对象一份；直接写在类体里的（不带 <code>self.</code>）是<b>类属性</b>，所有对象共享。</p><pre><code>class Car:
+    wheels = 4                      # 类属性：所有实例共享
+
+    def __init__(self, brand):
+        self.brand = brand          # 实例属性：每个对象一份
+
+a = Car("Tesla")
+b = Car("Skoda")
+a.wheels = 3                        # 这一步新建了 a 自己的属性
+
+print(a.wheels, b.wheels, Car.wheels)
+print(a.brand, b.brand)</code></pre><pre><code>3 4 4
+Tesla Skoda</code></pre><p>读 <code>a.wheels</code> 时，先找实例属性，找不到才去类里找；给 <code>a.wheels</code> 赋值只影响 <code>a</code>，于是出现 <code>3 4 4</code>。如果写的是 <code>Car.wheels = 3</code>，三个输出就都变 3。初学阶段建议<b>所有属性都写进 <code>__init__</code></b>，避免这种歧义。</p><h2 id="s13">九、检查对象里到底有什么</h2><p>调试类的问题，第一步永远是「属性到底装上了没有」。三种看法：</p><pre><code>class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+p = Person("Alice", 30)
+print(p.__dict__)          # 所有实例属性
+print(type(p).__name__)    # 类名
+print(isinstance(p, Person))  # 是不是这个类的实例</code></pre><pre><code>{'name': 'Alice', 'age': 30}
+Person
+True</code></pre><p><code>p.__dict__</code> 直接把属性表打出来，比逐个猜快得多：里面少了哪个属性，就说明 <code>__init__</code> 里漏了对应的 <code>self.xxx = ...</code>。</p><h2 id="s14">十、常见错误与调试</h2><div class="callout warn"><b>忘记写 self</b>定义方法时写成 <code>def start_engine():</code>，调用 <code>car.start_engine()</code> 会抛 <code>TypeError: start_engine() takes 0 positional arguments but 1 was given</code>——那个多出来的实参就是自动传入的对象。</div><div class="callout warn"><b>__init__ 拼错</b>写成 <code>__int__</code>、<code>_init_</code> 或 <code>init</code>，创建对象时不会执行，属性全部不存在，之后访问 <code>car.brand</code> 抛 <code>AttributeError</code>。前后各两个下划线，一个都不能少。</div><div class="callout warn"><b>属性赋值漏了 self.</b>在 <code>__init__</code> 里写 <code>brand = brand</code>，只是创建了一个局部变量，对象上没有这个属性。必须是 <code>self.brand = brand</code>。</div><div class="callout warn"><b>直接打印对象只看到地址</b><code>print(car)</code> 输出 <code>&lt;__main__.Car object at 0x...&gt;</code>，因为默认没有「怎么显示自己」的规则。要看内容请打印具体属性，或在类里定义 <code>__str__</code>（属拓展内容，考试不要求）。</div><div class="callout tip"><b>设计类先列名词与动词</b>把需求里的名词挑出来当属性（brand、year、price），动词挑出来当方法（start、update、is_adult）。列不出来说明这个类还不该存在。</div><div class="callout idea" data-ext="ch07-classes-0"><b>常见误解</b><p>方法漏写 <code>self</code>，调用 <code>car.start_engine()</code> 会抛 TypeError——那个多出来的实参就是 Python 自动传入的对象。<code>__init__</code> 前后各两个下划线，拼成 <code>__int__</code> 就退化成普通方法，之后访问属性抛 AttributeError。在 <code>__init__</code> 里写 <code>brand = brand</code> 只创建局部变量，必须是 <code>self.brand = brand</code>。</p></div><div class="callout tip" data-ext="ch07-classes-1"><b>前后衔接</b><p>类是<strong>数据 + 行为</strong>的打包：属性是名词（brand、year），方法是动词（start、is_adult）。多个实例各自独立，<code>self</code> 决定操作哪一个对象。把对象传给普通函数，函数只调用 <code>human.is_adult()</code>，不关心内部属性，规则变化时只改类。调试第一步看属性装没装上：<code>p.__dict__</code> 直接打出属性表，缺哪个就回 <code>__init__</code> 补。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>class</td><td>类</td><td>A template for creating objects.</td></tr><tr><td>object</td><td>对象</td><td>A concrete thing created from a class.</td></tr><tr><td>instance</td><td>实例</td><td>One particular object of a class; car1 is an instance of Car.</td></tr><tr><td>attribute</td><td>属性</td><td>A variable stored in the object: self.brand.</td></tr><tr><td>method</td><td>方法</td><td>A function defined inside a class: start_engine().</td></tr><tr><td>constructor</td><td>构造函数</td><td>__init__ runs automatically when an object is created.</td></tr><tr><td>self</td><td>自身引用</td><td>Refers to the current object inside the class.</td></tr><tr><td>dot notation</td><td>点号访问</td><td>car.year reads an attribute; car.start() calls a method.</td></tr><tr><td>instantiate</td><td>实例化</td><td>Create an object from a class: car = Car("Tesla", 2019).</td></tr><tr><td>object-oriented programming</td><td>面向对象编程</td><td>Organising code around classes and objects.</td></tr><tr><td>state</td><td>状态</td><td>The current values of an object's attributes.</td></tr><tr><td>behaviour</td><td>行为</td><td>What an object can do, defined by its methods.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　定义 <code>Car</code> 类（品牌、颜色、年份 + 启动方法），创建两辆车并输出品牌。</div><p>这是课件 L6E1 的完整结构：构造函数装数据，方法用数据。</p><pre><code>class Car:
+    def __init__(self, brand, color, year):
+        self.brand = brand
+        self.color = color
+        self.year = year
+
+    def start_engine(self):
+        print(self.brand + " says WROOM!")
+
+car1 = Car("Tesla", "Black", 2019)
+car2 = Car("Skoda", "Grey", 2012)
+
+print(car1.brand, car1.color, car1.year)
+print(car2.brand, car2.color, car2.year)
+car1.start_engine()
+car2.start_engine()</code></pre><p>输出：</p><pre><code>Tesla Black 2019
+Skoda Grey 2012
+Tesla says WROOM!
+Skoda says WROOM!</code></pre><p>逐点解释：<code>Car("Tesla", "Black", 2019)</code> 自动调用 <code>__init__</code>，三个值分别挂到 <code>self.brand</code>、<code>self.color</code>、<code>self.year</code>；两个实例互不影响；<code>start_engine</code> 里用 <code>self.brand</code> 取当前对象的品牌，所以同一段代码对两辆车输出不同文字。</p></div><div class="qa"><div class="q">例 2　给 <code>Person</code> 类加一个 <code>birthday()</code> 方法，使年龄加一，并验证对象状态确实变了。</div><p>修改状态的方法要直接写 <code>self.age = self.age + 1</code>，调用后同一个对象再查询就能看到变化。</p><pre><code>class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def birthday(self):
+        self.age = self.age + 1
+
+    def is_adult(self):
+        return self.age &gt;= 18
+
+p = Person("Pekka", 17)
+print(p.name, p.age, p.is_adult())
+p.birthday()
+print(p.name, p.age, p.is_adult())</code></pre><p>输出：</p><pre><code>Pekka 17 False
+Pekka 18 True</code></pre><p>解释：<code>birthday()</code> 没有参数（除 self），也不返回值——它的作用是改状态。这类「只做副作用、不返回值」的方法很常见，调用后要重新读属性来确认效果。</p></div><div class="qa"><div class="q">例 3　写一个 <code>BankAccount</code> 类，支持存款、取款、查余额；取款金额超过余额时拒绝并给出提示。</div><p>把规则写进方法里，调用方就不必自己判断——这是类相对「裸字典」的优势。</p><pre><code>class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance = self.balance + amount
+
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            print("Insufficient funds")
+        else:
+            self.balance = self.balance - amount
+
+    def show(self):
+        print(self.owner, "balance:", self.balance)
+
+acc = BankAccount("Alice", 100)
+acc.deposit(50)
+acc.withdraw(500)
+acc.withdraw(30)
+acc.show()</code></pre><p>输出：</p><pre><code>Insufficient funds
+Alice balance: 120</code></pre><p>解释：初始 100，存 50 得 150；取 500 被拒绝，余额不变；取 30 得 120。注意 <code>__init__</code> 的 <code>balance=0</code> 是默认参数（不可变对象，安全），可以 <code>BankAccount("Bob")</code> 只给名字。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>定义 <code>Rectangle</code> 类（宽、高），带 <code>area()</code> 与 <code>perimeter()</code> 两个方法。</li><li>给 <code>Person</code> 类加一个 <code>greet()</code> 方法，输出 <code>Hi, I am NAME</code>。</li><li>定义 <code>Student</code> 类（姓名、学号、成绩列表），加方法 <code>average()</code> 返回平均分。</li><li>写 <code>Counter</code> 类，有 <code>increment()</code> 与 <code>value()</code> 两个方法，模拟一个计数器。</li><li>把第 5 讲的乘法表程序改写成 <code>MultiplicationTable</code> 类，方法 <code>show(n)</code> 打印 n 行。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>__init__(self, w, h)</code> 存两个属性；<code>area</code> 返回 <code>self.w * self.h</code>；<code>perimeter</code> 返回 <code>2 * (self.w + self.h)</code>。测试 <code>Rectangle(3, 4)</code>：面积 12、周长 14。</p><p><b>2.</b> <code>def greet(self): print("Hi, I am " + self.name)</code>。用「方法内部拼接」而不是返回值，是因为要求是「输出」；若题目说「返回问候语」，就得写 <code>return</code>（第 6 讲的区别）。</p><p><b>3.</b> <code>average</code> 里要防零：<code>if not self.grades: return 0</code>，否则 <code>sum / 0</code> 抛异常。成绩列表是可变对象，直接存引用即可，但若担心外部改动，可在 <code>__init__</code> 里写 <code>self.grades = list(grades)</code>。</p><p><b>4.</b> <code>__init__</code> 里 <code>self.count = 0</code>；<code>increment</code> 里 <code>self.count += 1</code>；<code>value</code> 返回 <code>self.count</code>。三次 <code>increment()</code> 后 <code>value()</code> 应为 3。</p><p><b>5.</b> 方法 <code>show(self, n)</code> 里用双重循环：外层 <code>range(1, n + 1)</code>，内层 <code>range(1, i + 1)</code>，内层 <code>print(..., end="\t")</code>，外层结束后 <code>print()</code>。类在这里只是「把数据和操作打包」的容器，循环逻辑与第 5 讲完全相同。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>类与实例的区别；<code>__init__</code> 自动调用；<code>self</code> 的含义与省略规则；属性与方法的点号访问；多个实例状态独立。</div><div class="callout warn"><b>易错 1　方法忘记 self</b>定义时 <code>def f():</code> 而调用 <code>obj.f()</code> 会多传一个实参，报 <code>TypeError</code>。类里所有实例方法第一个参数都写 <code>self</code>。</div><div class="callout warn"><b>易错 2　属性写在类里而不是 __init__ 里</b>在类体里直接写 <code>brand = "Tesla"</code> 是<b>类属性</b>，所有实例共享；要每个对象一份，必须写 <code>self.brand = ...</code>。两者读起来都能 <code>obj.brand</code>，但改一个会影响全部，非常隐蔽。</div><div class="callout warn"><b>易错 3　__init__ 名字拼错</b>少了任一端的双下划线就不会被自动调用，属性不存在，随后 <code>AttributeError</code>。写完先 <code>print(obj.__dict__)</code> 看属性有没有装上。</div><div class="callout tip"><b>进阶</b><code>__str__</code> 可以自定义 <code>print(obj)</code> 的内容；<code>isinstance(obj, Car)</code> 可以判断类型。两者都超出本课考点，但读课件之外的代码时会遇到。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">操作清单</h2><h3 id="s16">定义类之前</h3><ol class="steps"><li>列出需求里的名词 → 这些是属性</li><li>列出需求里的动词 → 这些是方法</li><li>确认哪些数据必须「每个对象一份」→ 写进 <code>__init__</code> 并用 <code>self.</code></li><li>确认哪些规则应该由类自己守 → 写成方法，而不是让调用方判断</li></ol><h3 id="s17">写完后的检查</h3><ul class="checklist"><li>类名首字母大写，<code>__init__</code> 前后各两个下划线</li><li>每个方法第一个参数都是 <code>self</code></li><li>所有属性赋值都写了 <code>self.</code></li><li>创建对象时实参个数与 <code>__init__</code> 的参数（不含 self）一致</li><li>打印对象时输出的是属性而不是 <code>&lt;... object at 0x...&gt;</code></li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Chapter 6 Part 1 - Introduction to Classes.pdf</td><td>p2–p4</td><td>OOP 的定位、类与实例的比喻、属性/实例变量、Python 中一切皆对象</td></tr><tr><td>Chapter 6 Part 2 - More on classes.pdf</td><td>p2–p7</td><td>class / object / attribute / method 四术语、点号访问、<code>__init__</code> 构造函数、<code>self</code>、创建对象</td></tr><tr><td>Chapter 6 - Part 3 - More Code Examples on Classes.pdf</td><td>p2</td><td>Person 类的属性与方法清单：get_name/get_age/get_country/is_adult/update_age/update_country</td></tr><tr><td>L6E1.py</td><td>全文</td><td>Car 类完整示例、两个实例、方法读取属性</td></tr><tr><td>L6E2.py / example.py</td><td>全文</td><td>Person 类完整示例、更新状态、对象作为函数参数</td></tr></table><p><b>跳过项：</b>Part 1 的 1980 年代配图、Part 2 的类图截图只有图片没有新文字；Moodle 的作业与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b>类属性与实例属性的区别、<code>__dict__</code> 查看属性、<code>isinstance</code> 与 <code>__str__</code> 的提及，都是围绕「属性从哪里来」的边界补充，不引入新考点。</p></section><div class="lnav"><a class="prev" href="ch06-functions.html">← ⑥ 函数与参数传递</a><a class="next" href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

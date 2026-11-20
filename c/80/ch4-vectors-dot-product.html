@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 4 章 · 向量、点积与两个不等式 · 80</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4020 工程数学 II</a> / <a href="part-4.html">第 4 章 向量代数</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节在整门课中的位置</a><a class="toc-l3" href="#s2">8.1 标量与向量</a><a class="toc-l3" href="#s3">8.2 向量的表示与模</a><a class="toc-l3" href="#s4">8.3 向量加法</a><a class="toc-l3" href="#s5">8.4 数乘与减法</a><a class="toc-l3" href="#s6">8.5 二维向量的分量表示</a><a class="toc-l3" href="#s7">8.6 运算性质</a><a class="toc-l3" href="#s8">8.7 模与单位向量</a><a class="toc-l3" href="#s9">8.8 标准基向量</a><a class="toc-l3" href="#s10">8.9 三维向量</a><a class="toc-l3" href="#s11">8.10 点积的定义</a><a class="toc-l3" href="#s12">8.11 核心定理：u·v = |u||v|cos θ</a><a class="toc-l3" href="#s13">8.12 求夹角与判正交</a><a class="toc-l3" href="#s14">8.13 柯西–施瓦茨不等式</a><a class="toc-l3" href="#s15">8.14 三角不等式</a><a class="toc-l3" href="#s16">8.15 常见误解</a><a class="toc-l2" href="#s17">方法与检查清单</a><a class="toc-l3" href="#s18">两类向量题的固定流程</a><a class="toc-l3" href="#s19">交卷前自查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch1-parametric-curves.html">第 1 章 · 平面曲线与参数方程</a><a href="ch1-arc-polar.html">第 1 章 · 弧长、旋转曲面与极坐标</a><a href="ch2-cyl-spherical.html">第 2 章 · 柱坐标与球坐标</a><a href="ch2-matrices.html">第 2 章 · 矩阵、特殊矩阵与几何变换</a><a href="ch3-determinant-inverse.html">第 3 章 · 行列式、伴随矩阵与逆矩阵</a><a href="ch3-gaussian-elimination.html">第 3 章 · 线性方程组与高斯消元</a><a href="ch3-eigenvalues-cramer.html">第 3 章 · 特征值与克拉默法则</a><a class="toc-l3" href="ch4-vectors-dot-product.html">▸ 第 4 章 · 向量、点积与两个不等式</a></div></aside><article><h1>第 4 章 · 向量、点积与两个不等式</h1><p class="lead">Vectors, Dot Product, Cauchy-Schwarz and Triangle Inequalities <span class="badge mute">80</span> <span class="badge mute">第 8 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 向量代数</a></p><p class="src">原始文件：<code>Topic 4/EMII_Week4_Lecture1.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>前七讲的对象都是「数」或「数表」，本节换成一类新的对象：<b>向量</b>。它与标量的根本差别是带方向——力、速度、位移都必须同时说明大小与方向。向量一旦有了坐标表示，加法与数乘就变成逐分量运算，而「点积」则把两个向量压缩成一个数，用来回答问题：两个方向夹角多少？是否垂直？一个向量在另一个方向上投影多长？</p><p>学完本节你应当能够：</p><ul class="checklist"><li>区分标量与向量，说明向量的模、方向与相等条件</li><li>用三角形法则与平行四边形法则作向量加法，并说明数乘对方向的影响</li><li>在二维、三维坐标中用分量做加法、减法、数乘，并求两点间的向量</li><li>用 <code>|u| = √(a² + b²)</code> 求模，用 <code>û = u/|u|</code> 求同向单位向量</li><li>用 <code>i, j, k</code> 表示向量并做线性组合</li><li>计算点积，用 <code>u·v = |u||v|cos θ</code> 求夹角、判断正交</li><li>叙述并证明柯西–施瓦茨不等式与三角不等式，并用它们求最值</li></ul><p>与整门课的关系：本节是「几何 + 代数」的合流点。参数曲线的切向量、曲面的法向量、矩阵变换的特征方向，都是向量；而点积给出的投影与夹角，是把几何问题转成方程的工具。本课件的向量部分到此为止，叉积与向量场不在本节范围。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">8.1 标量与向量</h3><p><b>标量</b>（scalar）只有大小、没有方向：长度、面积、体积、质量、速率、温度。它们之间只有大小的比较与加减乘除。</p><p><b>向量</b>（vector）同时有大小与方向：力、速度、加速度、位移。两个大小相同但方向不同的力，效果完全不同——这是向量必须与标量分开处理的原因。</p><p>课件的两个物理例子很直观：水平向右推一个质量 M 的力 F，以及竖直上抛小球的初速度 v 与重力加速度 g（9.8 m/s²，方向向下）。速度与加速度都是向量，而且方向相反——这正是小球会减速的原因。</p><h3 id="s3">8.2 向量的表示与模</h3><p>向量用一支<b>箭头</b>表示：箭头的长度表示大小，箭头指向表示方向。起点 A 叫<b>尾</b>（tail），终点 B 叫<b>头</b>（head），记作 <code>AB→</code>；也可以用小写粗体 <code>v</code> 或带箭头的小写字母表示。</p><p>向量的<b>大小</b>叫<b>模</b>（magnitude），记作 <code>|v|</code> 或 <code>‖v‖</code>，就是箭头的长度。模是一个非负数，模为零的向量叫零向量。</p><p>两个向量<b>相等</b>的条件是：<b>长度相同且方向相同</b>。注意这里不要求起点相同——向量是「自由向量」，可以平移。课件用平行四边形 ABCD 说明：<code>AB→ = DC→</code>，两条边虽然位置不同，但长度与方向都一样。</p><h3 id="s4">8.3 向量加法</h3><p>加法有两种作图法，结果相同：</p><p><b>三角形法则</b>：把 v 的尾接到 u 的头上，从 u 的尾到 v 的头画出的向量就是 u + v。课件用机器人从 A 到 B、再从 B 到 C 作比喻——两段位移合起来等于直接从 A 到 C 的位移，即 <code>AC→ = AB→ + BC→</code>。</p><p><b>平行四边形法则</b>：把 u 与 v 的尾放在同一点 O，以它们为邻边作平行四边形，从 O 出发的对角线就是 u + v。课件指出：若 u、v 是作用在同一点的两个力，则合力就是 u + v。</p><p>两种法则的一致性可以用「平移不改变向量」来解释：三角形法则里把 v 平移到 u 的头上，正是平行四边形的一条边。</p><h3 id="s5">8.4 数乘与减法</h3><p><b>数乘</b>：给定向量 u 与实数 k，<code>ku</code> 是一个向量，其模为 <code>|k|·|u|</code>，方向规则是</p><ul><li>k &gt; 0：与 u 同向；</li><li>k &lt; 0：与 u 反向；</li><li>k = 0：得到零向量（方向任意）。</li></ul><p>因此 <code>2u</code> 是把 u 拉长一倍，<code>−u</code> 是与 u 等长反向的向量，<code>½u</code> 是长度减半、方向不变。</p><p><b>减法</b>：<code>u − v = u + (−v)</code>。几何上，把 v 反向后再做加法；等价地，从 v 的头指向 u 的头的向量就是 u − v。课件用三角形 ABC 演示：<code>AB→ − AC→ = AB→ + CA→ = CB→</code>。</p><h3 id="s6">8.5 二维向量的分量表示</h3><p>在直角坐标系中，任何一个平面向量都可以用它的 x、y 分量表示：<code>u = ⟨a, b⟩</code>。</p><p>由两点确定向量：若 A = (a, b)、B = (c, d)，则</p><p><b><code>AB→ = ⟨c − a, d − b⟩</code></b></p><p>口诀是「终点减起点」。课件强调，把尾放在原点时得到的向量 <code>OP→ = ⟨c − a, d − b⟩</code> 叫点 P 的<b>位置向量</b>（position vector），其中 P = (c − a, d − b)。位置向量把「点」与「向量」对应起来，是后面解析几何的常用桥梁。</p><p>分量形式的运算规则极其简单——逐分量做：</p><ul><li>加法：<code>⟨a, b⟩ + ⟨c, d⟩ = ⟨a + c, b + d⟩</code>；</li><li>数乘：<code>k⟨a, b⟩ = ⟨ka, kb⟩</code>；</li><li>零向量：<code>0 = ⟨0, 0⟩</code>；</li><li>负向量：<code>−⟨a, b⟩ = ⟨−a, −b⟩</code>；</li><li>减法：<code>⟨a, b⟩ − ⟨c, d⟩ = ⟨a − c, b − d⟩</code>。</li></ul><p>课件例：<code>u = ⟨1, 2⟩</code>、<code>v = ⟨4, −3⟩</code>，则</p><p><code>u + v = ⟨1 + 4, 2 − 3⟩ = ⟨5, −1⟩</code>；</p><p><code>½u = ⟨½, 1⟩</code>；</p><p><code>3u − 2v = ⟨3, 6⟩ − ⟨8, −6⟩ = ⟨−5, 12⟩</code>。</p><p>三个结果与课件一致。这类题没有技巧，只要不把符号弄丢就能全对。</p><h3 id="s7">8.6 运算性质</h3><p>向量加法与数乘满足七条代数律，它们让向量运算「像数一样」可以自由移项、合并：</p><ul><li><code>u + v = v + u</code>（交换律）；</li><li><code>(u + v) + w = u + (v + w)</code>（结合律）；</li><li><code>u − u = 0</code>；</li><li><code>u + 0 = u</code>；</li><li><code>k(u + v) = ku + kv</code>（数乘对加法分配）；</li><li><code>(k + l)u = ku + lu</code>（数乘对系数分配）；</li><li><code>0u = 0 = k0</code>。</li></ul><p>这七条都可以用分量形式逐项验证，例如第一条：<code>⟨a₁, b₁⟩ + ⟨a₂, b₂⟩ = ⟨a₁ + a₂, b₁ + b₂⟩ = ⟨a₂ + a₁, b₂ + b₁⟩</code>，而实数的加法可交换，故成立。</p><h3 id="s8">8.7 模与单位向量</h3><p>由勾股定理，二维向量 <code>u = ⟨a, b⟩</code> 的模是</p><p><b><code>|u| = √(a² + b²)</code></b></p><p>课件例：<code>u = ⟨4, −3⟩</code>，<code>|u| = √(16 + 9) = √25 = 5</code>。</p><p>模与数乘的关系：<code>|ku| = |k|·|u|</code>。绝对值不能省——k 为负时方向反转，但长度只被 |k| 倍。</p><p><b>单位向量</b>（unit vector）是模为 1 的向量。给定非零向量 u，与它同向的单位向量是</p><p><b><code>û = u / |u|</code></b></p><p>这个过程叫「单位化」（normalization）。课件例：<code>4i − 3j</code> 的模是 5，故同向单位向量为 <code>(4/5)i − (3/5)j</code>。检验：<code>(4/5)² + (−3/5)² = 16/25 + 9/25 = 1</code> ✓。</p><h3 id="s9">8.8 标准基向量</h3><p>平面内有两个特殊向量，它们分别指向 x 轴、y 轴正方向，且模为 1：</p><p><b><code>i = ⟨1, 0⟩</code>，<code>j = ⟨0, 1⟩</code></b></p><p>它们叫<b>标准基向量</b>（standard basis vectors），因为它们构成一组「基」：任何平面向量都能唯一地写成它们的线性组合。</p><p><b>证明：<code>⟨a, b⟩ = ai + bj</code>。</b></p><p><code>⟨a, b⟩ = ⟨a, 0⟩ + ⟨0, b⟩ = a⟨1, 0⟩ + b⟨0, 1⟩ = ai + bj</code>。</p><p>第一步把向量拆成 x 分量与 y 分量，第二步用数乘提出系数，第三步代回定义。这个证明只有三行，但它把「坐标」与「线性组合」两种语言连接了起来。</p><p>用基向量算题往往比用尖括号更不容易错，因为 <code>i</code> 与 <code>j</code> 就像两个不同的「单位」，可以各自合并同类项。课件例：<code>u = i + 2j</code>、<code>v = 4i − 3j</code>，求 <code>3u − 2v</code>：</p><p><code>3u − 2v = (3i + 6j) − (8i − 6j) = −5i + 12j</code>。</p><p>结果与分量法 <code>⟨−5, 12⟩</code> 完全一致。</p><h3 id="s10">8.9 三维向量</h3><p>三维空间中的向量用三个分量表示：<code>u = ⟨x, y, z⟩</code>。前面所有代数规则都可以逐字搬到三维：</p><ul><li>零向量 <code>0 = ⟨0, 0, 0⟩</code>；</li><li>负向量 <code>−⟨x, y, z⟩ = ⟨−x, −y, −z⟩</code>；</li><li>模 <code>|⟨x, y, z⟩| = √(x² + y² + z²)</code>；</li><li>减法 <code>⟨x₁, y₁, z₁⟩ − ⟨x₂, y₂, z₂⟩ = ⟨x₁ − x₂, y₁ − y₂, z₁ − z₂⟩</code>。</li></ul><p>两点之间的向量：<code>A = (x₁, y₁, z₁)</code>、<code>B = (x₂, y₂, z₂)</code>，则</p><p><b><code>AB→ = ⟨x₂ − x₁, y₂ − y₁, z₂ − z₁⟩</code></b></p><p>课件例：<code>A = (3, −2, 4)</code>、<code>B = (5, 1, 0)</code>，则</p><p><code>AB→ = ⟨5 − 3, 1 + 2, 0 − 4⟩ = ⟨2, 3, −4⟩</code>，其位置向量的头在 P = (2, 3, −4)；</p><p><code>|AB→| = √(4 + 9 + 16) = √29</code>。</p><p>三维的标准基是 <code>i = ⟨1, 0, 0⟩</code>、<code>j = ⟨0, 1, 0⟩</code>、<code>k = ⟨0, 0, 1⟩</code>，于是 <code>⟨x, y, z⟩ = xi + yj + zk</code>。</p><h3 id="s11">8.10 点积的定义</h3><p>两个向量的<b>点积</b>（dot product，也叫内积 inner product 或数量积 scalar product）是一个<b>数</b>，定义为对应分量乘积之和：</p><p><b><code>u·v = x₁x₂ + y₁y₂ + z₁z₂</code></b></p><p>要点有三：结果不是向量而是数；分量必须一一对应；三维时多一项。平面向量把 z 项去掉即可。</p><p>点积满足五条性质：</p><ul><li><code>u·v = v·u</code>（交换律）；</li><li><code>u·(v + w) = u·v + u·w</code>（对加法分配）；</li><li><code>(ku)·v = k(u·v) = u·(kv)</code>（数乘可提出）；</li><li><code>u·u = |u|²</code>（自己点自己等于模的平方）；</li><li><code>0·u = 0</code>。</li></ul><p>第四条特别有用：它把「模」与「点积」联系起来，所有涉及长度的证明都可以用它把平方展开。</p><h3 id="s12">8.11 核心定理：u·v = |u||v|cos θ</h3><p>若 θ 是 u 与 v 之间的夹角，则</p><p><b><code>u·v = |u|·|v|·cos θ</code></b></p><p>这条定理把「代数计算」与「几何角度」连接起来，是整个向量部分的核心。</p><p><b>证明（余弦定理法）。</b>对 0 &lt; θ &lt; π，考虑由 u、v、u − v 构成的三角形，由余弦定理：</p><p><code>|u − v|² = |u|² + |v|² − 2|u||v|cos θ</code></p><p>另一方面，用点积展开左边：</p><p><code>|u − v|² = (u − v)·(u − v) = u·u − u·v − v·u + v·v = |u|² + |v|² − 2u·v</code></p><p>两式比较，得 <code>2u·v = 2|u||v|cos θ</code>，即结论成立。</p><p><b>补充分情形。</b>当 θ = 0 时，<code>v = ku</code>（k &gt; 0），<code>u·v = k|u|² = |u||v|</code>，而 <code>cos 0 = 1</code>，等式成立；当 θ = π 时，<code>v = ku</code>（k &lt; 0），<code>u·v = k|u|² = −|u||v|</code>，而 <code>cos π = −1</code>，同样成立。</p><p><b>推论（正交判据）。</b><code>u·v = 0</code> ⟺ u 与 v 垂直（orthogonal）。因为 <code>|u|</code>、<code>|v|</code> 非零时，<code>u·v = 0</code> 只能来自 <code>cos θ = 0</code>，即 θ = 90°。零向量与任何向量都垂直（<code>0·u = 0</code> 恒成立）。</p><h3 id="s13">8.12 求夹角与判正交</h3><p>由定理解出 θ：</p><p><b><code>θ = cos⁻¹(u·v / (|u||v|))</code></b></p><p>课件例：<code>u = 2i − j + 2k</code>、<code>v = i − 2j + k</code>。</p><p><code>u·v = 2×1 + (−1)(−2) + 2×1 = 2 + 2 + 2 = 6</code></p><p><code>|u| = √(4 + 1 + 4) = 3</code>，<code>|v| = √(1 + 4 + 1) = √6</code></p><p><code>cos θ = 6/(3√6) = 2/√6 ≈ 0.8165</code>，故 <code>θ ≈ 35.26°</code>，与课件一致。</p><p><b>判正交的例子。</b><code>a = ⟨4, 5, 3⟩</code>、<code>b = ⟨2, −3, 1⟩</code>：</p><p><code>a·b = 8 − 15 + 3 = −4 ≠ 0</code>，故二者<b>不</b>垂直（夹角为钝角）。</p><p><b>Task 的两问。</b><code>i·j = 1×0 + 0×1 + 0×0 = 0</code>，故 i ⊥ j ✓；</p><p><code>(2i − j + 2k)·(i − 2j − 2k) = 2 + 2 − 4 = 0</code>，故二者垂直 ✓。</p><h3 id="s14">8.13 柯西–施瓦茨不等式</h3><p>不等式：两个向量点积的绝对值不超过它们模的乘积：</p><p><b><code>|u·v| ≤ |u|·|v|</code></b></p><p>它直接来自 <code>u·v = |u||v|cos θ</code>：因为 <code>|cos θ| ≤ 1</code>，两边取绝对值即得。等号成立当且仅当两向量共线（同向或反向）。</p><p><b>应用：求最值。</b>课件例 1：设实数 x、y、z 满足 <code>x + 2y + 3z = 1</code>，求 <code>x² + y² + z²</code> 的最小值。</p><p>取 <code>u = ⟨x, y, z⟩</code>、<code>v = ⟨1, 2, 3⟩</code>。由柯西–施瓦茨：</p><p><code>|u·v|² ≤ |u|²·|v|²</code>，即 <code>(x + 2y + 3z)² ≤ (x² + y² + z²)(1 + 4 + 9)</code>。</p><p>代入条件 <code>x + 2y + 3z = 1</code>：<code>1 ≤ 14(x² + y² + z²)</code>，故</p><p><b><code>x² + y² + z² ≥ 1/14</code></b>，最小值为 1/14，与课件一致。</p><p>取等条件是两个向量共线，即 <code>⟨x, y, z⟩ = t⟨1, 2, 3⟩</code>。代入约束 <code>t(1 + 4 + 9) = 1</code> 得 <code>t = 1/14</code>，此时 <code>x² + y² + z² = t²·14 = 1/14</code>，取等确实能达到——这一点很重要，否则「下界」只是下界，未必是「最小值」。</p><h3 id="s15">8.14 三角不等式</h3><p>不等式：两个向量之和的模不超过模之和：</p><p><b><code>|u + v| ≤ |u| + |v|</code></b></p><p>几何意义极其直白：三角形两边之和大于第三边（退化时相等）。课件用 u、v、u + v 组成的三角形说明这一点。</p><p><b>证明（点积法）。</b></p><p><code>|u + v|² = (u + v)·(u + v) = u·u + u·v + v·u + v·v = |u|² + 2u·v + |v|²</code>。</p><p>用柯西–施瓦茨 <code>u·v ≤ |u·v| ≤ |u||v|</code>：</p><p><code>|u + v|² ≤ |u|² + 2|u||v| + |v|² = (|u| + |v|)²</code>。</p><p>两边开平方（都非负）即得 <code>|u + v| ≤ |u| + |v|</code>。</p><p>这个证明的结构值得记住：<b>先把模平方、用点积展开、再用柯西–施瓦茨放缩、最后开方</b>。凡是「证明关于长度的不等式」，几乎都是这四步。</p><h3 id="s16">8.15 常见误解</h3><ul><li><b>把点积当成向量</b>：点积的结果是一个数，不能继续与向量相加。若题目要求「垂直的向量」，写一个数上去必错。</li><li><b>夹角公式漏分母</b>：<code>θ = cos⁻¹(u·v/(|u||v|))</code>，少写 <code>|u||v|</code> 会得到大于 1 的余弦值，反三角函数直接报错。</li><li><b>正交判定写成 u·v = 1</b>：垂直的判据是点积为 <b>0</b>，不是 1。</li><li><b>把 <code>|u + v|</code> 直接写成 <code>|u| + |v|</code></b>：这是三角不等式的等号情形，只在同向时成立。一般情形必须先用点积展开。</li><li><b>单位化时只除以一个分量</b>：<code>û = u/|u|</code> 是对<b>整个向量</b>除以模，每个分量都要除。</li><li><b>柯西–施瓦茨取等条件忘记验证</b>：求出下界后要检查「等号能否取到」，否则只能说「不小于」，不能说「最小值为」。</li></ul></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>scalar</td><td>标量</td><td>A quantity with magnitude only: length, mass, temperature.</td></tr><tr><td>vector</td><td>向量</td><td>A quantity with both magnitude and direction: force, velocity, displacement.</td></tr><tr><td>magnitude</td><td>模</td><td>|v|, the length of the arrow representing the vector.</td></tr><tr><td>equal vectors</td><td>相等向量</td><td>Same length and same direction, regardless of position.</td></tr><tr><td>triangle law</td><td>三角形法则</td><td>Place the tail of v at the head of u; u + v runs from the tail of u to the head of v.</td></tr><tr><td>parallelogram law</td><td>平行四边形法则</td><td>The diagonal of the parallelogram spanned by u and v is u + v.</td></tr><tr><td>scalar multiple</td><td>数乘</td><td>ku has magnitude |k||u|; direction is the same if k &gt; 0 and opposite if k &lt; 0.</td></tr><tr><td>position vector</td><td>位置向量</td><td>The vector from the origin to a point P.</td></tr><tr><td>unit vector</td><td>单位向量</td><td>û = u/|u|, a vector of length 1 in the direction of u.</td></tr><tr><td>standard basis vectors</td><td>标准基向量</td><td>i = ⟨1,0⟩, j = ⟨0,1⟩ in the plane and additionally k = ⟨0,0,1⟩ in space.</td></tr><tr><td>dot product</td><td>点积</td><td>u·v = x₁x₂ + y₁y₂ + z₁z₂; also called inner or scalar product.</td></tr><tr><td>orthogonal</td><td>正交</td><td>u·v = 0; the angle between the vectors is 90°.</td></tr><tr><td>angle between vectors</td><td>向量夹角</td><td>θ = cos⁻¹(u·v/(|u||v|)).</td></tr><tr><td>Cauchy-Schwarz inequality</td><td>柯西–施瓦茨不等式</td><td>|u·v| ≤ |u||v|, with equality when the vectors are collinear.</td></tr><tr><td>triangle inequality</td><td>三角不等式</td><td>|u + v| ≤ |u| + |v|.</td></tr><tr><td>normalization</td><td>单位化</td><td>Dividing a vector by its magnitude to obtain a unit vector.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　设 <code>u = ⟨2, −1, 3⟩</code>、<code>v = ⟨1, 4, −2⟩</code>，求 <code>2u − 3v</code>、<code>|u|</code>、<code>u·v</code> 与二者的夹角。</div><p><b>线性组合。</b><code>2u = ⟨4, −2, 6⟩</code>，<code>3v = ⟨3, 12, −6⟩</code>，故 <code>2u − 3v = ⟨1, −14, 12⟩</code>。</p><p><b>模。</b><code>|u| = √(4 + 1 + 9) = √14</code>，<code>|v| = √(1 + 16 + 4) = √21</code>。</p><p><b>点积。</b><code>u·v = 2×1 + (−1)×4 + 3×(−2) = 2 − 4 − 6 = −8</code>。</p><p><b>夹角。</b><code>cos θ = −8/(√14·√21) = −8/√294 ≈ −0.4665</code>，故 <code>θ ≈ 117.8°</code>。点积为负，夹角为钝角，与结果一致。</p></div><div class="qa"><div class="q">例 2　已知 <code>u = ⟨1, 2, 2⟩</code>，求与 u 同向的单位向量，并求 u 与 <code>w = ⟨2, 1, −2⟩</code> 的夹角。</div><p><b>单位化。</b><code>|u| = √(1 + 4 + 4) = 3</code>，故 <code>û = ⟨1/3, 2/3, 2/3⟩</code>。检验：<code>(1 + 4 + 4)/9 = 1</code> ✓。</p><p><b>点积。</b><code>u·w = 2 + 2 − 4 = 0</code>，故 u ⊥ w，夹角为 90°。</p><p><b>点评。</b>点积为 0 是最快的正交判据，不必算模与反余弦。本题若硬套夹角公式，会得到 <code>cos θ = 0</code>，一样能得出结论，但多算了两步。</p></div><div class="qa"><div class="q">例 3　已知 <code>|u| = 3</code>、<code>|v| = 5</code>、<code>u·v = 6</code>，求 <code>|u + v|</code> 与 <code>|u − v|</code>。</div><p><b>用点积展开。</b><code>|u + v|² = |u|² + 2u·v + |v|² = 9 + 12 + 25 = 46</code>，故 <code>|u + v| = √46</code>。</p><p><code>|u − v|² = |u|² − 2u·v + |v|² = 9 − 12 + 25 = 22</code>，故 <code>|u − v| = √22 ≈ 4.69</code>。</p><p><b>验算三角不等式。</b><code>√46 ≈ 6.78 ≤ 3 + 5 = 8</code> ✓。两条对角线长度的平方和为 <code>46 + 22 = 68 = 2(9 + 25)</code>，正是平行四边形定律 <code>|u+v|² + |u−v|² = 2(|u|² + |v|²)</code>——这个恒等式可以用来检查答案。</p></div><div class="qa"><div class="q">例 4　用柯西–施瓦茨不等式求 <code>2x + 3y + z</code> 在条件 <code>x² + y² + z² = 1</code> 下的最大值。</div><p><b>配向量。</b>取 <code>u = ⟨2, 3, 1⟩</code>、<code>v = ⟨x, y, z⟩</code>，则 <code>u·v = 2x + 3y + z</code>，<code>|v| = 1</code>，<code>|u| = √14</code>。</p><p><b>用不等式。</b><code>|2x + 3y + z| ≤ √14 · 1 = √14</code>，故最大值为 <code>√14</code>。</p><p><b>验证取等。</b>取等要求 <code>v</code> 与 <code>u</code> 同向，即 <code>⟨x, y, z⟩ = ⟨2, 3, 1⟩/√14</code>。代入 <code>x² + y² + z² = (4 + 9 + 1)/14 = 1</code> ✓，故最大值确实能取到。</p><p><b>点评。</b>柯西–施瓦茨的用法固定：把「线性组合」看成点积，把「平方和」看成模的平方，然后套不等式。取等条件必须验证，否则无法排除「上界取不到」的可能。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>设 <code>u = ⟨3, −1⟩</code>、<code>v = ⟨−2, 5⟩</code>，求 <code>u + v</code>、<code>2u − v</code> 与 <code>|u|</code>。</li><li>求与 <code>6i − 8j</code> 同向的单位向量。</li><li>判断 <code>a = ⟨1, 2, −3⟩</code> 与 <code>b = ⟨2, −1, 0⟩</code> 是否垂直。</li><li>求 <code>u = ⟨1, −1, 0⟩</code> 与 <code>v = ⟨0, 1, −1⟩</code> 的夹角。</li><li>用柯西–施瓦茨不等式证明：对任意实数 a、b，有 <code>a² + b² ≥ (a + b)²/2</code>。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>u + v = ⟨1, 4⟩</code>；<code>2u = ⟨6, −2⟩</code>，故 <code>2u − v = ⟨8, −7⟩</code>；<code>|u| = √(9 + 1) = √10</code>。</p><p><b>2.</b> <code>|6i − 8j| = √(36 + 64) = 10</code>，故单位向量为 <code>(6/10)i − (8/10)j = (3/5)i − (4/5)j</code>，即 <code>⟨0.6, −0.8⟩</code>。</p><p><b>3.</b> <code>a·b = 2 − 2 + 0 = 0</code>，故二者垂直 ✓。</p><p><b>4.</b> <code>u·v = 0 − 1 + 0 = −1</code>；<code>|u| = √2</code>，<code>|v| = √2</code>；<code>cos θ = −1/2</code>，故 <code>θ = 120°</code>。</p><p><b>5.</b> 取 <code>u = ⟨a, b⟩</code>、<code>v = ⟨1, 1⟩</code>：<code>|a + b| ≤ √(a² + b²)·√2</code>，两边平方得 <code>(a + b)² ≤ 2(a² + b²)</code>，即 <code>a² + b² ≥ (a + b)²/2</code>。取等当 <code>a = b</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>向量的加减与数乘（含分量式与 i/j/k 式）、模与单位化、点积计算、夹角与正交判定——这些是必拿分的基础题。柯西–施瓦茨与三角不等式的应用（求最值、证明不等式）属常见综合题。</div><div class="callout warn"><b>易错一：点积写成向量</b>点积的结果是数。若题目问「与 v 垂直的向量」，不能拿一个数当答案。</div><div class="callout warn"><b>易错二：夹角公式漏分母</b><code>cos θ = u·v/(|u||v|)</code>。少写分母会让余弦超出 [−1, 1]，反三角函数无解。</div><div class="callout warn"><b>易错三：三角不等式当等式用</b><code>|u + v| = |u| + |v|</code> 只在同向时成立。一般情形要先用点积展开再放缩。</div><div class="callout tip"><b>进阶：平行四边形定律自检</b><code>|u + v|² + |u − v|² = 2(|u|² + |v|²)</code>。算完和与差的模，代进这个恒等式就能立刻发现算术错误，比重新算一遍快。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s17">方法与检查清单</h2><h3 id="s18">两类向量题的固定流程</h3><ol class="steps"><li>代数题：先写出分量形式，逐分量做加减与数乘</li><li>求模：把各分量平方、相加、开方，注意结果非负</li><li>求单位向量：先算模，再让每个分量除以模</li><li>点积题：先算 <code>u·v</code> 与两个模，再代夹角公式</li><li>判正交：只算点积，等于 0 即垂直，不必算模</li><li>不等式题：把线性组合看成点积、平方和看成模平方，套柯西–施瓦茨</li><li>取等条件必须回代验证，确认最值可达</li></ol><h3 id="s19">交卷前自查</h3><ul class="checklist"><li>点积结果是数还是向量，答案形式是否匹配题目要求</li><li>模是否为正数，单位向量的模是否等于 1</li><li>夹角是否用度数或弧度统一表述</li><li>三角不等式与柯西–施瓦茨的取等条件是否说明</li><li>i、j、k 合并同类项时是否漏项</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码 / 位置</th><th>覆盖的知识点</th></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p2</td><td>标量与向量的区别及物理例子</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p3–p5</td><td>向量的箭头表示、模、相等向量与平行四边形例子</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p6–p7</td><td>力与加速度的两个物理示例</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p8–p11</td><td>三角形法则、平行四边形法则、数乘、减法</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p12–p18</td><td>二维分量、位置向量、分量加法与数乘、零向量与负向量、例、七条运算性质</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p19–p23</td><td>模的公式与例子、|ku| = |k||u|、标准基 i 与 j、线性组合的证明、单位向量</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p24–p27</td><td>三维向量、两点间向量、模、三维标准基 i、j、k</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p28–p29</td><td>点积定义与五条性质</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p30–p33</td><td>定理 u·v = |u||v|cos θ、余弦定理证明、θ = 0 与 π 的补充分情形</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p34–p36</td><td>夹角公式与算例、正交判定、Task</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p37–p38</td><td>柯西–施瓦茨不等式与最值例（1/14）</td></tr><tr><td>Topic 4/EMII_Week4_Lecture1.pdf</td><td>p39–p40</td><td>三角不等式及其点积证明</td></tr><tr><td>（跳过）_info_*.html.txt</td><td>全篇</td><td>Moodle 快照，无讲义内容</td></tr><tr><td>（拓展）</td><td>—</td><td>8.13 的取等条件讨论、8.14 的四步证明结构、例 3 的平行四边形定律自检属方法性补充；叉积与向量场不在本课件范围，未纳入</td></tr></table></section><div class="lnav"><a class="prev" href="ch3-eigenvalues-cramer.html">← 第 3 章 · 特征值与克拉默法则</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

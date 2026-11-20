@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑨ 文件读写与 CSV · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-5.html">第 5 章 文件、模块与异常</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、为什么需要文件</a><a class="toc-l2" href="#s3">二、open()：打开文件并拿到句柄</a><a class="toc-l2" href="#s4">三、读文件</a><a class="toc-l3" href="#s5">3.1 readline()：一次一行</a><a class="toc-l3" href="#s6">3.2 用循环读到结尾</a><a class="toc-l3" href="#s7">3.3 strip()：去掉行尾换行与空白</a><a class="toc-l3" href="#s8">3.4 readlines()：一次读成列表</a><a class="toc-l3" href="#s9">3.5 read()：一次读完整个文件</a><a class="toc-l2" href="#s10">四、写文件</a><a class="toc-l2" href="#s11">五、追加：a 模式</a><a class="toc-l2" href="#s12">六、CSV：用逗号分列的文本</a><a class="toc-l3" href="#s13">6.1 结构</a><a class="toc-l3" href="#s14">6.2 读 CSV：strip + split</a><a class="toc-l3" href="#s15">6.3 追加一行</a><a class="toc-l3" href="#s16">6.4 删除一行（并说明示例中的隐患）</a><a class="toc-l2" href="#s17">七、关闭文件与资源管理</a><a class="toc-l2" href="#s18">八、路径与编码</a><a class="toc-l2" href="#s19">九、常见错误与调试</a><a class="toc-l2" href="#s20">操作清单</a><a class="toc-l3" href="#s21">读写文件之前</a><a class="toc-l3" href="#s22">调试文件问题</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a class="toc-l3" href="ch09-files-csv.html">▸ ⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑨ 文件读写与 CSV</h1><p class="lead">Files, Text I/O and CSV <span class="badge mute">30352</span> <span class="badge mute">第 9 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 文件、模块与异常</a></p><p class="src">原始文件：<code>Files.pdf</code> <code>Reading_from_file.pdf</code> <code>Writing_to_file.pdf</code> <code>Appending_.pdf</code> <code>CSV.pdf</code> <code>13_Chapter 7_1_Chapter 7 Code Examples_read_csv.py</code> <code>13_Chapter 7_1_Chapter 7 Code Examples_delete_from_csv.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前面所有程序的数据都只活到程序结束。这一讲让数据活下来：把结果写进文件，下次运行时再读回来。文件也是「批量数据」的入口——项目作业里的车辆、客户、交易，全都存在文本文件里。</p><p>技术上它把三件事合在一起：字符串处理（第 3 讲的 <code>strip</code> / <code>split</code>）、容器（第 8 讲的列表与矩阵）、循环（第 5 讲的逐行处理）。可以说这一讲是前面内容的第一次综合应用。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说出文本文件与二进制文件的区别，并判断本课处理哪一类</li><li>用 <code>open</code> 的三种模式打开文件，解释 <code>w</code> 为什么会清空内容</li><li>用 <code>readline</code> 循环与 <code>readlines</code> 两种方式读文件，并处理行尾换行</li><li>用 <code>write</code> / <code>writelines</code> 写文件，自行补 <code>\n</code></li><li>把 CSV 读成「列表的列表」，做筛选、追加与整体重写</li><li>每个 <code>open</code> 都配上 <code>close</code>，并知道不关的后果</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、为什么需要文件</h2><p>到现在为止，程序里的数据都活在内存里：程序一结束，变量、列表全部消失（Files p2）。要让数据「关机之后还在」，就得写进文件。文件（file）是存放在硬盘（HDD）或固态盘（SSD）上的一串数据。</p><p>课件把文件分成两大类（Files p3–p5）：</p><table><tr><th>类别</th><th>内容形式</th><th>常见扩展名</th><th>能否直接用文本编辑器改</th></tr><tr><td>文本文件 text file</td><td>字符（ASCII / Unicode）</td><td>.txt .csv .html .xml .py</td><td>能</td></tr><tr><td>二进制文件 binary file</td><td>原始字节</td><td>.bin .exe .jpg .png .dat</td><td>不能，需要专门软件</td></tr></table><p>这门课<b>只处理文本文件</b>。判断依据很简单：能用记事本打开、能看懂，就是文本文件。文本文件按<b>行</b>组织，每行末尾有一个换行符 <code>\n</code>——这一点决定了后面所有读写细节。</p><p>课件的文件操作清单有五步（Files p6）：打开（读/写/追加）、读、写、追加、关闭。下面按这个顺序展开。</p><h2 id="s3">二、open()：打开文件并拿到句柄</h2><p>打开文件的函数是 <code>open(文件名, 模式)</code>，返回值叫文件对象（file object）或文件句柄（file handle）（Reading p2）。它本身不装内容，只是「通向那个文件的一条通道」。</p><pre><code>file = open("Example.txt", "r")
+print(type(file))</code></pre><pre><code>&lt;class '_io.TextIOWrapper'&gt;</code></pre><p>文件不存在时，读模式会直接报错：</p><pre><code>file = open("example.txt", "r")</code></pre><pre><code>FileNotFoundError: [Errno 2] No such file or directory: 'example.txt' </code></pre><p>注意文件名<b>大小写敏感</b>：<code>Example.txt</code> 与 <code>example.txt</code> 是两个不同的文件。Linux 与 macOS 上尤其明显，Windows 上虽然不区分，但代码里也不该靠这个巧合。</p><table><tr><th>模式</th><th>含义</th><th>文件不存在时</th><th>文件已存在时</th></tr><tr><td><code>"r"</code></td><td>只读</td><td>报 <code>FileNotFoundError</code></td><td>从头读</td></tr><tr><td><code>"w"</code></td><td>只写</td><td>新建空文件</td><td><b>清空原有内容</b></td></tr><tr><td><code>"a"</code></td><td>追加</td><td>新建空文件</td><td>保留内容，写在末尾</td></tr></table><div class="callout warn"><b>w 模式会清空文件</b>这是最贵的一课：用 <code>"w"</code> 打开一个已有文件，内容立刻被抹掉，哪怕你一行都没写。只想加内容就用 <code>"a"</code>；只想读就别写。</div><h2 id="s4">三、读文件</h2><h3 id="s5">3.1 readline()：一次一行</h3><p>假设 <code>Example.txt</code> 有四行（课件原文）：</p><pre><code>Hello, this is a sample text file.
+It contains multiple lines of text.
+Python can read this file.
+This is the fourth line.</code></pre><p><code>readline()</code> 每次读一行，返回字符串，<b>行尾的 <code>\n</code> 保留在字符串里</b>；读到文件末尾后再调用，返回空字符串 <code>""</code>（Reading p4）。</p><pre><code>file = open("Example.txt", "r")
+line1 = file.readline()
+print(repr(line1))
+line2 = file.readline()
+print(repr(line2))
+file.close()</code></pre><pre><code>'Hello, this is a sample text file.\n'
+'It contains multiple lines of text.\n'</code></pre><p>用 <code>repr()</code> 才能看见那个隐藏的 <code>\n</code>。直接 <code>print(line1)</code> 会看到「多一个空行」，因为字符串自带一个换行、<code>print</code> 又补一个。</p><h3 id="s6">3.2 用循环读到结尾</h3><pre><code>file = open("Example.txt", "r")
+while True:
+    line = file.readline()
+    if line == "":
+        break
+    print(line.strip())
+file.close()</code></pre><pre><code>Hello, this is a sample text file.
+It contains multiple lines of text.
+Python can read this file.
+This is the fourth line.</code></pre><p><code>line == ""</code> 是「读完了」的信号，不是空行——空行读出来是 <code>"\n"</code>。这个区别在统计行数时非常关键。</p><h3 id="s7">3.3 strip()：去掉行尾换行与空白</h3><p><code>strip()</code> 去掉字符串两端的空白字符，包括空格、制表符、换行符（Reading p6）。读文件时几乎总要配它：</p><pre><code>print(repr("  hello  \n".strip()))
+print(repr("hello\n".strip()))</code></pre><pre><code>'hello'
+'hello'</code></pre><p>要小心 <code>strip()</code> 会去掉<b>两端所有</b>空白：如果数据本身前后有意义的空格（比如对齐的表格），就改用 <code>rstrip("\n")</code> 只去换行。</p><h3 id="s8">3.4 readlines()：一次读成列表</h3><p><code>readlines()</code> 把整个文件读成一个列表，每个元素是一行，<b>仍然带着 <code>\n</code></b>；最后一行如果文件本身没有换行符，就不带（Reading p8）。</p><pre><code>file = open("Example.txt", "r")
+lines = file.readlines()
+file.close()
+print(len(lines))
+print(repr(lines[0]))
+print(repr(lines[-1]))</code></pre><pre><code>4
+'Hello, this is a sample text file.\n'
+'This is the fourth line.'</code></pre><p>拿到列表后就能用第 8 讲的所有手段：<code>len()</code> 求行数、切片取前几行、循环处理。这也是 CSV 处理的标准起点。</p><h3 id="s9">3.5 read()：一次读完整个文件</h3><p>课件最后提到「读取整个文件」（Reading p10）：<code>read()</code> 不带参数时返回一个包含全部内容的字符串。适合小配置文件；文件大时会把内存占满。</p><pre><code>file = open("Example.txt", "r")
+content = file.read()
+file.close()
+print(len(content))
+print(content.count("\n"))</code></pre><pre><code>122
+3</code></pre><p>三个换行符对应四行——最后一行没有换行符。同一个文件也可以先 <code>readlines()</code> 再 <code>read()</code>，但第二次会得到空字符串，因为读写位置（文件指针）已经到末尾了。</p><h2 id="s10">四、写文件</h2><p>用 <code>"w"</code> 打开就是写模式（Writing p2）：文件不存在会新建，已存在会被清空。写用 <code>write()</code>（写一个字符串）或 <code>writelines()</code>（写一个字符串列表）。</p><pre><code>file = open("output.txt", "w")
+file.write("First line\n")
+file.write("Second line\n")
+file.close()</code></pre><p><code>write()</code> <b>不会自动加换行</b>，想让每行独立就必须自己写 <code>\n</code>。忘记加的后果是所有内容挤成一行。</p><pre><code>lines = ["Alice,30\n", "Bob,25\n"]
+file = open("output2.txt", "w")
+file.writelines(lines)
+file.close()</code></pre><p><code>writelines()</code> 同样不会补换行（Writing p5 专门强调）：列表里每个字符串该带 <code>\n</code> 就得带，否则会被首尾相连。它名字里的「lines」容易让人误以为会自动分行。</p><h2 id="s11">五、追加：a 模式</h2><p>追加（append）是在文件<b>末尾</b>加内容，不动原有数据（Appending p2）。模式写 <code>"a"</code>，文件不存在时自动新建。</p><pre><code>file = open("log.txt", "a")
+file.write("This is the text to append.\n")
+file.close()</code></pre><p>连续运行三次，<code>log.txt</code> 里就有三行相同内容——这正是日志（log）的写法：程序每次运行追加一条，历史记录全部保留。</p><h2 id="s12">六、CSV：用逗号分列的文本</h2><h3 id="s13">6.1 结构</h3><p>CSV（comma-separated values）是用逗号分隔字段的文本文件（CSV p2）。每一行是一条记录，每个逗号前是一个字段；第一行通常是表头（header），也可能没有。</p><pre><code>name,age,city
+Alice,30,New York
+Bob,25,Los Angeles
+Charlie,35,Chicago</code></pre><p>它在 Excel 里打开就是一张表，但本质仍是纯文本——所以用同样的 <code>open</code> + <code>readlines</code> 就能处理。</p><h3 id="s14">6.2 读 CSV：strip + split</h3><p>课件的 read_csv.py 给出标准四步（CSV p6）：打开 → <code>readlines</code> → 关文件 → 逐行 <code>strip().split(",")</code> 装进列表。</p><pre><code>file = open("people.csv", "r")
+lines = file.readlines()
+file.close()
+
+data = []
+for line in lines:
+    row = line.strip().split(",")
+    data.append(row)
+
+print(data[0])
+print(data[1])
+print(len(data))</code></pre><pre><code>['name', 'age', 'city']
+['Alice', '30', 'New York']
+8</code></pre><p>顺序不能反：先 <code>strip()</code> 去掉行尾 <code>\n</code>，再 <code>split(",")</code>；若先 split，最后一列会变成 <code>'New York\n'</code>（带换行）。得到的 <code>data</code> 是「列表的列表」，即第 8 讲的矩阵：<code>data[i][0]</code> 是第 i 行的姓名，<code>data[i][1]</code> 是年龄（仍是字符串）。</p><pre><code>for row in data[1:]:
+    if int(row[1]) &gt; 28:
+        print(row[0], "is", row[1])</code></pre><pre><code>Alice is 30
+Charlie is 35</code></pre><p>注意 <code>row[1]</code> 是字符串，比较大小或做算术前必须 <code>int()</code>，否则 <code>"9" &gt; "28"</code> 会为真。</p><h3 id="s15">6.3 追加一行</h3><pre><code>file = open("people.csv", "a")
+row = "Peter,52,Helsinki\n"
+file.write(row)
+file.close()</code></pre><p>追加 CSV 就是把一整行拼成字符串写进去，末尾别忘 <code>\n</code>。字段里若本身含逗号（如地址），这种「手工拼」的写法就会错位——那种情况要用第 12 讲的 <code>csv</code> 模块。</p><h3 id="s16">6.4 删除一行（并说明示例中的隐患）</h3><p>课件的 delete_from_csv.py 先全部读进内存，改完再整体写回：</p><pre><code>file = open("people.csv", "r")
+lines = file.readlines()
+file.close()
+
+data = [line.strip().split(",") for line in lines]
+
+for line in data:
+    if line[0] == "Eva":
+        data.remove(line)
+
+file = open("people.csv", "w")
+for line in data:
+    file.write(line[0] + "," + line[1] + "," + line[2] + "\n")
+file.close()</code></pre><p>思路是对的：读模式不能删，只能用写模式把「改好的全部内容」重写一遍。但<b>边遍历边 <code>remove</code> 有隐患</b>：删除后后面的元素整体前移，循环变量还按旧位置前进，于是紧跟在被删元素后的那一条会被跳过。这里只有一条 Eva 所以结果正确；要删多条就得遍历副本或重建列表。</p><pre><code>safe = []
+for row in data:
+    if row[0] != "Eva":
+        safe.append(row)</code></pre><p>「筛选出要保留的，重建一个新列表」永远比「在列表里删」安全，值得养成习惯。</p><h2 id="s17">七、关闭文件与资源管理</h2><p>每个 <code>open</code> 都必须配一个 <code>close()</code>（Files p6）。不关的后果：写入的内容可能还在缓冲区没落盘；文件被占用，别的程序改不了；程序开很多文件会耗尽句柄。</p><p>CodeGrade 会直接检查这一点（CG Guide 第 4.1.2 节）：反馈里出现 <code>File not closed</code> 就是忘了 <code>close()</code>；出现 <code>Incorrect file mode</code> 则是模式写错（该 <code>"r"</code> 写了 <code>"w"</code>）。</p><div class="callout tip"><b>拓展：with 语句</b>Python 还有 <code>with open(...) as f:</code> 的写法，离开缩进块时自动关闭文件，即使中途抛异常也会关。课程示例统一用 <code>open</code> / <code>close</code>，考试按课程写法即可；但在自己的项目里 <code>with</code> 更安全。</div><h2 id="s18">八、路径与编码</h2><p>文件名可以写相对路径（<code>"people.csv"</code>，相对<b>当前工作目录</b>）或绝对路径（<code>"C:/data/people.csv"</code>）。IDLE 里运行时，当前目录通常是脚本所在目录；从别处运行时可能变，找不到文件的第一个排查点就是它。</p><p>Windows 路径里的反斜杠是转义字符（第 3 讲）：<code>"C:\temp\a.txt"</code> 中的 <code>\t</code> 会被当成制表符。三种写法都可行：<code>"C:/temp/a.txt"</code>（推荐）、<code>"C:\\temp\\a.txt"</code>、或原始字符串 <code>r"C:\temp\a.txt"</code>。</p><p>中文内容要保证编码一致：<code>open(..., encoding="utf-8")</code> 是明确写法。Windows 默认编码不一定是 UTF-8，读写含中文的文件时若出现乱码，先检查这一点（属拓展内容，课程示例未涉及）。</p><h2 id="s19">九、常见错误与调试</h2><div class="callout warn"><b>用 w 打开想读的文件</b>内容瞬间被清空。规律：<b>读用 r、写用 w、加内容用 a</b>；不确定时先 <code>r</code> 读一遍看内容。</div><div class="callout warn"><b>忘记 close 或忘记 \n</b>不 close 可能丢数据、被 CodeGrade 判 <code>File not closed</code>；<code>writelines</code> 不补换行，忘记 <code>\n</code> 会全挤成一行。</div><div class="callout warn"><b>strip 与 split 顺序颠倒</b>先 split 会让最后一列带 <code>\n</code>，后续比较、转数字全部失败。固定写 <code>line.strip().split(",")</code>。</div><div class="callout tip"><b>出问题先打印三件事</b>打印 <code>len(lines)</code>、<code>repr(lines[0])</code>、<code>repr(data[0])</code>。绝大多数文件问题在这三个输出里就能看出来：行数不对、换行没去掉、切分错位。</div><div class="callout idea" data-ext="ch09-files-csv-0"><b>常见误解</b><p><code>"w"</code> 打开已有文件会<strong>立刻清空</strong>，哪怕一行没写——只想加内容用 <code>"a"</code>，只想读用 <code>"r"</code>。<code>readline()</code> 保留行尾换行，<code>print(line)</code> 会多一个空行，要配 <code>strip()</code>；<code>write()</code>／<code>writelines()</code> 都<strong>不自动补换行</strong>，忘记写换行就挤成一行。读 CSV 固定写 <code>line.strip().split(",")</code>，先 split 会让末列带换行。</p></div><div class="callout tip" data-ext="ch09-files-csv-1"><b>前后衔接</b><p>这一讲是前面内容的首次综合：文件读进来是字符串（字符串讲），<code>split</code> 成列表、CSV 是列表的列表（容器讲），逐行处理靠循环。CSV 值全是字符串，算术前必须 <code>int()</code>，否则 <code>"9" &gt; "28"</code> 为真。删多行别边遍历边 <code>remove</code>（前移会跳过下一条），改为重建新列表。每个 <code>open</code> 配 <code>close</code>，否则 CodeGrade 报 <em>File not closed</em>。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>file</td><td>文件</td><td>A collection of data stored on disk.</td></tr><tr><td>text file</td><td>文本文件</td><td>Stores characters; readable in a text editor.</td></tr><tr><td>binary file</td><td>二进制文件</td><td>Stores raw bytes; needs special software.</td></tr><tr><td>file handle</td><td>文件句柄</td><td>The object returned by open(); a channel to the file.</td></tr><tr><td>mode</td><td>打开模式</td><td>"r" read, "w" write (truncates), "a" append.</td></tr><tr><td>readline</td><td>读一行</td><td>Returns one line including its \n, or "" at EOF.</td></tr><tr><td>readlines</td><td>读成列表</td><td>Returns a list of lines, each keeping its \n.</td></tr><tr><td>strip</td><td>去两端空白</td><td>Removes spaces, tabs and newlines from both ends.</td></tr><tr><td>write</td><td>写入</td><td>file.write("text") does not add a newline.</td></tr><tr><td>writelines</td><td>写多行</td><td>Writes a list of strings; newlines must be included.</td></tr><tr><td>append</td><td>追加</td><td>"a" mode adds content at the end without erasing.</td></tr><tr><td>CSV</td><td>逗号分隔值</td><td>Rows of comma-separated fields; opens as a table.</td></tr><tr><td>header</td><td>表头</td><td>The first row of a CSV file with column names.</td></tr><tr><td>FileNotFoundError</td><td>文件不存在</td><td>Raised when the path cannot be found.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　读取 Example.txt，输出行数、最长的一行及其长度。</div><p>用 <code>readlines()</code> 一次读入，再用第 8 讲的循环找最长行。比较长度前先 <code>strip()</code>，否则行尾的 <code>\n</code> 会算进长度。</p><pre><code>file = open("Example.txt", "r")
+lines = file.readlines()
+file.close()
+
+print("lines:", len(lines))
+
+longest = ""
+for line in lines:
+    clean = line.strip()
+    if len(clean) &gt; len(longest):
+        longest = clean
+
+print("longest:", longest)
+print("length:", len(longest))</code></pre><p>输出：</p><pre><code>lines: 4
+longest: It contains multiple lines of text.
+length: 35</code></pre><p>解释：<code>readlines()</code> 得到 4 个元素；<code>strip()</code> 让每行去掉换行再比较；<code>longest</code> 初值用空串，因为任何行都比它长（若求最短行就不能这么初始化）。</p></div><div class="qa"><div class="q">例 2　把一组学生成绩写成 CSV 文件，再读回来计算平均分。</div><p>写的时候用 <code>w</code> 模式 + 手工拼行；读的时候用 <code>strip().split(",")</code>，数字列要 <code>float()</code>。</p><pre><code>rows = [("Alice", 90), ("Bob", 75), ("Charlie", 60)]
+
+file = open("scores.csv", "w")
+file.write("name,score\n")
+for name, score in rows:
+    file.write(name + "," + str(score) + "\n")
+file.close()
+
+file = open("scores.csv", "r")
+lines = file.readlines()
+file.close()
+
+total = 0
+count = 0
+for line in lines[1:]:
+    parts = line.strip().split(",")
+    total = total + float(parts[1])
+    count = count + 1
+
+print("average:", round(total / count, 1))</code></pre><p>输出：</p><pre><code>average: 75.0</code></pre><p>解释：写文件时先写表头，再逐行写「姓名,分数」；<code>str(score)</code> 把数字变字符串才能拼接。<code>lines[1:]</code> 跳过表头；<code>float(parts[1])</code> 把 <code>'90'</code> 变成数字。平均 (90+75+60)/3 = 75.0。</p></div><div class="qa"><div class="q">例 3　从 people.csv 中筛选出年龄大于 30 的人，输出姓名与城市。</div><p>先读到矩阵，再用两层下标取值；比较前把年龄转成整数。</p><pre><code>file = open("people.csv", "r")
+lines = file.readlines()
+file.close()
+
+data = []
+for line in lines[1:]:
+    data.append(line.strip().split(","))
+
+for row in data:
+    if int(row[1]) &gt; 30:
+        print(row[0], "-", row[2])</code></pre><p>输出：</p><pre><code>Charlie - Chicago
+Frank - Miami</code></pre><p>解释：<code>lines[1:]</code> 去掉表头；<code>row[1]</code> 是年龄字符串，<code>int()</code> 之后才能比大小；<code>row[2]</code> 是城市，本身含空格（<code>New York</code>）也不受影响，因为分割只看逗号。</p></div><div class="qa"><div class="q">例 4　把每次运行的时间戳追加到 log.txt，并说明为什么不能用 w 模式。</div><p>追加模式保留历史；<code>w</code> 会把之前的日志全部清空。</p><pre><code>from datetime import datetime
+
+stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+file = open("log.txt", "a")
+file.write(stamp + " program started\n")
+file.close()
+
+file = open("log.txt", "r")
+lines = file.readlines()
+file.close()
+print("log lines:", len(lines))
+print(lines[-1].strip())</code></pre><p>第二次运行后输出（行数会随运行次数增加）：</p><pre><code>log lines: 2
+2026-11-20 02:53:16 program started</code></pre><p>解释：<code>strftime</code> 把当前时间格式化成字符串（第 10 讲详讲）；<code>"a"</code> 让每次运行都往末尾加一条；读回来用 <code>lines[-1]</code> 看最近一条。若把 <code>"a"</code> 改成 <code>"w"</code>，行数永远是 1。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>写程序统计 Example.txt 中一共有多少个单词（以空格分隔）。</li><li>把 1 到 5 的平方写成两列表头的 CSV 文件 <code>squares.csv</code>（数字,平方）。</li><li>读入一个文本文件，输出去掉空行后的行数。</li><li>把 people.csv 中所有人的年龄加一，写回一个新文件 <code>people_new.csv</code>（保留表头）。</li><li>解释并修正：<code>f = open("a.txt", "w"); print(f.readline())</code>。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 逐行 <code>strip().split()</code>（不带参数的 <code>split()</code> 按任意空白切），每行的 <code>len()</code> 累加。注意空行切出来是空列表，长度 0，不影响结果。</p><p><b>2.</b> <code>"w"</code> 打开，先写 <code>"number,square\n"</code>，再循环 <code>range(1, 6)</code> 写 <code>str(i) + "," + str(i * i) + "\n"</code>，最后 <code>close()</code>。检查方法：用记事本打开看是否有 6 行。</p><p><b>3.</b> 读所有行，<code>if line.strip() != "": count += 1</code>。关键是用 <code>strip()</code> 判断——只含 <code>\n</code> 的行 <code>strip()</code> 后是空串，而 <code>line == ""</code> 只匹配文件末尾。</p><p><b>4.</b> 读 <code>people.csv</code> 得矩阵，表头原样写入新文件；数据行把 <code>row[1]</code> 转 <code>int</code> 加一，再拼回字符串写 <code>people_new.csv</code>。绝不能直接写回原文件——用 <code>"w"</code> 打开原文件会先把数据清空。</p><p><b>5.</b> 两个错误：<code>"w"</code> 模式不能读（应 <code>"r"</code>）；<code>readline()</code> 是文件对象的方法，用 <code>print(f.readline())</code> 可以，但打开后马上清空了文件。正确写法是 <code>"r"</code> 打开、读完、<code>close()</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b><code>r</code> / <code>w</code> / <code>a</code> 三种模式的区别；<code>readline</code> 与 <code>readlines</code> 的返回形式；行尾 <code>\n</code> 与 <code>strip()</code>；CSV 的 <code>strip().split(",")</code>；必须 <code>close()</code>。</div><div class="callout warn"><b>易错 1　w 模式清空文件</b>想「读进来改一改再写回」，必须先把内容全读进内存、关掉文件，再用 <code>w</code> 重写。不能边读边写同一个文件。</div><div class="callout warn"><b>易错 2　换行符处理</b><code>print(line)</code> 会多出空行（行自带 <code>\n</code> 加 print 的换行）；<code>write()</code> 不会自动换行。读写两侧的 <code>\n</code> 都要自己负责。</div><div class="callout warn"><b>易错 3　相对路径 / 大小写</b><code>FileNotFoundError</code> 先查三件事：文件名拼写与大小写、当前工作目录、扩展名是否隐藏（Windows 默认隐藏扩展名，<code>a.txt.txt</code> 很常见）。</div><div class="callout tip"><b>进阶</b><code>with open(...) as f:</code> 自动关闭；<code>csv</code> 模块能正确处理字段内含逗号与引号的情况（第 12 讲 <code>DictReader</code>）；大文件应逐行 <code>readline</code> 处理而不是 <code>readlines</code> 全读进内存。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">操作清单</h2><h3 id="s21">读写文件之前</h3><ol class="steps"><li>我要读、写还是追加？<code>r</code> / <code>w</code> / <code>a</code> 先定下来</li><li>文件路径对不对？相对路径先确认当前工作目录</li><li>读完要做什么：整行处理用 <code>readline</code> 循环，批量处理用 <code>readlines</code></li><li>写的时候每一行末尾有没有 <code>\n</code></li><li>结束前一定调用 <code>close()</code></li></ol><h3 id="s22">调试文件问题</h3><ul class="checklist"><li>先 <code>print(len(lines))</code> 确认行数</li><li>用 <code>repr(lines[0])</code> 看隐藏的 <code>\n</code></li><li>CSV 一定是 <code>strip()</code> 在前、<code>split(",")</code> 在后</li><li>数字列比较或运算前先 <code>int()</code> / <code>float()</code></li><li>写回同一文件前，确认没有还在读取它的句柄</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Files.pdf</td><td>p2–p6</td><td>文件的定义与存储介质、文本/二进制文件的区别、常见扩展名、五步文件操作</td></tr><tr><td>Reading_from_file.pdf</td><td>p2–p10</td><td><code>open(name, "r")</code> 与文件句柄、<code>FileNotFoundError</code>、<code>readline</code> 循环、<code>strip</code>、<code>readlines</code>、整文件读取</td></tr><tr><td>Writing_to_file.pdf</td><td>p2–p5</td><td><code>"w"</code> 清空/新建、<code>write</code>、<code>writelines</code>、需自行补 <code>\n</code></td></tr><tr><td>Appending_.pdf</td><td>p2</td><td><code>"a"</code> 模式追加、不存在则新建、追加后 close</td></tr><tr><td>CSV.pdf</td><td>p2–p6</td><td>CSV 定义、表头、Excel 互操作、<code>split</code> 分列、读/追加/删除三个示例</td></tr><tr><td>read_csv.py / append_csv.py / delete_from_csv.py</td><td>全文</td><td>CSV 读入矩阵、追加一行、删除一行后整体重写</td></tr><tr><td>people.csv / Example.txt</td><td>全文</td><td>本讲所有示例使用的数据文件内容</td></tr></table><p><b>跳过项：</b>Files.pdf 的存储设备示意图、CSV 在 Excel 中的截图只有图片信息；Moodle 第 7 章的文件作业说明与截止页属于行政信息，不进入本讲。</p><p><b>拓展项：</b><code>with</code> 语句、<code>encoding="utf-8"</code>、<code>csv</code> 模块、逐行处理大文件，都是围绕原知识点的工程化补充；考试仍按 <code>open</code> / <code>close</code> 写法。</p></section><div class="lnav"><a class="prev" href="ch08-lists-tuples.html">← ⑧ 列表、矩阵与元组</a><a class="next" href="ch10-modules.html">⑩ 模块、标准库与包 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

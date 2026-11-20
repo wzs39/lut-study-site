@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · 词汇与语法诊所 · 32632</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">KE00DA03 大学英语</a> / <a href="part-2.html">第 2 章 词汇语法与演讲表达</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 词汇的三层与 glossary 模板</a><a class="toc-l3" href="#s3">3.2 食物与厨具：可数性决定量词</a><a class="toc-l3" href="#s4">3.3 24 个烹饪动词：动作要分得清</a><a class="toc-l3" href="#s5">3.4 电脑与手机：部件与故障表达</a><a class="toc-l3" href="#s6">3.5 词族与构词：一个词变四个</a><a class="toc-l3" href="#s7">3.6 专业词表：从对话里取词</a><a class="toc-l3" href="#s8">3.7 词序：S–V–O–M–P–T</a><a class="toc-l3" href="#s9">3.8 四类问句，一套判断流程</a><a class="toc-l3" href="#s10">3.9 介词 at / in / on：三条线各管一段</a><a class="toc-l3" href="#s11">3.10 产出前的两张检查卡</a><a class="toc-l2" href="#s12">本讲方法清单</a><a class="toc-l3" href="#s13">句子产出四步检查（词序 + 介词 + 可数 + 时态）</a><a class="toc-l3" href="#s14">问句生成流程</a><a class="toc-l3" href="#s15">词汇入库</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l1-launch-self-intro.html">第 1 讲 · 开课、自我介绍与学习资源</a><a href="l2-reading-chunking.html">第 2 讲 · 朗读、分块与技术文本阅读</a><a class="toc-l3" href="l3-vocabulary-grammar-clinic.html">▸ 第 3 讲 · 词汇与语法诊所</a><a href="l4-elevator-pitch.html">第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a href="l5-presentation-data.html">第 5 讲 · 工程演讲与图表描述</a><a href="l6-meetings-negotiation.html">第 6 讲 · 会议沟通、协商与专业简报</a><a href="supp-homework-map.html">补遗 · 十三次课的作业地图、交付通道与考核节点</a></div></aside><article><h1>第 3 讲 · 词汇与语法诊所</h1><p class="lead">Vocabulary and Grammar Clinic <span class="badge mute">32632</span> <span class="badge mute">第 3 / 7 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 词汇语法与演讲表达</a></p><p class="src">原始文件：<code>4_UNIT 1 Building Know-how_8_Food material.html</code> <code>4_UNIT 1 Building Know-how_6_EXERCISE Computers  Phones.html</code> <code>4_UNIT 1 Building Know-how_7_Meeting 5 homework.html</code> <code>4_UNIT 1 Building Know-how_9_Meeting 7 homework.html</code> <code>5_UNIT 2 Expressing Opinions_5_GRAMMAR Online Exercises.html</code> <code>5_UNIT 2 Expressing Opinions_6_Meeting 11 homework.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 3 讲把课程里分散在三处的语言训练合并成一套系统：<b>主题词汇</b>（食物与厨具、电脑与手机部件、专业词表）、<b>构词与词族</b>、<b>语法诊所</b>（词序、否定、频率副词、四类问句、介词 at/in/on）。课程把它们放在 Meeting 5 至 Meeting 11 的作业里循环出现，说明它们是「必须形成习惯」而不是「知道就行」的内容。</p><p>为什么合并成一讲：词汇和语法在产出时是同一条流水线——选词错了是搭配问题，句子排错了是词序问题，介词用错了往往两者都是。把三件事一起练，才能在口语里一次到位。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>按「认识—搭配—产出」三层管理主题词汇，并自建 glossary</li><li>正确使用食物与厨具词汇，区分可数与不可数、选择量词</li><li>用 24 个烹饪动词描述流程，搭配不错</li><li>说出电脑与手机主要部件的英文名，并用 8 个常用搭配描述故障</li><li>用词族表扩展专业词汇，判断前缀的含义</li><li>按 S–V–O–M–P–T 排出正确词序，放对频率副词与否定词</li><li>构造 Yes/No、wh-、间接问句与反意疑问句四类问句</li><li>按时间、地点、抽象搭配三条线选对 at/in/on</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 词汇的三层与 glossary 模板</h3><p>一个词真正属于你，要经过三层：<b>recognition</b>（看到能懂）、<b>collocation</b>（知道它和谁连用）、<b>production</b>（自己能用对）。课程里反复出现的 <i>Collect words and chunks</i> 与 <i>Complete the document with vocabulary from field-specific exercise</i> 就是在逼你从第一层走到第三层。</p><p>glossary 建议用五列，一次课新增 5 至 8 条，考前直接复习这张表：</p><table><tr><th>English</th><th>音标 / 词性</th><th>中文</th><th>搭配</th><th>自造句</th></tr><tr><td>plug</td><td>/plʌɡ/ n.</td><td>插头</td><td>a loose plug, the wrong type of plug</td><td>The plug is the wrong type.</td></tr><tr><td>wiring</td><td>/ˈwaɪərɪŋ/ n. 不可数</td><td>布线</td><td>check the wiring, faulty wiring</td><td>Mona checked the wiring manually.</td></tr><tr><td>standstill</td><td>/ˈstændstɪl/ n.</td><td>停机</td><td>come to a standstill, a production standstill</td><td>When is a standstill possible?</td></tr><tr><td>subcontractor</td><td>/ˌsʌbkənˈtræktə/ n.</td><td>分包商</td><td>call a subcontractor, a local subcontractor</td><td>I’ll call our subcontractor immediately.</td></tr></table><h3 id="s3">3.2 食物与厨具：可数性决定量词</h3><p>课程的食物材料分六组图片：蔬菜（33 张）、谷物豆类与坚果（33 张）、水果与浆果（45 张）、动物制品与替代品（33 张）、厨具（33 张）、烹饪动词（24 张），另有一组「菜肴」词表与四个 Cambridge／Moodle 小测。背单词表之前先解决一个语法前提：<b>可数还是不可数</b>。</p><table><tr><th>类别</th><th>不可数（不加 -s）</th><th>可数（可加 -s）</th><th>量词示范</th></tr><tr><td>主食</td><td>bread, rice, pasta, flour</td><td>a loaf, a roll, a slice</td><td>two slices of bread, a bowl of rice</td></tr><tr><td>乳制品</td><td>milk, cheese, butter, yoghurt</td><td>a cheese（一种奶酪）</td><td>a glass of milk, a piece of cheese</td></tr><tr><td>肉与鱼</td><td>beef, pork, chicken（肉）, fish（肉）</td><td>a chicken（一只鸡）, two fish（两条鱼）</td><td>a kilo of beef, a fillet of fish</td></tr><tr><td>蔬果</td><td>—（多数可数）</td><td>an onion, two carrots, a cucumber</td><td>a head of lettuce, a clove of garlic</td></tr><tr><td>调味</td><td>salt, pepper, sugar, oil</td><td>—</td><td>a pinch of salt, a tablespoon of oil</td></tr></table><div class="callout warn"><b>中式高频错误</b><i>a bread</i>、<i>some breads</i>、<i>many rices</i> 都错。bread 与 rice 不可数，要说 <i>a slice of bread</i>、<i>a bowl of rice</i>。反过来 <i>a vegetable</i> 是对的，蔬菜可数。</div><h3 id="s4">3.3 24 个烹饪动词：动作要分得清</h3><p>烹饪动词是最容易被「一个 cook 走天下」毁掉的词群。按动作类型分组记，比按字母背有效：</p><table><tr><th>动作类型</th><th>动词</th><th>典型搭配</th><th>易混点</th></tr><tr><td>切</td><td>chop, slice, dice, mince, grate</td><td>chop an onion, slice the bread, dice the carrots, mince the garlic, grate the cheese</td><td>chop 粗切、dice 切丁、mince 切末</td></tr><tr><td>去皮与分份</td><td>peel, core, deseed</td><td>peel the potatoes, core the apple</td><td>peel 只用于皮</td></tr><tr><td>混合</td><td>stir, whisk, blend, knead</td><td>stir the sauce, whisk the eggs, blend the soup, knead the dough</td><td>whisk 打蛋／奶油，knead 揉面</td></tr><tr><td>加热</td><td>boil, simmer, steam, fry, deep-fry, sauté, roast, bake, grill</td><td>boil the pasta, simmer the sauce, steam the fish, fry an egg, roast the vegetables, bake a cake, grill the chicken</td><td>bake 只用于烤箱（面包、蛋糕），roast 用于肉与蔬菜</td></tr><tr><td>调味与处理</td><td>season, marinate, drain, mash, pour</td><td>season with salt, marinate the meat, drain the pasta, mash the potatoes</td><td>season 用调料，marinate 需时间</td></tr></table><p>流程描述示范：<i>First, peel the potatoes and dice them. Then boil them for about fifteen minutes, drain them, and mash them with butter and a pinch of salt.</i> 注意每个动作都用<b>一般现在时祈使句或顺序副词</b>（first、then、after that、finally），这是食谱与工艺说明的通用语体。</p><div class="callout warn"><b>搭配错误</b><i>cook the bread</i> 应为 <i>bake the bread</i>；<i>boil the egg in oil</i> 逻辑不通（水煮用 water，煎用 fry）；<i>make a cake</i> 口语可以，但书面流程用 <i>bake a cake</i> 更准确。</div><h3 id="s5">3.4 电脑与手机：部件与故障表达</h3><p>Meeting 5 的选做练习给两条线：电脑（Quizlet 部件图 + GeeksforGeeks 组件文章）或手机（维修参考图 + 移动网络原理）。两条线共享同一批高频搭配，掌握 16 个就够描述日常故障。</p><table><tr><th>部件</th><th>英文</th><th>常见搭配 / 故障句</th></tr><tr><td>主板</td><td>motherboard</td><td>The motherboard is faulty.</td></tr><tr><td>处理器</td><td>processor / CPU</td><td>The CPU overheats under load.</td></tr><tr><td>内存</td><td>memory / RAM</td><td>The laptop needs more RAM.</td></tr><tr><td>硬盘 / 固态盘</td><td>hard drive / SSD</td><td>The hard drive crashed and I lost the files.</td></tr><tr><td>电源</td><td>power supply / charger</td><td>The power supply failed. / Plug in the charger.</td></tr><tr><td>显卡</td><td>graphics card</td><td>The graphics card is not detected.</td></tr><tr><td>散热风扇</td><td>cooling fan</td><td>The cooling fan is noisy.</td></tr><tr><td>接口</td><td>port / USB port</td><td>The USB port is loose.</td></tr><tr><td>屏幕</td><td>screen / display</td><td>The screen is cracked.</td></tr><tr><td>电池</td><td>battery</td><td>The battery runs out quickly. / I need to recharge.</td></tr><tr><td>SIM 卡槽</td><td>SIM tray</td><td>Insert the SIM tray with the pin.</td></tr><tr><td>话筒与扬声器</td><td>microphone / speaker</td><td>The microphone is muted.</td></tr></table><p>八个万能动词搭配：<i>install / update / uninstall software</i>、<i>plug in</i>、<i>charge</i>、<i>reboot</i>、<i>freeze</i>、<i>crash</i>、<i>run out of battery</i>、<i>back up files</i>。句法上注意：<i>crash</i> 与 <i>freeze</i> 是不及物动词（<i>The app crashed.</i>），不要写成 <i>I crashed the app</i>（那是「我把它弄崩了」）。</p><p>复合名词的重音落在<b>第一个成分</b>：<i>ˈmotherboard</i>、<i>ˈhard drive</i>、<i>ˈpower supply</i>、<i>ˈUSB port</i>、<i>ˈcooling fan</i>。重音放错会让听者以为是两个词（<i>hard</i> + <i>drive</i>）。</p><h3 id="s6">3.5 词族与构词：一个词变四个</h3><p>专业词汇量不是靠背单词表堆出来的，而是靠词族（word family）扩展。看到一个新词，同时记它的名词、动词、形容词、副词形式：</p><table><tr><th>动词</th><th>名词（动作）</th><th>名词（人或物）</th><th>形容词</th></tr><tr><td>produce</td><td>production</td><td>product / producer</td><td>productive</td></tr><tr><td>install</td><td>installation</td><td>installer</td><td>installed</td></tr><tr><td>connect</td><td>connection</td><td>connector</td><td>connected</td></tr><tr><td>consume</td><td>consumption</td><td>consumer</td><td>consumable</td></tr><tr><td>maintain</td><td>maintenance</td><td>maintainer</td><td>maintainable</td></tr><tr><td>apply</td><td>application</td><td>applicant / appliance</td><td>applicable</td></tr></table><p>前缀决定方向：<i>re-</i>（再次：rebuild、reconnect）、<i>un-</i>（否定：unplug、unsafe）、<i>over-</i>（过度：overheat、overload）、<i>under-</i>（不足：undersized、underestimate）、<i>sub-</i>（下级：subcontractor、subsystem）。这些前缀在课程语料里都出现过，属高频。</p><div class="callout tip"><b>一词四用</b>把 <i>maintain</i> 写成一句话：<i>Regular maintenance keeps the system maintainable and reduces production downtime.</i> 一句话里用三个词族成员，比背四个释义牢固。</div><h3 id="s7">3.6 专业词表：从对话里取词</h3><p>Meeting 5 的作业要求 <i>Complete the document with vocabulary from field-specific exercise</i>：从你另一门专业课（物理、数学等）的习题里挑一道，把其中的术语、动词与句式抄进共享词表。Meeting 7 又要求把这些词用进一个自制小测（Chinese food quiz，2 至 4 题，选项式，链接贴到 Padlet）。</p><p>这意味着词表不是「词典摘抄」，而是<b>从真实任务里长出来的</b>。示范一条来自课程对话的词条：</p><table><tr><th>术语</th><th>中文</th><th>搭配</th><th>例句</th></tr><tr><td>cross connection</td><td>交叉连接</td><td>the cross connection room</td><td>They found the cross connection room on the second floor.</td></tr><tr><td>spare part</td><td>备件</td><td>carry spare parts, order a spare part</td><td>I have the necessary spare parts with me.</td></tr><tr><td>technician</td><td>技术员</td><td>send a technician, a service technician</td><td>I’ll ask them to send a technician.</td></tr><tr><td>comply with</td><td>符合</td><td>comply with the standard / the regulation</td><td>The plug does not comply with the standard.</td></tr></table><h3 id="s8">3.7 词序：S–V–O–M–P–T</h3><p>英语陈述句的基本顺序是「主语—谓语—宾语」，状语按 <b>方式（Manner）—地点（Place）—时间（Time）</b> 排列，简称 M–P–T。中文习惯「时间—地点—动作」，正好相反，这是词序错误的最大来源。</p><table><tr><th>错误</th><th>正确</th><th>规则</th></tr><tr><td>I went yesterday by bus to Helsinki.</td><td>I went to Helsinki by bus yesterday.</td><td>地点先于时间；方式先于地点</td></tr><tr><td>He works in the lab carefully.</td><td>He works carefully in the lab.</td><td>方式先于地点</td></tr><tr><td>We discussed in the meeting the problem.</td><td>We discussed the problem in the meeting.</td><td>宾语紧跟动词，不被状语切开</td></tr><tr><td>Every day I usually check the log.</td><td>I usually check the log every day.</td><td>频率副词在主谓之间，时间状语可句末</td></tr></table><p>频率副词（always, usually, often, sometimes, seldom, never）的位置有两条硬规则：<b>实义动词前</b>（<i>I usually check …</i>）、<b>be 动词后</b>（<i>He is always late.</i>）。有助动词时夹在助动词与主要动词之间：<i>I have never seen this error before.</i></p><p>否定句的构成也遵循同一逻辑：有助动词就在助动词后加 not（<i>It does not comply with the standard.</i>），没有就借 do/does/did（<i>We did not find any loose connections.</i>）。一般过去时的否定用 did + 原形，不要写成 <i>did not found</i>。</p><div class="callout warn"><b>否定 + 频率副词</b><i>I don’t usually work on Saturdays.</i> 正确语序是「助动词 + not + 频率副词 + 动词」。写成 <i>I usually don’t work …</i> 语法可接受但语意不同（强调「通常不」而非「不常」）；写成 <i>I don’t work usually …</i> 则不合习惯。</div><h3 id="s9">3.8 四类问句，一套判断流程</h3><p>课程在 Meeting 5 与 Meeting 7 连续布置了九组词序练习，覆盖陈述句、否定句、Wh- 问句、Yes/No 问句、间接问句与反意疑问句。它们的构造可以用一张流程走完：</p><table><tr><th>类型</th><th>结构</th><th>例</th><th>要点</th></tr><tr><td>Yes/No 问句</td><td>助动词／be／情态 + 主语 + 主动词</td><td>Does the plug comply with the standard?</td><td>主动词回原形</td></tr><tr><td>Wh- 问句</td><td>疑问词 + 助动词 + 主语 + 主动词</td><td>When is a standstill possible?</td><td>疑问词本身作主语时不再借 do</td></tr><tr><td>主语提问</td><td>Who / What + 谓语（第三人称单数）</td><td>Who called the supplier?</td><td>不说 Who did call …</td></tr><tr><td>间接问句</td><td>引导句 + 陈述语序</td><td>Could you tell me where the port is?</td><td>不倒装，句末不用问号（若主句是陈述）</td></tr><tr><td>反意疑问句</td><td>陈述 + 简短反问（前肯后否）</td><td>It doesn’t comply, does it?</td><td>助动词与主语要与前半句一致</td></tr></table><p>间接问句是最容易错的一类，因为学习者会把直接问句的倒装照搬进去：<i>Could you tell me where is the port?</i> 错，应为 <i>where the port is</i>。同理 <i>Do you know when does the meeting start?</i> 应为 <i>when the meeting starts</i>。</p><p>反意疑问句的四条特殊规则：<i>I am …</i> 的反问是 <i>aren’t I</i>；<i>Let’s …</i> 用 <i>shall we</i>；祈使句用 <i>will you</i>；含 never、hardly、nothing 等否定词的前半句视为否定，反问用肯定（<i>He never comes late, does he?</i>）。</p><p>语调也参与意义：反问句用<b>降调</b>表示「我确信，你同意吧」；用<b>升调</b>表示「我真的在问」。这一点与本课程朗读测试的语调要求直接相连。</p><h3 id="s10">3.9 介词 at / in / on：三条线各管一段</h3><p>课程给了五组介词练习（at/in/on 的句子填空、时间表达、混合练习、Moodle 练习）。归纳成三条线就够用：</p><table><tr><th>线</th><th>at（点）</th><th>in（范围／容器）</th><th>on（面／接触）</th></tr><tr><td>时间</td><td>at 8 o’clock, at noon, at night, at Christmas</td><td>in July, in 2023, in the morning, in two hours</td><td>on Monday, on 5 May, on Monday morning</td></tr><tr><td>地点</td><td>at the station, at the office, at the top</td><td>in Finland, in the room, in the cabinet</td><td>on the table, on the wall, on the second floor</td></tr><tr><td>抽象与固定搭配</td><td>at risk, at least, good at, arrive at（小地点）</td><td>in charge of, interested in, arrive in（城市／国家）, involved in</td><td>on purpose, depend on, based on, focused on</td></tr></table><p>还有一批高频动词搭配必须整块记，因为它们不服从上面任何一条线：<i>comply with</i>、<i>substitute A for B</i>、<i>replace A with B</i>、<i>responsible for</i>、<i>depend on</i>、<i>consist of</i>、<i>result in</i>、<i>prevent from</i>。</p><div class="callout warn"><b>七个必错介词</b>① <i>in Monday</i> → on Monday；② <i>at 2023</i> → in 2023；③ <i>on the morning</i> → in the morning；④ <i>arrive to Helsinki</i> → arrive in Helsinki（小地点用 at）；⑤ <i>discuss about the problem</i> → discuss the problem；⑥ <i>comply to the standard</i> → comply with；⑦ <i>interested of</i> → interested in。</div><h3 id="s11">3.10 产出前的两张检查卡</h3><p>写任何句子（作业稿、幻灯片、邮件）之前，用两张卡快速过一遍：<b>词序卡</b>（主语在不在最前、状语是否 M–P–T、宾语有没有被状语切开、频率副词位置）与<b>介词卡</b>（时间用 at/in/on 哪条线、动词固定搭配是什么、可数性是否需要量词）。这两张卡覆盖了本课程语法作业里的绝大部分考点。</p><div class="callout idea" data-ext="l3-vocabulary-grammar-clinic-0"><b>常见误解</b><p>中式高频错集中在可数性与词序：bread、rice 不可数，说 <em>a slice of bread</em>、<em>a bowl of rice</em>，不能说 <em>a bread</em>。陈述状语按 <b>方式—地点—时间（M–P–T）</b> 排：<em>I went to Helsinki by bus yesterday</em>，不是 <em>I went yesterday by bus to Helsinki</em>。频率副词在实义动词前、be 动词后（<em>I usually check the log</em>／<em>He is always late</em>）。<em>suggest</em> 是全军覆没区：只能 <em>suggest V-ing</em> 或 <em>suggest (that) + 主语 + 原形</em>，不能说 <em>suggest sb to do</em>。</p></div><div class="callout tip" data-ext="l3-vocabulary-grammar-clinic-1"><b>英文表述</b><p>词汇按“认识—搭配—产出”三层管理，词族一词四用比背释义牢固：<em>Regular maintenance keeps the system maintainable and reduces production downtime</em> 一句里用了三个词族成员。故障描述靠固定搭配：<em>The CPU overheats under load</em>、<em>The hard drive crashed</em>、<em>The battery runs out quickly</em>；<em>crash</em>／<em>freeze</em> 是不及物动词，说 <em>The app crashed</em>，不是 <em>I crashed the app</em>。复合名词重音落在第一个成分（<em>ˈmotherboard</em>、<em>ˈcooling fan</em>），重音错会让听者以为是两个词。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>collocation</td><td>搭配</td><td>Words that naturally go together: heavy rain, not strong rain.</td></tr><tr><td>uncountable noun</td><td>不可数名词</td><td>Bread and rice take no plural and no a/an.</td></tr><tr><td>quantifier</td><td>量词</td><td>a slice of bread, a pinch of salt, a clove of garlic.</td></tr><tr><td>word family</td><td>词族</td><td>produce, production, product, productive.</td></tr><tr><td>prefix</td><td>前缀</td><td>re-, un-, over-, under-, sub- change the meaning of a word.</td></tr><tr><td>word order</td><td>词序</td><td>English follows subject–verb–object, then manner–place–time.</td></tr><tr><td>frequency adverb</td><td>频率副词</td><td>Always, usually and never go before the main verb, after be.</td></tr><tr><td>indirect question</td><td>间接问句</td><td>Could you tell me where the port is? — no inversion.</td></tr><tr><td>question tag</td><td>反意疑问句</td><td>It doesn’t comply, does it?</td></tr><tr><td>preposition of time</td><td>时间介词</td><td>at 8, in July, on Monday.</td></tr><tr><td>comply with</td><td>符合</td><td>All plugs must comply with the standard.</td></tr><tr><td>substitute A for B</td><td>用 A 替换 B</td><td>We substituted the old plugs for the new type.</td></tr><tr><td>plug in</td><td>插上电源</td><td>Plug in the charger before you start.</td></tr><tr><td>run out of battery</td><td>电量耗尽</td><td>My phone ran out of battery during the meeting.</td></tr><tr><td>standstill</td><td>停机</td><td>When is a standstill possible?</td></tr><tr><td>season with</td><td>用……调味</td><td>Season the soup with salt and pepper.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　改正下列句子的词序，并说明依据：</div><p>A. <i>I checked yesterday the wiring in the cabinet carefully.</i></p><p>B. <i>He always is late for the morning meeting.</i></p><p>C. <i>We didn’t found any loose connection.</i></p><p><b>解：</b>A 有三处问题。宾语 <i>the wiring</i> 被时间状语切开，应紧跟动词；状语顺序应为方式—地点—时间。改为 <i>I checked the wiring in the cabinet carefully yesterday.</i></p><p>B 是 be 动词与频率副词位置错：频率副词在 be 之后，改为 <i>He is always late for the morning meeting.</i></p><p>C 是过去时否定的形式错：did 已承担时态，主动词回原形，改为 <i>We didn’t find any loose connection.</i> 另外 any 用于否定句与疑问句，正确。</p><p><b>通用思路：</b>先定位谓语 → 把宾语贴回谓语后 → 状语按 M–P–T 排 → 最后查频率副词与助动词后的动词形式。</p></div><div class="qa"><div class="q">例 2　把下列直接问句改为间接问句（用 <i>Could you tell me …</i> 开头）：</div><p>A. <i>Where is the cross connection room?</i>　B. <i>When does the meeting start?</i>　C. <i>Does the plug comply with the standard?</i></p><p><b>解：</b>三步：保留疑问词 → 去掉倒装、改回陈述语序 → 调整时态与人称（主句为现在时则不用改时态）。</p><p>A → <i>Could you tell me where the cross connection room is?</i>（is 移到主语后）。</p><p>B → <i>Could you tell me when the meeting starts?</i>（does 消失，动词恢复第三人称单数 -s）。</p><p>C 没有疑问词，用 if／whether：<i>Could you tell me if the plug complies with the standard?</i>（同样恢复 -s）。</p><p><b>通用思路：</b>疑问词照抄 → 助动词删掉、主动词还原 → 主语提前到动词前 → 主句过去时则整体后移一个时态。</p></div><div class="qa"><div class="q">例 3　补全反意疑问句并说明该用升调还是降调：</div><p>A. <i>The plugs are the wrong type, ______?</i>　B. <i>You haven’t called the supplier yet, ______?</i>　C. <i>Let’s check the wiring again, ______?</i></p><p><b>解：</b>A 前半句肯定（are），反问用否定，助动词与主语一致：<i>aren’t they?</i> 说话人已看到实物、只是寻求确认，用<b>降调</b>。</p><p>B 前半句有否定词 haven’t，反问用肯定：<i>have you?</i> 若真的在询问对方是否已联系，用<b>升调</b>；若只是寒暄式确认，用降调。</p><p>C Let’s 的特殊反问是 <i>shall we?</i>，固定搭配，用降调。</p><p><b>通用思路：</b>看前半句肯定／否定（含 never、hardly、nothing 视为否定）→ 取同一助动词与代词 → 前肯后否、前否后肯 → 最后按「真问用升、求确认用降」定调。</p></div><div class="qa"><div class="q">例 4　填入 at / in / on，并说明理由：</div><p>① The meeting starts ______ 8:15 ______ Friday morning.　② The spare parts are ______ the cabinet.　③ We arrived ______ Helsinki ______ 2023.　④ The technician is good ______ troubleshooting.　⑤ The report is based ______ last year’s data.</p><p><b>解：</b>① <i>at 8:15</i>（钟点是 at）＋ <i>on Friday morning</i>（具体某天的上午用 on，不用 in）。</p><p>② <i>in the cabinet</i>：柜子是一个三维容器，用 in。③ <i>arrived in Helsinki</i>（城市用 in）＋ <i>in 2023</i>（年份用 in）。</p><p>④ <i>good at</i>：能力形容词的固定搭配。⑤ <i>based on</i>：抽象依据用 on。</p><p><b>通用思路：</b>先判「点／范围／面」→ 再看是不是固定搭配（good at、based on、responsible for）→ 固定搭配优先于三条线规则。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把下列不可数名词组成正确的量词短语：bread（两片）、rice（一碗）、salt（一撮）、garlic（一瓣）、oil（一勺）。</li><li>用 first／then／after that／finally 写一段 5 句的煮意面流程，至少用 5 个烹饪动词。</li><li>改正词序：<i>She explained in the meeting the procedure clearly.</i> / <i>I have never seen this error before yesterday.</i> / <i>Why you didn’t call the technician?</i></li><li>把 <i>Do you know what is the standstill time?</i> 改为正确间接问句，并说明改动理由。</li><li>填介词并说明：<i>responsible ___ / interested ___ / comply ___ / substitute the old plug ___ a new one / arrive ___ Lappeenranta</i>。</li><li>给你的专业词表新增 3 条（术语、搭配、例句），并各造一句与自己项目有关的句子。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> two slices of bread / a bowl of rice / a pinch of salt / a clove of garlic / a tablespoon of oil。规则：不可数名词靠「容器 + of」计量，量词本身可数（two slices、two cloves）。</p><p><b>2.</b> 参考：<i>First, boil a large pot of water. Then add the pasta and simmer for about ten minutes. After that, drain it and pour the sauce over it. Finally, season with salt and grate some cheese on top.</i> 五个动词：boil、simmer、drain、pour、grate；另加 season。</p><p><b>3.</b> <i>She explained the procedure clearly in the meeting.</i>（宾语紧跟动词，方式在地点前）；<i>I had never seen this error before yesterday.</i>（before yesterday 指过去某一时点之前，用过去完成时）；<i>Why didn’t you call the technician?</i>（Wh- 问句：疑问词 + 助动词 + 主语）。</p><p><b>4.</b> <i>Do you know what the standstill time is?</i> 间接问句用陈述语序，is 移到主语后；主句为一般现在时，从句时态不变。</p><p><b>5.</b> responsible <b>for</b>；interested <b>in</b>；comply <b>with</b>；substitute the old plug <b>for</b> a new one（substitute A for B）；arrive <b>in</b> Lappeenranta（城市）。</p><p><b>6.</b> 参考三条：<i>voltage</i> /ˈvəʊltɪdʒ/ 电压，搭配 measure the voltage，例 <i>Measure the voltage across the resistor.</i>；<i>torque</i> /tɔːk/ 扭矩，搭配 apply torque，例 <i>Apply a torque of 20 Nm to the bolt.</i>；<i>tolerance</i> /ˈtɒlərəns/ 公差，搭配 within tolerance，例 <i>The diameter must be within tolerance.</i></p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>词序 M–P–T 与频率副词位置；四类问句的构造（含间接问句不倒装）；反意疑问句的四条特殊规则；at/in/on 三条线；comply with 与 substitute A for B 两个高频搭配。</div><div class="callout warn"><b>易错 1</b>间接问句照搬倒装：<i>Could you tell me where is the port?</i> 必须改为 <i>where the port is</i>。</div><div class="callout warn"><b>易错 2</b>过去时否定写 <i>didn’t found</i>；频率副词放在 be 前 <i>He always is late</i>。</div><div class="callout warn"><b>易错 3</b>可数性判断错导致 a bread／many rices；介词搭配错导致 comply to、substitute with、discuss about。</div><div class="callout tip"><b>进阶</b>把介词与词族一起记成「一句话模板」：<i>All components must comply with the standard, and any faulty part should be substituted for a certified one.</i> 一句里同时练两个搭配与被动语态。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s12">本讲方法清单</h2><h3 id="s13">句子产出四步检查（词序 + 介词 + 可数 + 时态）</h3><ul class="checklist"><li>主语与谓语是否相邻，宾语有没有被状语切开</li><li>状语是否按方式—地点—时间排列，频率副词是否在主谓之间（be 之后）</li><li>名词可数性是否影响冠词与量词，动词搭配的介词是否背对</li><li>否定与问句里助动词是否已承担时态，主动词是否回原形</li></ul><h3 id="s14">问句生成流程</h3><ol class="steps"><li>判断是 Yes/No 还是 Wh-，需不需要疑问词</li><li>找助动词／be／情态；没有就按人称借 do／does／did</li><li>主动词还原，主语回到动词前（间接问句用陈述语序）</li><li>反意疑问句取同一助动词，前肯后否，最后定升调或降调</li></ol><h3 id="s15">词汇入库</h3><ul class="checklist"><li>五列词卡（英文、音标词性、中文、搭配、自造句）一次写全</li><li>每课新增 5 至 8 条并复习旧条目</li><li>每条词卡至少朗读三遍，确认重音位置</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置 / 页码</th><th>覆盖内容</th></tr><tr><td>4_UNIT 1/8_Food material.html</td><td>全篇</td><td>蔬菜、谷物豆类坚果、水果浆果、动物制品、厨具、烹饪动词六组图词表；菜肴词表；四个小测</td></tr><tr><td>4_UNIT 1/6_EXERCISE Computers  Phones.html</td><td>全篇</td><td>电脑部件、手机部件与移动网络的选做阅读</td></tr><tr><td>4_UNIT 1/7_Meeting 5 homework.html</td><td>全篇</td><td>CEE 练习、专业词表文档、九组词序语法练习</td></tr><tr><td>4_UNIT 1/9_Meeting 7 homework.html</td><td>全篇</td><td>同一组九项语法练习 + 自制中国食物小测（2 至 4 题、贴 Padlet）</td></tr><tr><td>5_UNIT 2/5_GRAMMAR Online Exercises.html</td><td>全篇</td><td>at/in/on 句子填空与时间表达两组练习</td></tr><tr><td>5_UNIT 2/6_Meeting 11 homework.html</td><td>全篇</td><td>介词混合、时间介词与 Moodle 介词练习</td></tr><tr><td>（拓展）</td><td>—</td><td>可数性分组表、烹饪动词动作分类、复合名词重音、词族与前缀表、间接问句与反意疑问句特殊规则为教学补充</td></tr><tr><td>（跳过）</td><td>—</td><td>Padlet、Quizlet、Cambridge、GeeksforGeeks 等外链只保留其词汇任务，不逐条复述</td></tr></table></section><div class="lnav"><a class="prev" href="l2-reading-chunking.html">← 第 2 讲 · 朗读、分块与技术文本阅读</a><a class="next" href="l4-elevator-pitch.html">第 4 讲 · 电梯演讲：60 秒说清你是谁 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

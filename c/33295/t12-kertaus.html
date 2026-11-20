@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Kertaus · 复习、考试与文化 · 33295</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ96 芬兰语1</a> / <a href="part-4.html">第 4 章 属格、个人信息与复习</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">12.1 笔试结构：13 个部分与分值</a><a class="toc-l3" href="#s3">12.2 口试：20 题题库与八题抽考</a><a class="toc-l3" href="#s4">12.3 口语评分标准：5 / 3 / 1 / 0</a><a class="toc-l3" href="#s5">12.4 全课语法地图</a><a class="toc-l3" href="#s6">12.5 十大高频错误（按丢分排序）</a><a class="toc-l3" href="#s7">12.6 芬兰式礼貌：三条硬规则</a><a class="toc-l3" href="#s8">12.7 自学资源与方法</a><a class="toc-l3" href="#s9">12.8 综合练习：一段样卷式阅读</a><a class="toc-l3" href="#s10">12.9 本讲错误清单</a><a class="toc-l2" href="#s11">考前三天清单</a><a class="toc-l3" href="#s12">口试临场检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-tervehdykset.html">Tunti 1 · 问候、姓名与告别</a><a href="t2-aakkoset.html">Tunti 2 · 字母、发音与拼读</a><a href="t3-miten-menee.html">Tunti 3 · 近况问答与元音和谐</a><a href="t4-numerot.html">Tunti 4 · 数字与部分格</a><a href="t5-maat.html">Tunti 5 · 国家、国籍与语言</a><a href="t6-verbit.html">Tunti 6 · 人称代词与第一类动词</a><a href="t7-negatiivi.html">Tunti 7 · 否定式与辅音交替</a><a href="t8-opiskelu.html">Tunti 8 · 学习、工作与 -ko 问句</a><a href="t9-perhe.html">Tunti 9 · 家庭、朋友与「有」结构</a><a href="t10-genetiivi.html">Tunti 9（上）· 属格与所有格</a><a href="t11-henkilotiedot.html">Tunti 9–10 · 个人信息与咖啡厅场景</a><a class="toc-l3" href="t12-kertaus.html">▸ Kertaus · 复习、考试与文化</a><a href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表</a></div></aside><article><h1>Kertaus · 复习、考试与文化</h1><p class="lead">Revision, Exams and Finnish Culture <span class="badge mute">33295</span> <span class="badge mute">第 12 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 属格、个人信息与复习</a></p><p class="src">原始文件：<code>15_Kokeet_Exams/1_KYSYMYKSET FI1.pdf</code> <code>15_Kokeet_Exams/2_Fi1 oral, arviointi.docx</code> <code>15_Kokeet_Exams/3_Finnish 1_2024.docx</code> <code>14_Finnish culture/Suomen kulttuuri/1_Finnish Culture1.pdf</code> <code>13_Tips_Vinkkejä/1_Dictionaries.docx</code> <code>13_Tips_Vinkkejä/3_Suomea netissä.docx</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>最后一讲不再引入新语法，而是把前十一讲收成两张清单：<b>考试要考什么</b>、<b>我还会错什么</b>。课件的考试材料非常具体——一份 13 部分的笔试卷、一份 20 题的口试题库、以及一份 5/3/1/0 的口语评分标准。把它们逐条对照到讲次，复习就不再是“从头再看一遍”，而是“按题型定点补洞”。</p><p>本讲另一半是文化：芬兰人怎么称呼、怎么守时、怎么保持距离、为什么 kiitos 那么重要。这些内容不直接出现在语法题里，但决定了口试的印象分，也决定了你在芬兰生活时是否“读得懂场面”。</p><p>学完本讲你能够：</p><ul class="checklist"><li>说出笔试 13 个部分的题型与分值，并指出每部分对应哪一讲</li><li>回答口试 20 题中的任意一题，用完整句而不是单词</li><li>按 5/3/1/0 四级标准判断自己的口语处在哪一档</li><li>列出自己最容易犯的十个错误，并说出对应的规则</li><li>解释芬兰式礼貌的三条核心（守时、私人空间、守信）</li><li>用咖啡厅对话完成一次完整的服务场景交流</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">12.1 笔试结构：13 个部分与分值</h3><p>课件 <code>Finnish 1_2024.docx</code> 就是一份完整的样卷。把它拆开，等于拿到一张“考什么”的地图：</p><table><tr><th>部分</th><th>题型</th><th>分值</th><th>对应讲次</th></tr><tr><td>0</td><td>填写个人信息（Etunimi / Sukunimi）</td><td>—</td><td>第 11 讲</td></tr><tr><td>1</td><td>听力：判断正误（KUUNTELU）</td><td>/10</td><td>第 1、3、4 讲</td></tr><tr><td>2</td><td>选择恰当反应（MITÄ SINÄ SANOT）</td><td>/5</td><td>第 1 讲</td></tr><tr><td>3</td><td>用自己信息回答问题（写完整句）</td><td>/10</td><td>第 3、5、11 讲</td></tr><tr><td>4</td><td>为问题选正确回答（六选一）</td><td>/6</td><td>第 4、5、11 讲</td></tr><tr><td>5</td><td>给答案写问句（KIRJOITA KYSYMYS）</td><td>/6</td><td>第 4、8 讲</td></tr><tr><td>6</td><td>造 -ko 问句（TEE –KO-KYSYMYS）</td><td>/12</td><td>第 8 讲</td></tr><tr><td>7</td><td>选词填属格（GENETIIVI）</td><td>/10</td><td>第 10 讲</td></tr><tr><td>8</td><td>连线上人称与动词（YHDISTÄ）</td><td>/12</td><td>第 6、7 讲</td></tr><tr><td>9</td><td>写动词正确形式（含否定）</td><td>/10</td><td>第 6、7 讲</td></tr><tr><td>10</td><td>谁是谁：家庭词配对</td><td>/7</td><td>第 9 讲</td></tr><tr><td>11</td><td>什么是什么：个人信息词配对</td><td>/7</td><td>第 11 讲</td></tr><tr><td>12</td><td>阅读判断正误（LUE TEKSTI）</td><td>/5</td><td>第 3、6、9 讲综合</td></tr></table><p>分值分布透露了复习重点：<b>-ko 问句（12 分）与动词连线（12 分）是两块最大的分数</b>，其次是属格与动词填空（各 10 分）。也就是说，第 6–8、10 讲合计占了 44 分，超过总分的一半。</p><p>英文表述：The written exam has thirteen parts; the heaviest are the <i>-ko</i> question transformation (12 points) and the pronoun–verb matching (12 points), followed by the genitive task and the verb-form task (10 points each).</p><div class="callout exam"><b>必考</b>第 9 部分（写动词正确形式）的九道小题全部来自前十一讲的高频动词：<code>asua</code>、<code>ostaa</code>（否定）、<code>katsoa</code>、<code>puhua</code>、<code>tanssia</code>、<code>matkustaa</code>、<code>ajaa</code>、<code>rakastaa</code>、<code>olla</code>。这九个词的变位必须能默写。</div><h3 id="s3">12.2 口试：20 题题库与八题抽考</h3><p>口试从下面 20 题里抽 8 题，要求“用完整句回答”并注意发音。逐题给出答题模板：</p><table><tr><th>题号</th><th>问题</th><th>答题模板</th></tr><tr><td>1</td><td>Kuka sinä olet? Mikä sinun nimi on?</td><td>Minä olen … / Minun nimi on …</td></tr><tr><td>2</td><td>Mikä sinun etunimi on?</td><td>Minun etunimi on …</td></tr><tr><td>3</td><td>Mikä sinun sukunimi on?</td><td>Minun sukunimi on …</td></tr><tr><td>4</td><td>Miten se tavataan?</td><td>Se tavataan …（逐字母）</td></tr><tr><td>5</td><td>Miten tämä tavataan?</td><td>Tämä tavataan …（逐字母）</td></tr><tr><td>6</td><td>Kuinka vanha sinä olet?</td><td>Olen … vuotta.</td></tr><tr><td>7</td><td>Kuinka monta …?</td><td>Niitä on … / Minulla on …</td></tr><tr><td>8</td><td>Miten menee? Mitä kuuluu?</td><td>Hyvin, kiitos. / Hyvää, kiitos.</td></tr><tr><td>9</td><td>Mistä sinä olet kotoisin?</td><td>Olen kotoisin …-sta/-stä.</td></tr><tr><td>10</td><td>Minkä maalainen sinä olet?</td><td>Olen …-lainen/-läinen.</td></tr><tr><td>11</td><td>Mikä on sinun äidinkieli?</td><td>Minun äidinkieli on …</td></tr><tr><td>12</td><td>Mitä kieliä sinä puhut?</td><td>Puhun …-a/-ä, …-a/-ä ja …-a/-ä.</td></tr><tr><td>13</td><td>Missä sinä asut?</td><td>Minä asun …-ssa/-ssä / …-lla/-llä.</td></tr><tr><td>14</td><td>Kenen kanssa sinä asut?</td><td>Minä asun … kanssa. / Asun yksin.</td></tr><tr><td>15</td><td>Mitä sinä opiskelet?</td><td>Opiskelen …-a/-ä. / Opiskelen …-ksi.</td></tr><tr><td>16</td><td>Mikä on sinun puhelinnumero?</td><td>Minun numero on …（逐位）</td></tr><tr><td>17</td><td>Mikä on sinun sähköpostiosoite?</td><td>Minun sähköpostiosoite on …</td></tr><tr><td>18</td><td>Millainen sinun perhe on?</td><td>Minun perhe on …</td></tr><tr><td>19</td><td>Onko sinulla äiti/isä/veli/sisko/mies/vaimo/lapsia?</td><td>Minulla on … / Ei ole.</td></tr><tr><td>20</td><td>Mikä on hänen/heidän nimi/nimet?</td><td>Hänen nimi on … / Heidän nimet ovat …</td></tr></table><p>注意第 14 题：如果独居，答 <code>Asun yksin.</code>（我一个人住），这是课件没写但口试常问的补充答案。第 7 题是开放式的（<code>Kuinka monta …?</code>），考官可能接 <code>Kuinka monta siskoa sinulla on?</code>，答句用“数字 + 单数 partitive”。</p><p>英文表述：The oral exam asks eight of twenty questions; all answers must be full sentences, with attention to pronunciation and to the correct case after each verb.</p><h3 id="s4">12.3 口语评分标准：5 / 3 / 1 / 0</h3><p>课件给了四级描述，可以当自评表用：</p><table><tr><th>等级</th><th>发音</th><th>理解与回答</th><th>自我表达</th></tr><tr><td>5</td><td>整句清晰，听者无障碍</td><td>听懂基本问题并正确完整句回答</td><td>不需帮助说出四件事，结构恰当</td></tr><tr><td>3</td><td>熟悉词清楚，辅音连缀有困难</td><td>听懂大部分问题，多数能完整句回答</td><td>能表达但需较多提示</td></tr><tr><td>1</td><td>只能说部分学过的词</td><td>听懂部分问题，至少能用单词回答</td><td>表达不足以完成课程目标</td></tr><tr><td>0</td><td>无法达到课程目标与内容要求</td><td>—</td><td>—</td></tr></table><p>五分的三条要求写得非常具体：pronounce full sentences so that the listener will understand without problems、answer correctly with full sentences、tell of oneself 4 things without help。也就是说，<b>流利度不如“完整句 + 四件事”重要</b>。准备时把自我介绍扩成四句（姓名/年龄/来自/学什么），就能稳拿结构分。</p><h3 id="s5">12.4 全课语法地图</h3><table><tr><th>讲次</th><th>语法核心</th><th>词汇主题</th><th>对应考题</th></tr><tr><td>1</td><td>打招呼、自我介绍、语体差异</td><td>问候与礼貌用语</td><td>第 2 部分（反应选择）</td></tr><tr><td>2</td><td>字母、ä/ö/y、长短音、拼读</td><td>字母与名字</td><td>口试第 4、5 题</td></tr><tr><td>3</td><td>menee / kuuluu 的格、元音和谐</td><td>近况词汇</td><td>口试第 8 题</td></tr><tr><td>4</td><td>数字 0–1 000 000、数字后 partitive</td><td>数字与年龄</td><td>第 1、4 部分</td></tr><tr><td>5</td><td>-sta/-stä、-lainen/-läinen、语言 -a/-ä</td><td>19 个国家</td><td>第 3、4 部分</td></tr><tr><td>6</td><td>人称代词、第一类动词肯定式</td><td>24 个动词</td><td>第 8、9 部分</td></tr><tr><td>7</td><td>ei 的六个人称、否定词干、辅音交替</td><td>动词与宾语</td><td>第 8、9 部分</td></tr><tr><td>8</td><td>opiskella + partitive、-ksi、-ko 问句</td><td>学科与职业</td><td>第 5、6 部分</td></tr><tr><td>9</td><td>adessiivi 拥有、复数 partitive</td><td>家庭与朋友</td><td>第 10 部分</td></tr><tr><td>10</td><td>属格 -n、辅音交替、所有格后缀</td><td>所属关系</td><td>第 7 部分</td></tr><tr><td>11</td><td>地名格（-ssa 与 -lla）、个人信息</td><td>地址与联系方式</td><td>第 11 部分</td></tr><tr><td>12</td><td>综合复习</td><td>考试与文化</td><td>全部</td></tr></table><p>这张表可以反过来用：做错一道题，先定位它属于哪一讲的哪个语法点，再回去只补那一块。例如“<code>kahdeksankymmentä</code> 写错”属于第 4 讲的十位结构；“<code>en puhu</code> 写成 <code>en puhun</code>”属于第 7 讲的裸词干规则。</p><h3 id="s6">12.5 十大高频错误（按丢分排序）</h3><ol class="steps"><li>第三人称单数漏长元音：<code>hän puhu</code> → <code>puhuu</code>（第 6 讲）</li><li>否定式保留后缀：<code>en puhun</code>、<code>ei asuu</code>（第 7 讲）</li><li>数字后不用 partitive：<code>kaksi lapsi</code>（第 4 讲）</li><li>专业漏 partitive、职业漏 -ksi（第 8 讲）</li><li>-ko 加在长元音上：<code>asuu ko</code>（第 8 讲）</li><li>属格双写辅音不弱化：<code>kukkan</code>（第 10 讲）</li><li>Tampere/Vantaa/Imatra 误用 -ssa（第 11 讲）</li><li>Hyvin 与 Hyvää 混用（第 3 讲）</li><li>用 <code>minä on</code> 表示“我有”（第 9 讲）</li><li>ä/ö 写成 a/o（第 2 讲）</li></ol><p>把这十条抄在纸上，考前只看这一张。它们覆盖了样卷里 80% 以上的失分点——因为芬兰语的错误高度集中在“后缀是否出现”“格是否选对”这两类，而不是词汇量。</p><h3 id="s7">12.6 芬兰式礼貌：三条硬规则</h3><p>课件 <code>Finnish Culture 1</code> 把“如何礼貌”写得很直白，可以归纳成三条：</p><table><tr><th>规则</th><th>具体表现</th><th>背后的逻辑</th></tr><tr><td>守时</td><td>上课、开会、见朋友都要准时；迟到被视为不尊重对方时间</td><td>时间是共同资源</td></tr><tr><td>尊重私人空间</td><td>身体距离较远；别人说话时不打断，安静听完再回应</td><td>倾听被视为尊重的表现</td></tr><tr><td>守信</td><td>答应的事一定做到；不说谎、不夸大</td><td>诚实与勤劳被高度重视</td></tr></table><p>称呼方面：芬兰人直呼名字（包括老师），头衔 <code>herra</code> / <code>rouva</code> / <code>neiti</code> 很少用，真用时只跟姓；<code>rakas</code>、<code>kulta</code> 相当于 my beloved，绝不用于陌生人；<code>kiitos</code> 是最高频也最重要的礼貌词。</p><p>英文表述：Finnish politeness rests on punctuality, respect for personal space (including not interrupting), and keeping promises; titles are rare and first names are the norm.</p><div class="callout tip"><b>口试里的文化加分</b>回答问题时看着对方、语速平稳、说完一句停一下（不要抢话），比堆敬语更符合芬兰人的交流习惯。这也是评分标准里 “listener will understand without problems” 的实际含义。</div><h3 id="s8">12.7 自学资源与方法</h3><p>课件列出的词典与网络资源可以作为课后工具（此处只记名称，不附链接）：</p><ul><li><b>MOT 词典</b>：最可靠，适合查“到底该用哪个词”</li><li><b>Redfox</b>：给出例句，适合看词在句中怎么用</li><li><b>sanakirja.org</b>：快，但词库较小</li><li><b>DeepL</b>：整句翻译质量较好</li><li><b>Google 翻译</b>：课件明确说“仅在别无选择时使用”，因为不可靠</li><li><b>Babadada、Kotisuomessa、Suomea ole hyvä、Supisuomea、Suomi taskussa</b>：图文词典与视频课程，适合练听力</li></ul><p>方法上，课件强调三件事：每周完成 Moodle 任务、把芬兰语放进日常生活（用学过的短语）、按时交作业。对自学者最有效的一条是“<b>每天十分钟出声读</b>”——因为口试评的是发音与完整句，而不是笔试分数。</p><h3 id="s9">12.8 综合练习：一段样卷式阅读</h3><p>样卷的阅读题（Timo 与 Kirsi 在街上相遇）几乎用到了全课所有句型。节选并标注：</p><p><code>— Hei! Mitä kuuluu?<br>— Kiitos, ihan hyvää. Entä sinulle? Asutko täällä?<br>— Joo, asun.<br>— Mitä sinä teet?<br>— Opiskelen Lahden ammattikorkeakoulussa informaatioteknologiaa.</code></p><p>逐句语法：<code>Mitä kuuluu</code>（第 3 讲，答 <code>hyvää</code>）；<code>Entä sinulle</code>（allatiivi）；<code>Asutko täällä</code>（第 8 讲 -ko 问句）；<code>Mitä sinä teet</code>（<code>tehdä</code> 第二类，问“做什么”）；<code>Opiskelen … informaatioteknologiaa</code>（第 8 讲，partitive）。</p><p>后面的段落还有 <code>Minun mies on Charles. Hän on espanjalainen</code>（第 9、5 讲）、<code>Minulla on yksi tyttö</code>（第 9 讲）、<code>Hän on nyt 6 vuotta vanha</code>（第 4 讲）、<code>Minä olen eronnut ja olen nyt sinkku</code>（第 9 讲）。一段短文把 12 讲串了一遍。</p><h3 id="s10">12.9 本讲错误清单</h3><ul><li>口试用单词回答（评分要求完整句）</li><li>把 <code>Hyvin</code> 与 <code>Hyvää</code> 混用</li><li>自我介绍只说一句（评分要求“四件事”）</li><li>把 <code>Tampereella</code> 说成 <code>Tampereessa</code></li><li>在正式场合堆头衔（芬兰人不这么说话）</li><li>听不懂就沉默：更得体的是 <code>Anteeksi, voisitko toistaa?</code></li></ul><div class="callout idea" data-ext="t12-kertaus-0"><b>前后衔接</b><p>笔试 13 个部分里两块最大：<code>-ko</code> 问句转换 12 分（第 8 讲）与人称–动词连线 12 分（第 6、7 讲），属格与动词填空各 10 分——第 6 至 10 讲合计超过半壁。口试从 20 题抽 8，要求完整句；5 分标准是「整句清晰、完整句回答、不靠提示说出自己四件事」，所以把姓名/年龄/来自/学什么扩成四句比堆复杂句有效。按丢分排序的十个陷阱串起全课：<code>hän puhu→puhuu</code>、<code>en puhun→en puhu</code>、<code>kaksi lapsi→lasta</code>、专业漏部分格、职业漏 <code>-ksi</code>、<code>asuu ko→asuuko</code>、<code>kukkan→kukan</code>、<code>Hyvin/Hyvää</code> 混用、<code>minä on</code> 表「有」、ä/ö 写成 a/o。文化上加分的不是敬语而是守时、不打断、守信，以及 <code>kiitos</code> 一定说出口；听不懂用 <code>Anteeksi, voisitko toistaa?</code> 而不是沉默。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi / Finnish</th><th>中文</th><th>English 说明 / 例句</th></tr><tr><td>kertaus</td><td>复习</td><td>Revision before the exam.</td></tr><tr><td>koe</td><td>考试</td><td><i>kirjallinen koe</i> = written exam.</td></tr><tr><td>suullinen koe</td><td>口试</td><td>Eight of twenty questions.</td></tr><tr><td>kirjallinen koe</td><td>笔试</td><td>Thirteen parts, about 100 points.</td></tr><tr><td>arviointi</td><td>评分</td><td>Scale 5 / 3 / 1 / 0 for the oral exam.</td></tr><tr><td>kuuntelu</td><td>听力</td><td><i>KUUNTELU. VALITSE OIKEIN/VÄÄRIN.</i></td></tr><tr><td>oikein / väärin</td><td>正确／错误</td><td>True / false task.</td></tr><tr><td>genetiivi</td><td>属格</td><td>Ten-point task in the exam.</td></tr><tr><td>verbityyppi 1</td><td>第一类动词</td><td>The largest verb class.</td></tr><tr><td>kulttuuri</td><td>文化</td><td><i>Suomen kulttuuri</i>.</td></tr><tr><td>kohteliaisuus</td><td>礼貌</td><td>Punctuality, space, honesty.</td></tr><tr><td>kiitos</td><td>谢谢</td><td>The most appreciated polite word.</td></tr><tr><td>täsmällisyys</td><td>守时</td><td>Being on time is a form of respect.</td></tr><tr><td>yksityisyys</td><td>私人空间</td><td>Finns keep physical distance.</td></tr><tr><td>rehellisyys</td><td>诚实</td><td>Keeping promises matters.</td></tr><tr><td>Anteeksi, voisitko toistaa?</td><td>抱歉，你能重复一遍吗？</td><td>A polite way to ask for repetition.</td></tr><tr><td>En ymmärrä</td><td>我不明白</td><td>Useful but blunt; add an apology.</td></tr><tr><td>Asun yksin</td><td>我独居</td><td>Answer to <i>Kenen kanssa asut?</i></td></tr><tr><td>ammattikorkeakoulu</td><td>应用科学大学</td><td><i>Lahden ammattikorkeakoulu</i>.</td></tr><tr><td>arvosana</td><td>成绩等级</td><td>0–5 in Finnish grading.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　按评分标准自评一次口试</div><p><b>情境：</b>考官问 <code>Kuka sinä olet? Kuinka vanha sinä olet? Mistä sinä olet kotoisin? Mitä sinä opiskelet?</code></p><p><b>5 分答法：</b><code>Minä olen Liisa Virtanen. Olen 22 vuotta. Olen kotoisin Kiinasta. Opiskelen LUTissa logistiikkaa.</code>（四句完整、格全对、发音清楚。）</p><p><b>3 分答法：</b><code>Liisa. 22. Kiinasta. Logistiikkaa.</code>（信息对，但不是完整句。）</p><p><b>差距在哪：</b>不是词汇，而是“是否成句”。评分表写的是 answer correctly with full sentences，所以每句都要有动词。</p></div><div class="qa"><div class="q">例 2　样卷阅读题的判断正误</div><p><b>句 1：</b><code>Kirsi on Timon vaimo.</code> → <b>VÄÄRIN</b>。原文说 <code>Kirsi on Timon vanha luokkakaveri koulusta</code>（老同学）。</p><p><b>句 2：</b><code>Timo opiskelee englantia.</code> → <b>VÄÄRIN</b>。原文是 <code>informaatioteknologiaa</code>。</p><p><b>句 3：</b><code>Timo asuu Hirsimetsäntiellä.</code> → <b>VÄÄRIN</b>。住在那条街的是 Kirsi（<code>Minä asun nyt Hirsimetsäntiellä</code>），Timo 住 <code>Liisankadulla</code>。</p><p><b>句 4：</b><code>Kirsin mies on espanjalainen.</code> → <b>OIKEIN</b>（<code>Hän on espanjalainen</code>）。</p><p><b>句 5：</b><code>Timo ei ole naimisissa.</code> → <b>OIKEIN</b>（<code>Minä olen eronnut ja olen nyt sinkku</code>）。</p><p><b>方法：</b>先读题干关键词（谁、住哪、什么国籍、婚姻），再回原文定位对应句；不要凭“听起来像”判断。</p></div><div class="qa"><div class="q">例 3　把“我住在坦佩雷，学电气工程”说成四句</div><p><b>目标：</b>一句一句加信息，每句都完整。</p><p><b>句 1：</b><code>Minä asun Tampereella.</code>（地点格用外格）</p><p><b>句 2：</b><code>Opiskelen sähkötekniikkaa.</code>（专业用 partitive）</p><p><b>句 3：</b><code>Opiskelen insinööriksi.</code>（目标身份用 -ksi）</p><p><b>句 4：</b><code>Minulla on kaksi siskoa.</code>（拥有用 adessiivi + 数字后 partitive）</p><p><b>检查：</b>四句分别考了第 11、8、8、9 讲的核心句型，没有一句重复。</p></div><div class="qa"><div class="q">例 4　文化场景判断</div><p><b>场景一：</b>上课迟到了五分钟。<b>判断：</b>在芬兰这被视为不礼貌，应尽量提前说明并道歉 <code>Anteeksi, että olen myöhässä</code>。</p><p><b>场景二：</b>想称呼老师。<b>判断：</b>直呼名字即可（<code>Moi Noora</code>），不要用 <code>rouva</code> 加姓。</p><p><b>场景三：</b>对方说话时你想补充。<b>判断：</b>等他/她说完再开口；打断在芬兰被视为粗鲁，安静倾听加点头才是“有兴趣”的表现。</p><p><b>结论：</b>芬兰语的礼貌不在敬语，而在<b>时间、距离与信守承诺</b>三件事上。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>列出笔试 13 个部分中分值最高的三项，并写出它们对应哪一讲。</li><li>用四句完整句介绍自己：姓名、年龄、来自哪里、学什么。</li><li>把 <code>Hän puhuu suomea.</code> 改成否定句，再改成 -ko 问句。</li><li>写出属格：<code>kukka</code>、<code>Jens</code>、<code>me</code>。</li><li>回答：<code>Missä sinä asut? Kenen kanssa sinä asut?</code>（用拉赫蒂、独居）</li><li>改错：<code>Minä asun Tampereessa. Opiskelen sähkötekniikka. Minä on kaksi sisko.</code></li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> -ko 问句 12 分（第 8 讲）、人称与动词连线 12 分（第 6、7 讲）、属格 10 分（第 10 讲）与动词形式 10 分（第 6、7 讲）。</p><p><b>2.</b> 例：<code>Minä olen Wang Zishuo. Olen 20 vuotta. Olen kotoisin Kiinasta. Opiskelen LUTissa tietotekniikkaa.</code></p><p><b>3.</b> 否定：<code>Hän ei puhu suomea.</code>；问句：<code>Puhuuko hän suomea?</code>（第三人称单数去长元音再加 -ko。）</p><p><b>4.</b> <code>kukan</code>（kk : k）、<code>Jensin</code>（辅音 + i + n）、<code>meidän</code>（代词不规则）。</p><p><b>5.</b> <code>Minä asun Lahdessa. Minä asun yksin.</code>（城市用内格；独居答 <code>asun yksin</code>。）</p><p><b>6.</b> 三处：<code>Minä asun Tampereella.</code>（外格）；<code>Opiskelen sähkötekniikkaa.</code>（partitive）；<code>Minulla on kaksi siskoa.</code>（拥有用 adessiivi + 数字后 partitive）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>笔试 13 部分的题型与分值；口试 20 题与五分制三要求（完整句、四件事、发音清楚）；十大高频错误；<code>Anteeksi, voisitko toistaa?</code> 这类交际用语。</div><div class="callout warn"><b>易错 1</b><b>口试用单词回答</b>。评分表明确要求 full sentences，单词回答最多落在 1 分档。</div><div class="callout warn"><b>易错 2</b><b>复习平均用力</b>。第 6–8、10 讲合计占 44 分，应优先；第 1、2 讲只对应 5 分的反应题。</div><div class="callout warn"><b>易错 3</b><b>把文化当“软内容”忽略</b>。口试的印象分与“能否听懂并得体回应”直接相关，守时与不打断比敬语更重要。</div><div class="callout tip"><b>进阶</b>考前三天做一次全真模拟：按 13 部分顺序限时做一遍样卷，把错题按讲次归类，然后只复习错得最多的两讲。这比从头复读十二讲有效得多。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s11">考前三天清单</h2><ol class="steps"><li>第一天：把 13 部分的样卷限时做一遍，标出错题</li><li>第二天：把错题按讲次归类，只复习错得最多的两讲</li><li>第三天：出声练 20 个口试题，每题都用完整句，录音自查</li><li>考前：只看“十大高频错误”那一张纸</li></ol><h3 id="s12">口试临场检查</h3><ul class="checklist"><li>每题都用完整句，句子里必须有动词</li><li>数字后跟单数 partitive，问“有没有”用复数 partitive</li><li>地名先想“是 -ssa 阵营还是 -lla 阵营”</li><li>听不懂时用 <code>Anteeksi, voisitko toistaa?</code> 而不是沉默</li><li>说完一句停一下，不抢话、不打断</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>15_Kokeet_Exams/3_Finnish 1_2024.docx</td><td>全篇</td><td>13 部分笔试样卷：听力、反应、问答、写问句、-ko 问句、属格、动词连线、动词形式、词义配对、阅读判断</td></tr><tr><td>15_Kokeet_Exams/1_KYSYMYKSET FI1.pdf</td><td>全篇</td><td>口试 20 题题库与“抽 8 题”的说明</td></tr><tr><td>15_Kokeet_Exams/2_Fi1 oral, arviointi.docx</td><td>全篇</td><td>口语评分 5/3/1/0 四级标准与课程目标</td></tr><tr><td>14_Finnish culture/Suomen kulttuuri/1_Finnish Culture1.pdf</td><td>p2</td><td>称呼：直呼名字、头衔少用、rakas 不用于陌生人</td></tr><tr><td>14_Finnish culture/Suomen kulttuuri/1_Finnish Culture1.pdf</td><td>p3</td><td>礼貌三规则：守时、私人空间、守信</td></tr><tr><td>13_Tips_Vinkkejä/1_Dictionaries.docx</td><td>全篇</td><td>五个词典工具的评价（MOT、Redfox、sanakirja.org、DeepL、Google 翻译）</td></tr><tr><td>13_Tips_Vinkkejä/3_Suomea netissä.docx</td><td>全篇</td><td>六个自学网站与视频资源（只记名称，不附链接）</td></tr><tr><td>13_Tips_Vinkkejä/2_Suomen kielen oppikirjoja A1.docx</td><td>全篇</td><td>A1 教材书单，本讲义不展开</td></tr><tr><td>（跳过）</td><td>—</td><td>01_Info 的课程结构表（表格内容为空）与“如何完成课程”页属于教务信息；15_Kokeet_Exams/5 的成绩反馈为个人成绩页</td></tr><tr><td>（拓展）</td><td>—</td><td>12.8 的阅读题解析基于样卷原文节选；12.5 的“十大高频错误”排序是按各讲失分概率归纳，非课件原文</td></tr></table></section><div class="lnav"><a class="prev" href="t11-henkilotiedot.html">← Tunti 9–10 · 个人信息与咖啡厅场景</a><a class="next" href="supp-homework-vocab.html">补充 · 七次作业与五份词汇表 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 6 讲 · 软件体系结构设计 · 30361</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-2.html">第 2 章 需求、建模与架构</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">6.1 什么是体系结构设计</a><a class="toc-l3" href="#s3">6.2 小架构与大架构</a><a class="toc-l3" href="#s4">6.3 显式架构的三个好处</a><a class="toc-l3" href="#s5">6.4 盒线图：最常用，也最受批评</a><a class="toc-l3" href="#s6">6.5 架构设计与系统特征</a><a class="toc-l3" href="#s7">6.6 架构复用与模式</a><a class="toc-l3" href="#s8">6.7 MVC 模式</a><a class="toc-l3" href="#s9">6.8 分层架构</a><a class="toc-l3" href="#s10">6.9 仓库架构</a><a class="toc-l3" href="#s11">6.10 客户-服务器架构</a><a class="toc-l3" href="#s12">6.11 管道-过滤器架构</a><a class="toc-l3" href="#s13">6.12 架构视图</a><a class="toc-l3" href="#s14">6.13 应用架构</a><a class="toc-l2" href="#s15">做架构决策的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a class="toc-l3" href="l06-architectural-design.html">▸ 第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 6 讲 · 软件体系结构设计</h1><p class="lead">Software Architectural Design <span class="badge mute">30361</span> <span class="badge mute">第 6 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 需求、建模与架构</a></p><p class="src">原始文件：<code>13_Week 7/1_SE - Lecture 6 - 2026.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>需求说「做什么」，体系结构说「整体怎么组织」。这一讲回答四个问题：架构设计决策如何影响非功能属性；用什么视图来描述架构；有哪些经过验证的架构模式（MVC、分层、仓库、客户-服务器、管道-过滤器）；以及一类系统的通用架构（应用架构）。</p><p>与前后衔接：第 5 讲的类图与构件图是描述架构的符号；本讲的「性能/安全/可用性/可维护性」与第 7 讲的非功能测试、第 10 讲的质量属性直接对应；第 12 讲的 IBM 案例（RAD 与 WAS 的接口依赖）与 Pearson 案例（服务化与团队结构）都是架构决策的现实版本。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说明架构设计为什么是需求工程与设计之间的关键环节</li><li>针对给定非功能需求（性能、安全、安全（safety）、可用性、可维护性）选择相应的架构策略</li><li>说出逻辑、开发、进程、物理、场景五种视图各自回答什么问题</li><li>用「名称—描述—何时使用—优点—缺点」五段式描述五种架构模式</li><li>判断一个业务系统适合分层架构还是仓库架构，并说明理由</li><li>说明应用架构（application architecture）的五种用途</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">6.1 什么是体系结构设计</h3><p>课件定义：“Architectural design is concerned with understanding how a software system should be organized and designing the overall structure of that system.”（体系结构设计关注理解软件系统应如何组织，并设计该系统的整体结构。）</p><p>它的特殊地位在于：<b>架构设计是设计与需求工程之间的关键连接</b>，因为它识别系统中的主要结构构件以及它们之间的关系。其产出是一个<b>架构模型</b>，把系统描述为一组相互通信的构件。</p><p>课件还给出一个与敏捷有关的现实判断：普遍认为敏捷过程的早期阶段应设计<b>整体系统架构</b>；原因是<b>重构体系结构的代价很高</b>，因为它影响系统中太多构件。这与 XP「简单设计」并不矛盾——XP 反对的是过度预设计，不是反对有一次总体架构决策。</p><h3 id="s3">6.2 小架构与大架构</h3><table><tr><th>层次</th><th>英文</th><th>关注对象</th><th>问题</th></tr><tr><td>程序内架构</td><td>architecture in the small</td><td>单个程序</td><td>单个程序如何分解为构件</td></tr><tr><td>企业级架构</td><td>architecture in the large</td><td>包含其他系统、程序、程序构件的复杂企业系统</td><td>这些企业系统分布在不同的计算机上，而这些计算机可能由不同公司拥有和管理</td></tr></table><p>两者的差别不只是规模，而是<b>治理边界</b>：程序内架构你可以决定一切；企业级架构中，你只能决定自己那一块，其他系统的升级节奏、接口稳定性、故障责任都不由你控制。</p><h3 id="s4">6.3 显式架构的三个好处</h3><ul><li><b>干系人沟通</b>：架构可作为系统干系人讨论的焦点；</li><li><b>系统分析</b>：使「系统能否满足其非功能需求」的分析成为可能；</li><li><b>大规模复用</b>：架构可在一系列系统中复用，并可发展<b>产品线架构</b>（product-line architectures）。</li></ul><h3 id="s5">6.4 盒线图：最常用，也最受批评</h3><p>简单、非正式的框图（box and line diagrams）是记录软件架构最常用的方法。但它受到批评：缺乏语义（lack semantics），不显示实体之间关系的<b>类型</b>，也不显示实体的可见属性；它过于抽象，既不说明构件关系的性质，也不说明子系统的外部可见属性。</p><p>然而课件给出平衡结论：盒线图对<b>与干系人沟通</b>和<b>项目计划</b>仍然有用。这与第 5 讲「模型用途决定要求」是同一条原则：用于讨论的图不必精确，用于生成的图必须完整。</p><p>架构模型的两类用途：一是促进对系统设计的讨论（高层视图不杂糅细节，干系人能理解抽象视图，从而不被细节干扰）；二是记录已设计的架构（目标是产出完整的系统模型，显示不同构件、它们的接口与连接）。</p><h3 id="s6">6.5 架构设计与系统特征</h3><p>架构设计是创造性过程，因系统类型而异；但有一批<b>跨所有设计过程的共同决策</b>，它们影响系统的非功能特征。课件给出五组「特征 → 策略」的对应，这是本节最高频的考点：</p><table><tr><th>系统特征</th><th>架构策略（课件原句要点）</th><th>解释</th></tr><tr><td>性能 performance</td><td>Localise critical operations and minimise communications. Use large rather than fine-grain components.</td><td>把关键操作局部化、最小化通信；用大粒度构件而非细粒度构件，减少跨构件调用次数</td></tr><tr><td>安全 security</td><td>Use a layered architecture with critical assets in the inner layers.</td><td>分层架构，把关键资产放在内层；外层被攻破时内层仍有保护</td></tr><tr><td>功能安全 safety</td><td>Localise safety-critical features in a small number of sub-systems.</td><td>把安全关键功能集中到少数子系统，便于验证与认证</td></tr><tr><td>可用性 availability</td><td>Include redundant components and mechanisms for fault tolerance.</td><td>冗余构件 + 容错机制</td></tr><tr><td>可维护性 maintainability</td><td>Use fine-grain, replaceable components.</td><td>细粒度、可替换构件，便于局部修改</td></tr></table><div class="callout warn"><b>注意矛盾</b>性能要「大粒度」，可维护性要「细粒度」——这两个策略方向相反。这正说明架构设计是<b>权衡</b>：先确定本项目最重要的两三个质量属性，再据此取舍。第 10 讲会以「质量属性冲突」再次强调这一点。</div><h3 id="s7">6.6 架构复用与模式</h3><p>同一领域的系统往往有相似的架构，反映该领域的核心概念；<b>应用产品线</b>（application product lines）围绕一个核心架构构建，用变体满足特定客户需求。系统架构可围绕一个或多个<b>架构模式</b>（也称风格 style）设计：模式捕捉架构的本质，并可以以不同方式实例化。</p><p>课件的模式描述采用统一的五段式：NAME / Description / When used / Advantages / Disadvantages。答题时按这五段写，结构分基本就稳了。</p><h3 id="s8">6.7 MVC 模式</h3><table><tr><th>项</th><th>内容</th></tr><tr><td>名称</td><td>MVC（Model-View-Controller）</td></tr><tr><td>描述</td><td>把表示与交互从系统数据中分离。系统分为三个逻辑构件：Model 管理数据及对数据的操作；View 定义并管理数据如何呈现给用户；Controller 管理用户交互，并把交互传给 View 与 Model。</td></tr><tr><td>何时使用</td><td>有多种方式查看与操作同一份数据时；未来对交互与呈现的需求未知时。</td></tr><tr><td>优点</td><td>数据可以独立于其表示而变化，反之亦然；支持以不同方式呈现同一数据，一处表示的修改会体现在所有表示中。</td></tr><tr><td>缺点</td><td>当数据模型与交互都很简单时，会引入额外代码与复杂度。</td></tr></table><p>MVC 的本质是「一份数据、多种视图、一个控制器」。它解决的是「表示与数据耦合」问题，而不是「性能」问题；因此在高并发场景中，MVC 本身不提供任何性能优势。</p><h3 id="s9">6.8 分层架构</h3><p>分层架构用于建模子系统之间的接口：把系统组织成一组层（或抽象机器），每层提供一组服务。它支持在不同层中<b>增量开发子系统</b>；当某层接口变化时，只有相邻层受影响。缺点是：把系统这样分层常常是<b>人为的</b>（often artificial）。</p><table><tr><th>项</th><th>内容</th></tr><tr><td>名称</td><td>LAYERED ARCHITECTURE</td></tr><tr><td>描述</td><td>把系统组织成层，每层关联一组相关功能。一层向其<b>上层</b>提供服务，因此最底层代表贯穿系统使用的核心服务。</td></tr><tr><td>何时使用</td><td>在既有系统之上构建新设施时；开发分散在多个团队、每个团队负责一层功能时；需要多级安全（multi-level security）时。</td></tr><tr><td>优点</td><td>只要接口保持，整层可以被替换；每层可提供冗余设施以提高可靠性。</td></tr><tr><td>缺点</td><td>实践中很难在层间做干净分离，高层可能不得不直接与低层交互；性能可能成为问题，因为一个服务请求在每层都要被解释一次（multiple levels of interpretation）。</td></tr></table><h3 id="s10">6.9 仓库架构</h3><p>子系统必须交换数据，有两条路：共享数据放在中央数据库或仓库中，供所有子系统访问；或每个子系统维护自己的数据库并显式传递数据。当需要共享大量数据时，<b>仓库模型最常用</b>，因为它是高效的数据共享机制。</p><table><tr><th>项</th><th>内容</th></tr><tr><td>名称</td><td>REPOSITORY</td></tr><tr><td>描述</td><td>系统中所有数据由一个中央仓库管理，所有系统构件都可访问；构件之间不直接交互，只通过仓库交互。</td></tr><tr><td>何时使用</td><td>系统产生大量需长期保存的信息时；数据驱动系统中「数据进入仓库触发动作或工具」时。</td></tr><tr><td>优点</td><td>构件相互独立，不需要知道其他构件存在；一个构件做的修改可传播到所有构件；数据集中管理，一致性容易保证。</td></tr><tr><td>缺点</td><td>仓库是<b>单点故障</b>，仓库出问题影响整个系统；所有通信都经由仓库可能低效；把仓库分布到多台计算机上可能很困难。</td></tr></table><h3 id="s11">6.10 客户-服务器架构</h3><p>客户-服务器是分布式系统模型，展示数据与处理如何分布在一组构件上；它可以在单台计算机上实现。组成是：一组提供特定服务（打印、数据管理）的独立服务器；一组调用这些服务的客户；以及允许客户访问服务器的网络。</p><table><tr><th>项</th><th>内容</th></tr><tr><td>名称</td><td>CLIENT-SERVER</td></tr><tr><td>描述</td><td>把系统功能组织成服务，每个服务由独立服务器提供；客户是这些服务的使用者，通过访问服务器来使用它们。</td></tr><tr><td>何时使用</td><td>需要从多个位置访问共享数据库中的数据时；由于服务器可复制，也用于系统负载可变时。</td></tr><tr><td>优点</td><td>服务器可分布到网络上；通用功能可对所有客户可用，不需要每个服务都实现一遍。</td></tr><tr><td>缺点</td><td>每个服务都是单点故障，易受拒绝服务攻击或服务器故障影响；性能不可预测，因为它同时取决于网络与系统；若服务器由不同组织拥有，可能有管理问题。</td></tr></table><h3 id="s12">6.11 管道-过滤器架构</h3><p>功能变换把输入处理成输出，这类架构可称为管道-过滤器模型（如 UNIX shell）。变体非常常见：当变换是顺序的，就是<b>批顺序模型</b>（batch sequential model），广泛用于数据处理系统。它<b>不太适合交互式系统</b>。</p><table><tr><th>项</th><th>内容</th></tr><tr><td>名称</td><td>PIPE AND FILTER</td></tr><tr><td>描述</td><td>把数据处理组织成：每个处理构件（过滤器）是离散的，执行一种数据变换；数据像在管道中一样从一个构件流到另一个构件处理。</td></tr><tr><td>何时使用</td><td>数据处理应用中，输入分阶段处理并生成相关输出时。</td></tr><tr><td>优点</td><td>易理解，支持变换复用；工作流风格匹配许多业务流程的结构；通过增加变换来演化很直接；可实现为顺序或并发系统。</td></tr><tr><td>缺点</td><td>通信的变换之间必须就<b>数据传输格式</b>达成一致；每个变换必须解析其输入、反解析其输出为约定格式；这增加系统开销，并可能使使用不兼容数据结构的变换无法复用。</td></tr></table><h3 id="s13">6.12 架构视图</h3><p>设计架构时要问两个问题：哪些视图或视角有用？用什么符号描述架构模型？关键前提是：<b>每个架构模型只展示系统的一个视图或视角</b>。</p><p>表示法之争：有人认为 UML 适合描述与记录系统架构；<b>架构描述语言</b>（ADLs）已被开发出来，但并未被广泛使用。</p><p>五种视图（课件逐一介绍，必须能对上「视图—回答的问题」）：</p><table><tr><th>视图</th><th>英文</th><th>回答什么问题</th><th>内容要点</th></tr><tr><td>逻辑视图</td><td>logical view</td><td>系统向用户提供哪些服务（功能需求）</td><td>把系统分解为一组关键抽象，多来自问题域，以对象或对象类的形式表示；是功能的蓝图（如空管系统的逻辑视图）</td></tr><tr><td>开发视图</td><td>development view</td><td>软件在开发环境中如何组织</td><td>关注实际的软件模块组织：软件被打包成可由一个或少数开发者开发的块（程序库、子系统）；关注子系统分解</td></tr><tr><td>进程视图</td><td>process view</td><td>运行时并发与分布如何安排</td><td>考虑性能、可用性等非功能需求；处理并发与分布、系统完整性、容错，以及逻辑视图中的主要抽象落在哪个控制线程上执行</td></tr><tr><td>物理视图</td><td>physical view</td><td>软件如何映射到硬件节点</td><td>主要考虑可用性、可靠性（容错）、性能（吞吐）、可扩展性；软件运行在一组计算机或处理节点（nodes）组成的网络上</td></tr><tr><td>场景视图</td><td>scenarios</td><td>用具体用例把各视图串起来</td><td>用若干场景（如一次本地通话的选路阶段）验证架构能否支撑真实使用</td></tr></table><h3 id="s14">6.13 应用架构</h3><p>应用系统是为满足组织需要而设计的。由于业务有许多共同点，其应用系统也往往有<b>共同架构</b>，反映应用需求。<b>通用应用架构</b>（generic application architecture）是某一类软件系统的架构，可被配置与适配，以构建满足特定需求的系统。</p><p>应用架构的五种用途：作为架构设计的起点；作为设计检查清单；作为组织开发团队工作的方式；作为评估构件可复用性的手段；作为讨论应用类型的词汇表。</p><p>信息系统架构：信息系统有一个通用架构，可组织为分层架构；它们是<b>基于事务的系统</b>，因为与这些系统的交互通常涉及数据库事务。层包括：用户界面、用户通信、信息检索、系统数据库。</p><p>另一种更常见的四层划分（课件后一页）：</p><table><tr><th>层</th><th>职责</th></tr><tr><td>表示层 Presentation Layer</td><td>负责用户与软件系统的交互</td></tr><tr><td>应用/业务层 Application/Business Layer</td><td>处理与完成功能需求相关的方面</td></tr><tr><td>领域层 Domain Layer</td><td>负责算法与程序构件</td></tr><tr><td>基础设施/持久化/数据库层 Infrastructure/Persistence/Database Layer</td><td>负责处理数据与数据库</td></tr></table><p>注意两层「分层」说法的差别：前者按「界面—通信—检索—数据库」的技术栈切分，后者按「表示—业务—领域—基础设施」的职责切分。答题时先说明采用哪一种切分口径，再展开。</p><div class="callout idea" data-ext="l06-architectural-design-0"><b>前后衔接</b><p>架构设计连接需求与实现，识别主要构件及其关系。高频考点是五组特征到策略的对应，尤其一对矛盾：性能要求把关键操作局部化、用大粒度构件减少通信；可维护性却要细粒度、可替换构件便于局部修改。两者方向相反，正说明架构是权衡——先定本项目最重要的两三个质量属性再取舍。小架构与大架构的差别不只是规模，而是治理边界：企业级架构里其他系统的升级节奏、接口稳定性都不由你控制。盒线图缺乏语义，但用于干系人沟通与项目计划仍有效。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>architectural design</td><td>体系结构设计</td><td>Understanding how a system should be organised and designing its overall structure.</td></tr><tr><td>architecture in the small</td><td>程序内架构</td><td>Architecture of individual programs: how one program is decomposed.</td></tr><tr><td>architecture in the large</td><td>企业级架构</td><td>Architecture of complex enterprise systems including other systems, possibly owned by different companies.</td></tr><tr><td>box and line diagram</td><td>盒线图</td><td>Informal block diagram; lacks semantics but useful for communication and planning.</td></tr><tr><td>architectural pattern</td><td>架构模式</td><td>A stylised description of good design practice tried in different environments.</td></tr><tr><td>MVC</td><td>模型-视图-控制器</td><td>Separates presentation and interaction from system data.</td></tr><tr><td>layered architecture</td><td>分层架构</td><td>Layers of related functionality; each layer provides services to the layer above.</td></tr><tr><td>repository architecture</td><td>仓库架构</td><td>All data managed in a central repository; components interact only through it.</td></tr><tr><td>client-server</td><td>客户-服务器</td><td>Services delivered by separate servers; clients access them over a network.</td></tr><tr><td>pipe and filter</td><td>管道-过滤器</td><td>Each processing component performs one transformation; data flows between them.</td></tr><tr><td>application architecture</td><td>应用架构</td><td>A generic architecture for a type of software system, configurable for specific requirements.</td></tr><tr><td>architectural view</td><td>架构视图</td><td>Logical, development, process, physical and scenario views; each shows one perspective.</td></tr><tr><td>single point of failure</td><td>单点故障</td><td>One component whose failure brings down the whole system, e.g. a repository or a server.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　按非功能需求选策略</div><p>情境：某证券行情系统要求：① 行情推送端到端延迟 &lt; 100 ms；② 交易指令必须防止越权；③ 系统全年可用性 99.99%；④ 策略模块需每周更新并可独立上线。请为每条需求给出架构策略。</p><p><b>分析：</b>逐条对应课件的「特征 → 策略」表。</p><p>① 性能 → <b>局部化关键操作、最小化通信、使用大粒度构件</b>。具体做法：把行情解析与推送放在同一进程内，避免跨进程序列化；用批量推送代替逐条推送。</p><p>② 安全 → <b>分层架构、关键资产在内层</b>。具体做法：把指令校验与签名放在最内层，外层网关只做限流与鉴权；即使外层被攻破，内层仍需独立授权。</p><p>③ 可用性 → <b>冗余构件 + 容错机制</b>。具体做法：推送服务双活、数据库主备 + 自动切换、关键链路熔断降级。</p><p>④ 可维护性 → <b>细粒度、可替换构件</b>。具体做法：策略模块做成独立服务/插件，定义稳定接口，支持灰度与回滚。</p><p><b>冲突提示：</b>①要「大粒度」，④要「细粒度」——两者在同一系统里冲突。可行解是分层处理：行情链路用大粒度，策略模块用细粒度，并在架构文档中明确这条权衡。</p></div><div class="qa"><div class="q">例 2　MVC 与分层，选哪个</div><p>情境：某高校要做「教师工作量统计」系统：数据来自教务、科研、人事三个库；同一份数据要给教师看（明细）、给院长看（汇总）、给人事看（报表导出）。请选架构模式并说明理由。</p><p><b>分析：</b>先抓「同一份数据的多种表示」这个特征——这是 MVC 的典型适用条件；再抓「多来源数据 + 事务一致性」——这是仓库架构的适用条件。两者并不互斥：系统整体可用仓库，表示层用 MVC。</p><p><b>方案：</b>总体采用<b>仓库架构</b>：建立中央工作量数据仓库，从三个源系统抽取、清洗、汇总；各前端不直接连源库，只读仓库。表示层采用 <b>MVC</b>：Model 是工作量数据与聚合逻辑，View 分别是教师明细页、院长看板、人事报表，Controller 处理筛选与导出请求。</p><p><b>理由：</b>仓库避免三套口径不一致（数据集中、可一致管理），并使前端与源系统解耦；MVC 使三种视图共享同一模型，修改一处表示不影响其他。</p><p><b>风险：</b>仓库是单点故障，且抽取任务失败会导致数据陈旧——需加监控与重跑机制；这正是仓库模式「缺点」栏的内容。</p></div><div class="qa"><div class="q">例 3　管道-过滤器还是客户-服务器</div><p>情境：某银行每晚要处理百万级交易流水：解析 → 反洗钱规则匹配 → 计费 → 汇总 → 生成报表。另有柜员需要实时查询单笔交易状态。请判断两类需求分别适合什么架构。</p><p><b>分析：</b>批处理链路是「顺序变换、输入分阶段处理、生成相关输出」——正是管道-过滤器的定义场景（顺序时称批顺序模型）。实时单笔查询是「从多个位置访问共享数据」——正是客户-服务器的适用条件。</p><p><b>方案：</b>批处理链路用<b>管道-过滤器</b>：每个过滤器只做一种变换，中间结果用约定格式（如 Avro/Parquet）落盘；新增反欺诈规则时只需插入一个过滤器，符合「通过增加变换来演化很直接」的优点。实时查询用<b>客户-服务器</b>：查询服务作为服务器，柜员终端作为客户。</p><p><b>注意管道-过滤器的代价：</b>相邻过滤器必须就数据格式达成一致，每个过滤器都要解析输入、反解析输出，开销不小；若某一步骤需要全局状态（如跨笔交易的关联分析），纯管道模型会很别扭，需要引入共享存储。</p></div><div class="qa"><div class="q">例 4　用五种视图描述一个架构</div><p>情境：请用逻辑、开发、进程、物理、场景五种视图描述一个「在线考试系统」，每个视图写两句话。</p><p><b>逻辑视图：</b>系统由 Exam、Question、AnswerSheet、Grading、Proctor 等关键抽象组成；Exam 聚合 Question，AnswerSheet 关联 Exam 与 Student。它回答「系统向用户提供哪些服务」。</p><p><b>开发视图：</b>代码分为 exam-core、grading-engine、web-api、web-ui 四个模块，分别由 2–3 人小组开发；grading-engine 以独立库形式被 web-api 依赖。它回答「开发环境里如何分包」。</p><p><b>进程视图：</b>web-api 多实例部署于负载均衡之后；grading-engine 作为独立进程消费阅卷队列，支持水平扩容；考试进行中禁止重启 web-api。它回答「并发与分布如何安排」。</p><p><b>物理视图：</b>web-api 与数据库部署在主数据中心，阅卷集群部署在可弹性伸缩的云区域；数据库跨可用区主备。它回答「软件映射到哪些节点」。</p><p><b>场景视图：</b>场景「考试开始前 5 分钟 3000 名学生同时进入」：负载均衡 → web-api 扩容 → 题库缓存预热 → 数据库连接池打满告警。它用具体用例验证其他四个视图能否支撑真实负载。</p><p><b>要点：</b>五个视图不是五份文档，而是同一架构的五个投影；写完后要检查它们是否矛盾（例如进程视图说「多实例」，逻辑视图就不能假设单例状态）。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>为什么说架构设计是需求工程与设计之间的关键连接？</li><li>写出五种「系统特征 → 架构策略」的对应关系。</li><li>分层架构的两条主要缺点是什么？为什么说「分层常常是人为的」？</li><li>仓库架构与客户-服务器架构在「单点故障」上的表现有何不同？</li><li>MVC 的三个构件各负责什么？什么情况下不宜用 MVC？</li><li>应用架构的五种用途是什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 因为架构设计识别系统的主要结构构件及其关系，从而把「需求（尤其非功能需求）」翻译成「结构决策」；它同时为详细设计与需求验证提供依据，因此是两者的连接点。</p><p><b>2.</b> 性能 → 局部化关键操作、最小化通信、大粒度构件；安全 → 分层并把关键资产放内层；功能安全 → 把安全关键功能集中到少数子系统；可用性 → 冗余 + 容错；可维护性 → 细粒度可替换构件。</p><p><b>3.</b> ①很难做干净分离，高层可能被迫直接访问低层；②性能受损，因为请求在每层都被解释一次。说它「人为」是因为业务本身未必是层状的，分层往往是为了组织开发与安全而强加的结构。</p><p><b>4.</b> 仓库的单点故障是「数据层」的：仓库一坏，所有构件都失效；客户-服务器的单点故障是「每个服务各自」的：一个服务坏，只影响该服务，但该服务完全不可用，且易受拒绝服务攻击。前者影响面更广，后者更易被针对性攻击。</p><p><b>5.</b> Model 管理数据及操作；View 定义并管理数据如何呈现；Controller 管理用户交互并转发给 View 与 Model。数据模型与交互都很简单时不宜用，因为会引入不必要的代码与复杂度。</p><p><b>6.</b> 架构设计起点、设计检查清单、组织团队工作的方式、评估构件可复用性的手段、讨论应用类型的词汇表。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>体系结构设计的定义与「关键连接」地位、五种特征-策略对应、五种视图的分工、五种模式的五段式描述（尤其 MVC 与分层）、应用架构的五种用途。</div><div class="callout warn"><b>易错 1</b>把「安全 security」与「功能安全 safety」的策略混用。前者靠分层与内层保护，后者靠把安全关键功能集中到少数子系统。</div><div class="callout warn"><b>易错 2</b>认为分层架构总能提高性能。相反，多层解释会拖慢请求；分层换来的是可替换性与可维护性。</div><div class="callout warn"><b>易错 3</b>把「盒线图没有语义」当成「盒线图没用」。课件明确它在沟通与项目计划中仍有用。</div><div class="callout warn"><b>易错 4</b>认为每个架构模型应展示系统的全部视图。课件明确：每个模型只展示一个视图。</div><div class="callout tip"><b>进阶</b>能用「性能要大粒度、可维护要细粒度」这一对矛盾说明架构设计的权衡本质，并给出「分层处理不同链路」的解法，是论述题的高分点。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">做架构决策的清单</h2><ol class="steps"><li>列出最重要的 2–3 个质量属性（不要试图全优）</li><li>为每个属性选策略：性能（局部化/大粒度）、安全（分层/内层）、安全（集中）、可用性（冗余）、可维护性（细粒度）</li><li>选模式并写出五段式：名称、描述、何时使用、优点、缺点</li><li>画五种视图，每个视图只回答自己的问题</li><li>检查视图间一致性（多实例 vs 单例状态、层数 vs 部署节点）</li><li>标注单点故障与故障影响面</li><li>记录被否决的方案与理由（架构决策记录）</li><li>用 2–3 个场景走查架构，验证它能否支撑真实负载</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>13_Week 7/1_SE - Lecture 6 - 2026.pdf</td><td>p4–p9</td><td>架构设计定义与关键连接地位、敏捷与架构、程序内/企业级架构、显式架构的三好处、盒线图</td></tr><tr><td>13_Week 7/1_SE - Lecture 6 - 2026.pdf</td><td>p10–p13</td><td>设计决策、架构复用与产品线、五种特征-策略对应、架构视图的表示法（UML 与 ADL）</td></tr><tr><td>13_Week 7/1_SE - Lecture 6 - 2026.pdf</td><td>p14–p23</td><td>逻辑视图、开发视图、进程视图、物理视图、场景视图</td></tr><tr><td>13_Week 7/1_SE - Lecture 6 - 2026.pdf</td><td>p24–p36</td><td>模式的定义、MVC、分层、仓库、客户-服务器、管道-过滤器（五段式）</td></tr><tr><td>13_Week 7/1_SE - Lecture 6 - 2026.pdf</td><td>p37–p41</td><td>应用架构定义与五种用途、信息系统分层、四层职责划分</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>分层「人为性」的具体解释与视图一致性检查属应用性补充</td></tr></table></section><div class="lnav"><a class="prev" href="l05-system-modelling.html">← 第 5 讲 · 系统建模与 UML</a><a class="next" href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

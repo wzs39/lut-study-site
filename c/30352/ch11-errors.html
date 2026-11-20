@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑪ 错误、异常与调试 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-5.html">第 5 章 文件、模块与异常</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、错误是编程的一部分</a><a class="toc-l2" href="#s3">二、语法错误：解释器根本读不懂</a><a class="toc-l2" href="#s4">三、运行时错误：能跑，但跑到某行就崩</a><a class="toc-l2" href="#s5">四、读懂 traceback</a><a class="toc-l2" href="#s6">五、try / except：把错误接住</a><a class="toc-l2" href="#s7">六、except Exception as e：拿到异常对象</a><a class="toc-l2" href="#s8">七、多个 except：按类型分别处理</a><a class="toc-l2" href="#s9">八、重试循环：让用户有机会改</a><a class="toc-l2" href="#s10">九、调试：不靠猜，靠证据</a><a class="toc-l2" href="#s11">十、一个 bug 的完整修复过程</a><a class="toc-l2" href="#s12">十一、主动抛异常与收尾工作</a><a class="toc-l2" href="#s13">十二、处理异常的原则</a><a class="toc-l2" href="#s14">操作清单</a><a class="toc-l3" href="#s15">看到报错时的处理顺序</a><a class="toc-l3" href="#s16">写异常处理时的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a class="toc-l3" href="ch11-errors.html">▸ ⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑪ 错误、异常与调试</h1><p class="lead">Errors, Exceptions and Debugging <span class="badge mute">30352</span> <span class="badge mute">第 11 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 文件、模块与异常</a></p><p class="src">原始文件：<code>Errors.pdf</code> <code>Run-time_errors.pdf</code> <code>Handling_exceptions.pdf</code> <code>15_Chapter 9_1_Chapter 9 Code Examples_Example1.py</code> <code>15_Chapter 9_1_Chapter 9 Code Examples_Example3.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>写程序的时间，大半花在找错上。这一讲不教新功能，而是教「怎么看懂报错、怎么让它别崩」。它是整门课从「会写」走向「写得能跑」的分水岭，也是期末机考最容易丢分的地方——不是不会写，而是报错看不懂。</p><p>内容上与前面每一讲都相关：语法错误对应第 3–5 讲的缩进与冒号，运行时错误对应第 3 讲的类型、第 8 讲的下标、第 9 讲的文件，逻辑错误对应第 4 讲的 <code>elif</code> 顺序与第 5 讲的边界。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>把错误分成语法、运行时、逻辑三类，并说出各自能否被 <code>try</code> 捕获</li><li>认识 <code>TypeError</code>、<code>NameError</code>、<code>IndexError</code>、<code>ValueError</code>、<code>ZeroDivisionError</code>、<code>FileNotFoundError</code> 的触发条件</li><li>从 traceback 的最后一行读出异常类型，再顺着调用栈找到自己写的行</li><li>写出 <code>try/except</code>，用 <code>as e</code> 拿到异常对象并打印</li><li>用多 <code>except</code> 按类型分别处理，并解释顺序为什么重要</li><li>写出「输入不合法就重试」的循环，直到拿到合法值</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、错误是编程的一部分</h2><p>课件开门见山：错误（bug）不可避免，识别与修复它是程序员的核心技能（Errors p2）。错误大致分三类，处理方式完全不同：</p><table><tr><th>类型</th><th>发生时机</th><th>典型例子</th><th>能否被 try 捕获</th></tr><tr><td>语法错误 syntax error</td><td>写代码时/运行前</td><td>漏冒号、缩进错、括号不配对、<code>10 = x</code>、把关键字当变量名</td><td>不能——程序根本没跑起来</td></tr><tr><td>运行时错误 runtime error</td><td>执行到那一行时</td><td>除零、类型不匹配、变量未定义、下标越界</td><td>能——这是 try/except 处理的对象</td></tr><tr><td>逻辑错误 logical error</td><td>程序跑完、结果不对</td><td>条件写反、循环少一次、初值错、用错运算符</td><td>不能——不报错，只能靠测试发现</td></tr></table><p>这三类的排查顺序不同：语法错误看报错行号；运行时错误看异常类型与调用栈；逻辑错误没有报错，只能靠「输入 → 期望输出 → 实际输出」的对照。</p><h2 id="s3">二、语法错误：解释器根本读不懂</h2><p>课件列的五个典型（Errors p3）几乎覆盖了所有语法错误：</p><pre><code>if x &gt; 5          # 漏冒号
+    print("big")
+
+if 5 &gt; 2:
+print("no indent")    # 缩进错
+
+print("a"             # 括号不配对
+
+10 = x                 # 赋值目标不能是字面量
+
+def = "house"          # 关键字不能当变量名</code></pre><p>它们都在程序运行之前就被 Python 拦下，报错信息里带文件、行号与一个 <code>^</code> 指向大致位置。注意行号常常「晚一行」——解释器要到下一行才发现上一行没收尾，所以真正的错误往往在报错行的<b>上一行</b>。</p><pre><code>  File "demo.py", line 3
+    print("a"
+         ^
+SyntaxError: '(' was never closed</code></pre><h2 id="s4">三、运行时错误：能跑，但跑到某行就崩</h2><p>课件列了四种最常见（Errors p5）：除零 <code>10 / 0</code>、类型错误 <code>"hello" + 5</code>、变量未定义、下标越界。下面这张表把异常名与触发条件对齐（Run-time_errors p2–p10）：</p><table><tr><th>异常</th><th>触发条件</th><th>最小例子</th></tr><tr><td><code>TypeError</code></td><td>对不合适的类型做运算</td><td><code>"hello" + 5</code></td></tr><tr><td><code>NameError</code></td><td>名字（变量/函数）不存在</td><td><code>print(total)</code>（从未赋值）</td></tr><tr><td><code>IndexError</code></td><td>下标越界</td><td><code>[1, 2][5]</code></td></tr><tr><td><code>AttributeError</code></td><td>对象没有这个属性/方法</td><td><code>"abc".push("d")</code></td></tr><tr><td><code>ValueError</code></td><td>类型对但值不合适</td><td><code>int("abc")</code></td></tr><tr><td><code>ZeroDivisionError</code></td><td>除零或对零取模</td><td><code>10 / 0</code></td></tr><tr><td><code>FileNotFoundError</code></td><td>文件/目录不存在</td><td><code>open("nope.txt")</code></td></tr><tr><td><code>ImportError</code></td><td>模块找不到或名字不在模块里</td><td><code>import datetimes</code></td></tr></table><p>记住两个容易混的：<b><code>ValueError</code> 是「类型对了、值不对」</b>（<code>int("abc")</code> 的输入确实是字符串），<b><code>TypeError</code> 是「类型就不对」</b>（<code>int([1,2])</code>）。</p><h2 id="s5">四、读懂 traceback</h2><p>报错时 Python 打印的整段叫调用栈回溯（traceback）。读法只有一条：<b>先看最后一行</b>（异常类型 + 消息），<b>再往上找自己写的文件与行号</b>。</p><pre><code>def divide(x, y):
+    return x / y
+
+print(divide(7, 0))</code></pre><pre><code>Traceback (most recent call last):
+  File "demo.py", line 4, in &lt;module&gt;
+    print(divide(7, 0))
+  File "demo.py", line 2, in divide
+    return x / y
+ZeroDivisionError: division by zero</code></pre><p>课件逐行拆解过这段（Run-time_errors p10–p11）：<code>line 4, in &lt;module&gt;</code> 说明错误从主程序的第 4 行发起；<code>print(divide(7, 0))</code> 是那一行的代码；<code>line 2, in divide</code> 说明进入了 <code>divide</code> 函数；<code>return x / y</code> 是真正出事的位置；最后 <code>ZeroDivisionError: division by zero</code> 是类型与原因。</p><p>「most recent call last」的意思是：越靠下越接近出错点。所以从下往上看调用链、从上往下读代码，是最快的定位方式。</p><h2 id="s6">五、try / except：把错误接住</h2><p>异常处理（exception handling）让程序在出错时不崩，而是转去执行另一段代码（Handling p2）。结构是 <code>try</code> 包住「可能出错的代码」，<code>except</code> 写「出错了怎么办」。</p><pre><code>try:
+    number = int(input("Give an integer: "))
+    print("You gave", number)
+except ValueError:
+    print("That was not an integer.")</code></pre><p>输入 <code>abc</code> 时，<code>int()</code> 抛 <code>ValueError</code>，<code>try</code> 里剩下的语句被跳过，直接进 <code>except</code>，输出提示。输入 <code>42</code> 时正常走完 <code>try</code>，<code>except</code> 不执行。</p><p><b>try 的范围要小</b>：只包住可能出错的那一两行，不要把整个程序塞进去。范围一大，出错时你连是哪一行出的都难判断，还会掩盖本不该被捕获的错误。</p><h2 id="s7">六、except Exception as e：拿到异常对象</h2><p>出错时 Python 会创建一个异常对象，里面装着类型与消息（Handling p4）。用 <code>as e</code> 把它接住就能查看：</p><pre><code>try:
+    number = int(input("Give an integer: "))
+    print("You gave", number)
+except Exception as e:
+    print(type(e))
+    print(e)
+    print("Please retry!")</code></pre><p>输入 <code>abc</code>，输出：</p><pre><code>&lt;class 'ValueError'&gt;
+invalid literal for int() with base 10: 'abc'
+Please retry!</code></pre><p><code>type(e)</code> 给出异常类，<code>print(e)</code> 给出消息。<code>except Exception</code> 能捕获几乎所有运行时异常，代价是「太宽」——它把你的编程错误也一起吞掉了。初学阶段用它兜底可以，但要知道自己在放弃什么。</p><h2 id="s8">七、多个 except：按类型分别处理</h2><p>Example3 是课件给的完整形态（Handling p6）：一个循环里同时可能出现输入错误、除零、用户中断，三种情况给出三种提示。</p><pre><code>while True:
+    try:
+        x = int(input("Enter an integer: "))
+        y = 10 / x
+        print(y)
+        break
+    except ValueError:
+        print("Invalid input. Please enter an integer.")
+    except ZeroDivisionError:
+        print("Division by zero error. Give other number than zero.")
+    except KeyboardInterrupt:
+        print("User interrupted the program.")
+        break</code></pre><p>三个要点：<b>顺序</b>——具体的异常写前面，宽泛的（<code>Exception</code>）写后面，否则后面的永远轮不到；<b>只处理你懂的</b>——不知道怎么办就别捕获；<b><code>KeyboardInterrupt</code></b> 是用户按 <kbd>Ctrl</kbd>+<kbd>C</kbd> 触发的，它不像其他异常那样打印完整 traceback。</p><h2 id="s9">八、重试循环：让用户有机会改</h2><p>输入校验的标准形态是「不合法就重来」，直到拿到合法值才 <code>break</code>（Example1、Example2）：</p><pre><code>while True:
+    try:
+        nr = int(input("Enter an integer: "))
+        break
+    except ValueError:
+        print("You did not give an integer, retry!")
+
+print(f"The entered integer is {nr}")</code></pre><p>输入 <code>abc</code> 会提示重试；输入 <code>7</code> 才跳出循环。<code>break</code> 必须写在 <code>try</code> 里、而且是「成功之后」——写在 <code>except</code> 里就变成「出错才退出」，正好反了。</p><h2 id="s10">九、调试：不靠猜，靠证据</h2><p>课件列了四种手段（Errors p7），按成本从低到高：</p><ol class="steps"><li>插入 <code>print</code>：在关键位置打印变量值与「走到这里了」，最快看清执行流</li><li>用调试器（debugger）：IDLE 的 Debug 菜单可以逐行执行、设断点、查看变量</li><li>请别人看代码：换一双眼睛最容易发现「你以为自己写了、其实没写」的部分；也可以让 AI 解释报错</li><li>写小测试（unit testing）：给函数准备几组「输入 → 期望输出」，改完就跑一遍</li></ol><p>CodeGrade 的反馈本质上就是第 4 种：它把你的函数用固定输入跑一遍，比较返回值（CG Guide 第 4.2 节）。看到 <code>Expected: 7 / Received: 3</code>，就说明逻辑错了；看到 <code>The function should return a value</code>，就是用了 print 没 return。</p><h2 id="s11">十、一个 bug 的完整修复过程</h2><p>把前面所有工具串起来，看一次真实的排查流程。假设程序要读入年龄并判断是否成年，代码如下：</p><pre><code>age = input("Age: ")
+if age &gt;= 18:
+    print("adult")
+else:
+    print("minor")</code></pre><p>输入 <code>20</code>，程序崩了，报：</p><pre><code>Traceback (most recent call last):
+  File "demo.py", line 2, in &lt;module&gt;
+    if age &gt;= 18:
+TypeError: '&gt;=' not supported between instances of 'str' and 'int'
+</code></pre><ol class="steps"><li>读最后一行：<code>TypeError</code>，「字符串与整数不能用 &gt;= 比较」</li><li>往上找自己的行：第 2 行，<code>if age &gt;= 18</code></li><li>回到第 1 行看 <code>age</code> 从哪来：<code>input()</code> 返回字符串</li><li>修：<code>age = int(input("Age: "))</code></li><li>复测：输入 20 输出 adult，输入 17 输出 minor，输入 abc 观察新的报错</li></ol><p>第五步很重要：修完要测边界与异常输入。<code>abc</code> 会让 <code>int()</code> 抛 <code>ValueError</code>，这才是该加 <code>try/except</code> 的地方——而不是一开始就把整个程序包起来。</p><h2 id="s12">十一、主动抛异常与收尾工作</h2><p>两件课件没展开、但读别人代码会遇到的事（拓展，不作为考点）：</p><pre><code>def set_age(age):
+    if age &lt; 0:
+        raise ValueError("Age cannot be negative")
+    return age
+
+try:
+    set_age(-5)
+except ValueError as e:
+    print("Rejected:", e)
+
+try:
+    print("working")
+finally:
+    print("cleanup always runs")</code></pre><pre><code>Rejected: Age cannot be negative
+working
+cleanup always runs</code></pre><p><code>raise</code> 让你在「值不合理」时主动报错，比返回一个特殊值更明确；<code>finally</code> 里的代码无论成功还是异常都会执行，适合关文件、释放资源。第 9 讲的 <code>with</code> 本质上就是自动帮你做这件事。</p><h2 id="s13">十二、处理异常的原则</h2><div class="callout warn"><b>不要写裸 except</b><code>except:</code> 什么都不写会捕获包括 <kbd>Ctrl</kbd>+<kbd>C</kbd> 在内的一切，程序看起来「永不报错」，实际问题被藏起来。至少写 <code>except ValueError:</code>，或 <code>except Exception as e:</code> 并打印 e。</div><div class="callout warn"><b>不要用异常代替正常判断</b>能先判断就判断：<code>if y != 0: print(x / y)</code> 比「先除再看有没有异常」清楚得多。异常是给「预料之外的失败」用的，不是流程控制。</div><div class="callout warn"><b>捕获后要给出路</b><code>except: pass</code> 等于把错误吞掉。至少打印提示、返回默认值、或让用户重试——否则程序「静默地错」比崩溃更难查。</div><div class="callout tip"><b>先让程序崩，再决定捕获</b>调试阶段先不加 try，让 traceback 完整打出来定位问题；确定这类错误在真实使用中会发生（如用户输入），再加 try 并给出友好提示。</div><div class="callout idea" data-ext="ch11-errors-0"><b>推导补充</b><p>三类错误排查顺序不同：语法错误运行前拦下，看行号（真错常在报错行<strong>上一行</strong>）；运行时错误看异常类型与调用栈；逻辑错误不报错，只能靠“输入—期望—实际”对照。<em>traceback</em> 按 most recent call last 排，越靠下越接近出错点：先读最后一行定类型，再往上找自己的行。ValueError 是“类型对、值不对”，TypeError 是“类型就不对”。</p></div><div class="callout tip" data-ext="ch11-errors-1"><b>常见误解</b><p><code>try</code> 范围要小，只包可能出错的一两行，包住整个程序就掩盖位置。<code>break</code> 要写在 try 里“成功之后”，写进 <code>except</code> 就变成出错才退出。多个 except 要具体在前、宽泛在后。裸 <code>except:</code> 连 Ctrl+C 都吞，<code>except: pass</code> 让程序静默地错。调试阶段先不加 try，让 traceback 打全再决定捕获。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>bug</td><td>程序错误</td><td>Any issue that prevents the code from working as intended.</td></tr><tr><td>syntax error</td><td>语法错误</td><td>The code breaks Python's grammar; caught before running.</td></tr><tr><td>runtime error</td><td>运行时错误</td><td>The program crashes while executing a statement.</td></tr><tr><td>logical error</td><td>逻辑错误</td><td>The program runs but produces the wrong result.</td></tr><tr><td>exception</td><td>异常</td><td>An object describing a runtime error.</td></tr><tr><td>traceback</td><td>调用栈回溯</td><td>The report showing the chain of calls that led to the error.</td></tr><tr><td>try / except</td><td>异常处理结构</td><td>try holds risky code; except handles the failure.</td></tr><tr><td>raise</td><td>抛出异常</td><td>raise ValueError("bad input") creates an error on purpose.</td></tr><tr><td>ValueError</td><td>值错误</td><td>Right type, unsuitable value: int("abc").</td></tr><tr><td>TypeError</td><td>类型错误</td><td>Wrong type for the operation: "a" + 1.</td></tr><tr><td>ZeroDivisionError</td><td>除零错误</td><td>Raised by 10 / 0.</td></tr><tr><td>IndexError</td><td>下标越界</td><td>Raised by accessing a position that does not exist.</td></tr><tr><td>debugging</td><td>调试</td><td>Finding and fixing errors: print, debugger, tests.</td></tr><tr><td>unit test</td><td>单元测试</td><td>A small test that checks one function with known inputs.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　读入一个整数，输入不合法时提示并重试，直到成功。</div><p>用 <code>while True</code> + <code>try</code> + <code>break</code>：成功才跳出，失败留在循环里。</p><pre><code>while True:
+    try:
+        n = int(input("Enter an integer: "))
+        break
+    except ValueError:
+        print("Not an integer, try again.")
+
+print("You entered", n)
+print("Its square is", n * n)</code></pre><p>交互示例（<code>&gt;</code> 表示用户输入）：</p><pre><code>Enter an integer: &gt; abc
+Not an integer, try again.
+Enter an integer: &gt; 2.5
+Not an integer, try again.
+Enter an integer: &gt; 12
+You entered 12
+Its square is 144</code></pre><p>解释：<code>int("abc")</code> 与 <code>int("2.5")</code> 都抛 <code>ValueError</code>（第二个是因为字符串本身带小数点，不是整数字面量），所以都被 <code>except</code> 接住。只有 <code>int("12")</code> 成功，执行到 <code>break</code> 跳出。</p></div><div class="qa"><div class="q">例 2　对两个输入做除法，分别处理「输入不是整数」与「除数为零」。</div><p>两个 <code>except</code> 按类型分开；顺序无关（两者互不包含），但具体类型写在前面是好习惯。</p><pre><code>try:
+    a = int(input("Dividend: "))
+    b = int(input("Divisor: "))
+    print("Result:", a / b)
+except ValueError:
+    print("Both inputs must be integers.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")</code></pre><p>三种输入的结果：</p><pre><code>Dividend: 10   Divisor: 2   -&gt;  Result: 5.0
+Dividend: 10   Divisor: 0   -&gt;  Cannot divide by zero.
+Dividend: ten  Divisor: 2   -&gt;  Both inputs must be integers.</code></pre><p>解释：除数 0 时 <code>a / b</code> 抛 <code>ZeroDivisionError</code>，被第二个 <code>except</code> 接住；输入 <code>ten</code> 时 <code>int()</code> 先抛 <code>ValueError</code>，根本走不到除法。注意 try 里三行是一个整体：任何一行抛异常，后面都不执行。</p></div><div class="qa"><div class="q">例 3　读取一个可能不存在的文件，文件缺失时给出提示而不是崩溃。</div><p>文件类操作最适合用异常处理：路径由用户给，缺失是常态。</p><pre><code>filename = input("File name: ")
+try:
+    file = open(filename, "r")
+    lines = file.readlines()
+    file.close()
+    print("lines:", len(lines))
+except FileNotFoundError:
+    print("No such file:", filename)</code></pre><p>两种输入的结果：</p><pre><code>File name: &gt; Example.txt
+lines: 4
+File name: &gt; missing.txt
+No such file: missing.txt</code></pre><p>解释：<code>open</code> 找不到文件时抛 <code>FileNotFoundError</code>（消息里带 <code>Errno 2</code>），被捕获后只打印提示。<code>file.close()</code> 写在 <code>try</code> 里，只有打开成功才会执行——这也说明为什么 try 的范围要恰好包住相关操作。</p></div><div class="qa"><div class="q">例 4　下面这段代码哪里错？为什么它永远输出不了「负数」？</div><p>题目代码：<code>n = int(input()); if n &gt; 0: print("正"); elif n &gt; 10: print("很大")</code>。</p><pre><code>n = int(input("n: "))
+if n &gt; 0:
+    print("positive")
+elif n &gt; 10:
+    print("large")</code></pre><p>这是<b>逻辑错误</b>，不是语法或运行时错误：<code>n &gt; 10</code> 为真时 <code>n &gt; 0</code> 一定也为真，所以第二个分支永远走不到。程序不报错，只是结果与意图不符。</p><p>修正思路：把范围窄的条件放前面，或者用互斥区间写全。这类错误只能靠「拿边界值测一遍」发现：输入 0、1、10、11，看输出是否符合预期。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>下面哪些是语法错误、哪些是运行时错误？①<code>if x &gt; 1</code> 后漏冒号 ②<code>10 / 0</code> ③<code>int("abc")</code> ④<code>print("a"</code> ⑤<code>len(5)</code></li><li>写一个函数 <code>safe_int(s)</code>：能转成整数就返回整数，否则返回 <code>None</code>。</li><li>读入两个数做除法，要求：除数为 0 时输出提示、重新输入；输入非数字时也重新输入。</li><li>解释这段代码为什么会崩，并修正：<code>L = [1,2,3]; print(L[3])</code>。</li><li>写一段代码，捕获 <code>IndexError</code> 并从列表中安全地取第 10 个元素（不存在时返回 <code>None</code>）。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> ①④ 是语法错误（漏冒号、括号未闭合），程序根本跑不起来；②③⑤ 是运行时错误：<code>ZeroDivisionError</code>、<code>ValueError</code>、<code>TypeError</code>（<code>len</code> 不接受整数）。判断标准：能不能通过解释器的语法检查。</p><p><b>2.</b> <code>try: return int(s)</code> / <code>except ValueError: return None</code>。捕获范围要窄，只 catch <code>ValueError</code>；若 catch <code>Exception</code>，连 <code>TypeError</code>（比如传了列表）也会被吞掉，掩盖真正的问题。</p><p><b>3.</b> 两层校验可以放在同一个 <code>try</code> 里：先 <code>int(input())</code> 两次，再判断除数是否为 0；<code>except ValueError</code> 处理非数字，<code>if b == 0</code> 单独给提示。注意 <code>continue</code> 与循环结构：把「成功」放在最后并 <code>break</code>。</p><p><b>4.</b> 列表长度 3，合法下标 0–2，<code>L[3]</code> 抛 <code>IndexError: list index out of range</code>。修正：取 <code>L[-1]</code> 或判断 <code>if len(L) &gt; 3</code>；如果确实要「不存在就返回 None」，用 <code>try/except IndexError</code>。</p><p><b>5.</b> <code>try: return L[9]</code> / <code>except IndexError: return None</code>。更好的写法是先判断 <code>if len(L) &gt; 9</code>——异常处理适合「意料之外」，长度检查适合「可以预知」的情况。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>三类错误的区分；常见异常名与触发条件；traceback 的读法（最后一行是异常类型）；<code>try/except</code> 结构与 <code>as e</code>；重试循环的写法。</div><div class="callout warn"><b>易错 1　except 顺序</b>把 <code>except Exception</code> 写在最前面，后面所有具体异常都轮不到，提示永远是通用的那句。具体在前、宽泛在后。</div><div class="callout warn"><b>易错 2　try 范围过大 / 裸 except</b>把整个程序包进 try，出错时无法定位；<code>except: pass</code> 会把 <kbd>Ctrl</kbd>+<kbd>C</kbd> 都吞掉。范围要小、类型要具体。</div><div class="callout warn"><b>易错 3　break 放错位置</b>重试循环里 <code>break</code> 必须写在 <code>try</code> 成功路径的末尾；写进 <code>except</code> 就变成「一出错就退出」。</div><div class="callout tip"><b>进阶</b><code>raise ValueError("message")</code> 可以主动抛异常；<code>finally</code> 里的代码无论成功失败都会执行（适合关闭文件）；自定义异常类属于后续课程。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">操作清单</h2><h3 id="s15">看到报错时的处理顺序</h3><ol class="steps"><li>先读<b>最后一行</b>：异常类型 + 消息</li><li>再往上找<b>自己文件</b>的行号与函数名</li><li>回到那一行，打印相关变量的值确认状态</li><li>判断是三类中的哪一类：语法 / 运行时 / 逻辑</li><li>修完用同样的输入再跑一次，并补一个边界输入</li></ol><h3 id="s16">写异常处理时的检查</h3><ul class="checklist"><li><code>try</code> 只包住可能出错的那几行</li><li><code>except</code> 写具体类型，必要时才用 <code>Exception</code></li><li>捕获后给出了提示或替代结果，没有 <code>pass</code></li><li>重试循环里 <code>break</code> 在成功路径上</li><li>调试阶段先不加 try，让 traceback 完整显示</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Errors.pdf</td><td>p2–p7</td><td>错误不可避免、语法/运行时/逻辑三类、各自例子、四种调试手段</td></tr><tr><td>Run-time_errors.pdf</td><td>p2–p11</td><td>TypeError、NameError、IndexError、AttributeError、ValueError、ZeroDivisionError、FileNotFoundError、ImportError、traceback 逐行解读</td></tr><tr><td>Handling_exceptions.pdf</td><td>p2–p6</td><td>exception handling 概念、<code>try/except</code>、<code>as e</code> 取异常对象、多 <code>except</code>、KeyboardInterrupt</td></tr><tr><td>15_Chapter 9_1_Chapter 9 Code Examples_Example1.py</td><td>全文</td><td>裸 except 重试读整数</td></tr><tr><td>Example2.py</td><td>全文</td><td><code>except Exception as e</code> + <code>type(e)</code> + <code>print(e)</code></td></tr><tr><td>Example3.py</td><td>全文</td><td>多 <code>except</code> 分别处理 ValueError / ZeroDivisionError / KeyboardInterrupt</td></tr><tr><td>CG Guide 2026.pdf</td><td>第 3–4 节</td><td>AutoTest 如何报告 expected/actual 与 «should return a value»，作为调试的外部反馈</td></tr></table><p><b>跳过项：</b>Errors.pdf 与 Run-time_errors.pdf 的报错截图页只有图片，正文已用可复制的 traceback 重建；Moodle 的作业与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b><code>raise</code>、<code>finally</code>、<code>KeyError</code> 的提及、以及「先用判断代替异常」的原则，都是围绕原知识点的补充；本课只要求 <code>try</code> / <code>except</code>。</p></section><div class="lnav"><a class="prev" href="ch10-modules.html">← ⑩ 模块、标准库与包</a><a class="next" href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

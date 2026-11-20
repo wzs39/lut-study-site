@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 章 · 反三角、双曲函数、洛必达与定积分 · 62</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-3.html">第 3 章 超越函数与极限技巧</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">6.1 考试事务与反三角函数的必要性</a><a class="toc-l3" href="#s3">6.2 反正弦 arcsin</a><a class="toc-l3" href="#s4">6.3 arcsin 的导数</a><a class="toc-l3" href="#s5">6.4 反余弦 arccos</a><a class="toc-l3" href="#s6">6.5 反正切 arctan</a><a class="toc-l3" href="#s7">6.6 双曲函数</a><a class="toc-l3" href="#s8">6.7 双曲函数的图像与渐近行为</a><a class="toc-l3" href="#s9">6.8 双曲函数的导数</a><a class="toc-l3" href="#s10">6.9 双曲恒等式的用法</a><a class="toc-l3" href="#s11">6.10 未定式与七种类型</a><a class="toc-l3" href="#s12">6.11 柯西中值定理</a><a class="toc-l3" href="#s13">6.12 洛必达法则</a><a class="toc-l3" href="#s14">6.13 0/0 型的三个例子</a><a class="toc-l3" href="#s15">6.14 ∞/∞ 型：先变形再洛必达</a><a class="toc-l3" href="#s16">6.15 0 · ∞ 型</a><a class="toc-l3" href="#s17">6.16 ∞ − ∞ 型：通分或乘共轭</a><a class="toc-l3" href="#s18">6.17 幂型：0⁰、∞⁰、1^∞ 的四步法</a><a class="toc-l3" href="#s19">6.18 面积问题与黎曼和</a><a class="toc-l3" href="#s20">6.19 一个完整计算：y = x² 在 [0, b] 上的面积</a><a class="toc-l3" href="#s21">6.20 下和、上和与可积性</a><a class="toc-l3" href="#s22">6.21 定积分的几何意义与性质</a><a class="toc-l2" href="#s23">方法与清单</a><a class="toc-l3" href="#s24">处理未定式（先分类，再选工具）</a><a class="toc-l3" href="#s25">反三角复合（三步）</a><a class="toc-l3" href="#s26">黎曼和求面积（四步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a href="t2-limits-continuity.html">第 1 章 · 极限与连续性</a><a href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a href="t5-inverse-exp-log.html">第 3 章 · 反函数、指数与对数</a><a class="toc-l3" href="t6-inverse-trig-lhopital-riemann.html">▸ 第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法</a><a href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 3 章 · 反三角、双曲函数、洛必达与定积分</h1><p class="lead">Inverse Trigonometric and Hyperbolic Functions, L’Hôpital’s Rule, Riemann Sums <span class="badge mute">62</span> <span class="badge mute">第 6 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 超越函数与极限技巧</a></p><p class="src">原始文件：<code>Topic 6/EMI_Week6_Lecture1.pdf</code> <code>Topic 6/EMI_Week6_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>本讲把「函数库」补齐最后一块（反三角函数与双曲函数），把「极限工具」升级（洛必达法则），并开启本课程的第二大主题：积分。三件事看似无关，实际共用一条逻辑：反三角函数的导数给出两个新的积分公式；洛必达法则处理所有未定式；而黎曼和把「面积」定义为和式的极限——这正是第 7 讲定积分的起点。</p><p>本节还包含考试事务：第一次考试在 10 月 21 日，需在 10 月 14 日前报名；考试不允许使用计算器，但会提供公式表。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出 arcsin、arccos、arctan 的定义域、值域与导数，并会用它们求积分</li><li>处理三角函数的反函数复合（如 <code>sin⁻¹(sin 4π/5)</code>、<code>cos(sin⁻¹ x)</code>）</li><li>写出双曲函数的定义、基本恒等式与导数</li><li>识别七种未定式，针对每种选择正确的变形路径，并正确使用洛必达法则（含判断何时不能用）</li><li>把面积写成黎曼和的极限，并用求和公式求出具体值</li><li>用定积分的性质（线性、可加、奇偶）简化计算</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">6.1 考试事务与反三角函数的必要性</h3><p>第一次考试 <b>10 月 21 日</b>，报名截止 <b>10 月 14 日</b>。考试不允许使用计算器，但会发公式表（formula sheet，之后放在 Moodle 上）。这意味着 <code>sin⁻¹(1/2)</code>、<code>tan⁻¹(1)</code> 这类特殊值必须条件反射式地写出。</p><p>三角函数是周期的，因此在 ℝ 上<b>不是</b>一一对应，没有反函数。解决办法是<b>限制定义域</b>，在使函数一一对应的那段区间上定义反函数。每段区间的选择都不是随意的：要覆盖整个值域，且在该段上严格单调。</p><h3 id="s3">6.2 反正弦 arcsin</h3><p>把 <code>y = sin x</code> 限制在 <code>[−π/2, π/2]</code>（在此区间严格递增，值域 <code>[−1, 1]</code>），其反函数记作 <code>sin⁻¹</code> 或 <code>arcsin</code>：</p><p><b><code>y = sin⁻¹ x ⟺ x = sin y</code>，其中 <code>y ∈ [−π/2, π/2]</code></b>。</p><p>定义域 <code>[−1, 1]</code>，值域 <code>[−π/2, π/2]</code>。示例：<code>sin⁻¹(1/2) = π/6</code>、<code>sin⁻¹(√2/2) = π/4</code>、<code>sin⁻¹(−1) = −π/2</code>、<code>sin⁻¹ 2</code> 无定义（2 超出 <code>[−1, 1]</code>）。</p><p>图像是 <code>y = sin x</code> 在 <code>[−π/2, π/2]</code> 这一段关于 <code>y = x</code> 的反射：过原点，两端点 <code>(±1, ±π/2)</code>，斜率为正。</p><p>源文件例（复合）：求 <code>sin⁻¹(sin 4π/5)</code>。因为 <code>4π/5 ∉ [−π/2, π/2]</code>，<b>不能</b>直接写 <code>= 4π/5</code>。用补角公式：<code>sin(4π/5) = sin(π − 4π/5) = sin(π/5)</code>，而 <code>π/5 ∈ [−π/2, π/2]</code>，故 <code>sin⁻¹(sin 4π/5) = π/5</code>。</p><p>源文件例：化简 <code>cos(sin⁻¹ x)</code>。令 <code>θ = sin⁻¹ x</code>，则 <code>sin θ = x</code> 且 <code>θ ∈ [−π/2, π/2]</code>；在该区间 <code>cos θ ≥ 0</code>，故 <code>cos θ = √(1 − sin²θ) = √(1 − x²)</code>。</p><div class="callout warn"><b>反函数复合不等于原值</b><code>sin⁻¹(sin θ) = θ</code> 只在 <code>θ ∈ [−π/2, π/2]</code> 时成立；超出该区间必须先用诱导公式把角折回主值区间。同理 <code>cos⁻¹(cos θ) = θ</code> 只在 <code>θ ∈ [0, π]</code> 成立。</div><h3 id="s4">6.3 arcsin 的导数</h3><p><b><code>d/dx sin⁻¹ x = 1/√(1 − x²)</code></b>（<code>−1 &lt; x &lt; 1</code>）。</p><p>证明：设 <code>y = sin⁻¹ x</code>，则 <code>x = sin y</code>。两边对 x 求导（链式法则）：<code>1 = cos y·y′</code>，故 <code>y′ = 1/cos y</code>。因为 <code>y ∈ (−π/2, π/2)</code>，<code>cos y &gt; 0</code>，所以 <code>cos y = √(1 − sin²y) = √(1 − x²)</code>，于是 <code>y′ = 1/√(1 − x²)</code>。</p><p>源文件例：求 <code>d/dx sin⁻¹(x/a)</code>（<code>a &gt; 0</code>），并由此得积分公式。由链式法则</p><p><code>d/dx sin⁻¹(x/a) = 1/√(1 − (x/a)²) · (1/a) = 1/√(a² − x²)</code>（<code>a &gt; 0</code> 时 <code>√(a²) = a</code>）。</p><p>故 <b><code>∫ dx/√(a² − x²) = sin⁻¹(x/a) + C</code></b>（<code>a &gt; 0</code>）。这是第 7 讲「三角代换」的标准出口。</p><h3 id="s5">6.4 反余弦 arccos</h3><p>把 <code>y = cos x</code> 限制在 <code>[0, π]</code>（严格递减），反函数 <code>cos⁻¹</code> 或 <code>arccos</code>：</p><p><b><code>y = cos⁻¹ x ⟺ x = cos y</code>，<code>y ∈ [0, π]</code></b>；定义域 <code>[−1, 1]</code>，值域 <code>[0, π]</code>。</p><p>两个反三角函数的互补关系：由 <code>cos y = sin(π/2 − y)</code> 可得</p><p><b><code>cos⁻¹ x + sin⁻¹ x = π/2</code></b>，</p><p>因此 <code>cos⁻¹ x = π/2 − sin⁻¹ x</code>，其导数为 <code>−1/√(1 − x²)</code>——比 arcsin 多一个负号，来源就是这个 π/2 的常数差（常数的导数为 0，负号来自对 <code>sin⁻¹ x</code> 取负）。</p><h3 id="s6">6.5 反正切 arctan</h3><p>把 <code>y = tan x</code> 限制在 <code>(−π/2, π/2)</code>（严格递增），反函数 <code>tan⁻¹</code> 或 <code>arctan</code>：</p><p><b><code>y = tan⁻¹ x ⟺ x = tan y</code>，<code>y ∈ (−π/2, π/2)</code></b>；定义域 <code>ℝ</code>，值域 <code>(−π/2, π/2)</code>。</p><p>因为有两条<b>水平渐近线</b> <code>y = ±π/2</code>：<code>x → ±∞</code> 时 <code>tan⁻¹ x → ±π/2</code>。示例：<code>tan⁻¹ 1 = π/4</code>、<code>tan⁻¹ 0 = 0</code>、<code>tan⁻¹(−√3) = −π/3</code>。</p><p>导数：设 <code>y = tan⁻¹ x</code>，则 <code>x = tan y</code>，<code>1 = sec²y·y′ = (1 + tan²y)y′ = (1 + x²)y′</code>，故</p><p><b><code>d/dx tan⁻¹ x = 1/(1 + x²)</code></b>，<b><code>∫ dx/(a² + x²) = (1/a)tan⁻¹(x/a) + C</code></b>（<code>a ≠ 0</code>）。</p><h3 id="s7">6.6 双曲函数</h3><p>对任意实数 x，定义<b>双曲余弦</b>与<b>双曲正弦</b>：</p><p><b><code>cosh x = (eˣ + e^{−x})/2</code></b>，<b><code>sinh x = (eˣ − e^{−x})/2</code></b>。</p><p>四个基本事实：<code>cosh</code> 是偶函数（<code>cosh(−x) = cosh x</code>）；<code>sinh</code> 是奇函数（<code>sinh(−x) = −sinh x</code>）；<code>cosh 0 = 1</code>、<code>sinh 0 = 0</code>；<b>基本恒等式</b></p><p><b><code>cosh²x − sinh²x = 1</code></b>。</p><p>恒等式的验证（源文件写法）：<code>cosh²x − sinh²x = [(eˣ+e^{−x})/2]² − [(eˣ−e^{−x})/2]² = [(e^{2x} + 2 + e^{−2x}) − (e^{2x} − 2 + e^{−2x})]/4 = 4/4 = 1</code>。这个式子与双曲线 <code>x² − y² = 1</code> 同形，正是「双曲」这个名字的来源（对应 <code>cos² + sin² = 1</code> 对应圆）。</p><h3 id="s8">6.7 双曲函数的图像与渐近行为</h3><ul><li><code>cosh x</code>：定义域 ℝ，值域 <code>[1, ∞)</code>，在 <code>x = 0</code> 取最小值 1（<code>cosh x ≥ 1</code>）；<code>x → ∞</code> 时渐近于 <code>eˣ/2</code>，<code>x → −∞</code> 时渐近于 <code>e^{−x}/2</code></li><li><code>sinh x</code>：定义域 ℝ，值域 ℝ，过原点且处处递增；<code>x → ∞</code> 时渐近于 <code>eˣ/2</code>，<code>x → −∞</code> 时渐近于 <code>−e^{−x}/2</code></li></ul><h3 id="s9">6.8 双曲函数的导数</h3><p><b><code>d/dx cosh x = sinh x</code></b>，<b><code>d/dx sinh x = cosh x</code></b>——互相求导，没有负号，这是它们比 sin/cos 更好用的地方。</p><p>证明：<code>d/dx[(eˣ + e^{−x})/2] = (eˣ − e^{−x})/2 = sinh x</code>；<code>d/dx[(eˣ − e^{−x})/2] = (eˣ + e^{−x})/2 = cosh x</code>。</p><p>由此还可得 <code>∫cosh x dx = sinh x + C</code>、<code>∫sinh x dx = cosh x + C</code>。</p><h3 id="s10">6.9 双曲恒等式的用法</h3><p>源文件例 (a)：证明 <code>cosh 2x = 2cosh²x − 1</code>。由定义</p><p><code>cosh 2x = (e^{2x} + e^{−2x})/2 = [(eˣ + e^{−x})² − 2]/2 = [(2cosh x)² − 2]/2 = 2cosh²x − 1</code>。</p><p>源文件例 (b)：已知 <code>cosh x = 5/4</code>，求 <code>sinh 2x</code>。先用上面的恒等式：<code>cosh 2x = 2(25/16) − 1 = 50/16 − 1 = 34/16 = 17/8</code>。再用 <code>cosh²2x − sinh²2x = 1</code>：</p><p><code>sinh²2x = 289/64 − 1 = 225/64</code>，故 <code>sinh 2x = ±15/8</code>。</p><p>符号无法由 <code>cosh x</code> 唯一确定（因为 <code>cosh</code> 是偶函数，<code>x</code> 与 <code>−x</code> 给出同一个 <code>cosh x</code> 而 <code>sinh 2x</code> 变号），所以答案必须保留 ±；若题目另给 <code>x &gt; 0</code> 则取正。</p><h3 id="s11">6.10 未定式与七种类型</h3><p>若 <code>f</code> 与 <code>g</code> 在 <code>x = c</code> 处同时为 0，则 <code>lim f(x)/g(x)</code> 不能靠代入确定，代入会得到 <code>0/0</code>，称为<b>未定式</b>（indeterminate form）；需要进一步分析极限是否存在、等于多少。若两者在 c 附近都趋于 ±∞，则得到 <code>∞/∞</code> 型。</p><table><tr><th>类型</th><th>典型例子</th><th>结果</th><th>处理方向</th></tr><tr><td><code>0/0</code></td><td><code>lim_{x→0} sin x/x</code></td><td>1</td><td>洛必达或等价化简</td></tr><tr><td><code>∞/∞</code></td><td><code>lim_{x→∞}(x²+3x+1)/x</code></td><td>∞</td><td>洛必达或比较次数</td></tr><tr><td><code>0 · ∞</code></td><td><code>lim_{x→0⁺} x ln x</code></td><td>0</td><td>改写成 <code>0/(1/∞)</code> 或 <code>∞/(1/0)</code></td></tr><tr><td><code>∞ − ∞</code></td><td><code>lim_{x→0}(1/x − 1/sin x)</code></td><td>0</td><td>通分或乘共轭</td></tr><tr><td><code>0⁰</code></td><td><code>lim_{x→0⁺} xˣ</code></td><td>1</td><td>取对数化为 0·∞</td></tr><tr><td><code>∞⁰</code></td><td><code>lim_{x→∞} x^{1/x}</code></td><td>1</td><td>取对数化为 0·∞</td></tr><tr><td><code>1^∞</code></td><td><code>lim_{x→0}(1+x)^{1/x}</code></td><td><code>e</code></td><td>取对数化为 ∞·0</td></tr></table><h3 id="s12">6.11 柯西中值定理</h3><p>若 f、g 在 <code>[a, b]</code> 上连续、在 <code>(a, b)</code> 内可导，且 <code>g′(x) ≠ 0</code> 对一切 <code>x ∈ (a, b)</code> 成立，则存在 <code>c ∈ (a, b)</code> 使</p><p><b><code>[f(b) − f(a)]/[g(b) − g(a)] = f′(c)/g′(c)</code></b>。</p><p>证明要用一个辅助函数：<code>h(x) = [f(b) − f(a)]g(x) − [g(b) − g(a)]f(x)</code>。它在两端点取值相等（<code>h(a) = h(b)</code>），且连续可导，由罗尔定理存在 c 使 <code>h′(c) = 0</code>，即 <code>[f(b)−f(a)]g′(c) = [g(b)−g(a)]f′(c)</code>，整理即得结论。</p><p>（源文件先说明 <code>g(b) ≠ g(a)</code>：否则由罗尔定理存在 <code>g′ = 0</code> 的点，与假设矛盾。）当 <code>g(x) = x</code> 时，柯西公式退化为拉格朗日中值定理——这是源文件特别指出的一点。</p><h3 id="s13">6.12 洛必达法则</h3><p>若 f、g 在含 c 的开区间内可导（c 本身可以例外），<code>g′(x) ≠ 0</code>（<code>x ≠ c</code>），且 <code>f(x)/g(x)</code> 在 <code>x → c</code> 时呈 <code>0/0</code> 或 <code>∞/∞</code> 型，则</p><p><b><code>lim_{x→c} f(x)/g(x) = lim_{x→c} f′(x)/g′(x)</code></b>，</p><p>只要右端的极限存在（或为 ±∞）。法则对 <code>x → ±∞</code>、单侧极限、以及 <code>c = ±∞</code> 同样成立。</p><p>证明思路（<code>0/0</code> 型）：把 f、g 在 c 处补充定义为 0，使它们在 c 连续；再对区间 <code>[c, x]</code> 用柯西中值定理，得 <code>f(x)/g(x) = f′(ξ)/g′(ξ)</code>，其中 ξ 在 c 与 x 之间；令 <code>x → c</code> 则 <code>ξ → c</code>，结论成立。<code>∞/∞</code> 型的证明更繁，源文件说明「可参考高等微积分教材」。</p><div class="callout warn"><b>三条禁用情形</b>① 极限<b>不是</b>未定式（例如 <code>lim (x+1)/x</code> 在 <code>x→1</code>，直接代入得 2，用洛必达会算出 1）；② 分子分母并非同时趋于 0 或同时趋于 ∞；③ 用了之后右端极限不存在且不是 ∞，此时法则失效，需回到代数变形。源文件在页末专门写了 Caution：不要对非未定式使用洛必达法则。</div><h3 id="s14">6.13 0/0 型的三个例子</h3><p>(a) <code>lim_{x→1} ln x/(x² − 1)</code>。代入得 0/0。用洛必达：<code>(1/x)/(2x) = 1/(2x²) → 1/2</code>。</p><p>(b) <code>lim_{x→0} (eˣ + e^{−x} − 2)/(1 − cos 2x)</code>。代入得 0/0。一次洛必达：<code>(eˣ − e^{−x})/(2 sin 2x)</code>，仍是 0/0；再次：<code>(eˣ + e^{−x})/(4 cos 2x) → 2/4 = 1/2</code>。</p><p>（也可以先用等价无穷小判断量级：分子 <code>≈ x²</code>、分母 <code>≈ 2x²</code>，直接看出答案 1/2。）</p><p>(c) <code>lim_{x→π/2⁻} (2x − π)/cos x</code>。代入得 0/0（分母从正侧趋于 0）。洛必达：<code>2/(−sin x) → −2</code>。</p><p>源文件强调：若一次洛必达后仍是未定式，可以<b>重复使用</b>，直到能定出极限；而最终极限的存在性反过来保证前面每一步的合法性。</p><h3 id="s15">6.14 ∞/∞ 型：先变形再洛必达</h3><p>(a) <code>lim_{x→∞} x e^{−x/2}</code>。这是 <code>0 · ∞</code> 型，改写成 <code>∞/∞</code>：<code>x/e^{x/2}</code>。洛必达一次：<code>1/((1/2)e^{x/2}) = 2/e^{x/2} → 0</code>。</p><p>(b) <code>lim_{x→π/2⁻} 4 tan x/(1 + sec x)</code>。代入得 <code>∞/∞</code>。洛必达：<code>4sec²x/(sec x tan x) = 4sec x/tan x = 4/sin x → 4</code>。</p><p>源文件还演示了一条「洛必达越用越乱」的情形：若对 <code>4tan x/(1+sec x)</code> 反复求导，会一直停在 <code>∞/∞</code>。此时应改用三角恒等式把商化简：<code>4sec x/tan x = (4/cos x)/(sin x/cos x) = 4/sin x</code>，直接看出极限为 4。这说明<b>洛必达不是万能钥匙，先化简往往更快</b>。</p><h3 id="s16">6.15 0 · ∞ 型</h3><p>标准做法：把 <code>f·g</code> 写成 <code>f/(1/g)</code> 或 <code>g/(1/f)</code>，选那个「变形后更好求导」的方向。</p><ul><li><code>lim_{x→0⁺} xᵃ ln x = 0</code>（<code>a &gt; 0</code>）：改写为 <code>ln x/x^{−a}</code>，洛必达得 <code>(1/x)/(−a x^{−a−1}) = −xᵃ/a → 0</code>，再由夹逼取绝对值</li><li><code>lim_{x→∞} ln x/xᵃ = 0</code>（<code>a &gt; 0</code>）：直接用洛必达得 <code>(1/x)/(a x^{a−1}) = 1/(a xᵃ) → 0</code></li><li><code>lim_{x→0⁺} x ln(1/x) = 0</code>：注意 <code>ln(1/x) = −ln x</code>，化为上一条</li><li><code>lim_{x→0} x cot x = 1</code>：改写为 <code>x cos x/sin x</code>，<code>cos x → 1</code> 且 <code>x/sin x → 1</code>，故为 1</li></ul><h3 id="s17">6.16 ∞ − ∞ 型：通分或乘共轭</h3><ul><li><code>lim_{x→0}(1/x − 1/sin x) = 0</code>：通分得 <code>(sin x − x)/(x sin x)</code>，两次洛必达得 <code>0/2 = 0</code>（也可用 <code>sin x − x ≈ −x³/6</code> 快速判断）</li><li><code>lim_{x→∞}(x − x²/(x + ln x)) = ∞</code>：通分得 <code>(x² + x ln x − x²)/(x + ln x) = x ln x/(x + ln x)</code>，分子增长更快，故为 ∞</li><li><code>lim_{x→1⁺}(1/ln x − 1/(x−1)) = 1/2</code>：通分得 <code>(x − 1 − ln x)/((x−1)ln x)</code>，两次洛必达（或展开）得 1/2</li><li><code>lim_{x→0}(1/(eˣ − 1) − 1/x) = −1/2</code>：通分得 <code>(x − eˣ + 1)/(x(eˣ−1))</code>，两次洛必达得 −1/2</li></ul><h3 id="s18">6.17 幂型：0⁰、∞⁰、1^∞ 的四步法</h3><p>对 <code>lim f(x)^{g(x)}</code> 呈 <code>0⁰</code>、<code>∞⁰</code> 或 <code>1^∞</code> 型：</p><ol class="steps"><li>令 <code>y = f(x)^{g(x)}</code>，先求 <code>ln y = g(x) ln f(x)</code></li><li>求 <code>lim ln y</code>（此时已化为 <code>0·∞</code> 型，按上节处理）</li><li>设 <code>lim ln y = L</code>，则 <code>lim y = e^L</code></li></ol><p>源文件三个例子：</p><ul><li><code>lim_{x→0⁺} xˣ = 1</code>：<code>ln y = x ln x → 0</code>，故 <code>y → e⁰ = 1</code></li><li><code>lim_{x→∞} x^{1/x} = 1</code>：<code>ln y = (ln x)/x → 0</code>，故 <code>y → 1</code></li><li><code>lim_{x→∞}(1 + sin(3/x))ˣ = e³</code>：<code>ln y = x ln(1 + sin(3/x))</code>，用 <code>ln(1+u) ≈ u</code> 得 <code>≈ x·sin(3/x) ≈ x·(3/x) = 3</code>，故 <code>y → e³</code></li></ul><p>其他常见结果：<code>lim_{x→0}(1 + 3x)^{1/(2x)} = e^{3/2}</code>、<code>lim_{x→0}(1+x)^{1/x} = e</code>、<code>lim_{x→0}(1−x)^{1/x} = e^{−1}</code>。这三个都由标准极限 <code>lim_{u→0}(1+u)^{1/u} = e</code> 变形而来：把指数改写成 <code>(1/3x)·(3/2)</code> 之类的形式即可。</p><h3 id="s19">6.18 面积问题与黎曼和</h3><p>考虑区域 R：在 <code>y = f(x)</code> 之下（f 在 <code>[a, b]</code> 连续且 <code>f ≥ 0</code>）、x 轴之上、竖直线 <code>x = a</code> 与 <code>x = b</code> 之间。</p><p>用分割点 <code>x₀ = a &lt; x₁ &lt; ⋯ &lt; xₙ = b</code> 把区间分成 n 段，第 i 段长 <code>Δxᵢ = xᵢ − xᵢ₋₁</code>。在第 i 段上任取样本点 <code>xᵢ*∈ [xᵢ₋₁, xᵢ]</code>，以 <code>f(xᵢ*)</code> 为高作矩形，面积为 <code>f(xᵢ*)Δxᵢ</code>。把这些面积相加得<b>黎曼和</b>（Riemann sum）：</p><p><b><code>Sₙ = Σ_{i=1}^{n} f(xᵢ*)Δxᵢ</code></b>。</p><p>当 <code>n → ∞</code> 且 <code>max Δxᵢ → 0</code> 时，<code>Sₙ</code> 趋于区域面积。这个「和式的极限」就是定积分。</p><h3 id="s20">6.19 一个完整计算：y = x² 在 [0, b] 上的面积</h3><p>把 <code>[0, b]</code> 等分成 n 段，<code>Δx = b/n</code>，<code>xᵢ = ib/n</code>。取右端点作样本点，矩形高 <code>(ib/n)²</code>，于是</p><p><code>Sₙ = Σ_{i=1}^{n} (ib/n)²(b/n) = (b³/n³) Σ_{i=1}^{n} i² = (b³/n³)·n(n+1)(2n+1)/6</code>。</p><p>化简：<code>Sₙ = b³(n+1)(2n+1)/(6n²)</code>。令 <code>n → ∞</code>：</p><p><b><code>lim Sₙ = b³·(2/6) = b³/3</code></b>。</p><p>这条推导依赖求和公式 <code>Σ_{i=1}^{n} i² = n(n+1)(2n+1)/6</code>（源文件把它列入公式表，考试可直接引用）。代入 <code>b = 1</code> 得经典结果 <code>∫₀¹x²dx = 1/3</code>。</p><h3 id="s21">6.20 下和、上和与可积性</h3><p>分割 <code>P = {x₀, x₁, …, xₙ}</code>（<code>a = x₀ &lt; ⋯ &lt; xₙ = b</code>）把 <code>[a, b]</code> 分成 n 个子区间，称 P 为一个<b>分割</b>；其<b>范数</b>（norm）为 <code>||P|| = max Δxᵢ</code>。</p><p>在每个子区间上，连续函数取到最小值 <code>mᵢ</code> 与最大值 <code>Mᵢ</code>（最值定理保证）。<b>下和</b>与<b>上和</b>定义为</p><p><code>L(f, P) = Σ mᵢΔxᵢ</code>，<code>U(f, P) = Σ MᵢΔxᵢ</code>。</p><p>显然 <code>L(f, P) ≤ 真实面积 ≤ U(f, P)</code>，且任何黎曼和都夹在两者之间。对 <code>x²</code> 在 <code>[0, b]</code> 上等分，用左端点得下和</p><p><code>L = (b³/n³)Σ_{i=1}^{n}(i−1)² = b³(n−1)(2n−1)/(6n²)</code>，</p><p>用右端点得上和 <code>U = b³(n+1)(2n+1)/(6n²)</code>。当 <code>n → ∞</code> 时两者都趋于 <code>b³/3</code>——这就是「可积」的含义。</p><p><b>可积的定义</b>：若存在唯一的数 I，使对 <code>[a, b]</code> 的<b>每个</b>分割 P 都有 <code>L(f, P) ≤ I ≤ U(f, P)</code>，则称 f 在 <code>[a, b]</code> 上可积（integrable），并定义</p><p><b><code>I = ∫ₐᵇ f(x) dx</code></b>，即 <code>lim_{||P||→0} L(f, P) = I = lim_{||P||→0} U(f, P)</code>。</p><p>记号各部分：<code>∫</code> 是积分号（integral sign）；a、b 是积分下限与上限；<code>f(x)</code> 是被积函数（integrand）；x 是积分变量；<code>dx</code> 是 x 的微分。积分变量用什么字母都不影响结果（哑变量）。</p><h3 id="s22">6.21 定积分的几何意义与性质</h3><p>几何上，定积分是<b>有向面积</b>：x 轴上方部分计正、下方部分计负。若 <code>f ≥ 0</code>，<code>∫ₐᵇ f</code> 就是面积；若 <code>f ≤ 0</code>，积分为负的面积；若 f 变号，则正负相消，得到「上方面积减下方面积」。</p><p>性质（设 f、g 在含 a、b、c 的区间上可积）：</p><ul><li><code>∫ₐᵃ f = 0</code>（零宽度，面积为 0）</li><li><code>∫ₐᵇ f = −∫ᵦᵃ f</code>（交换上下限变号）</li><li>线性：<code>∫ₐᵇ(αf + βg) = α∫ₐᵇf + β∫ₐᵇg</code></li><li>可加：<code>∫ₐᶜ f + ∫꜀ᵇ f = ∫ₐᵇ f</code>（c 可以在区间内、外都成立）</li><li>比较：若 <code>a ≤ b</code> 且 <code>f ≤ g</code>，则 <code>∫ₐᵇ f ≤ ∫ₐᵇ g</code></li><li>绝对值不等式：<code>|∫ₐᵇ f| ≤ ∫ₐᵇ |f|</code></li><li>奇偶性：f 奇则 <code>∫_{−a}^{a} f = 0</code>；f 偶则 <code>∫_{−a}^{a} f = 2∫₀^{a} f</code></li></ul><p>最后一条来自「有向面积的正负相消」：奇函数在对称区间的左右两块面积大小相等、符号相反，故总和为 0。这条性质在考试里能省下大量计算。</p><p><b>连续与可积</b>：若 f 在 <code>[a, b]</code> 上连续，则 f 在 <code>[a, b]</code> 上可积。逆命题不成立——可积函数可以是不连续的（例如分段连续、只有有限个跳跃点的函数）。</p><p><b>积分中值定理</b>：若 f 在 <code>[a, b]</code> 上连续，则存在 <code>c ∈ [a, b]</code> 使 <code>f(c) = (1/(b−a))∫ₐᵇ f(x)dx</code>。也就是说，连续函数在区间上的平均值一定能被某点的函数值取到。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>inverse sine</td><td>反正弦</td><td>y = sin⁻¹x on [−1,1], range [−π/2, π/2].</td></tr><tr><td>inverse cosine</td><td>反余弦</td><td>cos⁻¹x = π/2 − sin⁻¹x, range [0, π].</td></tr><tr><td>inverse tangent</td><td>反正切</td><td>tan⁻¹x on ℝ, range (−π/2, π/2), horizontal asymptotes ±π/2.</td></tr><tr><td>hyperbolic cosine</td><td>双曲余弦</td><td>cosh x = (eˣ + e^{−x})/2, even, range [1, ∞).</td></tr><tr><td>hyperbolic sine</td><td>双曲正弦</td><td>sinh x = (eˣ − e^{−x})/2, odd, range ℝ.</td></tr><tr><td>fundamental identity</td><td>双曲基本恒等式</td><td>cosh²x − sinh²x = 1.</td></tr><tr><td>indeterminate form</td><td>未定式</td><td>Limits of type 0/0, ∞/∞, 0·∞, ∞−∞, 0⁰, ∞⁰, 1^∞.</td></tr><tr><td>Cauchy mean-value theorem</td><td>柯西中值定理</td><td>[f(b)−f(a)]/[g(b)−g(a)] = f′(c)/g′(c).</td></tr><tr><td>L’Hôpital’s rule</td><td>洛必达法则</td><td>For 0/0 or ∞/∞, lim f/g = lim f′/g′.</td></tr><tr><td>logarithmic limit</td><td>对数化处理</td><td>For powers, take ln y, find the limit, then exponentiate.</td></tr><tr><td>Riemann sum</td><td>黎曼和</td><td>Σ f(xᵢ*)Δxᵢ approximating the area under the graph.</td></tr><tr><td>partition</td><td>分割</td><td>A finite set a = x₀ < x₁ < ⋯ < xₙ = b; its norm is max Δxᵢ.</td></tr><tr><td>lower and upper sums</td><td>下和与上和</td><td>Σ mᵢΔxᵢ and Σ MᵢΔxᵢ bracketing the true area.</td></tr><tr><td>definite integral</td><td>定积分</td><td>The unique number I with L(f,P) ≤ I ≤ U(f,P) for every partition.</td></tr><tr><td>integrable</td><td>可积</td><td>A definite integral exists; every continuous function on [a,b] is integrable.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p8）　求 (a) sin⁻¹(sin 4π/5)；(b) cos(sin⁻¹ x)。</div><p>(a) <code>4π/5</code> 不在主值区间 <code>[−π/2, π/2]</code>，不能直接抵消。用补角公式：<code>sin(4π/5) = sin(π − 4π/5) = sin(π/5)</code>。</p><p>而 <code>π/5 ∈ [−π/2, π/2]</code>，故 <code>sin⁻¹(sin 4π/5) = sin⁻¹(sin π/5) = π/5</code>。</p><p>(b) 令 <code>θ = sin⁻¹ x</code>，则 <code>sin θ = x</code>、<code>θ ∈ [−π/2, π/2]</code>。在该区间 <code>cos θ ≥ 0</code>，故 <code>cos θ = √(1 − sin²θ) = √(1 − x²)</code>，取正号。</p><p><b>要点：</b>反三角复合题一律「先判断角是否在主值区间 → 用诱导公式折回 → 再抵消」；开方时用主值区间的符号确定正负。</p></div><div class="qa"><div class="q">例 2（源文件 p30–p31）　用洛必达法则求 (a) lim_{x→1} ln x/(x²−1)；(b) lim_{x→0}(eˣ + e^{−x} − 2)/(1 − cos 2x)；(c) lim_{x→π/2⁻}(2x − π)/cos x。</div><p>(a) 代入得 <code>0/0</code>。一次洛必达：<code>(1/x)/(2x) = 1/(2x²)</code>，令 <code>x → 1</code> 得 <code>1/2</code>。</p><p>(b) 代入得 <code>0/0</code>。一次：<code>(eˣ − e^{−x})/(2 sin 2x)</code>（仍是 0/0）；二次：<code>(eˣ + e^{−x})/(4 cos 2x)</code>。令 <code>x → 0</code>：<code>(1+1)/(4·1) = 1/2</code>。</p><p>(c) 代入得 <code>0/0</code>（<code>cos x → 0⁺</code>）。一次：<code>2/(−sin x)</code>，令 <code>x → π/2⁻</code> 得 <code>2/(−1) = −2</code>。</p><p><b>要点：</b>每用一次都要重新检查是否仍是未定式；一旦不再是（如 (c) 第二次已是有限值），立刻停止并代值。</p></div><div class="qa"><div class="q">例 3（源文件 p9–p13）　求 (a) lim_{x→0}(1 + 3x)^{1/(2x)}；(b) lim_{x→0⁺} xˣ；(c) lim_{x→∞}(1 + sin(3/x))ˣ。</div><p>(a) 这是 <code>1^∞</code> 型。设 <code>y = (1+3x)^{1/(2x)}</code>，则 <code>ln y = ln(1+3x)/(2x)</code>。</p><p>洛必达：<code>(3/(1+3x))/2 → 3/2</code>（令 x → 0）。故 <code>y → e^{3/2}</code>。</p><p>(b) 这是 <code>0⁰</code> 型。<code>ln y = x ln x</code>，由上节结果 <code>x ln x → 0</code>，故 <code>y → e⁰ = 1</code>。</p><p>(c) 这是 <code>1^∞</code> 型（<code>sin(3/x) → 0</code>）。<code>ln y = x ln(1 + sin(3/x))</code>。用 <code>ln(1+u) ≈ u</code>（<code>u → 0</code>）：<code>ln y ≈ x sin(3/x) ≈ x·(3/x) = 3</code>，故 <code>y → e³</code>。</p><p><b>统一模板：</b>取对数 → 变成 <code>0·∞</code> → 改写成商 → 洛必达或等价化简 → 取指数。三步走，所有幂型未定式都适用。</p></div><div class="qa"><div class="q">例 4（源文件 p18–p20）　用黎曼和求 y = x² 在 [0, b] 下方的面积。</div><p>把 <code>[0, b]</code> 等分，<code>Δx = b/n</code>，分割点 <code>xᵢ = ib/n</code>（<code>i = 0, …, n</code>）。</p><p>取右端点作样本点 <code>xᵢ* = ib/n</code>，矩形高 <code>(ib/n)²</code>，黎曼和</p><p><code>Sₙ = Σ_{i=1}^{n}(ib/n)²(b/n) = (b³/n³)Σ_{i=1}^{n}i²</code>。</p><p>代入 <code>Σi² = n(n+1)(2n+1)/6</code>：<code>Sₙ = b³(n+1)(2n+1)/(6n²)</code>。</p><p>令 <code>n → ∞</code>：<code>(n+1)(2n+1)/(6n²) → 2/6 = 1/3</code>，故面积 <code>= b³/3</code>。</p><p><b>检验：</b><code>b = 1</code> 时 <code>1/3</code>；<code>b = 3</code> 时 <code>9</code>。量纲检查：面积应与 <code>b³</code> 同量纲，因为曲线是 <code>y = x²</code>（长度²），再乘长度得长度³——结果形式合理。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>d/dx tan⁻¹(3x)</code>；并写出 <code>∫dx/(x² + 9)</code>。</li><li>已知 <code>cosh x = 5/4</code>，求 <code>cosh 2x</code> 与 <code>sinh 2x</code>。</li><li>用洛必达法则求 <code>lim_{x→0}(sin x − x)/x³</code>。</li><li>用洛必达法则求 <code>lim_{x→0}(tan x − x)/x³</code>。</li><li>求 <code>lim_{x→1⁺}(1/ln x − 1/(x−1))</code>。</li><li>用黎曼和求 <code>∫₀¹ x² dx</code>，并用定积分性质计算 <code>∫_{−2}^{2}(x³ + x) dx</code>。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>d/dx tan⁻¹(3x) = 3/(1 + 9x²)</code>；<code>∫dx/(x²+9) = (1/3)tan⁻¹(x/3) + C</code>（公式 <code>∫dx/(a²+x²) = (1/a)tan⁻¹(x/a)</code>，此处 a = 3）。</p><p><b>2.</b> <code>cosh2x = 2(5/4)² − 1 = 50/16 − 1 = 17/8</code>；<code>sinh²2x = (17/8)² − 1 = 225/64</code>，故 <code>sinh2x = ±15/8</code>（符号取决于 x 的正负，题目未给则写 ±）。</p><p><b>3.</b> 三次洛必达：<code>(sin x − x)/x³ → (cos x − 1)/(3x²) → (−sin x)/(6x) → (−cos x)/6 → −1/6</code>。</p><p><b>4.</b> <code>(tan x − x)/x³ → (sec²x − 1)/(3x²) = tan²x/(3x²) → (1/3)(tan x/x)² → 1/3</code>。注意第二步用了 <code>sec²x − 1 = tan²x</code>，这比继续求导更快。</p><p><b>5.</b> 通分：<code>(x − 1 − ln x)/((x−1)ln x)</code>。第一次洛必达得 <code>(1 − 1/x)/(ln x + 1 − 1/x)</code>（仍是 0/0），第二次得 <code>(1/x²)/(1/x + 1/x²) = 1/(x+1)</code>，令 <code>x → 1⁺</code> 得 <code>1/2</code>。也可用展开 <code>ln x ≈ (x−1) − (x−1)²/2</code> 直接看出结果，两种做法互相印证。</p><p><b>6.</b> 黎曼和：<code>Sₙ = (1/n³)Σi² = (n+1)(2n+1)/(6n²) → 1/3</code>。<code>∫_{−2}^{2}(x³+x)dx = 0</code>：被积函数是奇函数（<code>(−x)³ + (−x) = −(x³+x)</code>），在对称区间上积分为 0。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>①<code>sin⁻¹、cos⁻¹、tan⁻¹</code> 的导数与三个配套积分公式；②反三角复合（主值区间问题）；③双曲函数恒等式与导数；④洛必达处理 0/0、∞/∞、0·∞、∞−∞、幂型；⑤黎曼和求面积；⑥定积分性质（尤其奇偶性）。</div><div class="callout warn"><b>易错 1</b><b>对非未定式用洛必达</b>。用之前必须确认是 0/0 或 ∞/∞；否则会得到荒谬结果（源文件页末专门写了 Caution）。</div><div class="callout warn"><b>易错 2</b><b>反三角复合直接抵消</b>。<code>sin⁻¹(sin 4π/5) ≠ 4π/5</code>，必须先用诱导公式折算回主值区间。</div><div class="callout warn"><b>易错 3</b><b>幂型未定式忘记取指数</b>。算出 <code>lim ln y = L</code> 后必须写 <code>lim y = e^L</code>，很多人停在 <code>L</code> 上。</div><div class="callout warn"><b>易错 4</b><b>黎曼和漏乘 Δx 或求和上限写错</b>。矩形面积是「高 × 宽」，宽是 <code>b/n</code> 而不是 1；<code>Σi²</code> 的上限是 n（右端点）或 n−1（左端点），两者极限相同但中间式子不同。</div><div class="callout tip"><b>进阶</b>把洛必达与等价无穷小结合：<code>sin x ≈ x</code>、<code>tan x ≈ x</code>、<code>1 − cos x ≈ x²/2</code>、<code>ln(1+u) ≈ u</code>、<code>e^u − 1 ≈ u</code>。先用等价量判断阶数，再用洛必达收尾，通常能少求一两次导。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s23">方法与清单</h2><h3 id="s24">处理未定式（先分类，再选工具）</h3><ol class="steps"><li>代入判断类型：<code>0/0</code>、<code>∞/∞</code>、<code>0·∞</code>、<code>∞−∞</code>、<code>0⁰</code>、<code>∞⁰</code>、<code>1^∞</code></li><li><code>0·∞</code> 改写成商；<code>∞−∞</code> 通分或乘共轭；幂型取对数化成 <code>0·∞</code></li><li>变成 <code>0/0</code> 或 <code>∞/∞</code> 后才用洛必达，每用一次重新检查类型</li><li>若洛必达越用越乱，改回代数变形或三角恒等式化简</li></ol><h3 id="s25">反三角复合（三步）</h3><ol class="steps"><li>看内层角是否落在主值区间（arcsin 为 <code>[−π/2, π/2]</code>，arccos 为 <code>[0, π]</code>）</li><li>不在则用周期性或诱导公式把角折回主值区间</li><li>抵消后若需开方（如 <code>cos(sin⁻¹x)</code>），符号由主值区间决定</li></ol><h3 id="s26">黎曼和求面积（四步）</h3><ol class="steps"><li>等分区间，写出 <code>Δx</code> 与分割点 <code>xᵢ</code></li><li>选样本点（左端、右端或中点），写出矩形高 <code>f(xᵢ*)</code></li><li>写出和式并代入 <code>Σ1 = n</code>、<code>Σi</code>、<code>Σi²</code> 等公式化简</li><li>令 <code>n → ∞</code> 取极限，并用特殊值或量纲检查结果</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p1–p2</td><td>第一次考试时间与报名截止、不允许计算器、公式表</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p4–p8</td><td>反三角函数的必要性、arcsin 的定义域值域与图像、反三角复合两例</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p9–p10</td><td>arcsin 导数证明、sin⁻¹(x/a) 的导数与 ∫dx/√(a²−x²)</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p11–p15</td><td>arccos 的定义与互补关系、其导数；arctan 的定义、渐近线、导数与积分公式</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p16–p17</td><td>双曲函数的定义、奇偶性、基本恒等式、图像与渐近行为</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p18–p19</td><td>cosh 与 sinh 的导数推导、cosh2x 恒等式、由 cosh x 求 sinh 2x</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p20–p21</td><td>未定式概念、七种类型及其代表例</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p22–p25</td><td>柯西中值定理、辅助函数与罗尔定理证明、MVT 作为特例</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p26–p29</td><td>洛必达法则的陈述、0/0 型的证明、∞/∞ 与 x→∞ 的说明</td></tr><tr><td>Topic 6/EMI_Week6_Lecture1.pdf</td><td>p30–p32</td><td>三个 0/0 型例子、重复使用法则、四道任务与「不要滥用」的警告</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p2–p4</td><td>∞/∞ 型与 0·∞ 改写、4tan x/(1+sec x) 的恒等式化简、四道 0·∞ 任务</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p5–p7</td><td>∞−∞ 型的通分处理、两个例子与四道任务</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p8–p13</td><td>幂型 0⁰、∞⁰、1^∞ 的四步法、三个例子与四道任务</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p14–p20</td><td>面积问题、分割与样本点、黎曼和、y = x² 的完整计算</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p21–p23</td><td>分割的范数、下和与上和、x² 的上下和、夹逼到 b³/3</td></tr><tr><td>Topic 6/EMI_Week6_Lecture2.pdf</td><td>p24–p28</td><td>定积分定义与记号、几何意义（有向面积）、六条性质、连续 ⇒ 可积、积分中值定理</td></tr><tr><td>（跳过）Topic 6 中纯图片页与 _info 页面</td><td>—</td><td>p4–p5 等图形页按相邻文字复原；Lecture One/Two.html 为登录页快照</td></tr><tr><td>（拓展）</td><td>—</td><td>七种未定式的处理流程图、双曲函数的积分公式与黎曼和的分割范数讨论为衔接性补充</td></tr></table></section><div class="lnav"><a class="prev" href="t5-inverse-exp-log.html">← 第 3 章 · 反函数、指数与对数</a><a class="next" href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

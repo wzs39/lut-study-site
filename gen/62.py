@@ -1,0 +1,1953 @@
+# -*- coding: utf-8 -*-
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from genlib import (L, emit, h2, h3, p, ul, ol, ck, st, tb, K, cal, badge, qa, det, pre, code, chips)
+
+LEC = []
+CH1 = '第 1 章 函数、极限与连续性'
+CH2 = '第 2 章 导数与微分'
+CH3 = '第 3 章 超越函数与极限技巧'
+CH4 = '第 4 章 积分'
+CH5 = '第 5 章 模拟卷与题型'
+
+
+def lec(**kw):
+    part = kw.pop('part')
+    d = L(**kw)
+    d['part'] = part
+    LEC.append(d)
+    return d
+
+
+# ============================================================ 讲 1
+lec(
+ slug='t1-preliminaries-functions',
+ tzh='第 1 章 · 预备知识、直线与函数',
+ ten='Preliminaries, Lines and Functions',
+ keywords=['real number', 'interval', 'absolute value', 'slope of a line', 'function',
+           'composite function', 'polynomial', 'rational function', 'conic section',
+           'trigonometric function'],
+ files=['General/General Course Information.html',
+        'Topic 1/EMI_Week1_Lecture1.pdf',
+        'Topic 1/EMI_Week1_Lecture2.pdf'],
+ part=CH1,
+ overview=(h2('本节定位')
+  + p('HDD4010 工程数学 I 是整门微积分的入口课：课程内容按「直角坐标系 → 函数、极限与连续 → 微分 → 积分」这条主线展开，全学期分 Topic 1 至 Topic 7 共七个专题，最后有一次模拟卷。本节把 Topic 1 的两次课与课程信息页合并成一讲，是后面所有内容的地基——极限要用区间和绝对值来写，导数要用直线的斜率来定义，积分要用函数的图形来理解。')
+  + p('本节还包含课程的考核规则：考试不允许使用计算器，但会发一张公式表；所有解答必须写出所用公式、代入过程与中间步骤，只写答案不给分。因此从第一讲起就要养成「写步骤、留中间式」的习惯。')
+  + p('学完本节你应当能够：')
+  + ck('区分 ℕ、ℤ、ℚ 与无理数，并把循环小数化成分数',
+     '把不等式与含绝对值的方程、不等式的解集写成区间',
+     '在直角坐标系中求两点间的距离、中点，并写出过两点的直线方程',
+     '把圆、抛物线、椭圆、双曲线的方程与图形对应起来',
+     '判断一个对应是否为函数、是否一一对应，并求复合函数的定义域',
+     '用多项式除法、因式分解与三角恒等式把表达式化简成可继续运算的形式')),
+ detail=(h3('1.1 课程信息与考核方式')
+  + p('课程代码 HDD4010，课程内容为：Cartesian Coordinate System（直角坐标系）、Functions, Limits and Continuity（函数、极限与连续性）、Differentiation（微分）、Integration（积分）。任课教师 Jie Ding（dingjie@hebut.edu.cn），辅导时间需邮件预约；Lahti 校区的答疑也通过邮件安排。')
+  + p('考核要点（源文件与课程信息页）：课程有期末考试，2026 年 10 月举行；第一次考试定在 <b>10 月 21 日</b>，需要在 <b>10 月 14 日</b> 前完成报名。考试<b>不允许使用计算器</b>，会提供一张与上一学年类似的公式表（formula sheet 之后放在 Moodle 上）。参考书是 Robert A. Adams 的 <i>Calculus: A Complete Course</i>，历年试卷在 exams.ltky.fi。讲座与习题课目前不强制点名，但强烈建议出席。')
+  + cal('warn', '这条规则决定复习方式', '不能用计算器，意味着 sin、cos、ln、e 的特殊值与常见近似（如 e ≈ 2.718、ln 2 ≈ 0.693）要熟记，且答案优先写成精确形式，例如 <code>10 ln(3/2) / ln 2</code> 而不是小数。只写最终答案不给分，所以每一步都要写清「用了哪个公式、做了哪个代换」。')
+  + h3('1.2 实数与实轴')
+  + p('微积分建立在实数系之上。实数（real number）是能写成有限或无限小数展开的数，例如 <code>5 = 5.0</code>、<code>1/3 = 0.333…</code>、<code>−3/4 = −0.75</code>、<code>√2 = 1.4142…</code>、<code>π = 3.1415…</code>，省略号表示小数位无限延伸。')
+  + p('几何上，实数与数轴（real line）上的点一一对应，这条数轴上<b>没有洞</b>：每个点都对应一个实数。实数集与实轴都用符号 <b>ℝ</b> 表示。这一点是「极限存在」的深层依据：数列或函数值只要被夹在两个不断靠近的实数之间，就一定夹住了某个实数。')
+  + p('不等式的四条基本规则（<code>a, b, c ∈ ℝ</code>）：')
+  + ol('<code>a &lt; b ⟹ a ± c &lt; b ± c</code>（同加同减不变号）',
+       '<code>a &lt; b</code> 且 <code>c &gt; 0</code> ⟹ <code>ac &lt; bc</code>（乘正数不变号）',
+       '<code>a &lt; b</code> 且 <code>c &lt; 0</code> ⟹ <code>ac &gt; bc</code>（乘负数要变号）',
+       '<code>0 &lt; a &lt; b ⟹ 0 &lt; 1/b &lt; 1/a</code>（正数取倒数要颠倒次序）')
+  + cal('warn', '最高频的失分点', '解不等式时乘以含未知量的因子（如 <code>x−1</code>），必须先讨论它的正负，不能直接乘过去。取倒数时也必须先确认两边同号。')
+  + h3('1.3 实数的子集')
+  + ul('自然数 <code>ℕ = {1, 2, 3, …}</code>',
+       '整数 <code>ℤ = {0, ±1, ±2, ±3, …}</code>',
+       '有理数 <code>ℚ = {p/q : p, q ∈ ℤ, q ≠ 0}</code>，等价特征是「小数有限或循环」',
+       '无理数 <code>ℝ∖ℚ</code>，即「小数无限且不循环」，如 <code>√2, π, √3</code>')
+  + p('把循环小数化成分数的标准做法是：设该数为 x，乘 <code>10^k</code>（k 为循环节长度）后与原式相减，消去无限循环部分。源文件的例子：设 <code>x = 2.0909… = 2.09̄</code>，循环节两位，乘 <code>10²</code> 得 <code>100x = 209.0909…</code>；两式相减 <code>99x = 207</code>，故 <code>x = 207/99 = 23/11</code>。')
+  + h3('1.4 区间')
+  + p('区间（interval）是 ℝ 的子集，用来紧凑地表示不等式的解集。设 <code>a &lt; b</code>：')
+  + tb(('记号', '含义', '端点', '名称'),
+       ('<code>(a, b)</code>', '<code>a &lt; x &lt; b</code>', '两端都不含', '开区间'),
+       ('<code>[a, b]</code>', '<code>a ≤ x ≤ b</code>', '两端都含', '闭区间'),
+       ('<code>[a, b)</code>', '<code>a ≤ x &lt; b</code>', '含左不含右', '半开区间'),
+       ('<code>(a, b]</code>', '<code>a &lt; x ≤ b</code>', '含右不含左', '半开区间'),
+       ('<code>(a, ∞)</code>', '<code>x &gt; a</code>', '无上端点', '无穷区间'),
+       ('<code>(−∞, b]</code>', '<code>x ≤ b</code>', '无下端点', '无穷区间'))
+  + p('关键提醒：<code>∞</code> 与 <code>−∞</code> <b>不是数</b>，只表示「该方向没有端点」，所以无穷一侧永远用小括号，绝不写成 <code>[a, ∞]</code>。全体实数是 <code>ℝ = (−∞, ∞)</code>。')
+  + h3('1.5 绝对值')
+  + p('绝对值（absolute value，也叫 magnitude）定义为分段形式：<code>|x| = x</code>（<code>x ≥ 0</code>），<code>|x| = −x</code>（<code>x &lt; 0</code>）。几何意义是「x 到 0 的距离」；更一般地，<code>|x − y|</code> 是数轴上 x 与 y 两点的距离。')
+  + p('四条性质：<code>|−x| = |x|</code>；<code>|xy| = |x||y|</code>；<code>|x/y| = |x|/|y|</code>（<code>y ≠ 0</code>）；<b>三角不等式</b> <code>|x ± y| ≤ |x| + |y|</code>。')
+  + p('三角不等式的证明（源文件用平方法）：由 <code>±2xy ≤ 2|xy| = 2|x||y|</code>，得')
+  + p('<code>|x ± y|² = x² ± 2xy + y² ≤ |x|² + 2|x||y| + |y|² = (|x| + |y|)²</code>。两边开平方（都非负，开方保序）即得结论。这个「先平方、再用非负性」的手法在不等式证明里反复出现。')
+  + p('含绝对值的方程与不等式（<code>a &gt; 0</code>）：')
+  + tb(('形式', '等价于', '几何读法'),
+       ('<code>|x| = a</code>', '<code>x = ±a</code>', '到 0 的距离恰为 a'),
+       ('<code>|x| &lt; a</code>', '<code>−a &lt; x &lt; a</code>', '距离小于 a 的开区间'),
+       ('<code>|x| ≤ a</code>', '<code>−a ≤ x ≤ a</code>', '距离不超过 a 的闭区间'),
+       ('<code>|x| &gt; a</code>', '<code>x &lt; −a 或 x &gt; a</code>', '两个外侧射线'))
+  + p('源文件两个例子：<code>|2x+5| = 1</code> 给出 <code>2x+5 = ±1</code>，即 <code>x = −3</code> 或 <code>x = −2</code>；<code>|3x−6| ≤ 3</code> 先提公因子得 <code>3|x−2| ≤ 3</code>，即 <code>|x−2| ≤ 1</code>，读作「x 到 2 的距离不超过 1」，于是 <code>1 ≤ x ≤ 3</code>。')
+  + cal('tip', '先读几何意义再动笔', '凡是 <code>|x − c|</code> 的形式，先翻译成「到 c 的距离」，不等式几乎不用算就能读出答案；只有当绝对值外面还套着别的运算时才需要分类讨论。')
+  + h3('1.6 平面直角坐标系')
+  + p('平面上任一点的位置可用两条互相垂直的实轴确定：水平的是 x 轴（正方向向右），竖直的是 y 轴（正方向向上），交点 O 是原点。点 P 记为 <code>P(a, b)</code>，a 是 x 坐标，b 是 y 坐标，有序对 <code>(a, b)</code> 称为坐标对（coordinate pair）。这样建立的系统叫直角坐标系（rectangular / Cartesian coordinate system）。')
+  + p('所有有序对构成的集合记作 <code>ℝ × ℝ</code> 或 <code>ℝ²</code>。两条坐标轴把平面分成四个象限（quadrant），从右上开始按逆时针编号为 I、II、III、IV。注意坐标轴上的点不属于任何象限。')
+  + h3('1.7 增量、距离公式与中点公式')
+  + p('质点从 <code>P₁(x₁, y₁)</code> 移到 <code>P₂(x₂, y₂)</code> 时，坐标的净变化叫增量（increment）：<code>Δx = x₂ − x₁</code>（run，水平增量）、<code>Δy = y₂ − y₁</code>（rise，竖直增量）。增量可以为正也可以为负。')
+  + p('由勾股定理，两点距离为 <b><code>D = √(Δx² + Δy²) = √((x₂−x₁)² + (y₂−y₁)²)</code></b>。线段 <code>P₁P₂</code> 的中点 <code>M(x, y)</code> 取两端坐标的平均：<code>x = (x₁+x₂)/2</code>，<code>y = (y₁+y₂)/2</code>。')
+  + p('源文件例子：<code>P₁(−2, 6)</code>、<code>P₂(4, −2)</code>。<code>D = √(6² + (−8)²) = √(36+64) = 10</code>；中点 <code>M = ((−2+4)/2, (6−2)/2) = (1, 2)</code>。')
+  + h3('1.8 直线、斜率与直线方程')
+  + p('两个不同点确定唯一一条直线。非竖直直线的斜率（slope）定义为「纵向增量除以横向增量」：<b><code>m = rise/run = Δy/Δx = (y₂−y₁)/(x₂−x₁)</code></b>。同一条直线上任取两点算出的 m 都相同——因为对应三角形相似（源文件用相似三角形 <code>P₁P₂Q</code> 与 <code>P₁′P₂′Q′</code> 说明）。')
+  + p('竖直直线 <code>Δx = 0</code>，斜率<b>不存在</b>（不是 0，也不是 ∞）。这一点在写切线、法线时非常关键：竖直线要单独处理。')
+  + p('平行与垂直：平行直线斜率相等；两条非竖直直线垂直时 <b><code>m₁m₂ = −1</code></b>。源文件的证明思路是：把一条直线旋转 90° 得到另一条，两个直角三角形相似，于是 <code>m₂ = −Δx/Δy = −1/m₁</code>。')
+  + p('四种常用直线方程：')
+  + tb(('名称', '方程', '适用情形'),
+       ('水平线', '<code>y = b</code>', '斜率为 0'),
+       ('竖直线', '<code>x = a</code>', '斜率不存在，不能写成 y = mx+b'),
+       ('点斜式 point-slope', '<code>y − y₁ = m(x − x₁)</code>', '已知一点与斜率'),
+       ('斜截式 slope-intercept', '<code>y = mx + b</code>', 'b 是 y 截距'),
+       ('一般式 general linear', '<code>Ax + By = C</code>', 'A、B 不同时为 0，可表示竖直线'))
+  + p('点斜式的来源：设 <code>P(x, y)</code> 是直线上一动点，则 <code>(y − y₁)/(x − x₁) = m</code>（<code>x ≠ x₁</code>），整理即得。斜截式是点斜式取 <code>(0, b)</code> 的特例；若已知 x 截距 <code>(a, 0)</code>，也可写成 <code>y = m(x − a)</code>。')
+  + p('源文件例子：求过 <code>P₁(−2, 6)</code> 与 <code>P₂(4, −2)</code> 的直线。<code>m = (−2−6)/(4+2) = −8/6 = −4/3</code>；取 <code>P₁</code> 代入点斜式：<code>y − 6 = −(4/3)(x + 2)</code>，即 <code>y = −(4/3)x + 10/3</code>；两边乘 3 得一般式 <b><code>4x + 3y = 10</code></b>。')
+  + h3('1.9 二次方程的图形：圆、抛物线、椭圆、双曲线')
+  + p('二元二次方程的一般形式是 <code>Ax² + Bxy + Cy² + Dx + Ey + F = 0</code>（A、B、C 不全为零），其图形统称圆锥曲线（conic section）。本课程只需要掌握<b>对称轴平行于坐标轴</b>的情形，此时 <code>B = 0</code>，由 A、C 的符号就能判断类型：')
+  + tb(('条件', '图形', '标准方程'),
+       ('<code>A = C ≠ 0</code>', '圆 circle', '<code>(x−h)² + (y−k)² = r²</code>'),
+       ('<code>AC &gt; 0</code>，A ≠ C', '椭圆 ellipse', '<code>(x−h)²/a² + (y−k)²/b² = 1</code>'),
+       ('<code>AC &lt; 0</code>', '双曲线 hyperbola', '<code>(x−h)²/a² − (y−k)²/b² = 1</code>'),
+       ('A 或 C 之一为 0', '抛物线 parabola', '<code>y = ax² + bx + c</code> 或 <code>x = ay² + by + c</code>'))
+  + p('<b>圆与圆盘。</b>圆心 <code>C(h, k)</code>、半径 <code>r &gt; 0</code> 的圆是到 C 距离恰为 r 的点集：<code>(x−h)² + (y−k)² = r²</code>；展开后是 <code>x² + y² + ax + by = c</code> 的形状。把「= r²」换成「≤ r²」得到闭圆盘（closed disk），换成「&lt; r²」得到开圆盘（open disk）。')
+  + p('<b>抛物线。</b>抛物线是到定点（焦点 focus F）与定直线（准线 directrix L）距离相等的点集。若焦点 <code>F(0, p)</code>、准线 <code>y = −p</code>，由 <code>√(x² + (y−p)²) = |y + p|</code> 两边平方化简得 <b><code>x² = 4py</code></b>，即 <code>y = x²/(4p)</code>；<code>p &gt; 0</code> 开口向上，<code>p &lt; 0</code> 开口向下。一般抛物线写为 <code>y = ax² + bx + c</code>。')
+  + p('<b>椭圆。</b>椭圆是到两个焦点 <code>F₁, F₂</code> 距离之<b>和</b>为常数的点集；半长轴 a、半短轴 b（<code>a ≥ b &gt; 0</code>）时，中心到焦点的距离 <code>c = √(a² − b²)</code>，这个常数和等于 <code>2a</code>。以原点为中心、焦点 <code>(±c, 0)</code> 时，条件写作 <code>√((x+c)² + y²) + √((x−c)² + y²) = 2a</code>；移项、两边平方两次，可化简为标准方程 <b><code>x²/a² + y²/b² = 1</code></b>。')
+  + p('<b>双曲线。</b>双曲线是到两焦点距离之<b>差的绝对值</b>为常数的点集；半实轴 a、半虚轴 b 时 <code>c = √(a² + b²)</code>，常数差为 <code>2a</code>。标准方程 <b><code>x²/a² − y²/b² = 1</code></b>，两条渐近线（asymptote，曲线无限接近但不相交的直线）为 <code>y = ±(b/a)x</code>。')
+  + cal('warn', '椭圆与双曲线的 c 公式不要混', '椭圆 <code>c² = a² − b²</code>（a 最大）；双曲线 <code>c² = a² + b²</code>（c 最大）。记法：椭圆「加起来等于 2a」，双曲线「差等于 2a」，而 c 永远是到焦点的距离，双曲线中 c 比 a 长。')
+  + h3('1.10 函数、定义域与值域')
+  + p('从集合 X 到集合 Y 的函数（function）f 是一条规则：对 X 中每个输入 x，指定<b>唯一</b>的输出 <code>y ∈ Y</code>。X 叫定义域（domain），Y 中实际被取到的全体叫值域（range）。写作 <code>y = f(x)</code>，读作 f of x；x 是自变量（independent variable），y 是因变量（dependent variable）。有时同一个字母既作因变量又作函数名，如 <code>y = y(x)</code>。')
+  + p('三条判断标准：')
+  + ul('「唯一输出」：一个 x 对应两个 y 就不是函数（例如 <code>x = y²</code> 整体不是函数）',
+       '垂直线检验（vertical line test）：图形是函数，当且仅当每条竖直线与图形至多交于一点',
+       '一一对应（one-to-one）：<code>x₁ ≠ x₂ ⟹ f(x₁) ≠ f(x₂)</code>；等价于水平线检验（horizontal line test），即每条水平线至多交于一点')
+  + p('一一对应是后面「反函数」存在的前提（Topic 5 会用），而一一对应的图形判据正是水平线检验。')
+  + h3('1.11 奇函数与偶函数')
+  + p('设 f 的定义域关于原点对称。<b>偶函数</b>（even function）：<code>f(−x) = f(x)</code>，图形关于 <b>y 轴</b>对称，例如 <code>x²</code>、<code>|x|</code>。<b>奇函数</b>（odd function）：<code>f(−x) = −f(x)</code>，图形关于<b>原点</b>对称，例如 <code>x</code>、<code>x³</code>。')
+  + p('这两个性质在后面反复用：定积分中奇函数在对称区间上积分为 0、偶函数可以折半（第 6 讲），泰勒型展开中奇偶性决定只出现奇次或偶次项（本课不展开），而三角函数的奇偶性决定了 reduction formula 的符号。绝大多数函数既不是奇函数也不是偶函数，例如 <code>x² + x</code>。')
+  + h3('1.12 函数的四则运算与复合函数')
+  + p('设 f、g 是函数，c 是常数，则 <code>(cf)(x) = cf(x)</code>、<code>(f ± g)(x) = f(x) ± g(x)</code>、<code>(fg)(x) = f(x)g(x)</code>、<code>(f/g)(x) = f(x)/g(x)</code>（要求 <code>g(x) ≠ 0</code>）。这些运算的定义域是两者定义域的<b>交集</b>，除法还要再挖掉分母为零的点。')
+  + p('复合函数（composite function）：若 <code>g</code> 的值域落在 <code>f</code> 的定义域内，则 <code>(f ∘ g)(x) = f(g(x))</code>。其定义域由<b>两个条件同时成立</b>决定：① x 在 g 的定义域内；② <code>g(x)</code> 在 f 的定义域内。')
+  + p('源文件例子：<code>f(x) = 1/x</code>（<code>x ≠ 0</code>），<code>g(x) = √x</code>（<code>x ≥ 0</code>），则 <code>(f ∘ g)(x) = 1/√x</code>，定义域是 <code>x &gt; 0</code>——因为 <code>x = 0</code> 虽然属于 g 的定义域，但 <code>g(0) = 0</code> 不属于 f 的定义域。')
+  + cal('warn', '复合不可交换', '一般 <code>f ∘ g ≠ g ∘ f</code>。例如上面的例子里 <code>(g ∘ f)(x) = √(1/x)</code>，定义域是 <code>x &gt; 0</code>，但表达式与 <code>1/√x</code> 不同。求复合函数一律「先内后外」，定义域也按「先内后外」逐层筛。')
+  + h3('1.13 分段函数与三个标准例子')
+  + p('分段函数（piecewise function）在定义域的不同子集上用不同公式，各子集互不相交、并起来正好是整个定义域：')
+  + p('<code>f(x) = f₁(x)</code>（<code>x ∈ D₁</code>），<code>f(x) = f₂(x)</code>（<code>x ∈ D₂</code>），……')
+  + p('本课后面反复出现的三个例子：')
+  + ul('<b>绝对值函数</b> <code>|x| = x</code>（<code>x ≥ 0</code>）、<code>|x| = −x</code>（<code>x &lt; 0</code>）：连续但 <code>x = 0</code> 处不可导',
+       '<b>符号函数</b> <code>sgn(x) = 1</code>（<code>x &gt; 0</code>）、<code>0</code>（<code>x = 0</code>）、<code>−1</code>（<code>x &lt; 0</code>）：定义域 ℝ，值域 <code>{−1, 0, 1}</code>，关于原点对称（奇函数），<code>x = 0</code> 处跳跃间断',
+       '<b>Heaviside 阶跃函数</b> <code>H(x) = 1</code>（<code>x ≥ 0</code>）、<code>0</code>（<code>x &lt; 0</code>）：若 t 表示时间，它模拟「在 t = 0 时刻被打开的开关」，在 0 处右连续但左不连续')
+  + h3('1.14 多项式函数')
+  + p('多项式函数：<code>f(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + ⋯ + a₂x² + a₁x + a₀</code>，其中 <code>n ≥ 0</code> 是整数，<code>a₀, …, aₙ</code> 是系数（coefficient），<code>aₙ ≠ 0</code>；n 叫次数（degree），记 <code>deg f = n</code>。例如 <code>deg(x²−2x+8) = 2</code>、<code>deg(8x⁵) = 5</code>、<code>deg 3 = 0</code>。')
+  + p('次数的两条运算法则：<code>deg(f ± g) ≤ max(deg f, deg g)</code>（可能因为首项相消而降低）；<code>deg(fg) = deg f + deg g</code>（首项相乘不会消掉）。')
+  + tb(('次数', '名称', '例子'),
+       ('0', '常数多项式 constant', '<code>3</code>'),
+       ('1', '一次（线性）多项式 linear', '<code>3x − 1</code>'),
+       ('2', '二次多项式 quadratic', '<code>x² − 2x + 8</code>'),
+       ('3', '三次多项式 cubic', '<code>2x³ − 3x² + 4</code>'),
+       ('4', '四次多项式 quartic', '<code>x⁴ − 1</code>'))
+  + h3('1.15 有理函数与除法算法')
+  + p('有理函数（rational function）是两个多项式的商 <code>f(x) = P(x)/Q(x)</code>（<code>Q(x) ≠ 0</code>），定义域是 ℝ 去掉使 <code>Q(x) = 0</code> 的点。例如 <code>1/x²</code> 的定义域是 <code>ℝ∖{0}</code>，<code>(x+2)/(x²−4)</code> 的定义域是 <code>ℝ∖{−2, 2}</code>——注意分子分母有公因子 <code>x+2</code> 时，<b>定义域仍要挖掉</b>该点，因为原式在该点无定义（这是「可去间断」的来源，第 2 讲会讲）。')
+  + p('除法算法（division algorithm）：若 <code>deg P ≥ deg Q</code> 且 <code>Q ≠ 0</code>，则存在唯一的多项式 S（商）与 R（余式）使 <b><code>P(x)/Q(x) = S(x) + R(x)/Q(x)</code></b>，其中 <code>deg R &lt; deg Q</code> 或 <code>R = 0</code>。等价地 <code>P = QS + R</code>。')
+  + p('源文件例子：把 <code>(2x³ − 3x² + 3x + 4)/(x² + 1)</code> 写成商加余式。长除法得商 <code>2x − 3</code>、余式 <code>x + 7</code>，于是')
+  + p('<code>(2x³ − 3x² + 3x + 4)/(x² + 1) = 2x − 3 + (x + 7)/(x² + 1)</code>。')
+  + p('源文件还给了「短除法」：给分子凑上低次项后提公因子，再减回去保持等式不变：')
+  + p('<code>2x³ − 3x² + 3x + 4 = (2x³ + 2x) − 3x² − 3 + (x + 7) = 2x(x²+1) − 3(x²+1) + (x+7)</code>，两步就看出商与余式。验算方法：把结果乘回去，必须还原成原分子。')
+  + h3('1.16 多项式的根、零点与因式分解')
+  + p('使 <code>P(r) = 0</code> 的数 r 叫多项式的根（root）或零点（zero）。例如 <code>x² − 4</code> 的根是 <code>±2</code>；<code>x³ − 3x² + 3x − 1 = (x−1)³</code> 有<b>三重根</b> <code>r = 1</code>，称其重数（multiplicity）为 3。')
+  + p('<b>因式定理</b>（Factor Theorem）：<code>(x − r)</code> 是 <code>P(x)</code> 的因式，当且仅当 <code>P(r) = 0</code>；此时 <code>P(x) = (x − r)Q(x)</code>，且 <code>deg Q = deg P − 1</code>。')
+  + p('<b>求根公式</b>：<code>ax² + bx + c = 0</code>（<code>a ≠ 0</code>）的根为 <code>x = (−b ± √(b² − 4ac))/(2a)</code>；判别式 <code>Δ = b² − 4ac</code> 决定根的性质：<code>Δ &gt; 0</code> 两个不同实根；<code>Δ = 0</code> 一个二重实根；<code>Δ &lt; 0</code> 一对共轭复根（在实数范围内不可分解）。')
+  + p('源文件三个例子：(a) <code>x² − 5x + 6</code>，<code>Δ = 1 &gt; 0</code>，根为 2 与 3，故 <code>= (x−2)(x−3)</code>；(b) <code>9x² − 6x + 1</code>，<code>Δ = 0</code>，根为 <code>1/3</code>，故 <code>= 9(x − 1/3)² = (3x−1)²</code>；(c) <code>x² + 2x + 5</code>，<code>Δ = −16 &lt; 0</code>，无实根，不能分解成实线性因式。')
+  + p('常用分解技巧（必须熟练，后面拆部分分式全靠它）：')
+  + ul('提公因子：<code>ax² + ax = a(x² + x)</code>',
+       '平方差：<code>a² − b² = (a−b)(a+b)</code>',
+       '立方差：<code>a³ − b³ = (a−b)(a² + ab + b²)</code>',
+       '立方和：<code>a³ + b³ = (a+b)(a² − ab + b²)</code>',
+       '分组分解：<code>x³ − x² − 4x + 4 = x²(x−1) − 4(x−1) = (x−1)(x−2)(x+2)</code>')
+  + p('源文件例子：(a) <code>x³ + 1 = (x+1)(x² − x + 1)</code>，其中 <code>x² − x + 1</code> 的判别式为 <code>−3 &lt; 0</code>，不可再分；(b) <code>x⁴ − 1 = (x²−1)(x²+1) = (x−1)(x+1)(x²+1)</code>，其中 <code>x² + 1</code> 判别式为 <code>−4 &lt; 0</code>。')
+  + h3('1.17 三角函数：单位圆定义与基本恒等式')
+  + p('在单位圆 <code>x² + y² = 1</code> 上取起点 <code>A(1, 0)</code>。对任意实数 t，从 A 沿圆走过有向弧长 t（逆时针为正）到达点 <code>Pₜ</code>，则定义 <b><code>cos t = Pₜ 的 x 坐标</code></b>，<b><code>sin t = Pₜ 的 y 坐标</code></b>。这样 sin、cos 的定义域是全体实数，值域是 <code>[−1, 1]</code>。')
+  + p('弧度制（radian）：一整圈对应 <code>2π</code> 弧度也就是 <code>360°</code>，所以 <code>1° = π/180</code> 弧度，<code>1 弧度 = 180/π ≈ 57.3°</code>。微积分里所有公式（尤其 <code>(sin x)′ = cos x</code>）都只在弧度制下成立，因此本课一律用弧度。')
+  + tb(('角度', '0°', '30°', '45°', '60°', '90°'),
+       ('弧度', '<code>0</code>', '<code>π/6</code>', '<code>π/4</code>', '<code>π/3</code>', '<code>π/2</code>'),
+       ('cos', '<code>1</code>', '<code>√3/2</code>', '<code>√2/2</code>', '<code>1/2</code>', '<code>0</code>'),
+       ('sin', '<code>0</code>', '<code>1/2</code>', '<code>√2/2</code>', '<code>√3/2</code>', '<code>1</code>'))
+  + p('四个基本性质：<b>平方关系</b> <code>cos²t + sin²t = 1</code>（由单位圆方程直接得到），并由此得 <code>1 + tan²t = sec²t</code>、<code>1 + cot²t = csc²t</code>；<b>周期性</b> <code>cos(t + 2π) = cos t</code>、<code>sin(t + 2π) = sin t</code>；<b>奇偶性</b> cos 是偶函数、sin 是奇函数；<b>诱导公式</b>（reduction formula）：')
+  + p('<code>cos(π/2 − t) = sin t</code>，<code>sin(π/2 − t) = cos t</code>，<code>cos(π − t) = −cos t</code>，<code>sin(π − t) = sin t</code>。')
+  + p('源文件例子：(a) <code>sin(7π/6) = sin(π + π/6) = −sin(π/6) = −1/2</code>；(b) 若 <code>cos t = 3/5</code> 且 t 在第一象限，则 <code>sin²t = 1 − 9/25 = 16/25</code>，因第一象限 sin 为正，取 <code>sin t = 4/5</code>。')
+  + cal('warn', '开方取符号必须看象限', '由 <code>sin²t = 16/25</code> 得到 <code>sin t = ±4/5</code>，符号由 t 所在象限（或题目给出的范围）决定。少写一句「第一象限故取正」就丢分。')),
+ kws=K(('real number', '实数', 'A number with a terminating or non-terminating decimal expansion.'),
+       ('real line', '实轴', 'Every point on the line corresponds to exactly one real number; there are no holes.'),
+       ('rational number', '有理数', 'A quotient p/q of integers; its decimal expansion terminates or repeats.'),
+       ('interval', '区间', 'A subset of ℝ written with brackets; open endpoints use parentheses.'),
+       ('absolute value', '绝对值', '|x| is the distance from x to 0; |x − y| is the distance between x and y.'),
+       ('triangle inequality', '三角不等式', '|x ± y| ≤ |x| + |y|, proved by squaring both sides.'),
+       ('Cartesian coordinate system', '直角坐标系', 'Two perpendicular axes meeting at the origin; points are ordered pairs (x, y).'),
+       ('quadrant', '象限', 'The four regions I–IV cut out by the coordinate axes.'),
+       ('increment', '增量', 'The net change Δx = x₂ − x₁ and Δy = y₂ − y₁.'),
+       ('slope', '斜率', 'm = rise/run = Δy/Δx; undefined for a vertical line.'),
+       ('point-slope form', '点斜式', 'y − y₁ = m(x − x₁) for a non-vertical line through (x₁, y₁).'),
+       ('conic section', '圆锥曲线', 'Circle, parabola, ellipse and hyperbola, given by quadratic equations in x and y.'),
+       ('domain / range', '定义域 / 值域', 'The set of admissible inputs / the set of attained outputs.'),
+       ('one-to-one function', '一一对应函数', 'f(x₁) ≠ f(x₂) whenever x₁ ≠ x₂; checked by the horizontal line test.'),
+       ('composite function', '复合函数', '(f ∘ g)(x) = f(g(x)); its domain requires both x ∈ dom g and g(x) ∈ dom f.'),
+       ('division algorithm', '除法算法', 'P/Q = S + R/Q with deg R < deg Q, obtained by long division.')),
+ examples=(qa('例 1（源文件 p8）　证明 2.09̄ = 2.0909… 是有理数，并化成分数。',
+    p('设 <code>x = 2.0909…</code>。循环节是 <code>09</code>，长度 2，故两边乘 <code>10² = 100</code>：<code>100x = 209.0909…</code>。')
+    + p('两式相减，无限循环部分抵消：<code>100x − x = 209.0909… − 2.0909…</code>，即 <code>99x = 207</code>。')
+    + p('所以 <code>x = 207/99 = 23/11</code>（分子分母同除以 9）。因为可以写成两整数之比，所以它是有理数。')
+    + p('<b>方法迁移：</b>循环节长 k 就乘 <code>10^k</code>；若小数点后有不循环的「前导部分」，先乘 <code>10^m</code> 把前导部分移到整数位，再乘 <code>10^k</code>，两次相减后解方程。'))
+   + qa('例 2（源文件 p15–16）　解不等式 |3x − 6| ≤ 3。',
+    p('先提公因子：<code>|3x − 6| = |3(x − 2)| = 3|x − 2|</code>，不等式化为 <code>3|x − 2| ≤ 3</code>，即 <code>|x − 2| ≤ 1</code>。')
+    + p('几何读法：x 到 2 的距离不超过 1，故 <code>2 − 1 ≤ x ≤ 2 + 1</code>，即 <code>1 ≤ x ≤ 3</code>，写成区间 <code>[1, 3]</code>。')
+    + p('代数验算：由 <code>|x| ≤ a ⟺ −a ≤ x ≤ a</code>，得 <code>−1 ≤ x − 2 ≤ 1</code>，三边加 2 同样得 <code>1 ≤ x ≤ 3</code>。端点处 <code>|3−6| = 3</code>、<code>|9−6| = 3</code> 都取等号，所以是闭区间。'))
+   + qa('例 3（源文件 p22、p28）　已知 P₁(−2, 6)、P₂(4, −2)，求线段长度、中点与所在直线方程。',
+    p('距离：<code>Δx = 4 − (−2) = 6</code>，<code>Δy = −2 − 6 = −8</code>，<code>D = √(6² + (−8)²) = √100 = 10</code>。')
+    + p('中点：<code>x = (−2 + 4)/2 = 1</code>，<code>y = (6 − 2)/2 = 2</code>，即 <code>M(1, 2)</code>。')
+    + p('斜率：<code>m = (y₂ − y₁)/(x₂ − x₁) = (−8)/6 = −4/3</code>。取 <code>P₁</code> 写点斜式：<code>y − 6 = −(4/3)(x + 2)</code>，展开得 <code>y = −(4/3)x + 10/3</code>。')
+    + p('化为一般式：两边乘 3 得 <code>3y = −4x + 10</code>，即 <b><code>4x + 3y = 10</code></b>。验算：代 <code>P₂(4, −2)</code> 得 <code>16 − 6 = 10</code>，成立。')
+    + p('这条直线与坐标轴围成的三角形面积：x 截距 <code>10/4 = 2.5</code>、y 截距 <code>10/3</code>，面积 <code>(1/2)(5/2)(10/3) = 25/6</code>。'))
+   + qa('例 4（源文件 p39）　求 sin(7π/6) 的值；已知 cos t = 3/5 且 t 在第一象限，求 sin t。',
+    p('(a) <code>7π/6 = π + π/6</code>，用诱导公式 <code>sin(π + u) = −sin u</code>（可由 <code>sin(π − t) = sin t</code> 与奇函数性质推出）：<code>sin(7π/6) = −sin(π/6) = −1/2</code>。')
+    + p('(b) 由平方关系 <code>sin²t = 1 − cos²t = 1 − (3/5)² = 16/25</code>。开方得 <code>sin t = ±4/5</code>；t 在第一象限，sin 为正，故 <b><code>sin t = 4/5</code></b>。')
+    + p('<b>通用思路：</b>先判断角落在哪个「参考角」上（把 t 化成 <code>π/2 ± u</code>、<code>π ± u</code>、<code>2π − u</code> 的形式）→ 用诱导公式把函数名与符号分离 → 再查特殊角表。'))),
+ practice=(ol('把 <code>0.4̄5̄ = 0.4545…</code> 化成最简分数。',
+          '解不等式 <code>|x − 1| ≥ 2</code>，用区间表示解集。',
+          '求 <code>f(x) = √(4 − x²) + 1/(x − 1)</code> 的定义域。',
+          '判断 <code>g(x) = (x² − 1)/(x − 1)</code> 与 <code>h(x) = |x|</code> 的奇偶性（注意 g 的定义域）。',
+          '求圆 <code>x² + y² − 4x + 6y − 3 = 0</code> 的圆心与半径。',
+          '把 <code>x³ − 2x² + x − 3</code> 除以 <code>x − 2</code>，写出商与余式；再把 <code>x³ + 1</code> 在实数范围内分解到不可再分。')
+  + det('答案与思路',
+    p('<b>1.</b> 设 <code>x = 0.4545…</code>，乘 100 得 <code>100x = 45.4545…</code>，相减 <code>99x = 45</code>，故 <code>x = 45/99 = 5/11</code>。')
+    + p('<b>2.</b> <code>|x − 1| ≥ 2</code> 表示「到 1 的距离至少为 2」，故 <code>x ≤ −1</code> 或 <code>x ≥ 3</code>，即 <code>(−∞, −1] ∪ [3, ∞)</code>。注意 <code>≥</code> 对应「外侧」，与 <code>≤</code> 的「内侧区间」相反。')
+    + p('<b>3.</b> 两个条件：根号内 <code>4 − x² ≥ 0 ⟹ −2 ≤ x ≤ 2</code>；分母 <code>x ≠ 1</code>。取交集得 <code>[−2, 1) ∪ (1, 2]</code>。')
+    + p('<b>4.</b> <code>g</code> 的定义域是 <code>x ≠ 1</code>，不关于原点对称，因此既非奇也非偶（虽然化简后 <code>g(x) = x + 1</code>）。<code>h(−x) = |−x| = |x| = h(x)</code>，是偶函数。这道题说明：<b>判奇偶必须先看定义域是否对称</b>。')
+    + p('<b>5.</b> 配方：<code>(x² − 4x + 4) + (y² + 6y + 9) = 3 + 4 + 9</code>，即 <code>(x−2)² + (y+3)² = 16</code>。圆心 <code>(2, −3)</code>，半径 <code>r = 4</code>。')
+    + p('<b>6.</b> 长除法（或综合除法）：<code>x³ − 2x² + x − 3 = (x − 2)(x² + 1) + (−1)</code>，商 <code>x² + 1</code>，余式 <code>−1</code>。分解：<code>x³ + 1 = (x+1)(x² − x + 1)</code>，第二个因式判别式 <code>−3 &lt; 0</code>，到此为止。'))),
+ exam=(cal('exam', '必考', '①把循环小数化成分数；②含绝对值的不等式解集写成区间；③两点式直线方程与一般式互化；④圆的标准方程与一般方程互化（配方求圆心半径）；⑤复合函数定义域（两个条件取交集）；⑥三角函数特殊值与诱导公式。这六类是每次小测与期末的固定开胃菜。')
+  + cal('warn', '易错 1', '<b>区间端点开闭写错</b>。<code>&lt;</code> 用圆括号、<code>≤</code> 用方括号；无穷一侧永远圆括号。写成 <code>[1, 3)</code> 而正确答案是 <code>[1, 3]</code>，整题判错。')
+  + cal('warn', '易错 2', '<b>化简后忘记原定义域</b>。<code>(x²−1)/(x−1) = x+1</code> 只在 <code>x ≠ 1</code> 时成立；这个「洞」是后续可去间断与极限讨论的关键，不能因为化简就把定义域改掉。')
+  + cal('warn', '易错 3', '<b>椭圆/双曲线参数关系记混</b>：椭圆 <code>c² = a² − b²</code>，双曲线 <code>c² = a² + b²</code>，且双曲线渐近线是 <code>y = ±(b/a)x</code> 而不是 <code>±(a/b)x</code>（a 在 x 项下面）。')
+  + cal('tip', '进阶', '把「距离 + 中点 + 斜率 + 直线方程」当成一个整体工具链练熟：考试中求切线、法线、三角形面积、垂直平分线都从这条链出发，熟练后一步到位。')),
+ checklist=(h2('方法与清单')
+  + h3('解含绝对值的不等式（四步）')
+  + st('把绝对值内部整理成 <code>x − c</code> 的形式（提公因子），读出「到 c 的距离」',
+       '判断是「内侧」（<code>≤</code>, <code>&lt;</code>）还是「外侧」（<code>≥</code>, <code>&gt;</code>）',
+       '内侧写成 <code>[c−a, c+a]</code> 型区间；外侧写成两段射线的并集',
+       '检查端点是否取到，回代验证一个端点值')
+  + h3('求复合函数 <code>f ∘ g</code> 的定义域（三步）')
+  + st('写出 x 必须属于 dom g 的条件',
+       '写出 <code>g(x)</code> 必须属于 dom f 的条件（这是最易漏的一步）',
+       '两个条件取交集，并检查是否有分母为零、根号内为负的附加限制')
+  + h3('求直线方程（四步）')
+  + st('先看是否竖直：两点 x 坐标相同则直接写 <code>x = a</code>',
+       '否则算斜率 <code>m = (y₂−y₁)/(x₂−x₁)</code>',
+       '任取一点写点斜式 <code>y − y₁ = m(x − x₁)</code>',
+       '按题目要求整理成斜截式或一般式，并回代另一点验算')
+  + h3('圆锥曲线判别（三步）')
+  + st('把方程整理成 <code>Ax² + Cy² + Dx + Ey + F = 0</code>（先确认没有 xy 项）',
+       '看 A、C：相等且非零是圆；同号不等是椭圆；异号是双曲线；有一个为零是抛物线',
+       '对 x、y 分别配方，读出中心（或顶点）、半径 / 半轴，双曲线再写渐近线')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('General/General Course Information.html', 'p1', '课程代码、教学安排、考试与计算器规则、公式表、参考书'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p1–p4', '课程内容概览；微积分的两个现实原型（电池充电、里程表）'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p5–p8', '实数、实轴、不等式规则、ℕ/ℤ/ℚ/无理数、循环小数化分数'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p9–p11', '有限区间与无穷区间的记号'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p12–p15', '绝对值定义、性质、三角不等式证明、含绝对值方程与不等式'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p16–p22', '直角坐标系、象限、增量、距离公式、中点公式与例题'),
+    ('Topic 1/EMI_Week1_Lecture1.pdf', 'p23–p29', '斜率与相似三角形、平行垂直条件、四种直线方程、过两点求直线'),
+    ('Topic 1/EMI_Week1_Lecture2.pdf', 'p1–p8', '圆与圆盘、抛物线（焦点准线）、椭圆、双曲线（渐近线）'),
+    ('Topic 1/EMI_Week1_Lecture2.pdf', 'p9–p12', '函数定义、定义域值域、垂直线检验、一一对应与水平线检验'),
+    ('Topic 1/EMI_Week1_Lecture2.pdf', 'p13–p19', '奇偶函数、四则运算、复合函数及其定义域、分段函数'),
+    ('Topic 1/EMI_Week1_Lecture2.pdf', 'p20–p32', 'sgn 与 Heaviside 函数、多项式与次数、有理函数、除法算法、因式定理、求根公式与分解'),
+    ('Topic 1/EMI_Week1_Lecture2.pdf', 'p33–p40', '单位圆定义、弧度制、特殊角、周期性与奇偶性、诱导公式'),
+    ('（跳过）Topic 1–7/*.html 与 _info/*.html', '—', '均为 Moodle 登录页快照，除 General Course Information 外无可读正文'),
+    ('（拓展）', '—', '椭圆与双曲线标准方程的平方化简过程、A/C 符号判别表、循环小数的一般化方法为衔接性补充'))
+)
+
+# ============================================================ 讲 2
+lec(
+ slug='t2-limits-continuity',
+ tzh='第 1 章 · 极限与连续性',
+ ten='Limits of Functions and Continuity',
+ keywords=['limit', 'epsilon-delta definition', 'one-sided limit', 'limit rules',
+           'squeeze theorem', 'limit at infinity', 'horizontal asymptote',
+           'vertical asymptote', 'continuity', 'removable discontinuity',
+           'intermediate value theorem'],
+ files=['Topic 2/EMI_Week2_Lecture1.pdf', 'Topic 2/EMI_Week2_Lecture2.pdf'],
+ part=CH1,
+ overview=(h2('本节定位')
+  + p('上一讲把函数画在坐标系里，这一讲开始追问：当自变量越来越靠近某点时，函数值往哪里跑？这个「往哪里跑」就是极限（limit）。整门课的两大运算都建在它上面——微分是差商的极限，积分是和式的极限，所以极限没学透，后面所有计算都会退化成「先代入再说」的错误套路。')
+  + p('本讲按两条线推进：第一条从具体问题（自由落体的瞬时速度、圆面积的多边形逼近）引出极限的 ε-δ 定义与运算法则；第二条把「靠近一个点」扩展为「靠近无穷」与「函数值无界」，得到渐近线的完整判据，最后用极限的语言重新定义连续性，并给出闭区间上连续函数的两个存在性定理。')
+  + p('学完本节你应当能够：')
+  + ck('用 ε-δ 定义证明一个具体的一次函数极限',
+     '识别 0/0 型并通过对消、有理化把它化简后再求极限',
+     '用夹逼定理处理振荡因子（sin、cos）与无穷远问题',
+     '求有理函数在无穷远处的极限，并写出水平、竖直与斜渐近线',
+     '按三条件判断一点处的连续性，并给间断点分类',
+     '用介值定理证明方程在给定区间内有根')),
+ detail=(h3('2.1 微积分的两个基本运算都来自极限')
+  + p('微积分描述量如何变化，靠两个基本运算：<b>微分</b>（differentiation）求函数的瞬时变化率，例如即时速度；<b>积分</b>（integration）由变化率反求函数，例如由速度求位移。两者都建立在同一个概念上：<b>函数的极限</b>。极限是代数与微积分之间的桥梁。')
+  + p('两个现实原型：手机电池的电量与充电功率（功率是电量对时间的变化率，电量是功率的累积）；汽车的速度表与里程表（速度表读瞬时速度，里程表读位移累积）。这两对关系正好对应微分与积分，而第 7 讲的微积分基本定理会把它们严格地连起来。')
+  + h3('2.2 从平均速度到瞬时速度')
+  + p('实验表明，石块从静止自由下落，前 t 秒下落距离为 <code>s(t) = 4.9t²</code>（米）。在时间段 <code>[t₁, t₂]</code> 上的<b>平均速度</b>是位移增量除以时间增量：')
+  + p('<code>v̄ = Δs/Δt = (s(t₂) − s(t₁))/(t₂ − t₁)</code>。')
+  + p('(a) 前 2 秒的平均速度：<code>(s(2) − s(0))/2 = 19.6/2 = 9.8</code> m/s。(b) 从 <code>t = 1</code> 到 <code>t = 2</code>：<code>(19.6 − 4.9)/1 = 14.7</code> m/s。可见「平均」强烈依赖于所取的时间段。')
+  + p('要得到 <code>t = 1</code> 时刻的<b>瞬时速度</b>，取从 1 开始、长度 h 的时间段 <code>[1, 1+h]</code>：')
+  + p('<code>Δs/Δh = (4.9(1+h)² − 4.9·1²)/h = 9.8 + 4.9h</code>。')
+  + tb(('h', '1', '0.1', '0.01', '0.001', '0.0001'),
+       ('<code>Δs/Δh</code>', '14.7', '10.29', '9.849', '9.8049', '9.80049'))
+  + p('表格清楚地显示：h 越小，比值越靠近 9.8。于是把瞬时速度定义为平均速度当 <code>h → 0</code> 时的极限：')
+  + p('<code>v(t) = lim_{h→0} (4.9(t+h)² − 4.9t²)/h = lim_{h→0} (9.8t + 4.9h) = 9.8t</code>（m/s）。代入 <code>t = 1</code> 得 9.8 m/s，与表格一致。')
+  + cal('tip', '这一步是整门课的模板', '先写差商 → 展开化简，把分母的 h 约掉 → 再令 h → 0。注意：<b>不能一上来就把 h = 0 代入</b>，那会得到 0/0 这个没有意义的式子。约分之后才允许代入，这个顺序在第 3 讲求导数时会一字不改地重复。')
+  + h3('2.3 圆面积：多边形逼近')
+  + p('半径为 r 的圆内接正 n 边形，其周长 <code>pₙ</code> 与面积 <code>Aₙ</code> 都小于圆的周长 C 与面积 A，但随 n 增大不断逼近。圆心角 <code>∠POQ = 2π/n</code>，于是弦长 <code>PQ = 2r sin(π/n)</code>，O 到 PQ 的距离为 <code>r cos(π/n)</code>。')
+  + p('单个三角形面积 <code>= (1/2)(2r sin(π/n))(r cos(π/n)) = r² sin(π/n) cos(π/n)</code>，故')
+  + p('<code>pₙ = 2rn sin(π/n)</code>，<code>Aₙ = n r² sin(π/n) cos(π/n) = (n/2) r² sin(2π/n)</code>。')
+  + p('令 <code>n → ∞</code>，利用 <code>lim_{θ→0} sin θ/θ = 1</code> 与 <code>cos(π/n) → 1</code>：')
+  + p('<code>lim pₙ = 2πr · lim [sin(π/n)/(π/n)] = 2πr = C</code>，<code>lim Aₙ = πr² · lim [sin(2π/n)/(2π/n)] · cos(π/n) = πr² = A</code>。')
+  + p('这个例子说明：曲线围成的量可以被「越来越细的直线图形」逼近，逼近的精确含义就是极限。第 6 讲与第 7 讲把同一思想用在任意函数上，就得到定积分。')
+  + h3('2.4 极限的 ε-δ 定义')
+  + p('称函数 f 在 x 趋于 a 时以 L 为极限，记 <code>lim_{x→a} f(x) = L</code>，如果：对每个 <code>ε &gt; 0</code>，都存在 <code>δ &gt; 0</code>，使得')
+  + p('<b><code>0 &lt; |x − a| &lt; δ ⟹ |f(x) − L| &lt; ε</code></b>。')
+  + p('逐字读这句话：不管你把允许误差 ε 设得多小，我都能找到一个「挖去 a 点的小区间」，只要 x 落在这个区间里（且不等于 a），函数值就与 L 相差不到 ε。也就是说，f(x) 可以通过让 x 足够靠近 a 而<b>任意接近</b> L。')
+  + p('三个细节必须记牢：① <code>0 &lt; |x − a|</code> 表示<b>不考虑 x = a 本身</b>，所以极限是否存在与 f(a) 是否有定义、取值多少完全无关；② δ 依赖于 ε（通常写成 δ = δ(ε)），不是固定常数；③ 定义只要求「存在这样的 δ」，不要求最大的 δ。')
+  + p('源文件例 1：证明 <code>lim_{x→4} (3x − 1) = 11</code>。取 <code>f(x) = 3x − 1</code>、<code>a = 4</code>、<code>L = 11</code>。对任意 <code>ε &gt; 0</code>，需要找 δ 使 <code>0 &lt; |x − 4| &lt; δ ⟹ |3x − 12| &lt; ε</code>。而 <code>|3x − 12| = 3|x − 4|</code>，所以只要 <code>|x − 4| &lt; ε/3</code> 即可。于是取 <b><code>δ = ε/3</code></b>，条件即成立。')
+  + cal('warn', '证明的书写格式决定得分', 'ε-δ 证明必须写成「任给 ε &gt; 0，取 δ = …，则当 0 &lt; |x−a| &lt; δ 时，有 … &lt; ε」这条链。只写「显然 δ = ε/3 可以」不给分；把 δ 写成常数（如 δ = 0.1）也不给分，因为它不能对所有 ε 成立。')
+  + h3('2.5 极限与函数在该点的值无关')
+  + p('源文件例 2：考察 <code>f(x) = (x² − 1)/(x − 1)</code> 在 <code>x = 1</code> 附近的行为。f 在 <code>x = 1</code> 无定义，但对 <code>x ≠ 1</code> 有')
+  + p('<code>f(x) = (x−1)(x+1)/(x−1) = x + 1</code>，故 <code>lim_{x→1} f(x) = lim_{x→1}(x+1) = 2</code>。')
+  + p('虽然 <code>f(1)</code> 不存在，极限却存在，并且等于 2。这个「洞」正是第 2.16 节「可去间断」的原型：只要补充定义 <code>f(1) = 2</code>，函数就在 1 处连续了。')
+  + h3('2.6 单侧极限与双侧极限的存在性')
+  + p('<b>左极限</b>：<code>lim_{x→a⁻} f(x)</code>，只考虑 <code>x &lt; a</code>；<b>右极限</b>：<code>lim_{x→a⁺} f(x)</code>，只考虑 <code>x &gt; a</code>。核心结论：')
+  + p('<b><code>lim_{x→a} f(x) = L ⟺ lim_{x→a⁻} f(x) = lim_{x→a⁺} f(x) = L</code></b>。')
+  + p('源文件例子：<code>sgn(x)</code> 在 0 处，左极限 <code>−1</code>、右极限 <code>1</code>，两者不等，所以 <code>lim_{x→0} sgn(x)</code> 不存在。同理 <code>|x|/x</code> 在 0 处左右极限分别为 <code>−1</code> 与 <code>1</code>，极限不存在。')
+  + cal('tip', '什么时候必须分左右', '出现以下三种情形时先算单侧：① 分段函数在分段点；② 含 <code>|·|</code> 的表达式在零点；③ 含 <code>√(x − a)</code> 或 <code>ln(x − a)</code> 的表达式在端点（一侧根本没定义）。')
+  + h3('2.7 极限运算法则')
+  + p('设 <code>lim_{x→a} f(x) = A</code>、<code>lim_{x→a} g(x) = B</code>，c 为常数，则：')
+  + ul('和差：<code>lim (f ± g) = A ± B</code>',
+       '乘积：<code>lim (fg) = AB</code>',
+       '常数倍：<code>lim (cf) = cA</code>',
+       '商：<code>lim (f/g) = A/B</code>，要求 <code>B ≠ 0</code>',
+       '幂：<code>lim f(x)^{m/n} = A^{m/n}</code>，要求 n 为偶数时 <code>A &gt; 0</code>，且 <code>m/n &lt; 0</code> 时 <code>A ≠ 0</code>')
+  + p('这些法则对左极限、右极限同样成立。和法则的证明只需把定义套一遍：把 <code>|(f+g) − (A+B)|</code> 拆成 <code>|f−A| + |g−B|</code>，再用三角不等式，取两个 ε/2 对应的 δ 的较小者。')
+  + cal('warn', '法则的前提不能省', '商的法则要求分母极限非零；<code>B = 0</code> 时法则失效，必须回到 0/0 型的化简流程。幂法则在「偶次根 + 负底数」时会失效，例如 <code>lim_{x→0} √(x²)</code> 不能直接套用 <code>√(A)</code> 的形式，要小心符号。')
+  + h3('2.8 多项式与有理函数的极限')
+  + p('多项式在任意实数处都可以「直接代入」：<code>lim_{x→a} P(x) = P(a)</code>。例如 <code>lim_{x→3}(2x² − 5x + 1) = 2·9 − 5·3 + 1 = 4</code>——源文件此处把结果印成 10，按公式复算应为 4，属课件笔误。')
+  + p('有理函数在分母不为零处也直接代入：<code>lim_{x→a} P(x)/Q(x) = P(a)/Q(a)</code>（<code>Q(a) ≠ 0</code>）。唯一例外是 <code>P(a) = Q(a) = 0</code>，此时必须先化简表达式再取极限。')
+  + p('<b>0/0 型的两条化简路径。</b>① 因式分解后约去公因子；② 含根号时分子分母同乘共轭因式。源文件两个例子：')
+  + p('<code>lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)</code>：两者在 −2 处都为 0。<code>x²+x−2 = (x+2)(x−1)</code>，<code>x²+5x+6 = (x+2)(x+3)</code>，约去 <code>x+2</code> 后得 <code>lim (x−1)/(x+3) = (−3)/1 = −3</code>。')
+  + p('<code>lim_{x→4} (√x − 2)/(x² − 16)</code>：同乘共轭 <code>(√x + 2)</code>，分子变成 <code>x − 4</code>，与分母的 <code>x − 4</code> 约去，得 <code>lim 1/((x+4)(√x+2)) = 1/(8·4) = 1/32</code>。')
+  + cal('warn', '0/0 是「未定式」不是「答案」', '算出 0/0 说明这条路径暂时失效，要继续变形；算出 <code>k/0</code>（k ≠ 0）才是「不存在（趋于 ±∞）」。把 0/0 直接当作 0 或 1 是最常见的失分。')
+  + h3('2.9 夹逼定理')
+  + p('若在 a 的某个去心邻域内 <code>g(x) ≤ f(x) ≤ h(x)</code>，且 <code>lim_{x→a} g(x) = lim_{x→a} h(x) = L</code>，则 <code>lim_{x→a} f(x) = L</code>。直观上：f 被两条都往 L 收拢的曲线夹住，只能跟着去 L。')
+  + p('源文件例 3：<code>f(x) = sin x / x</code>（<code>x ≠ 0</code>），求 <code>lim_{x→∞} f(x)</code>。因为 <code>−1 ≤ sin x ≤ 1</code>，当 <code>x &gt; 0</code> 时三边除以 x 得 <code>−1/x ≤ sin x/x ≤ 1/x</code>；两端极限都是 0，故 <b><code>lim_{x→∞} sin x/x = 0</code></b>。')
+  + p('源文件例：<code>f(x) = x² sin(1/x)</code>（<code>x ≠ 0</code>）。因为 <code>−1 ≤ sin(1/x) ≤ 1</code>，两边乘 <code>x² ≥ 0</code> 得 <code>−x² ≤ x² sin(1/x) ≤ x²</code>；两端都趋于 0，故 <b><code>lim_{x→0} x² sin(1/x) = 0</code></b>。注意这里不能用乘积法则，因为 <code>lim sin(1/x)</code> 不存在。')
+  + cal('tip', '看到振荡就找夹逼', '只要表达式里出现有界振荡因子（<code>sin</code>、<code>cos</code> 的变体），先去估计它的界，再用「有界 × 趋于 0」夹逼。这是 <code>sin θ/θ → 1</code> 证明的技术基础（第 3 讲）。')
+  + h3('2.10 极限不存在的两种典型')
+  + ul('<b>左右极限不等</b>：<code>sgn(x)</code> 在 0 处（左 −1、右 1），<code>|x|/x</code> 在 0 处',
+       '<b>无限振荡</b>：<code>sin(1/x)</code> 在 0 处，函数值在 −1 与 1 之间来回跳，不趋向任何单个 L')
+  + p('第三种情形是「趋于无穷」，严格说来极限也不存在（因为 ∞ 不是数），但为了描述方便，我们仍写成 <code>lim = ∞</code>，下一节专门处理。')
+  + h3('2.11 无穷极限与竖直渐近线')
+  + p('若函数值可以任意大地变正（或变负），称它有<b>无穷极限</b>。<code>lim_{x→0} 1/x² = ∞</code>：从两侧靠近 0 时函数值都是正且无界增大，所以严格意义上极限不存在，但写成 ∞ 记录了「往哪个方向无界」这一信息。')
+  + p('相比之下 <code>1/x</code> 的两侧方向不同：<code>lim_{x→0⁺} 1/x = ∞</code>，<code>lim_{x→0⁻} 1/x = −∞</code>，所以 <code>lim_{x→0} 1/x</code> 既不是 ∞ 也不是 −∞，彻底不存在。')
+  + p('<b>竖直渐近线</b>：直线 <code>x = a</code> 是 <code>y = f(x)</code> 的竖直渐近线（vertical asymptote），只要下列之一成立：<code>lim_{x→a⁻} f(x) = ±∞</code> 或 <code>lim_{x→a⁺} f(x) = ±∞</code>。注意「至少一侧」即可，不要求两侧同号。')
+  + h3('2.12 无穷远处的极限与水平渐近线')
+  + p('<code>lim_{x→∞} f(x) = L</code> 表示 x 无限增大时 f(x) 任意接近 L；<code>x → −∞</code> 同理。此时直线 <code>y = L</code> 是<b>水平渐近线</b>（horizontal asymptote）。关键细节：<b>左右两侧可以有不同的水平渐近线</b>。')
+  + p('源文件例子：<code>f(x) = x/√(x² + 1)</code>。把分子分母同除以 <code>|x|</code>（注意 <code>√(x²) = |x|</code>，不是 x）：')
+  + p('当 <code>x &gt; 0</code>：<code>f(x) = 1/√(1 + 1/x²) → 1</code>；当 <code>x &lt; 0</code>：<code>f(x) = −1/√(1 + 1/x²) → −1</code>。')
+  + p('所以 <code>lim_{x→∞} f = 1</code>、<code>lim_{x→−∞} f = −1</code>，右侧水平渐近线 <code>y = 1</code>，左侧 <code>y = −1</code>。')
+  + cal('warn', '√(x²) = |x| 而不是 x', '这是无穷远问题里最高频的错误。当 <code>x → −∞</code> 时，把 <code>√(x²)</code> 写成 x 会让整个符号翻转，导致把 −1 算成 +1。正确做法是先写成 |x|，再按 x 的正负拆绝对值。')
+  + h3('2.13 有理化技巧：√(x² − x) − x')
+  + p('求 <code>lim_{x→∞} (√(x² − x) − x)</code>。直接看是 <code>∞ − ∞</code> 型，同乘共轭 <code>(√(x²−x) + x)</code>：')
+  + p('<code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除以 x（此时 x &gt; 0，<code>√(x²−x)/x = √(1 − 1/x)</code>）：')
+  + p('<code>= −1/(√(1 − 1/x) + 1) → −1/2</code>。')
+  + p('结论 <code>−1/2</code> 与源文件答案一致。这一步说明：<code>∞ − ∞</code> 型不一定发散，同乘共轭后可能得到有限值。')
+  + h3('2.14 多项式在无穷远处：最高次项主导')
+  + p('设 <code>P(x) = aₙxⁿ + ⋯ + a₀</code>（<code>aₙ ≠ 0</code>），把最高次项提出来：<code>P(x) = aₙxⁿ(1 + aₙ₋₁/(aₙx) + ⋯ + a₀/(aₙxⁿ))</code>。当 <code>x → ±∞</code> 时括号里趋于 1，所以')
+  + p('<code>lim_{x→±∞} P(x) = lim aₙxⁿ</code>，符号由 <code>aₙ</code> 与 <code>xⁿ</code> 共同决定。')
+  + p('源文件例子：<code>lim_{x→∞}(x³ − 5x² + 2) = ∞</code>，<code>lim_{x→−∞}(x³ − 5x² + 2) = −∞</code>（首项 <code>x³</code> 在负无穷处为负）；<code>lim_{x→±∞}(−3x⁴ − x³ + x) = −∞</code>（偶次首项且系数为负，两侧都是 −∞）。')
+  + h3('2.15 有理函数在无穷远处与三条渐近线判据')
+  + p('设 <code>f(x) = Pₘ(x)/Qₙ(x)</code>，分子次数 m、分母次数 n，比较两者首项系数 <code>aₘ</code>、<code>bₙ</code>：')
+  + tb(('次数关系', '极限', '渐近线'),
+       ('<code>m &lt; n</code>', '<code>lim_{x→±∞} f = 0</code>', '双侧水平渐近线 <code>y = 0</code>'),
+       ('<code>m = n</code>', '<code>lim f = aₘ/bₙ</code>', '双侧水平渐近线 <code>y = aₘ/bₙ</code>'),
+       ('<code>m &gt; n</code>', '<code>lim f = ±∞</code>', '无水平渐近线'),
+       ('<code>m = n + 1</code>', '<code>lim f = ±∞</code>', '双侧斜渐近线 <code>y = ax + b</code>'),
+       ('<code>m &gt; n + 1</code>', '<code>lim f = ±∞</code>', '无渐近线（趋于更高次曲线）'))
+  + p('斜渐近线的求法：做多项式除法 <code>P/Q = (ax + b) + R/Q</code>，其中 <code>deg R &lt; n</code>，于是 <code>f(x) − (ax + b) = R/Q → 0</code>，直线 <code>y = ax + b</code> 就是斜渐近线。')
+  + p('源文件三个例子：(a) <code>lim_{x→±∞} (2x² + x)/(3x² − 7) = 2/3</code>，水平渐近线 <code>y = 2/3</code>；(b) <code>lim_{x→±∞} (5x − 9)/(2x³ + 3) = 0</code>，水平渐近线 <code>y = 0</code>；(c) <code>lim_{x→±∞} (x³ − x²)/(x² + 1)</code>：除法得 <code>= x − 1 + (1 − x)/(x² + 1)</code>，故 <code>x → ∞</code> 时趋于 ∞、<code>x → −∞</code> 时趋于 −∞，斜渐近线 <code>y = x − 1</code>。')
+  + p('竖直渐近线：先把分子分母的<b>公因子约掉</b>，剩下的分母零点处就是竖直渐近线。例如 <code>(2x² − 7x + 3)/(x² − 9) = (2x−1)(x−3)/((x−3)(x+3)) = (2x−1)/(x+3)</code>（<code>x ≠ 3</code>），只有 <code>x = −3</code> 是竖直渐近线，<code>x = 3</code> 是「洞」；水平渐近线 <code>y = 2</code>；在 <code>x → −3⁺</code> 时分子 <code>2x−1 → −7</code>、分母 <code>→ 0⁺</code>，故极限为 <code>−∞</code>，而 <code>x → −3⁻</code> 时为 <code>+∞</code>。')
+  + h3('2.16 连续性的三条件与间断点分类')
+  + p('函数 f 在 <code>x = c</code> 处连续（continuous），当且仅当以下三条同时成立：① <code>f(c)</code> 有定义；② <code>lim_{x→c} f(x)</code> 存在；③ <code>lim_{x→c} f(x) = f(c)</code>。任一条不成立就叫在 c 处间断（discontinuous）。')
+  + p('源文件的四个图形正好对应四种失败方式：(a) f(c) 无定义；(b) 极限存在但不等于 f(c)（洞）；(c) 极限不存在（左右不等）；(d) 极限不存在且 f(c) 也无定义。')
+  + p('<b>保连续运算</b>：若 f、g 在 c 连续，则 <code>f ± g</code>、<code>fg</code>、<code>kf</code>、<code>f/g</code>（<code>g(c) ≠ 0</code>）、<code>f^{m/n}</code>（n 为偶数时要求 <code>f(c) &gt; 0</code>）都在 c 连续。')
+  + p('<b>复合的连续性</b>：若 g 在 c 连续、f 在 <code>g(c)</code> 连续，则 <code>f ∘ g</code> 在 c 连续，且 <code>lim_{x→c} f(g(x)) = f(lim_{x→c} g(x))</code>。源文件例子：<code>g(x) = x² + 1</code> 在 −1 连续，<code>f(u) = √u</code> 在 <code>g(−1) = 2</code> 连续，故 <code>√(x²+1)</code> 在 −1 连续。')
+  + p('<b>单侧连续</b>：右连续指 <code>lim_{x→c⁺} f(x) = f(c)</code>，左连续指 <code>lim_{x→c⁻} f(x) = f(c)</code>；f 在 c 连续 ⟺ 既左连续又右连续。')
+  + p('源文件例子：Heaviside 函数 <code>H(x) = 1</code>（<code>x ≥ 0</code>）、<code>0</code>（<code>x &lt; 0</code>）。<code>lim_{x→0⁺} H = 1 = H(0)</code>，故右连续；<code>lim_{x→0⁻} H = 0 ≠ H(0)</code>，故左不连续，因此 H 在 0 处不连续。')
+  + p('源文件分段例子：<code>f(x) = x²</code>（<code>x ≤ 1</code>）、<code>2x − 1</code>（<code>x &gt; 1</code>），检查 <code>x = 1</code>：左极限 <code>lim x² = 1</code>，右极限 <code>lim (2x−1) = 1</code>，且 <code>f(1) = 1</code>，三者相等，故在 1 处连续。')
+  + p('<b>间断点四分类</b>（第一类：两个单侧极限都存在；第二类：至少一侧不存在）：')
+  + tb(('类型', '特征', '典型例子'),
+       ('可去 removable', '左右极限存在且相等，但 f(c) 无定义或不等', '<code>(x²−1)/(x−1)</code> 在 <code>x = 1</code>'),
+       ('跳跃 jump', '左右极限都存在但不相等', '<code>sgn(x)</code> 在 <code>x = 0</code>'),
+       ('无穷 infinite', '至少一侧极限为 ±∞（竖直渐近线）', '<code>1/x</code> 在 <code>x = 0</code>'),
+       ('振荡 oscillating', '极限不存在且不为无穷', '<code>sin(1/x)</code> 在 <code>x = 0</code>'))
+  + h3('2.17 区间上的连续性与两个存在性定理')
+  + p('函数在区间上连续指在区间内每点连续；对闭区间 <code>[a, b]</code>，还要求在左端点<b>右连续</b>、在右端点<b>左连续</b>。例如 <code>√x</code> 在 <code>[0, ∞)</code> 连续：在 0 处 <code>lim_{x→0⁺} √x = 0 = √0</code>（右连续），在每点 <code>x₀ &gt; 0</code> 处 <code>lim √x = √x₀</code>。')
+  + p('<b>常见连续函数</b>：多项式（处处连续）；有理函数（在其定义域上连续）；有理幂 <code>x^{m/n}</code>（在定义域上）；六个三角函数（在定义域上，间断点只出现在分母为零处）；绝对值函数（处处连续）。')
+  + p('<b>最值定理</b>（Extreme Value Theorem，也叫 Max-Min Theorem）：若 f 在闭区间 <code>[a, b]</code> 上连续，则 f 在该区间上取到最大值 M 与最小值 m。三个条件缺一不可，源文件给了三个反例：')
+  + ul('开区间 <code>f(x) = x</code> 在 <code>(0, 1)</code>：连续但无最大也无最小（端点被挖掉）',
+       '不连续 <code>f(x) = x</code>（<code>0 ≤ x &lt; 1</code>）、<code>f(x) = 0</code>（<code>x = 1</code>）：在 <code>[0, 1]</code> 上无最大值',
+       '无界区间 <code>f(x) = 1/x</code> 在 <code>(0, 1]</code>：连续但无最大值')
+  + p('<b>介值定理</b>（Intermediate Value Theorem）：若 f 在 <code>[a, b]</code> 上连续，k 介于 <code>f(a)</code> 与 <code>f(b)</code> 之间，则存在 <code>c ∈ (a, b)</code> 使 <code>f(c) = k</code>。几何上：连续曲线要从一个高度走到另一个高度，必须经过中间每个高度。')
+  + p('源文件应用：证明 <code>x³ − x − 1 = 0</code> 在 <code>[1, 2]</code> 内有解。令 <code>f(x) = x³ − x − 1</code>；<code>f(1) = −1 &lt; 0</code>，<code>f(2) = 5 &gt; 0</code>；f 处处连续，故在 <code>[1, 2]</code> 连续；由介值定理（取 <code>k = 0</code>），存在 <code>c ∈ (1, 2)</code> 使 <code>f(c) = 0</code>。')),
+ kws=K(('limit of a function', '函数极限', 'lim_{x→a} f(x) = L if f(x) can be made arbitrarily close to L.'),
+       ('epsilon-delta definition', 'ε-δ 定义', 'For every ε > 0 there is δ > 0 such that 0 < |x−a| < δ forces |f(x)−L| < ε.'),
+       ('difference quotient', '差商', 'The average rate of change (f(x+h) − f(x))/h.'),
+       ('instantaneous velocity', '瞬时速度', 'The limit of average velocity as the time interval shrinks to zero.'),
+       ('one-sided limit', '单侧极限', 'Left and right limits; the two-sided limit exists iff they agree.'),
+       ('indeterminate form 0/0', '0/0 未定式', 'Substitution gives 0/0; simplify by factoring or rationalizing first.'),
+       ('rationalizing', '有理化', 'Multiply by the conjugate to remove a square-root difference.'),
+       ('squeeze theorem', '夹逼定理', 'If g ≤ f ≤ h and both bounds tend to L, then f tends to L.'),
+       ('infinite limit', '无穷极限', 'Values grow without bound; ∞ is a description, not a number.'),
+       ('vertical asymptote', '竖直渐近线', 'x = a where a one-sided limit is ±∞.'),
+       ('horizontal asymptote', '水平渐近线', 'y = L where f(x) → L as x → ±∞.'),
+       ('oblique asymptote', '斜渐近线', 'y = ax + b appearing when deg P = deg Q + 1.'),
+       ('continuity at a point', '点连续', 'f(c) defined, the limit exists, and the two are equal.'),
+       ('removable discontinuity', '可去间断', 'One-sided limits agree but f(c) is missing or mismatched.'),
+       ('intermediate value theorem', '介值定理', 'A continuous function on [a, b] takes every value between f(a) and f(b).')),
+ examples=(qa('例 1（源文件 p3–p7）　石块自由下落 s(t) = 4.9t²，求 (a) 前 2 秒的平均速度；(b) 1 到 2 秒的平均速度；(c) t = 1 秒的瞬时速度。',
+    p('(a) <code>(s(2) − s(0))/(2 − 0) = (19.6 − 0)/2 = 9.8</code> m/s。')
+    + p('(b) <code>(s(2) − s(1))/(2 − 1) = (19.6 − 4.9)/1 = 14.7</code> m/s。两者不同，说明「平均」不能代表「瞬时」。')
+    + p('(c) 取区间 <code>[1, 1+h]</code>：<code>Δs/Δh = (4.9(1+h)² − 4.9)/h = (9.8h + 4.9h²)/h = 9.8 + 4.9h</code>。')
+    + p('表中 h = 1, 0.1, 0.01, 0.001, 0.0001 时比值依次为 14.7、10.29、9.849、9.8049、9.80049，趋于 9.8。')
+    + p('令 <code>h → 0</code>：<code>lim (9.8 + 4.9h) = 9.8</code> m/s。一般地，<code>v(t) = lim (4.9(t+h)² − 4.9t²)/h = 9.8t</code>，即 <code>v = gt</code>（<code>g = 9.8</code>），与物理结论一致。'))
+   + qa('例 2（源文件 p12）　用 ε-δ 定义证明 lim_{x→4} (3x − 1) = 11。',
+    p('<b>分析：</b>要证对每个 <code>ε &gt; 0</code> 存在 <code>δ &gt; 0</code>，使 <code>0 &lt; |x − 4| &lt; δ ⟹ |(3x−1) − 11| &lt; ε</code>。')
+    + p('<b>化简目标不等式：</b><code>|3x − 12| = 3|x − 4| &lt; ε ⟺ |x − 4| &lt; ε/3</code>，可见 δ 应取 ε/3。')
+    + p('<b>正式书写：</b>任给 <code>ε &gt; 0</code>，取 <code>δ = ε/3</code>。则当 <code>0 &lt; |x − 4| &lt; δ</code> 时，有 <code>|(3x−1) − 11| = 3|x − 4| &lt; 3δ = ε</code>。由定义，<code>lim_{x→4}(3x−1) = 11</code>。')
+    + p('<b>方法迁移：</b>线性函数 <code>f(x) = mx + b</code> 的证明永远形如 <code>|f(x) − L| = |m||x − a|</code>，取 <code>δ = ε/|m|</code>。非线性情形需要先限制 δ ≤ 1 把 |x − a| 的因子估成常数，这属于后续课程内容。'))
+   + qa('例 3（源文件 p20–p21）　求下列极限：(a) lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)；(b) lim_{x→4} (√x − 2)/(x² − 16)。',
+    p('(a) 代入 <code>x = −2</code>：分子 <code>4 − 2 − 2 = 0</code>，分母 <code>4 − 10 + 6 = 0</code>，是 0/0。分解：分子 <code>(x+2)(x−1)</code>，分母 <code>(x+2)(x+3)</code>。约去 <code>x+2</code>（<code>x ≠ −2</code> 时合法）：')
+    + p('<code>lim (x−1)/(x+3) = (−2−1)/(−2+3) = −3</code>。')
+    + p('(b) 代入 <code>x = 4</code>：<code>√4 − 2 = 0</code>、<code>16 − 16 = 0</code>，是 0/0。同乘共轭 <code>(√x + 2)</code>：')
+    + p('<code>(√x − 2)(√x + 2)/((x−4)(x+4)(√x + 2)) = (x − 4)/((x−4)(x+4)(√x+2)) = 1/((x+4)(√x+2))</code>。')
+    + p('代入 <code>x = 4</code>：<code>1/(8 · 4) = 1/32</code>。')
+    + p('<b>分辨技巧：</b>多项式型 0/0 先分解；含根号型 0/0 先乘共轭；两者都含根号且含多项式时，先有理化再分解。'))
+   + qa('例 4（源文件 p11–p17）　求 (a) lim_{x→∞} (√(x² − x) − x)；(b) 求 f(x) = (x³ − x²)/(x² + 1) 在无穷处的极限与斜渐近线。',
+    p('(a) 是 <code>∞ − ∞</code> 型。同乘共轭：<code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除 x（x &gt; 0）：<code>−1/(√(1 − 1/x) + 1) → −1/2</code>。')
+    + p('(b) 次数 m = 3、n = 2，<code>m = n + 1</code>，故有斜渐近线。做除法：<code>x³ − x² = (x − 1)(x² + 1) + (1 − x)</code>，即 <code>f(x) = x − 1 + (1 − x)/(x² + 1)</code>。')
+    + p('因为 <code>(1−x)/(x²+1) → 0</code>，斜渐近线是 <code>y = x − 1</code>；且 <code>lim_{x→∞} f = ∞</code>、<code>lim_{x→−∞} f = −∞</code>。同时 <code>x² + 1 &gt; 0</code> 无实零点，故没有竖直渐近线。')
+    + p('<b>验算：</b>取 <code>x = 10</code>，<code>f(10) = 900/101 ≈ 8.91</code>，而 <code>x − 1 = 9</code>，差 <code>≈ 0.09</code>，随 x 增大而趋于 0，符合斜渐近线的定义。'))),
+ practice=(ol('求 <code>lim_{x→3}(2x² − 5x + 1)</code>。',
+          '求 <code>lim_{x→−2}(x² + 4x + 4)/(x + 2)</code>。',
+          '求 <code>lim_{x→2}(1/(x + 2) + 1/(x² − 4))</code>，并说明理由。',
+          '求 <code>y = (2x² − 7x + 3)/(x² − 9)</code> 的全部渐近线，并写出 <code>x → −3⁺</code> 时的极限。',
+          '判断 <code>f(x) = (x² − 4)/(x − 2)</code>（<code>x ≠ 2</code>）、<code>f(2) = 3</code> 在 <code>x = 2</code> 处是否连续；若不连续，指出类型并给出修补方式。',
+          '证明方程 <code>x³ + x − 3 = 0</code> 在 <code>[1, 2]</code> 内至少有一个根。')
+  + det('答案与思路',
+    p('<b>1.</b> 多项式直接代入：<code>2·9 − 15 + 1 = 4</code>。')
+    + p('<b>2.</b> 代入得 0/0。分子 <code>(x+2)²</code>，约去一个 <code>x+2</code> 后为 <code>x+2</code>，代入 −2 得 <b>0</b>。')
+    + p('<b>3.</b> <code>x → 2</code> 时第一项 <code>→ 1/4</code>；第二项 <code>1/(x²−4) = 1/((x−2)(x+2))</code>，分母趋于 0 而分子为 1，故趋于 <code>±∞</code>（右侧 +∞、左侧 −∞）。两项之和无界，故 <b>极限不存在</b>（属于无穷型间断）。')
+    + p('<b>4.</b> 分解：<code>(2x−1)(x−3)/((x−3)(x+3)) = (2x−1)/(x+3)</code>，<code>x ≠ 3</code>。水平渐近线 <code>y = 2</code>（次数相等，首项系数比 2/1）；竖直渐近线 <code>x = −3</code>（<code>x = 3</code> 是可去的洞）；无斜渐近线。<code>x → −3⁺</code>：分子 <code>→ −7</code>，分母 <code>→ 0⁺</code>，故极限 <code>−∞</code>。')
+    + p('<b>5.</b> <code>lim_{x→2}(x²−4)/(x−2) = lim (x+2) = 4</code>，但 <code>f(2) = 3 ≠ 4</code>，故不连续；属于<b>可去间断</b>。修补方式：把 <code>f(2)</code> 重新定义为 4。')
+    + p('<b>6.</b> 令 <code>f(x) = x³ + x − 3</code>，多项式故在 <code>[1, 2]</code> 连续；<code>f(1) = −1 &lt; 0</code>，<code>f(2) = 7 &gt; 0</code>；由介值定理存在 <code>c ∈ (1, 2)</code> 使 <code>f(c) = 0</code>。要点：必须写出「连续」「端点异号」「介值定理」三句话。'))),
+ exam=(cal('exam', '必考', '①0/0 型的因式分解与有理化（每年必考两小题）；②无穷远处的有理函数极限与三条渐近线；③用三条件判断连续性并给间断点分类（可去/跳跃/无穷/振荡）；④介值定理证根存在（三步书写：连续、端点异号、结论）。')
+  + cal('warn', '易错 1', '<b>∞ − ∞ 与 0 · ∞ 要变形</b>。看到 <code>∞ − ∞</code> 就同乘共轭或通分，看到 <code>0 · ∞</code> 就改写成分式；原样代入只会得到无意义的符号。')
+  + cal('warn', '易错 2', '<b>√(x²) = |x|</b>。在 <code>x → −∞</code> 时符号必须翻转，否则 <code>x/√(x²+1)</code> 的左极限会被错算成 +1。')
+  + cal('warn', '易错 3', '<b>约分后忘记原定义域</b>。约去公因子只对 <code>x ≠ a</code> 成立；该点要么是「洞」（可去间断），要么还要保留竖直渐近线，判断渐近线时必须先约分再找分母零点。')
+  + cal('tip', '进阶', '把「求极限」当成一次诊断：先代入看是否 0/0 或 ∞/∞，再看表达式结构（多项式 / 根式 / 振荡 / 无穷远），最后选工具（分解、共轭、夹逼、最高次项）。诊断顺序固定下来，速度会快一倍。')),
+ checklist=(h2('方法与清单')
+  + h3('求极限四步')
+  + st('直接代入：能算出有限值就结束（多项式、分母非零的有理函数）',
+       '判断类型：0/0 则分解或有理化；∞/∞ 则比较次数；∞−∞ 则共轭或通分；0·∞ 则改写成分式',
+       '含振荡因子（sin、cos）时改用夹逼定理，先写出界',
+       '分段点、含绝对值或根号端点处，分左右极限各自计算，再比较是否相等')
+  + h3('求全部渐近线（三步）')
+  + st('先约去分子分母的公因子，剩下的分母零点给出竖直渐近线',
+       '比较分子分母次数：m &lt; n 或 m = n 给水平渐近线；m = n + 1 做除法得斜渐近线',
+       '分别对 x → ±∞ 检查，两侧可以有不同的水平（或斜）渐近线')
+  + h3('判断连续性并分类（三步）')
+  + st('算 <code>f(c)</code>：无定义则已可判定不连续（再看极限判断是可去、无穷还是振荡）',
+       '算左右极限：都存在但不相等 → 跳跃；至少一侧为 ±∞ → 无穷；不存在且非无穷 → 振荡',
+       '左右极限相等但不等于 <code>f(c)</code> → 可去，说明如何重新定义 <code>f(c)</code> 即可修补')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p2', '微分与积分的定义、极限作为共同基础'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p3–p7', '平均速度、瞬时速度、差商与表格逼近、v = 9.8t 的推导'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p8–p10', '内接正多边形逼近圆周长与圆面积'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p11–p14', 'ε-δ 定义、lim(3x−1)=11 的证明、(x²−1)/(x−1) 的极限'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p15–p16', '单侧极限、双侧极限存在性、sgn 在 0 处的极限'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p17–p21', '极限四则与幂法则、多项式与有理函数、0/0 型的分解与有理化'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p22–p25', '夹逼定理、sin x/x 在无穷处、x² sin(1/x) 在 0 处'),
+    ('Topic 2/EMI_Week2_Lecture1.pdf', 'p26–p27', '极限不存在的两类典型（单侧不等、无限振荡）'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p2–p6', '无穷极限、竖直渐近线、1/x² 与 1/x 的单双侧行为'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p7–p10', '无穷远极限、水平渐近线、x/√(x²+1)、√(x²−x)−x 的有理化'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p11–p17', '多项式最高次项主导、有理函数三类次数关系与斜渐近线'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p18–p19', '渐近线总判据、(2x²−7x+3)/(x²−9) 的完整分析'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p20–p29', '连续三条件、四个反例图、保连续运算、复合与单侧连续、分段检查、间断点分类、区间连续'),
+    ('Topic 2/EMI_Week2_Lecture2.pdf', 'p30–p33', '常见连续函数、最值定理三个反例、介值定理与 x³−x−1 的根'),
+    ('（跳过）Topic 2/Lecture One.html、Lecture Two.html 与 _info/*.html', '—', '均为 Moodle 登录页快照，无可读正文'),
+    ('（拓展）', '—', '把 0·∞ 与 ∞−∞ 的改写规则系统化、斜渐近线的除法判定为衔接性补充，源文件以例题形式出现'))
+)
+
+# ============================================================ 讲 3
+lec(
+ slug='t3-derivatives-rules',
+ tzh='第 2 章 · 导数定义与求导法则',
+ ten='Definition of the Derivative and Differentiation Rules',
+ keywords=['tangent line', 'secant line', 'difference quotient', 'derivative',
+           'differentiability', 'differential', 'power rule', 'product rule',
+           'quotient rule', 'chain rule', 'normal line', 'trigonometric derivative'],
+ files=['Topic 3/EMI_Week3_Lecture1.pdf', 'Topic 3/EMI_Week3_Lecture2.pdf'],
+ part=CH2,
+ overview=(h2('本节定位')
+  + p('上一讲用极限求出了瞬时速度，这一讲把这套动作抽象成一个新函数——导数（derivative）。核心只有一句话：导数就是切线斜率，而切线斜率是割线斜率当两点无限靠近时的极限。理解了这句话，后面所有求导公式都只是「把这个极限一次算完，以后直接查表」的产物。')
+  + p('本讲分两半：前半（Topic 3 第一次课）从几何出发，建立切线、法线、牛顿商、导数定义、微分与和差、常数倍、幂法则，并证明「可导必连续」；后半（第二次课）补齐乘积、倒数、商、链式四大法则与六个三角函数的导数，其中两个基本三角极限的证明是全部三角求导的地基。')
+  + p('学完本节你应当能够：')
+  + ck('用差商极限求曲线在一点的切线方程与法线方程',
+     '用定义（而不是公式）求 x²、1/x、√x 的导数',
+     '写出导数的四种记号，并在一点处正确使用求值符号',
+     '熟练使用乘积、倒数、商、链式法则处理复合表达式',
+     '用面积夹逼证明 lim sin θ/θ = 1，并据此推出 sin、cos 的导数',
+     '识别竖直切线、尖点等「导数不存在」的几何形态')),
+ detail=(h3('3.1 从「切线」这个词说起')
+  + p('欧几里得对圆的切线给过一个纯几何定义：与圆只交于一点（且不穿过）的直线叫圆的切线。这个定义对圆很好用，但对一般曲线立刻失效——例如抛物线的切线可能与曲线交于两点，拐点处的切线也可能再次穿过曲线。')
+  + p('所以微积分换了一个可操作的定义：<b>切线是割线的极限位置</b>。在曲线上取定点 P 与动点 Q，过两点的直线叫割线（secant line）；让 Q 沿曲线不断靠近 P，割线会绕 P 旋转并趋于一个极限位置，这个极限位置的直线就是 P 处的切线（tangent line）。')
+  + h3('3.2 割线斜率与牛顿商')
+  + p('设 <code>P(x₀, f(x₀))</code>、<code>Q(x₀ + Δx, f(x₀ + Δx))</code>（<code>Δx ≠ 0</code>）。割线 PQ 的斜率为')
+  + p('<b><code>tan φ = Δy/Δx = (f(x₀ + Δx) − f(x₀))/Δx</code></b>。')
+  + p('这个表达式称为 f 在 <code>x₀</code> 处的<b>牛顿商</b>（Newton quotient）或<b>差商</b>（difference quotient）。它有两个含义：几何上是割线斜率，物理上是区间上的平均变化率。Δx 可正可负（Q 在 P 右侧或左侧），不影响取极限的结果。')
+  + h3('3.3 切线斜率：导数的几何定义')
+  + p('若 f 在 <code>x₀</code> 连续，且极限')
+  + p('<b><code>m = lim_{Δx→0} Δy/Δx = lim_{Δx→0} (f(x₀ + Δx) − f(x₀))/Δx</code></b>')
+  + p('存在（有限），则过 <code>P(x₀, f(x₀))</code> 且斜率为 m 的直线就是曲线在 P 处的切线；这个 m 就是 f 在 <code>x₀</code> 处的（瞬时）变化率。')
+  + p('用 <code>x</code> 代替 <code>x₀</code>、把极限值当成一个新函数，就得到<b>导数</b>：')
+  + p('<b><code>f′(x) = lim_{Δx→0} (f(x + Δx) − f(x))/Δx = lim_{h→0} (f(x + h) − f(x))/h</code></b>，')
+  + p('前提是这个极限存在；存在时称 f 在 x 处<b>可导</b>（differentiable）。几何上 <code>f′(x₀)</code> 就是曲线 <code>y = f(x)</code> 在 <code>x = x₀</code> 处切线的斜率。')
+  + h3('3.4 切线方程与一个面积练习')
+  + p('已知切点 <code>(a, f(a))</code> 与斜率 <code>f′(a)</code>，由点斜式立刻写出切线方程：')
+  + p('<b><code>y = f(a) + f′(a)(x − a)</code></b>。')
+  + p('源文件例子：求 <code>y = x²</code> 在 <code>(1, 1)</code> 处的切线。<code>f(1) = 1</code>，用定义求斜率：')
+  + p('<code>lim_{Δx→0} ((1+Δx)² − 1)/Δx = lim (2Δx + Δx²)/Δx = lim (2 + Δx) = 2</code>，')
+  + p('故切线为 <code>y = 2(x − 1) + 1</code>，即 <code>y = 2x − 1</code>。')
+  + p('源文件随后追问：这条切线与两坐标轴围成的三角形面积是多少？一般地，对 <code>y = x²</code> 在 <code>(x₀, x₀²)</code> 处，斜率 <code>2x₀</code>，切线 <code>y = 2x₀x − x₀²</code>。令 <code>y = 0</code> 得 x 截距 <code>x₀/2</code>；令 <code>x = 0</code> 得 y 截距 <code>−x₀²</code>。于是当 <code>x₀ &gt; 0</code> 时三角形面积')
+  + p('<code>A = (1/2)·(x₀/2)·(x₀²) = x₀³/4</code>。代入 <code>x₀ = 1</code> 得 <code>A = 1/4</code>。')
+  + cal('tip', '截距法的通用套路', '任何「切线围三角形面积」的题都是三步：写出切线方程 → 分别令 x = 0、y = 0 求两个截距 → 面积 = 半个截距乘积的绝对值。绝对值来自「截距可能为负，而面积必须非负」。')
+  + h3('3.5 曲线在一点的斜率与法线')
+  + p('曲线 <code>y = f(x)</code> 在 <code>x₀</code> 处的「斜率」就是该点切线的斜率（若存在）。例如 <code>y = 1/x</code> 在 <code>x = 2</code>：')
+  + p('<code>lim_{Δx→0} (1/(2+Δx) − 1/2)/Δx = lim (−Δx)/(2(2+Δx)Δx) = lim −1/(2(2+Δx)) = −1/4</code>。')
+  + p('<b>法线</b>（normal line）是过切点且与切线垂直的直线。若切线斜率 <code>m ≠ 0</code>，法线斜率为 <code>−1/m</code>；若切线水平（<code>m = 0</code>），法线竖直；若切线竖直，法线水平。')
+  + p('源文件例子：<code>y = x²</code> 在 <code>(1, 1)</code>，切线斜率 2，故法线斜率 <code>−1/2</code>，方程 <code>y = −(1/2)(x − 1) + 1 = −x/2 + 3/2</code>。')
+  + h3('3.6 竖直切线与尖点：导数不存在的几何形态')
+  + p('若 <code>f</code> 在 <code>x₀</code> 连续而差商的极限为 <code>±∞</code>，则曲线在该点的切线是<b>竖直线</b> <code>x = x₀</code>（斜率不存在，但切线存在）。若极限既不是有限值、也不是同号的 ±∞（例如左右两侧分别趋于 +∞ 与 −∞），则<b>切线不存在</b>。')
+  + p('源文件两个对比例子（都在 <code>x = 0</code>）：')
+  + ul('<code>f(x) = x^{1/3}</code>：<code>Δy/Δx = (Δx)^{1/3}/Δx = (Δx)^{-2/3} → +∞</code>（两侧都是 +∞），故有<b>竖直切线</b> <code>x = 0</code>',
+       '<code>f(x) = x^{2/3}</code>：<code>Δy/Δx = (Δx)^{-1/3}</code>，右极限 <code>+∞</code>、左极限 <code>−∞</code>，方向不一致，故<b>没有切线</b>，曲线在原点形成<b>尖点</b>（cusp）')
+  + cal('warn', '竖直切线 ≠ 无切线', '<code>x^{1/3}</code> 在 0 处不可导（斜率不是有限数），但切线存在（竖直线）。答题时要区分「导数不存在」与「切线不存在」：前者可能是竖直切线，后者才是真正的几何断裂。')
+  + h3('3.7 导数的记号与求值符号')
+  + p('同一个导数有四种常见写法：')
+  + ul('<b>Lagrange（撇号）</b>：<code>f′(x)</code>、<code>y′</code>——最简洁，适合写公式',
+       '<b>Leibniz</b>：<code>dy/dx</code>、<code>df/dx</code>——强调「y 对 x 的变化率」，链式法则里最方便',
+       '<b>Euler（算子）</b>：<code>Df</code>、<code>D_x f</code>——把求导看成作用在函数上的算子',
+       '<b>Newton（点号）</b>：<code>ẏ</code>——物理学中表示对时间求导')
+  + p('在一点 <code>x = x₀</code> 处的取值可写成 <code>f′(x₀)</code>、<code>y′|_{x=x₀}</code>、<code>dy/dx|_{x=x₀}</code>、<code>D_x y|_{x=x₀}</code>，其中竖线 <code>|_{x=x₀}</code> 叫<b>求值符号</b>（evaluation symbol），含义是「先把导数算成含 x 的表达式，再把 x₀ 代入」。')
+  + cal('warn', '先求导、后代值', '求值符号永远作用在已经求完导的函数上。若先把 <code>x = x₀</code> 代进 f 再求导，得到的是常数（导数为 0），整题作废。')
+  + h3('3.8 微分')
+  + p('<code>dx</code> 表示 x 的一个（任意）改变量。对可导函数 <code>y = f(x)</code>，<b>微分</b>（differential）定义为')
+  + p('<b><code>dy = f′(x) dx</code></b>。')
+  + p('当 <code>dx</code> 很小时，<code>dy</code> 近似等于真实的改变量 <code>Δy</code>：<code>Δy ≈ f′(x)Δx</code>。这就是「用切线代替曲线」的线性近似，也是误差估计的基础。')
+  + p('源文件例子：<code>y = x²</code> 时 <code>dy = 2x dx</code>；<code>y = 1/x</code> 时 <code>dy = −dx/x²</code>。注意 <code>dy/dx</code> 因此可以真的当作「两个微分之商」来运算——这正是 Leibniz 记号好用的原因，链式法则 <code>dy/dx = (dy/du)(du/dx)</code> 看起来就像分数约分。')
+  + h3('3.9 用定义求导三个基本例子')
+  + p('(a) <code>f(x) = x²</code>：<code>f′(x) = lim ((x+Δx)² − x²)/Δx = lim (2xΔx + Δx²)/Δx = lim (2x + Δx) = 2x</code>。')
+  + p('(b) <code>f(x) = 1/x</code>：<code>f′(x) = lim (1/(x+Δx) − 1/x)/Δx = lim (−Δx)/(x(x+Δx)Δx) = lim −1/(x(x+Δx)) = −1/x²</code>。')
+  + p('(c) <code>f(x) = √x</code>：同乘共轭 <code>(√(x+Δx) + √x)</code>，分子变为 <code>Δx</code>，与分母约去，得 <code>f′(x) = lim 1/(√(x+Δx) + √x) = 1/(2√x)</code>（<code>x &gt; 0</code>）。')
+  + p('三个例子共用同一条流水线：写差商 → 展开或乘共轭 → 约掉分母的 Δx → 令 Δx → 0。这条流水线是「用定义求导」的唯一标准流程。')
+  + h3('3.10 幂法则')
+  + p('对正整数 n，<b><code>(xⁿ)′ = n xⁿ⁻¹</code></b>。证明思路：由二项式展开')
+  + p('<code>(x + Δx)ⁿ = xⁿ + n xⁿ⁻¹Δx + O(Δx²)</code>，')
+  + p('其中 <code>O(Δx)²</code> 是「所有含 <code>(Δx)²、…、(Δx)ⁿ</code> 的项」的简写。代回差商，<code>xⁿ</code> 相消，剩下 <code>n xⁿ⁻¹ + O(Δx)</code>，令 <code>Δx → 0</code> 即得。这个法则对任意实数指数也成立（<code>x^a</code>，<code>x &gt; 0</code>），第 5 讲会用对数求导重新证明。')
+  + h3('3.11 可导必连续，但连续不一定可导')
+  + p('定理：若 f 在 x 处可导，则 f 在 x 处连续。证明只需一个变形：')
+  + p('<code>lim_{Δx→0}(f(x+Δx) − f(x)) = lim_{Δx→0} [(f(x+Δx) − f(x))/Δx]·Δx = f′(x)·0 = 0</code>。')
+  + p('所以 <code>lim_{Δx→0} f(x+Δx) = f(x)</code>，即连续。')
+  + p('逆命题不成立：<code>f(x) = |x|</code> 在 <code>x = 0</code> 连续，但左导数 <code>−1</code>、右导数 <code>1</code>，导数不存在。连续的曲线可以有「尖角」，尖角处没有切线斜率。')
+  + h3('3.12 左导数、右导数与区间上的可导性')
+  + p('对定义在闭区间 <code>[a, b]</code> 上的函数：<b>右导数</b> <code>f′₊(a) = lim_{Δx→0⁺} (f(a+Δx) − f(a))/Δx</code>，<b>左导数</b> <code>f′₋(b) = lim_{Δx→0⁻} (f(b+Δx) − f(b))/Δx</code>。')
+  + p('称 f 在 <code>[a, b]</code> 上可导，如果 <code>f′₊(a)</code>、<code>f′₋(b)</code> 存在，且对每个内点 <code>x ∈ (a, b)</code> 都有 <code>f′(x)</code> 存在。')
+  + p('源文件用 <code>f(x) = |x|</code> 演练：<code>f′₊(0) = lim_{Δx→0⁺} (|Δx| − 0)/Δx = 1</code>，<code>f′₋(0) = lim_{Δx→0⁻} (|Δx| − 0)/Δx = −1</code>。两者不等，故 <code>f′(0)</code> 不存在。')
+  + h3('3.13 基本导数表')
+  + tb(('f(x)', 'f′(x)', '说明'),
+       ('<code>c</code>（常数）', '<code>0</code>', '水平线斜率为 0'),
+       ('<code>x</code>', '<code>1</code>', '斜率恒为 1'),
+       ('<code>x²</code>', '<code>2x</code>', '幂法则 n = 2'),
+       ('<code>1/x</code>', '<code>−1/x²</code>', 'n = −1'),
+       ('<code>√x</code>', '<code>1/(2√x)</code>', 'n = 1/2'),
+       ('<code>x^a</code>', '<code>a x^{a−1}</code>', '任意实数指数'))
+  + p('这张表必须做到「看到就写」，因为后面所有法则都只是把这张表往外传播一层。')
+  + h3('3.14 和、差与常数倍法则')
+  + p('若 f、g 在 x 可导，c 为常数，则 <code>(f ± g)′(x) = f′(x) ± g′(x)</code>，<code>(cf)′(x) = c f′(x)</code>。')
+  + p('和的证明只需把差商拆开：<code>[(f+g)(x+Δx) − (f+g)(x)]/Δx = [(f(x+Δx) − f(x))/Δx] + [(g(x+Δx) − g(x))/Δx]</code>，再对两项分别取极限。常数倍同理，把 c 提出来即可。')
+  + p('源文件任务：<code>f(x) = x³ + 4x² − 5x − 9</code>，逐项求导得 <code>f′(x) = 3x² + 8x − 5</code>；<code>y = x⁴/8 − 2x^{5/2}</code>，得 <code>dy/dx = (1/2)x³ − 5x^{3/2}</code>。')
+  + h3('3.15 乘积法则')
+  + p('<b><code>(fg)′(x) = f′(x)g(x) + f(x)g′(x)</code></b>。')
+  + p('证明的关键是「加一项再减一项」：把差商写成')
+  + p('<code>[f(x+Δx)g(x+Δx) − f(x+Δx)g(x) + f(x+Δx)g(x) − f(x)g(x)]/Δx</code>，')
+  + p('前两项提出 <code>f(x+Δx)</code>、后两项提出 <code>g(x)</code>，分别取极限并用 <code>f</code> 的连续性（可导 ⇒ 连续），即得 <code>f′g + fg′</code>。')
+  + p('源文件例子：<code>d/dx[(x² − 1)(x³ + 3)]</code>。用乘积法则：<code>2x(x³+3) + (x²−1)·3x² = 2x⁴ + 6x + 3x⁴ − 3x² = 5x⁴ − 3x² + 6x</code>。若先展开再求导：<code>(x⁵ − x³ + 3x² − 3)′ = 5x⁴ − 3x² + 6x</code>，结果一致。')
+  + cal('warn', '(fg)′ ≠ f′g′', '这是最经典的错误。乘积的导数要「轮流求导、相加」，不是两个导数相乘。用上面的例子检验：<code>f′g′ = (2x)(3x²) = 6x³</code>，与正确结果 <code>5x⁴ − 3x² + 6x</code> 完全不同。')
+  + h3('3.16 倒数法则')
+  + p('若 f 在 x 可导且 <code>f(x) ≠ 0</code>，则 <b><code>(1/f)′(x) = −f′(x)/f(x)²</code></b>。')
+  + p('证明：<code>[1/f(x+Δx) − 1/f(x)]/Δx = [f(x) − f(x+Δx)]/[Δx·f(x+Δx)f(x)]</code>，第一个因子趋于 <code>−f′(x)</code>，第二个因子趋于 <code>1/f(x)²</code>。')
+  + p('源文件任务：(a) <code>d/dx[1/(x²+1)] = −2x/(x²+1)²</code>；(b) <code>1/(x + 1/x)</code> 先化简为 <code>x/(x²+1)</code>，再用商法则得 <code>(1 − x²)/(x²+1)²</code>。')
+  + h3('3.17 商法则')
+  + p('若 f、g 在 x 可导且 <code>g(x) ≠ 0</code>，则')
+  + p('<b><code>(f/g)′(x) = [f′(x)g(x) − f(x)g′(x)]/g(x)²</code></b>。')
+  + p('证明：把 <code>f/g</code> 写成 <code>f · (1/g)</code>，用乘积法则与倒数法则：<code>f′·(1/g) + f·(−g′/g²) = (f′g − fg′)/g²</code>。')
+  + p('记忆口诀：<b>「上导下不导，减去上不导下导，除以分母平方」</b>。分子顺序不能颠倒，否则差一个负号。')
+  + p('源文件例子：<code>y = (1 − x²)/(1 + x²)</code>，<code>y′ = [(−2x)(1+x²) − (1−x²)(2x)]/(1+x²)² = (−2x − 2x³ − 2x + 2x³)/(1+x²)² = −4x/(1+x²)²</code>。')
+  + p('源文件法线例子：<code>y = (x+1)/(x−1)</code> 在 <code>x = 2</code>。<code>y′ = [(x−1) − (x+1)]/(x−1)² = −2/(x−1)²</code>，在 2 处为 <code>−2</code>；法线斜率 <code>1/2</code>；切点 <code>(2, 3)</code>；法线 <code>y = (1/2)(x − 2) + 3 = x/2 + 2</code>。')
+  + h3('3.18 链式法则')
+  + p('若 g 在 x 可导、f 在 <code>g(x)</code> 可导，则复合函数 <code>f ∘ g</code> 在 x 可导，且')
+  + p('<b><code>(f ∘ g)′(x) = f′(g(x))·g′(x)</code></b>。')
+  + p('Leibniz 写法：若 <code>y = f(u)</code>、<code>u = g(x)</code>，则 <b><code>dy/dx = (dy/du)·(du/dx)</code></b>。')
+  + p('这条法则的作用是「由外向内逐层剥」：最外层求导（内层原样保留），乘以内层的导数，如此反复。例如 <code>y = (6x − 7)⁵</code>：外层是 <code>u⁵</code>，内层 <code>u = 6x − 7</code>，故 <code>y′ = 5(6x−7)⁴ · 6 = 30(6x−7)⁴</code>。')
+  + p('源文件任务：<code>y = √(1 + x²)</code>，外层 <code>√u</code>、内层 <code>1 + x²</code>，<code>dy/dx = (1/(2√(1+x²)))·2x = x/√(1+x²)</code>。')
+  + cal('warn', '链式法则的两个高频错法', '① 忘乘内层导数（写成 <code>5(6x−7)⁴</code> 而不是 <code>30(6x−7)⁴</code>）；② 把复合的顺序弄反（<code>f ∘ g</code> 与 <code>g ∘ f</code> 的导数一般不同，源文件专门用一页强调「Not Commutative」）。逐层写清「外层是谁、内层是谁」再动笔。')
+  + h3('3.19 两个基本三角极限')
+  + p('一切三角函数的导数都依赖两个极限。第一个：<b><code>lim_{θ→0} sin θ/θ = 1</code></b>。')
+  + p('证明（面积夹逼，弧度制）：在单位圆中取 <code>0 &lt; θ &lt; π/2</code>，<code>A(1, 0)</code>、<code>P(cos θ, sin θ)</code>、<code>T(1, tan θ)</code>。比较三块面积：')
+  + p('三角形 OAP 面积 <code>= (1/2)·1·sin θ = (1/2)sin θ</code>；扇形 OAP 面积 <code>= (1/2)·1²·θ = θ/2</code>；三角形 OAT 面积 <code>= (1/2)·1·tan θ = (1/2)tan θ</code>。')
+  + p('由「三角形 ⊂ 扇形 ⊂ 三角形」，得 <code>sin θ &lt; θ &lt; tan θ</code>。三边同除以 <code>sin θ &gt; 0</code>：<code>1 &lt; θ/sin θ &lt; 1/cos θ</code>；再取倒数（都为正，不等号反向）：<b><code>cos θ &lt; sin θ/θ &lt; 1</code></b>。令 <code>θ → 0⁺</code>，两端都趋于 1，由夹逼定理得右极限为 1。')
+  + p('对 <code>−π/2 &lt; θ &lt; 0</code> 用奇偶性：<code>sin θ/θ = sin(−θ)/(−θ)</code>，化为正角情形，故左极限也是 1，于是双侧极限为 1。')
+  + p('第二个：<b><code>lim_{θ→0} (cos θ − 1)/θ = 0</code></b>。用半角恒等式 <code>cos θ − 1 = −2 sin²(θ/2)</code>：')
+  + p('<code>(cos θ − 1)/θ = −2 sin²(θ/2)/θ = −[sin(θ/2)/(θ/2)]·sin(θ/2) → −1·0 = 0</code>。')
+  + cal('tip', '这两个极限的用途', '它们不只是「两个小题」：<code>sin</code> 与 <code>cos</code> 的导数公式完全由它们推出，而 <code>tan、sec、cot、csc</code> 的导数又由 <code>sin、cos</code> 加商法则推出。所以整章三角求导只有这两个「根」。')
+  + h3('3.20 sin 与 cos 的导数')
+  + p('<b><code>(sin x)′ = cos x</code></b>。证明：用和角公式 <code>sin(x + Δx) = sin x cos Δx + cos x sin Δx</code>，')
+  + p('<code>(sin(x+Δx) − sin x)/Δx = sin x·(cos Δx − 1)/Δx + cos x·(sin Δx/Δx) → sin x·0 + cos x·1 = cos x</code>。')
+  + p('<b><code>(cos x)′ = −sin x</code></b>。证明：用余角恒等式 <code>cos x = sin(π/2 − x)</code> 与链式法则：')
+  + p('<code>(cos x)′ = cos(π/2 − x)·(−1) = −sin x</code>。')
+  + cal('warn', '只在弧度制下成立', '若用角度制，<code>lim sin θ/θ = π/180</code>，导数会多出一个常数因子。所有公式的正确性都以弧度制为前提，这也是本课一律使用弧度的原因。')
+  + h3('3.21 另外四个三角函数')
+  + p('定义与基本性质：')
+  + tb(('函数', '定义', '定义域', '周期', '奇偶性'),
+       ('<code>tan x</code>', '<code>sin x/cos x</code>', '<code>x ≠ π/2 + kπ</code>', '<code>π</code>', '奇函数'),
+       ('<code>cot x</code>', '<code>cos x/sin x</code>', '<code>x ≠ kπ</code>', '<code>π</code>', '奇函数'),
+       ('<code>sec x</code>', '<code>1/cos x</code>', '<code>x ≠ π/2 + kπ</code>', '<code>2π</code>', '偶函数'),
+       ('<code>csc x</code>', '<code>1/sin x</code>', '<code>x ≠ kπ</code>', '<code>2π</code>', '奇函数'))
+  + p('四个导数（全部由 sin、cos 加商法则或倒数法则推出）：')
+  + ul('<code>(tan x)′ = sec²x</code>：<code>(cos·cos − sin·(−sin))/cos² = 1/cos²</code>',
+       '<code>(cot x)′ = −csc²x</code>：<code>(−sin·sin − cos·cos)/sin² = −1/sin²</code>',
+       '<code>(sec x)′ = sec x tan x</code>：<code>−(−sin)/cos² = sin/cos²</code>',
+       '<code>(csc x)′ = −csc x cot x</code>：<code>−cos/sin²</code>')
+  + p('连续性与可导性：<code>sin</code>、<code>cos</code> 处处连续；其余四个在其定义域内连续（间断只出现在分母为零处）；六个函数都在各自定义域内可导。例如 <code>tan</code> 在 <code>x ≠ π/2 + kπ</code> 处可导。')
+  + p('源文件的三角导数总表，建议按「谁求导变成谁」记：<code>sin → cos → −sin → −cos → sin</code> 四步循环；<code>tan → sec²</code>、<code>sec → sec·tan</code>、<code>cot → −csc²</code>、<code>csc → −csc·cot</code>。')),
+ kws=K(('tangent line', '切线', 'The limiting position of secant lines through a fixed point.'),
+       ('secant line', '割线', 'The line through two distinct points of a curve.'),
+       ('difference quotient', '差商（牛顿商）', '(f(x+h) − f(x))/h, the slope of the secant and the average rate of change.'),
+       ('derivative', '导数', 'f′(x) = lim_{h→0} (f(x+h) − f(x))/h; the slope of the tangent.'),
+       ('differentiable', '可导', 'The derivative exists at that point; differentiability implies continuity.'),
+       ('normal line', '法线', 'The line through the point perpendicular to the tangent; slope −1/m.'),
+       ('vertical tangent', '竖直切线', 'The difference quotient tends to ±∞ in the same direction; x = a.'),
+       ('cusp', '尖点', 'One-sided slopes tend to +∞ and −∞, so no tangent exists.'),
+       ('differential', '微分', 'dy = f′(x)dx, the linear approximation of the actual change Δy.'),
+       ('power rule', '幂法则', '(xⁿ)′ = n xⁿ⁻¹, valid for all real exponents.'),
+       ('product rule', '乘积法则', '(fg)′ = f′g + fg′; never f′g′.'),
+       ('reciprocal rule', '倒数法则', '(1/f)′ = −f′/f².'),
+       ('quotient rule', '商法则', '(f/g)′ = (f′g − fg′)/g².'),
+       ('chain rule', '链式法则', '(f∘g)′ = f′(g(x))g′(x), or dy/dx = (dy/du)(du/dx).'),
+       ('fundamental trig limit', '基本三角极限', 'lim_{θ→0} sin θ/θ = 1 and lim_{θ→0}(cos θ − 1)/θ = 0.'),
+       ('evaluation symbol', '求值符号', 'The bar |_{x=a} meaning substitute x = a after differentiating.')),
+ examples=(qa('例 1（源文件 p8–p12）　求 y = x² 在 (1, 1) 处的切线方程，并求该切线与两坐标轴围成的三角形面积。',
+    p('<b>斜率：</b>用定义，<code>m = lim_{Δx→0} ((1+Δx)² − 1)/Δx = lim (2Δx + Δx²)/Δx = lim (2 + Δx) = 2</code>。')
+    + p('<b>切线：</b><code>y = f(1) + f′(1)(x − 1) = 1 + 2(x − 1) = 2x − 1</code>。')
+    + p('<b>截距：</b>令 <code>y = 0</code> 得 <code>x = 1/2</code>；令 <code>x = 0</code> 得 <code>y = −1</code>。')
+    + p('<b>面积：</b><code>A = (1/2)·|1/2|·|−1| = 1/4</code>。')
+    + p('<b>一般化：</b>切点 <code>(x₀, x₀²)</code> 时切线为 <code>y = 2x₀x − x₀²</code>，截距 <code>x₀/2</code> 与 <code>−x₀²</code>，面积 <code>x₀³/4</code>。这个结论在填空题里常直接考。'))
+   + qa('例 2（源文件 p24–p25）　用定义求 (a) x²、(b) 1/x、(c) √x 的导数。',
+    p('(a) <code>((x+Δx)² − x²)/Δx = (2xΔx + (Δx)²)/Δx = 2x + Δx → 2x</code>。')
+    + p('(b) <code>(1/(x+Δx) − 1/x)/Δx = ((x − (x+Δx))/(x(x+Δx)))/Δx = −1/(x(x+Δx)) → −1/x²</code>。')
+    + p('(c) 同乘共轭：<code>(√(x+Δx) − √x)/Δx = Δx/(Δx(√(x+Δx) + √x)) = 1/(√(x+Δx) + √x) → 1/(2√x)</code>。')
+    + p('<b>统一视角：</b>三题都在做同一件事——把差商化成「分母不含 Δx」的形式。①整式展开约分；②分式通分约分；③根式乘共轭。这三招覆盖了定义法求导的全部初等情形。'))
+   + qa('例 3（源文件 p4）　求 d/dx[(x² − 1)(x³ + 3)]，用两种方法并比较。',
+    p('<b>方法 1（乘积法则）：</b><code>2x(x³ + 3) + (x² − 1)(3x²) = 2x⁴ + 6x + 3x⁴ − 3x² = 5x⁴ − 3x² + 6x</code>。')
+    + p('<b>方法 2（先展开）：</b><code>(x² − 1)(x³ + 3) = x⁵ − x³ + 3x² − 3</code>，逐项求导得 <code>5x⁴ − 3x² + 6x</code>。')
+    + p('两法一致。当因式较多或次数较高时，乘积法则明显更快；当因式简单（如一次乘一次）时，展开反而省事。判断标准：展开后项数是否可控。')
+    + p('<b>反例警示：</b>若误写 <code>(fg)′ = f′g′ = 6x³</code>，与正确答案相差极大，代 <code>x = 1</code> 检验：正确值 <code>5 − 3 + 6 = 8</code>，错误值 6，立刻暴露。'))
+   + qa('例 4（源文件 p16、p26、p30）　求导数：(a) y = √(1 + x²)；(b) y = (6x − 7)⁵；(c) y = x² sin x。',
+    p('(a) 外层 <code>√u</code> 的导数为 <code>1/(2√u)</code>，内层 <code>u = 1 + x²</code> 的导数为 <code>2x</code>：<code>dy/dx = 1/(2√(1+x²))·2x = x/√(1+x²)</code>。')
+    + p('(b) 外层 <code>u⁵ → 5u⁴</code>，内层 <code>6x − 7 → 6</code>：<code>y′ = 5(6x−7)⁴·6 = 30(6x−7)⁴</code>。')
+    + p('(c) 乘积法则 + 链式法则：<code>y′ = 2x·sin x + x²·cos x</code>。这里 <code>sin x</code> 的内层是 x（导数为 1），所以看不出链式法则的痕迹，但写全应是 <code>2x sin x + x²·cos x·1</code>。')
+    + p('<b>检查方法：</b>把结果在特殊点代值。例如 (a) 在 <code>x = 0</code> 处 <code>y′ = 0</code>（曲线 <code>√(1+x²)</code> 在 0 处有水平切线），与公式一致。'))),
+ practice=(ol('求 <code>y = 1/x</code> 在 <code>x = 2</code> 处的切线方程与法线方程。',
+          '求 <code>y = x³</code> 在 <code>(1, 1)</code> 处的法线方程。',
+          '用定义求 <code>f(x) = x³</code> 的导数。',
+          '求导数：<code>f(x) = x³ + 4x² − 5x − 9</code>；<code>y = x⁴/8 − 2x^{5/2}</code>。',
+          '求导数：<code>1/(x² + 1)</code>；<code>x/(x² + 1)</code>；<code>(1 − x²)/(1 + x²)</code>。',
+          '求导数：<code>y = sin(3x)cos x</code>；<code>y = tan(2x)</code>；<code>y = sec(1 − x²)</code>。')
+  + det('答案与思路',
+    p('<b>1.</b> <code>y′ = −1/x²</code>，在 2 处斜率 <code>−1/4</code>，切点 <code>(2, 1/2)</code>；切线 <code>y = −(1/4)(x − 2) + 1/2 = −x/4 + 1</code>；法线斜率 4，<code>y = 4(x − 2) + 1/2 = 4x − 15/2</code>。')
+    + p('<b>2.</b> <code>y′ = 3x²</code>，在 1 处斜率 3，法线斜率 <code>−1/3</code>；<code>y = −(1/3)(x − 1) + 1 = −x/3 + 4/3</code>。')
+    + p('<b>3.</b> <code>((x+Δx)³ − x³)/Δx = (3x²Δx + 3x(Δx)² + (Δx)³)/Δx = 3x² + 3xΔx + (Δx)² → 3x²</code>。')
+    + p('<b>4.</b> <code>f′(x) = 3x² + 8x − 5</code>；<code>dy/dx = (1/2)x³ − 5x^{3/2}</code>（把 <code>x⁴/8</code> 看成 <code>(1/8)x⁴</code>，导数 <code>(4/8)x³</code>）。')
+    + p('<b>5.</b> <code>−2x/(x²+1)²</code>（倒数法则）；<code>x/(x²+1)</code> 用商法则得 <code>(1 − x²)/(x²+1)²</code>；<code>(1−x²)/(1+x²)</code> 用商法则得 <code>−4x/(1+x²)²</code>。注意后两题结构相似但结果不同，代 <code>x = 0</code> 检验：前者为 1、后者为 0。')
+    + p('<b>6.</b> <code>3cos3x·cos x − sin3x·sin x</code>（乘积法则 + 链式法则）；<code>2sec²(2x)</code>；<code>−2x sec(1−x²)tan(1−x²)</code>。'))),
+ exam=(cal('exam', '必考', '①用定义求切线/法线（每年至少一小题）；②乘积、商、链式法则的组合求导；③六个三角函数的导数表；④「可导 ⇒ 连续」的证明或反例（<code>|x|</code> 在 0 处）；⑤竖直切线、尖点的判定。')
+  + cal('warn', '易错 1', '<b>漏乘内层导数</b>。链式法则是「外导 × 内导」，写 <code>(6x−7)⁵</code> 的导数时漏掉 6 是最常见的失分。')
+  + cal('warn', '易错 2', '<b>商法则分子顺序颠倒</b>。分子必须是 <code>f′g − fg′</code>；写成 <code>fg′ − f′g</code> 会整体差一个负号。')
+  + cal('warn', '易错 3', '<b>把 <code>(fg)′</code> 当成 <code>f′g′</code></b>，或把 <code>(f/g)′</code> 当成 <code>f′/g′</code>。用具体数字代值检验（如 x = 1）能立刻发现。')
+  + cal('tip', '进阶', '把六个三角函数的导数记成两条链：<code>sin → cos → −sin → −cos</code>（四阶循环）与 <code>tan → sec²</code>、<code>sec → sec·tan</code>（另一条）。考场上推导太慢，记忆更可靠。')),
+ checklist=(h2('方法与清单')
+  + h3('用定义求导（四步）')
+  + st('写出差商 <code>(f(x+Δx) − f(x))/Δx</code>，先不要代 Δx = 0',
+       '按结构变形：整式展开、分式通分、根式乘共轭',
+       '约去分母中的 Δx（这是关键一步）',
+       '令 <code>Δx → 0</code>，把结果整理成标准形式并注明定义域')
+  + h3('写切线/法线方程（三步）')
+  + st('求切点纵坐标 <code>f(a)</code> 与斜率 <code>f′(a)</code>（不可导处先判定切线是否存在）',
+       '切线：<code>y = f(a) + f′(a)(x − a)</code>；法线斜率取 <code>−1/f′(a)</code>（f′(a) = 0 时法线竖直）',
+       '按题目要求整理形式，并用「法线过切点」回代验算')
+  + h3('复合函数求导（由外向内）')
+  + st('把表达式拆成「外层函数 + 内层函数」两层，必要时多拆几层',
+       '外层求导，内层原样保留',
+       '乘以内层导数；若有三层，继续对内层重复第 2、3 步',
+       '化简并用特殊点代值检查（如 x = 0、x = 1）')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p2', '欧几里得的圆切线定义及其局限'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p3–p6', '割线、平均变化率、牛顿商、切线作为割线极限'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p7–p12', '切线方程、y = x² 在 (1,1) 的切线、切线与坐标轴围三角形面积'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p13–p15', '曲线在一点的斜率、1/x 在 x = 2 的斜率、法线及其方程'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p16–p18', '竖直切线（x^{1/3}）与尖点（x^{2/3}）'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p19–p23', '导数定义、四种记号、求值符号、微分 dy = f′(x)dx'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p24–p26', '用定义求 x²、1/x、√x 的导数、幂法则与 O(Δx)² 记号'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p27–p29', '可导 ⇒ 连续、逆不真、左右导数、|x| 在 0 处不可导'),
+    ('Topic 3/EMI_Week3_Lecture1.pdf', 'p30–p32', '基本导数表、和差与常数倍法则及其证明、两道求导任务'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p2–p4', '乘积法则证明与 (x²−1)(x³+3) 的双解法'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p5–p6', '倒数法则及 1/(x²+1)、1/(x+1/x)'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p7–p10', '商法则、两个商法则任务、(x+1)/(x−1) 的法线'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p11–p16', '链式法则、Leibniz 写法、复合不可交换、两道链式任务'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p17–p23', 'sin θ/θ = 1 的面积夹逼证明、(cosθ−1)/θ = 0、sin 与 cos 的导数'),
+    ('Topic 3/EMI_Week3_Lecture2.pdf', 'p24–p31', 'tan/sec/cot/csc 的定义域周期奇偶、四个导数推导与总表、连续可导性'),
+    ('（跳过）Topic 3/Lecture One.html、Lecture Two.html', '—', '登录页快照；p8–p10、p12、p15、p18 等为纯图形页，按相邻文字复原'),
+    ('（拓展）', '—', '「切线与坐标轴围成三角形面积」的一般公式 x₀³/4、切线与法线截距的通用套路为补充；源文件以单题形式出现'))
+)
+
+# ============================================================ 讲 4
+lec(
+ slug='t4-higher-order-extrema-implicit',
+ tzh='第 2 章 · 高阶导数、中值定理、极值与隐函数',
+ ten='Higher-Order Derivatives, Mean-Value Theorem, Extrema and Implicit Differentiation',
+ keywords=['higher-order derivative', 'concavity', 'inflection point', 'mean-value theorem',
+           'Rolle theorem', 'monotonicity', 'critical point', 'extreme value',
+           'implicit differentiation', 'orthogonal trajectories', 'antiderivative',
+           'initial value problem'],
+ files=['Topic 4/EMI_Week4_Lecture1.pdf', 'Topic 4/EMI_Week4_Lecture2.pdf'],
+ part=CH2,
+ overview=(h2('本节定位')
+  + p('第 3 讲建立了导数并给出了求导法则，本讲把导数用到三件具体事情上：① 连续求导得到高阶导数，用来描述「变化率的变化率」（加速度、凹凸性）；② 用中值定理把「一点的导数」与「区间上的整体行为」连起来，从而判断单调性；③ 通过求导反过来找函数（原函数与初值问题），为第 7 讲的积分做准备。')
+  + p('本讲还包含两个技术上非常重要的工具：隐函数求导（方程不解出 y 也能求 y′）与极值判定（临界点 + 闭区间端点）。这两项在模拟卷中直接出现（见第 5 章），必须练到能默写流程。')
+  + p('学完本节你应当能够：')
+  + ck('写出并计算二阶以上的高阶导数，包括 xⁿ、1/(1+x)、sin、cos 的一般公式',
+     '由位置函数读出速度、速率与加速度，并判断加速还是减速',
+     '陈述并应用拉格朗日中值定理与罗尔定理，并用一阶、二阶导数判定单调区间、凹凸与拐点，证明简单不等式',
+     '求闭区间上连续函数的最值（临界点 + 端点比较）',
+     '对隐式方程求一阶与二阶导数，并写出切线方程',
+     '求不定积分并用初始条件定出特解（一阶与二阶初值问题）')),
+ detail=(h3('4.1 高阶导数')
+  + p('导数是函数，所以可以再求导。二阶导数记作 <code>f″(x)</code>、<code>y″</code>、<code>d²y/dx²</code>，定义为 <code>f″ = (f′)′</code>。更高阶依次类推，n 阶导数记作 <code>f⁽ⁿ⁾(x)</code>、<code>dⁿy/dxⁿ</code>，并约定 <code>f⁽⁰⁾ = f</code>。')
+  + p('记号警告：<code>d²y/dx²</code> 是整体记号，表示「对 y 求两次关于 x 的导数」，不是 <code>(dy)²/(dx)²</code> 这样的分数；但它在链式法则与代换中又能像分数一样运算（第 7 讲换元积分会用到）。')
+  + h3('4.2 xⁿ 与多项式的 n 阶导数')
+  + p('对 <code>f(x) = xⁿ</code>（n 为正整数），逐次求导：')
+  + p('<code>f⁽ᵏ⁾(x) = n(n−1)(n−2)⋯(n−k+1) x^{n−k} = n!/(n−k)! · x^{n−k}</code>（<code>0 ≤ k ≤ n</code>），')
+  + p('当 <code>k &gt; n</code> 时 <code>f⁽ᵏ⁾ = 0</code>。这里的阶乘定义为 <code>n! = n(n−1)⋯3·2·1</code>（<code>n ≥ 1</code>），并规定 <code>0! = 1</code>。')
+  + p('对一般多项式 <code>P(x) = aₙxⁿ + ⋯ + a₁x + a₀</code>（<code>aₙ ≠ 0</code>），由线性性可得')
+  + p('<code>P⁽ᵏ⁾(x) = aₙ · n!/(n−k)! · x^{n−k} + ⋯</code>（<code>k ≤ n</code>），特别地 <code>P⁽ⁿ⁾(x) = n! aₙ</code>——一个常数，再求导就是 0。这条结论是后面泰勒展开的理论基础（本课只需知道）。')
+  + h3('4.3 运动学：位置、速度、速率、加速度')
+  + p('设质点沿 x 轴运动，位置为 <code>x(t)</code>（t 为时间）：')
+  + ul('<b>速度</b> <code>v(t) = x′(t)</code>，是位置的变化率；',
+       '<b>速率</b>（speed）<code>= |v(t)|</code>，是标量，没有方向；',
+       '<b>加速度</b> <code>a(t) = v′(t) = x″(t)</code>，是速度的变化率。')
+  + p('速度符号的读法：<code>v &gt; 0</code> 向正方向（右）运动；<code>v &lt; 0</code> 向负方向（左）运动；<code>v = 0</code> 瞬时静止（此时 <code>x(t)</code> 处于临界点）。')
+  + p('<b>加速还是减速的判据</b>：看 <code>v</code> 与 <code>a</code> 的<b>符号是否相同</b>。同号则速率增大（加速），异号则速率减小（减速），与 v 本身的正负无关。这一点比「a &gt; 0 就是加速」准确得多，也是模拟卷的考点。')
+  + p('源文件例子：<code>x(t) = t³ − 6t²</code>，则 <code>v(t) = 3t² − 12t</code>，<code>a(t) = 6t − 12</code>。在 <code>t = 3</code>：<code>x(3) = 27 − 54 = −27</code>（原点左侧 27 m），<code>v(3) = 27 − 36 = −9</code>（向左 9 m/s），<code>a(3) = 6</code>（加速度 +6 m/s²，方向向右，故在减速）。源文件此处把 v 的值印成 −9 却把时间标成 1，属排版错位，按 <code>v(3) = −9</code> 理解。）')
+  + p('源文件任务：<code>x(t) = 2t³ − 15t² + 24t</code>，求 <code>v</code>、<code>a</code>，并判断 <code>t = 2</code> 时的运动方向与速率。')
+  + p('<code>v = 6t² − 30t + 24</code>，<code>a = 12t − 30</code>；<code>v(2) = 24 − 60 + 24 = −12</code>，<code>a(2) = 24 − 30 = −6</code>。v 与 a 同号（都为负），故速率在增大：向左运动，速率为 12 m/s 且越来越快。')
+  + h3('4.4 一阶与二阶导数的几何意义')
+  + tb(('导数', '几何含义', '判断信息'),
+       ('<code>f′(x)</code>', '切线斜率，瞬时变化率', '<code>f′ &gt; 0</code> 递增；<code>f′ &lt; 0</code> 递减；<code>f′ = 0</code> 驻点'),
+       ('<code>f″(x)</code>', '斜率的变化率（弯曲程度）', '<code>f″ &gt; 0</code> 凹向上；<code>f″ &lt; 0</code> 凹向下；变号处为拐点'))
+  + p('源文件两个对照例子：<code>f(x) = x²</code>：<code>f′ = 2x</code>（<code>x &lt; 0</code> 递减、<code>x = 0</code> 驻点、<code>x &gt; 0</code> 递增），<code>f″ = 2 &gt; 0</code>（处处凹向上）。<code>f(x) = x³</code>：<code>f′ = 3x²</code>（除 0 外都递增，<code>x = 0</code> 处驻点但不改变单调性），<code>f″ = 6x</code>（<code>x &lt; 0</code> 凹向下、<code>x &gt; 0</code> 凹向上，<code>x = 0</code> 是拐点）。')
+  + cal('warn', 'f′ = 0 不等于极值', '<code>x³</code> 在 0 处 <code>f′ = 0</code>，但函数在那里既不是极大也不是极小——它是「驻而不极」的拐点。判断极值必须看 f′ 在该点两侧是否变号。')
+  + h3('4.5 三角函数与 1/(1+x) 的高阶导数')
+  + p('sin 与 cos 的导数四步一循环：')
+  + p('<code>sin → cos → −sin → −cos → sin</code>，')
+  + p('用「位移形式」可以把循环写成一个公式：')
+  + p('<b><code>(sin x)⁽ⁿ⁾ = sin(x + nπ/2)</code>，<code>(cos x)⁽ⁿ⁾ = cos(x + nπ/2)</code></b>，')
+  + p('并且 <code>f⁽ⁿ⁺⁴⁾ = f⁽ⁿ⁾</code>（周期为 4）。验证：<code>n = 1</code> 时 <code>sin(x + π/2) = cos x</code> ✓；<code>n = 2</code> 时 <code>sin(x + π) = −sin x</code> ✓。')
+  + p('源文件例 1：<code>y = cos 2x</code> 的四阶导数。链式法则每求一次多一个因子 2：<code>y′ = −2sin2x</code>、<code>y″ = −4cos2x</code>、<code>y‴ = 8sin2x</code>、<code>y⁗ = 16cos2x = 2⁴cos2x</code>。')
+  + p('源文件例 2：<code>y = 1/(1+x) = (1+x)⁻¹</code> 的 n 阶导数。逐次计算：<code>y′ = −(1+x)⁻²</code>、<code>y″ = 2(1+x)⁻³</code>、<code>y‴ = −3!(1+x)⁻⁴</code>、<code>y⁗ = 4!(1+x)⁻⁵</code>，归纳出')
+  + p('<b><code>y⁽ⁿ⁾ = (−1)ⁿ n! (1+x)^{−n−1}</code></b>（<code>n ≥ 1</code>）。')
+  + p('归纳法验证：假设 <code>n = k</code> 成立，则求导一次得 <code>(−1)ᵏk!(−k−1)(1+x)^{−k−2} = (−1)^{k+1}(k+1)!(1+x)^{−(k+1)−1}</code>，正是公式对 <code>k+1</code> 的预测；又 <code>n = 1</code> 已验证，故对所有正整数成立。源文件把这一步写成「if the formula is correct for n = k, then it is also correct for n = k+1」，这就是数学归纳法的标准句式。')
+  + h3('4.6 中值定理')
+  + p('源文件的引入故事：从 Lahti 到 Lappeenranta 全程 150 mile，用了 2 小时，则途中必有某一时刻的瞬时速度恰好等于平均速度 75 mph。这就是中值定理的现实版本。')
+  + p('<b>拉格朗日中值定理</b>（Mean-Value Theorem, MVT）：若 f 在闭区间 <code>[a, b]</code> 上连续、在开区间 <code>(a, b)</code> 内可导，则存在 <code>c ∈ (a, b)</code> 使')
+  + p('<b><code>f′(c) = (f(b) − f(a))/(b − a)</code></b>。')
+  + p('几何意义：曲线上必有一点的切线与连接两端点的割线<b>平行</b>。源文件给出的证明思想很直观：把一条与割线平行的虚线从下方往上平移，第一次接触曲线时的那条线就是切线，切点就是 c；也可以从上方往下移。严格证明需要构造辅助函数 <code>h(x) = f(x) − f(a) − [(f(b)−f(a))/(b−a)](x − a)</code>，验证 <code>h(a) = h(b) = 0</code>，再用罗尔定理。')
+  + p('三个条件缺一不可：闭区间连续、开区间可导（端点可不导）、以及区间有限。<code>f(x) = |x|</code> 在 <code>[−1, 1]</code> 上不满足「开区间可导」，定理结论确实失效（找不到斜率为 0 的点，因为割线斜率就是 0 而 f′ 从不取 0）。')
+  + h3('4.7 罗尔定理')
+  + p('<b>罗尔定理</b>（Rolle’s Theorem）：若 f 在 <code>[a, b]</code> 上连续、在 <code>(a, b)</code> 内可导，且 <code>f(a) = f(b)</code>，则存在 <code>c ∈ (a, b)</code> 使 <code>f′(c) = 0</code>。')
+  + p('它是 MVT 在 <code>f(a) = f(b)</code> 时的特例（此时割线斜率为 0）。反过来，MVT 的严格证明又依赖于罗尔定理，两者是同一件事的两种形态。')
+  + h3('4.8 由 MVT 得到单调性判据')
+  + p('设 f 在区间 I 上连续、在内部可导，则：')
+  + ul('<code>f′(x) &gt; 0</code> 对一切内点成立 ⟹ f 在 I 上严格递增；',
+       '<code>f′(x) &lt; 0</code> ⟹ 严格递减；',
+       '<code>f′(x) ≥ 0</code> ⟹ 不减（nondecreasing）；<code>f′(x) ≤ 0</code> ⟹ 不增；',
+       '<code>f′(x) = 0</code> 恒成立 ⟹ f 为常数。')
+  + p('证明（以递增为例）：任取 <code>x₁ &lt; x₂</code>，在 <code>[x₁, x₂]</code> 上用 MVT，得 <code>f(x₂) − f(x₁) = (x₂ − x₁)f′(c)</code>，其中 <code>c ∈ (x₁, x₂)</code>。因为 <code>x₂ − x₁ &gt; 0</code> 且 <code>f′(c) &gt; 0</code>，所以 <code>f(x₂) &gt; f(x₁)</code>。')
+  + cal('warn', '逆命题不成立', '<code>f(x) = x³</code> 在 ℝ 上严格递增，但 <code>f′(0) = 0</code>。所以「严格递增 ⟹ f′ &gt; 0 处处成立」是错的，只能说 <code>f′ ≥ 0</code>。答题时若题目要求「证明递增」，用 <code>f′ &gt; 0</code> 是充分条件；若题目说「已知递增」，不能推出 <code>f′ &gt; 0</code>。')
+  + h3('4.9 用 MVT 证明不等式')
+  + p('源文件例子：证明 <code>√(1+x) ≤ 1 + x/2</code> 对 <code>x ≥ −1</code> 成立。令 <code>f(x) = √(1+x)</code>，在 <code>[−1, ∞)</code> 连续、在 <code>(−1, ∞)</code> 可导，<code>f′(x) = 1/(2√(1+x))</code>。分三种情形：')
+  + ul('<b>x &gt; 0</b>：在 <code>[0, x]</code> 上用 MVT，存在 <code>c ∈ (0, x)</code> 使 <code>(√(1+x) − 1)/x = 1/(2√(1+c)) &lt; 1/2</code>，两边乘 <code>x &gt; 0</code> 得 <code>√(1+x) − 1 &lt; x/2</code>；',
+       '<b>−1 &lt; x &lt; 0</b>：在 <code>[x, 0]</code> 上用 MVT，存在 <code>c ∈ (x, 0)</code> 使 <code>(1 − √(1+x))/(−x) = 1/(2√(1+c)) &lt; 1/2</code>，注意此处乘的是负数 <code>x &lt; 0</code>，不等号方向要翻转，仍得 <code>√(1+x) − 1 &lt; x/2</code>；',
+       '<b>x = 0</b>：两边都等于 1，取等号。')
+  + p('合并三种情形即得 <code>√(1+x) ≤ 1 + x/2</code>。注意 <code>x = −1</code> 时左边为 0、右边为 <code>1/2</code>，不等式仍成立（端点单独检查）。')
+  + h3('4.10 极值：定义、临界点与求法')
+  + p('设 c 在 f 的定义域 D 内：<code>f(c)</code> 是<b>绝对最大值</b>（absolute maximum），若对一切 <code>x ∈ D</code> 有 <code>f(x) ≤ f(c)</code>；<b>绝对最小值</b>类似（<code>f(x) ≥ f(c)</code>）。<code>f(c)</code> 是<b>局部最大值</b>（local maximum），若存在含 c 的开区间使该区间内 <code>f(x) ≤ f(c)</code>；局部最小类似。')
+  + p('源文件的图形例子（<code>[a, b]</code> 上的一条曲线）说明：绝对最大在 <code>x₅</code>、绝对最小在 <code>a</code>；局部最大出现在 <code>x₁、x₃、x₅、x₇</code>，局部最小在 <code>x₂、x₄、x₆</code>；而 <code>[x₆, x₇]</code> 上函数为常数，那段区间内每一点既是局部最大又是局部最小。这说明<b>极值点不一定唯一，也不一定孤立</b>。')
+  + p('<b>临界点</b>（critical point）：若 c 是定义域的内点且 <code>f′(c) = 0</code> 或 <code>f′(c)</code> 不存在，则 <code>(c, f(c))</code> 是临界点。临界点可能是绝对极值、局部极值，也可能什么都不是（如 <code>x³</code> 的 0）。')
+  + p('<b>闭区间上求最值的完整流程</b>：① 求 <code>f′</code>；② 找出 <code>(a, b)</code> 内所有 <code>f′ = 0</code> 与 <code>f′</code> 不存在的点；③ 计算这些点与两个端点 <code>a、b</code> 的函数值；④ 取最大者与最小者。端点必须参与比较，这是最容易被忽略的一步。')
+  + p('源文件例：<code>f(x) = x³ − 12x + 1</code>。<code>f′ = 3x² − 12 = 3(x−2)(x+2)</code>，临界点 <code>x = ±2</code>。符号表：<code>(−∞, −2)</code> 上 <code>f′ &gt; 0</code>；<code>(−2, 2)</code> 上 <code>f′ &lt; 0</code>；<code>(2, ∞)</code> 上 <code>f′ &gt; 0</code>。故 <code>x = −2</code> 是局部最大（<code>f(−2) = 17</code>），<code>x = 2</code> 是局部最小（<code>f(2) = −15</code>）。又因 <code>x → ±∞</code> 时 <code>f → ±∞</code>，函数无绝对极值。')
+  + p('源文件任务：<code>f(x) = 12x − x³</code> 在 <code>[−3, 1]</code> 上。<code>f′ = 12 − 3x² = 0</code> 得 <code>x = ±2</code>，只有 <code>x = −2</code> 在区间内。比较 <code>f(−3) = −36 + 27 = −9</code>、<code>f(−2) = −24 + 8 = −16</code>、<code>f(1) = 12 − 1 = 11</code>，故绝对最小 <code>−16</code>（在 <code>x = −2</code>），绝对最大 <code>11</code>（在 <code>x = 1</code>）。')
+  + h3('4.11 隐函数求导')
+  + p('曲线通常是方程 <code>F(x, y) = 0</code> 的图形，例如 <code>x² + y² − 25 = 0</code>。有时能解出 <code>y = f(x)</code>（显函数），有时解不出，但方程仍然在局部确定了一个或多个<b>隐函数</b>（implicit function）<code>y = y(x)</code>。')
+  + p('<b>隐函数求导的步骤</b>：把方程两边对 x 求导，过程中<b>把 y 看成 x 的函数</b>并随时使用链式法则（<code>d/dx[y²] = 2y·y′</code>、<code>d/dx[sin y] = cos y·y′</code>），然后解出 <code>y′</code>。')
+  + p('源文件例：圆 <code>x² + y² = 25</code> 在 <code>(3, −4)</code> 处的斜率。两边求导：<code>2x + 2y y′ = 0</code>，故 <code>y′ = −x/y</code>。代入 <code>(3, −4)</code>：<code>y′ = −3/(−4) = 3/4</code>。')
+  + p('源文件例：<code>y sin y = x³ + cos x</code>。左边用乘积法则 + 链式法则：<code>y′ sin y + y cos y·y′</code>；右边：<code>3x² − sin x</code>。整理得')
+  + p('<b><code>y′ = (3x² − sin x)/(sin y + y cos y)</code></b>。')
+  + p('源文件例：<code>x² + xy + 2y³ = 4</code> 在 <code>(−2, 1)</code> 的切线。先验证点在曲线上：<code>4 + (−2) + 2 = 4</code> ✓。求导：<code>2x + y + x y′ + 6y² y′ = 0</code>。代入 <code>x = −2, y = 1</code>：<code>−4 + 1 − 2y′ + 6y′ = 0</code>，即 <code>4y′ = 3</code>，<code>y′ = 3/4</code>。切线：<code>y = (3/4)(x + 2) + 1</code>，整理为 <code>3x − 4y = −10</code>。')
+  + p('源文件例（二阶导）：<code>xy + y² = 2x</code>。一次求导：<code>y + x y′ + 2y y′ = 2</code>，故 <code>y′ = (2 − y)/(x + 2y)</code>。再次求导：<code>y′ + y′ + x y″ + 2(y′)² + 2y y″ = 0</code>，即 <code>y″(x + 2y) = −2y′(1 + y′)</code>，于是')
+  + p('<code>y″ = −2y′(1 + y′)/(x + 2y) = −2(2 − y)(x + y + 2)/(x + 2y)³</code>（把 <code>y′</code> 代回并通分）。')
+  + p('源文件例（正交轨迹）：证明双曲线族 <code>x² − y² = a</code> 与 <code>xy = b</code>（<code>a, b ≠ 0</code>）在任何交点处正交。前者求导得 <code>2x − 2y y′ = 0</code>，<code>y′ = x/y</code>；后者求导得 <code>y + x y′ = 0</code>，<code>y′ = −y/x</code>。两斜率相乘 <code>(x/y)(−y/x) = −1</code>，故切线垂直。')
+  + h3('4.12 原函数与不定积分')
+  + p('若 <code>F′(x) = f(x)</code>，则称 F 是 f 的一个<b>原函数</b>（antiderivative）。原函数不唯一：若 F 是一个原函数，则 <code>F(x) + C</code>（C 为任意常数）也都是原函数，因为常数的导数为 0。')
+  + p('源文件例子：<code>f(x) = x²</code> 的原函数是 <code>F(x) = x³/3 + C</code>。验算：<code>(x³/3 + C)′ = x²</code> ✓。这也是检查积分结果唯一可靠的方法——<b>求导回去</b>。')
+  + p('f 的全体原函数称为 f 的<b>不定积分</b>（indefinite integral），记作')
+  + p('<b><code>∫f(x)dx = F(x) + C</code></b>，')
+  + p('其中 <code>∫</code> 是积分号（integral sign），f(x) 是被积函数，dx 指明积分变量，C 称为积分常数（constant of integration）。')
+  + p('由已知导数表反读，得到最基本的三条积分公式（源文件列出）：')
+  + ul('<code>∫xᵃdx = x^{a+1}/(a+1) + C</code>（<code>a ≠ −1</code>）',
+       '<code>∫sin x dx = −cos x + C</code>',
+       '<code>∫sec²x dx = tan x + C</code>')
+  + p('再加上显然的 <code>∫dx = x + C</code>、<code>∫cos x dx = sin x + C</code>，就构成了第 7 讲所有积分技巧的原料。注意幂公式里 <code>a = −1</code> 被排除：那正是 <code>∫dx/x = ln|x| + C</code>（第 5 讲），它不属于幂函数族。')
+  + h3('4.13 初值问题')
+  + p('含未知函数导数的方程叫<b>微分方程</b>（differential equation）。一个<b>初值问题</b>（initial-value problem, IVP）由两部分组成：')
+  + ul('微分方程 <code>dy/dx = f(x)</code>',
+       '初始条件 <code>y(x₀) = y₀</code>')
+  + p('源文件给出三步解法：')
+  + st('求通解（general antiderivative）：<code>y = ∫f(x)dx = F(x) + C</code>',
+       '代入初始条件定常数：<code>F(x₀) + C = y₀ ⟹ C = y₀ − F(x₀)</code>',
+       '写出特解：<code>y = F(x) + y₀ − F(x₀)</code>')
+  + p('源文件例：解 <code>dy/dx = 6x² − 1</code>，<code>y(2) = 10</code>。通解 <code>y = 2x³ − x + C</code>；代入 <code>x = 2</code>：<code>16 − 2 + C = 10</code>，故 <code>C = −4</code>；特解 <code>y = 2x³ − x − 4</code>。验算：<code>y′ = 6x² − 1</code> ✓，<code>y(2) = 16 − 2 − 4 = 10</code> ✓。')
+  + p('<b>二阶初值问题</b>：形如 <code>y″ = f(x)</code>，需要两个初始条件（通常给 <code>y′(x₀)</code> 与 <code>y(x₀)</code>），求解要积分两次，产生两个任意常数，分别用两个条件定出。源文件指出它的应用背景：物理中的运动方程、工程中的谐振子、生物中的种群动力学。')
+  + p('源文件例：<code>y″ = sin x</code>，<code>y′(π) = −1</code>，<code>y(π) = 2</code>。第一次积分：<code>y′ = −cos x + C₁</code>；代 <code>y′(π) = −1</code>：<code>−cos π + C₁ = 1 + C₁ = −1</code>，故 <code>C₁ = −2</code>。第二次积分：<code>y = −sin x − 2x + C₂</code>；代 <code>y(π) = 2</code>：<code>0 − 2π + C₂ = 2</code>，故 <code>C₂ = 2 + 2π</code>。特解 <code>y = 2 + 2π − sin x − 2x</code>。')
+  + p('<b>重力加速度</b>（源文件 p23）：近地面重力加速度恒定且向下，<code>g ≈ 9.8</code> m/s²，即 <code>a(t) = −g</code>。两次积分得')
+  + p('<code>v(t) = v₀ − gt</code>，<code>s(t) = s₀ + v₀t − (1/2)gt²</code>，')
+  + p('其中 <code>s₀ = s(0)</code> 是初始位置、<code>v₀ = v′(0)</code> 是初速度（取向上为正）。')
+  + p('源文件例：以 <code>9.8</code> m/s 从地面竖直上抛。<code>s₀ = 0</code>、<code>v₀ = 9.8</code>，故 <code>v = 9.8 − 9.8t</code>、<code>s = 9.8t − 4.9t²</code>。最高点处 <code>v = 0</code> 得 <code>t = 1</code>，最大高度 <code>s(1) = 9.8 − 4.9 = 4.9</code> m。落地时 <code>s = 0</code>：<code>9.8t − 4.9t² = t(9.8 − 4.9t) = 0</code>，得 <code>t = 0</code> 或 <code>t = 2</code>，故 <code>t = 2</code> s 落地；落地速度 <code>v(2) = 9.8 − 19.6 = −9.8</code> m/s，故撞击速率为 <b>9.8</b> m/s（与初速度大小相等，方向相反）。')
+  + h3('4.14 常见误解')
+  + ul('<b>把原函数与导数混为一谈</b>：<code>∫f</code> 求的是「谁求导得 f」，方向与求导相反；写完必须求导回去验算。',
+       '<b>漏写常数 C</b>：不定积分的结果是「一族函数」，漏 C 会整题扣分；二阶 IVP 要两个常数，只写一个说明只积分了一次。',
+       '<b>二阶 IVP 用一个条件定两个常数</b>：先用 <code>y′</code> 的条件定 <code>C₁</code>，再用 <code>y</code> 的条件定 <code>C₂</code>，顺序不能反（因为 <code>C₂</code> 在第二次积分后才出现）。',
+       '<b>重力公式符号错</b>：向上为正时加速度是 <code>−g</code>，所以 <code>v = v₀ − gt</code>；若取向下为正，则全部符号翻转，两种约定不能混用。')),
+
+ kws=K(('higher-order derivative', '高阶导数', 'f″ = (f′)′, f⁽ⁿ⁾ is the n-th derivative.'),
+       ('factorial', '阶乘', 'n! = n(n−1)⋯1 with 0! = 1; appears in (xⁿ)⁽ᵏ⁾.'),
+       ('kinematics', '运动学', 'x(t) position, v = x′ velocity, |v| speed, a = v′ acceleration.'),
+       ('concavity', '凹凸性', 'f″ > 0 concave up, f″ < 0 concave down.'),
+       ('inflection point', '拐点', 'Where concavity changes, i.e. f″ changes sign.'),
+       ('mean-value theorem', '中值定理', 'There is c with f′(c) = (f(b) − f(a))/(b − a).'),
+       ('Rolle theorem', '罗尔定理', 'If f(a) = f(b) and f is differentiable inside, some c has f′(c) = 0.'),
+       ('monotonicity', '单调性', 'f′ > 0 implies increasing; the converse fails for x³.'),
+       ('critical point', '临界点', 'Interior point where f′ = 0 or f′ does not exist.'),
+       ('extreme value', '极值', 'Absolute or local maximum/minimum of a function.'),
+       ('implicit differentiation', '隐函数求导', 'Differentiate F(x, y) = 0 treating y as a function of x.'),
+       ('orthogonal trajectories', '正交轨迹', 'Two families of curves meeting at right angles: slopes multiply to −1.'),
+       ('antiderivative', '原函数', 'A function F with F′ = f; determined only up to a constant.'),
+       ('indefinite integral', '不定积分', 'The family F(x) + C of all antiderivatives, written ∫f(x)dx.'),
+       ('initial value problem', '初值问题', 'A differential equation plus initial condition fixing the constant.')),
+ examples=(qa('例 1（源文件 p7–p8）　质点位置 x(t) = 2t³ − 15t² + 24t（米），求 v、a，并判断 t = 2 s 时的运动方向与速率变化。',
+    p('<b>一阶导：</b><code>v(t) = x′(t) = 6t² − 30t + 24</code>。<b>二阶导：</b><code>a(t) = v′(t) = 12t − 30</code>。')
+    + p('<b>代 t = 2：</b><code>v(2) = 24 − 60 + 24 = −12</code>；<code>a(2) = 24 − 30 = −6</code>。')
+    + p('<b>方向：</b>v &lt; 0，质点向负方向（左）运动。<b>速率：</b>|v| = 12 m/s。')
+    + p('<b>加速/减速：</b>v 与 a 同号（都为负），故速率在<b>增大</b>——它向左运动且越来越快。若符号相反，则是减速。')
+    + p('<b>方法迁移：</b>三步走——求 v = x′、求 a = v′、在指定时刻比较 v 与 a 的符号。注意速率是 |v|，写答案时不能漏绝对值。'))
+   + qa('例 2（源文件 p25–p27）　用中值定理证明 √(1 + x) ≤ 1 + x/2（x ≥ −1）。',
+    p('令 <code>f(x) = √(1+x)</code>，在 <code>[−1, ∞)</code> 连续、在 <code>(−1, ∞)</code> 可导，<code>f′(x) = 1/(2√(1+x))</code>。')
+    + p('<b>情形 1（x &gt; 0）：</b>在 <code>[0, x]</code> 上用 MVT，存在 <code>c ∈ (0, x)</code> 使 <code>(√(1+x) − 1)/x = 1/(2√(1+c))</code>。因为 <code>c &gt; 0</code>，所以 <code>√(1+c) &gt; 1</code>，右端 <code>&lt; 1/2</code>。两边乘 <code>x &gt; 0</code>：<code>√(1+x) − 1 &lt; x/2</code>。')
+    + p('<b>情形 2（−1 &lt; x &lt; 0）：</b>在 <code>[x, 0]</code> 上用 MVT，存在 <code>c ∈ (x, 0)</code> 使 <code>(1 − √(1+x))/(0 − x) = 1/(2√(1+c))</code>。此时 <code>1 + c &lt; 1</code>，故 <code>√(1+c) &lt; 1</code>、<code>f′(c) &gt; 1/2</code>，于是 <code>(1 − √(1+x))/(−x) &gt; 1/2</code>。两边乘 <code>−x &gt; 0</code> 得 <code>1 − √(1+x) &gt; −x/2</code>，即 <code>√(1+x) &lt; 1 + x/2</code>。')
+    + p('<b>情形 3（x = 0）：</b>两边都等于 1，取等号。三种情形合并即得 <code>√(1+x) ≤ 1 + x/2</code>；<code>x = −1</code> 时左边为 0、右边为 <code>1/2</code>，端点单独检查也成立。')
+    + p('<b>符号从哪来：</b>分母 <code>0 − x = −x</code> 在 <code>x &lt; 0</code> 时为正，乘它不改方向；真正决定方向的是 <code>√(1+c) &lt; 1</code> 让导数比 <code>1/2</code> 大。若误写成 <code>f′(c) &lt; 1/2</code>，整条不等式就会反过来，这是本题唯一的陷阱。'))
+   + qa('例 3（源文件 p5–p7）　求 f(x) = x³ − 12x + 1 的极值；再求 f(x) = 12x − x³ 在 [−3, 1] 上的最值。',
+    p('<b>(a)</b> <code>f′ = 3x² − 12 = 3(x−2)(x+2)</code>，临界点 <code>x = ±2</code>。符号表：<code>x &lt; −2</code> 时 <code>f′ &gt; 0</code>，<code>−2 &lt; x &lt; 2</code> 时 <code>f′ &lt; 0</code>，<code>x &gt; 2</code> 时 <code>f′ &gt; 0</code>。')
+    + p('故 <code>x = −2</code> 为局部最大，<code>f(−2) = −8 + 24 + 1 = 17</code>；<code>x = 2</code> 为局部最小，<code>f(2) = 8 − 24 + 1 = −15</code>。因 <code>x → ±∞</code> 时 <code>f → ±∞</code>，无绝对极值。')
+    + p('<b>(b)</b> <code>f′ = 12 − 3x² = 0</code> 得 <code>x = ±2</code>；区间 <code>[−3, 1]</code> 内只有 <code>x = −2</code>。')
+    + p('比较三点：<code>f(−3) = −36 + 27 = −9</code>；<code>f(−2) = −24 + 8 = −16</code>；<code>f(1) = 12 − 1 = 11</code>。')
+    + p('故绝对最小值为 <code>−16</code>（在 <code>x = −2</code>），绝对最大值为 <code>11</code>（在 <code>x = 1</code>）。注意 <code>x = 2</code> 不在区间内，不能参与比较；端点 <code>x = 1</code> 恰好取得最大值，这正是「闭区间必须查端点」的典型例子。'))
+   + qa('例 4（源文件 p11–p13）　求圆 x² + y² = 25 在 (3, −4) 处的斜率，以及 x² + xy + 2y³ = 4 在 (−2, 1) 处的切线。',
+    p('<b>(a)</b> 两边对 x 求导，注意 y 是 x 的函数：<code>2x + 2y·y′ = 0</code>，故 <code>y′ = −x/y</code>。')
+    + p('代入 <code>(3, −4)</code>：<code>y′ = −3/(−4) = 3/4</code>。可以验证：圆心到该点的半径斜率为 <code>−4/3</code>，切线斜率与其乘积为 <code>−1</code>，一致。')
+    + p('<b>(b)</b> 先验证 <code>(−2, 1)</code> 在曲线上：<code>4 + (−2)(1) + 2(1)³ = 4</code> ✓。')
+    + p('求导：<code>2x + y + x y′ + 6y² y′ = 0</code>（其中 <code>xy</code> 用乘积法则，<code>2y³</code> 用链式法则）。')
+    + p('代入 <code>x = −2, y = 1</code>：<code>−4 + 1 − 2y′ + 6y′ = 0</code>，即 <code>4y′ = 3</code>，<code>y′ = 3/4</code>。')
+    + p('切线：<code>y = (3/4)(x + 2) + 1</code>，两边乘 4 整理得 <code>4y = 3x + 10</code>，即 <code>3x − 4y = −10</code>。')
+    + p('<b>通用流程：</b>① 验证点在曲线上；② 两边求导（y 视为 y(x)）；③ 先代点再解 y′（比先解出 y′ 再代点更省力）；④ 用点斜式写切线。'))),
+ practice=(ol('求 <code>y = cos 2x</code> 的四阶导数。',
+          '求 <code>y = 1/(1+x)</code> 的 n 阶导数，并用归纳法说明。',
+          '求 <code>f(x) = x³ − 3x + 6</code> 的单调区间。',
+          '证明 <code>f(x) = x³ − 3x² + 1</code> 在 <code>(0, 2)</code> 上递减；并说明 <code>f(x) = sin x</code> 在 <code>(−π/2, π/2)</code> 上递增。',
+          '解初值问题 <code>dy/dx = 6x² − 1</code>，<code>y(2) = 10</code>。',
+          '解二阶初值问题 <code>y″ = sin x</code>，<code>y′(π) = −1</code>，<code>y(π) = 2</code>；并求 <code>xy + y² = 2x</code> 的 <code>y″</code>（用 <code>y′</code> 表示）。')
+  + det('答案与思路',
+    p('<b>1.</b> <code>y′ = −2sin2x</code>、<code>y″ = −4cos2x</code>、<code>y‴ = 8sin2x</code>、<code>y⁗ = 16cos2x</code>。规律：每求一次导乘 2，符号四步循环。')
+    + p('<b>2.</b> <code>y⁽ⁿ⁾ = (−1)ⁿ n! (1+x)^{−n−1}</code>。归纳：<code>n = 1</code> 时 <code>−(1+x)⁻²</code> ✓；若对 k 成立，再求导得 <code>(−1)ᵏk!(−k−1)(1+x)^{−k−2} = (−1)^{k+1}(k+1)!(1+x)^{−(k+1)−1}</code>，形式上与 k+1 的预测一致。')
+    + p('<b>3.</b> <code>f′ = 3x² − 3 = 3(x−1)(x+1)</code>。递增区间 <code>(−∞, −1)</code> 与 <code>(1, ∞)</code>，递减区间 <code>(−1, 1)</code>。')
+    + p('<b>4.</b> <code>f′ = 3x² − 6x = 3x(x−2)</code>，在 <code>(0, 2)</code> 上 <code>x &gt; 0</code> 且 <code>x − 2 &lt; 0</code>，故 <code>f′ &lt; 0</code>，递减。<code>g(x) = sin x</code>，<code>g′ = cos x &gt; 0</code> 对 <code>x ∈ (−π/2, π/2)</code> 成立（该区间内 cos 为正），故递增。')
+    + p('<b>5.</b> <code>y = ∫(6x² − 1)dx = 2x³ − x + C</code>。代 <code>y(2) = 10</code>：<code>16 − 2 + C = 10</code>，得 <code>C = −4</code>，故 <code>y = 2x³ − x − 4</code>。')
+    + p('<b>6.</b> 第一次积分：<code>y′ = −cos x + C₁</code>；代 <code>y′(π) = −1</code>：<code>−(−1) + C₁ = −1</code>，<code>C₁ = −2</code>。第二次积分：<code>y = −sin x − 2x + C₂</code>；代 <code>y(π) = 2</code>：<code>0 − 2π + C₂ = 2</code>，<code>C₂ = 2 + 2π</code>，故 <code>y = 2 + 2π − sin x − 2x</code>。对 <code>xy + y² = 2x</code>：<code>y′ = (2 − y)/(x + 2y)</code>，<code>y″ = −2(2 − y)(x + y + 2)/(x + 2y)³</code>。'))),
+ exam=(cal('exam', '必考', '①高阶导数（尤其 <code>cos2x</code> 型与 <code>1/(1+x)</code> 型）；②运动学三量（v、|v|、a）与加速/减速判断；③MVT 证明不等式或单调性；④闭区间最值（临界点 + 端点）；⑤隐函数求导与切线；⑥一阶、二阶初值问题的定常数。')
+  + cal('warn', '易错 1', '<b>把「加速」当成「a &gt; 0」</b>。正确判据是 v 与 a 同号；v = −12、a = −6 时质点在加速（速率增大）。')
+  + cal('warn', '易错 2', '<b>求闭区间最值时漏掉端点</b>。临界点只覆盖内部，端点必须单独代值比较；本题中最大值恰在端点取得。')
+  + cal('warn', '易错 3', '<b>隐函数求导漏掉 y′</b>。对 <code>y²</code> 求导得 <code>2y·y′</code>，对 <code>xy</code> 得 <code>y + x y′</code>，对 <code>sin y</code> 得 <code>cos y·y′</code>；少写一个 y′ 就整题错。')
+  + cal('warn', '易错 4', '<b>不定积分漏 C 或二阶初值问题只定一个常数</b>。二阶方程要积分两次，得到 C₁、C₂ 两个常数，必须用两个初始条件分别定出。')
+  + cal('tip', '进阶', 'MVT 的三种用法要分清：证不等式（构造函数 + 估计 f′）、证单调（f′ 符号）、证「存在某点满足条件」（存在性）。考卷上看到「证明存在」几乎都指向 MVT 或罗尔定理。')),
+ checklist=(h2('方法与清单')
+  + h3('闭区间求最值（四步）')
+  + st('求 <code>f′(x)</code> 并因式分解',
+       '解 <code>f′ = 0</code>，并找出 <code>f′</code> 不存在的内点，筛出落在区间内的临界点',
+       '计算这些点的函数值，<b>再加上两个端点的函数值</b>',
+       '比较大小，写出最大值、最小值及其对应的 x')
+  + h3('隐函数求导（四步）')
+  + st('把方程整理为 <code>F(x, y) = 0</code>，先验证给定点确实在曲线上',
+       '两边对 x 求导，凡含 y 的项都要乘 <code>y′</code>（链式法则），含 <code>xy</code> 的项用乘积法则',
+       '把已知点的坐标代入，先求数值再解 <code>y′</code>（比先解表达式再代点省力）',
+       '写切线/法线时用点斜式，并整理成题目要求的形式')
+  + h3('解初值问题（三步）')
+  + st('求不定积分得到通解，带一个常数 C（二阶方程要积两次、带两个常数）',
+       '把初始条件代入，解出常数（二阶要分别用 <code>y′</code> 与 <code>y</code> 的条件）',
+       '把常数写回通解得到特解，并回代初始条件验算')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p2–p4', '高阶导数记号（二阶与 n 阶）'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p5–p8', '运动学三量、速度符号解释、x = t³−6t² 与 2t³−15t²+24t 的任务'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p9–p10', '一阶/二阶导数的几何意义、凹凸与拐点、x² 与 x³ 对照'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p11–p19', 'xⁿ 的 n 阶导数与阶乘、多项式的 n 阶导数、sin/cos 的周期性与位移公式、cos2x 与 1/(1+x) 的例题'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p20–p27', '中值定理的现实引入、陈述、几何证明思想、√(1+x) ≤ 1 + x/2 的三情形证明'),
+    ('Topic 4/EMI_Week4_Lecture1.pdf', 'p28–p33', '罗尔定理、单调性定义、一阶导数判据及证明、x³ 反例、三道单调性任务'),
+    ('Topic 4/EMI_Week4_Lecture2.pdf', 'p2–p7', '绝对/局部极值定义、图形示例、临界点、闭区间最值流程、x³−12x+1 与 12x−x³'),
+    ('Topic 4/EMI_Week4_Lecture2.pdf', 'p9–p16', '隐函数概念与求导步骤、圆斜率、y sin y = x³+cos x、x²+xy+2y³=4 的切线、二阶隐导、正交轨迹'),
+    ('Topic 4/EMI_Week4_Lecture2.pdf', 'p17–p19', '原函数、不定积分与基本公式、初值问题三步'),
+    ('Topic 4/EMI_Week4_Lecture2.pdf', 'p20–p23', '一阶 IVP 例题、二阶 IVP 及其应用、自由落体公式'),
+    ('Topic 4/EMI_Week4_Lecture2.pdf', 'p24–p26', '上抛物体的最大高度与落地速度'),
+    ('（跳过）Topic 4/Lecture One.html、Lecture Two.html', '—', '登录页快照；p8、p12、p23 等为推导示意图，按公式与结论复原'),
+    ('（拓展）', '—', '二阶隐导的通分结果、MVT 的辅助函数构造、加速/减速的符号判据为衔接性补充，源文件以结论形式给出'))
+)
+
+# ============================================================ 讲 5
+lec(
+ slug='t5-inverse-exp-log',
+ tzh='第 3 章 · 反函数、指数与对数',
+ ten='Inverse Functions, Exponential and Logarithmic Functions',
+ keywords=['inverse function', 'one-to-one', 'transcendental function', 'exponential function',
+           'logarithm', 'natural logarithm', 'Euler number', 'logarithmic differentiation',
+           'exponential growth', 'Newton law of cooling', 'logistic model'],
+ files=['Topic 5/EMI_Week5_Lecture1.pdf', 'Topic 5/EMI_Week5_Lecture2.pdf'],
+ part=CH3,
+ overview=(h2('本节定位')
+  + p('到此为止，函数库还很贫乏：多项式、有理函数、三角函数。本讲补上最重要的一族——指数函数与对数函数，它们不是靠有限次加减乘除与开方构造出来的，所以叫超越函数（transcendental function）。工程里的充电、冷却、放射性衰变、药物代谢、人口增长，全都要用这族函数描述。')
+  + p('技术上本讲做了两件事：第一，用反函数把「一一对应的函数」翻过来，并给出反函数的求导公式（它把「求反函数导数」变成「求原函数导数再取倒数」）；第二，把自然对数 ln x 定义为 <code>y = 1/t</code> 下方的面积，由此推出 <code>(ln x)′ = 1/x</code>，再反过来定义 e 与 eˣ。这条「面积 → 对数 → 指数」的逻辑链是本课程最漂亮的一段推导。')
+  + p('学完本节你应当能够：')
+  + ck('判断反函数是否存在并写出其定义域与值域，用 <code>(f⁻¹)′(y) = 1/f′(x)</code> 求反函数在一点的导数',
+     '区分指数函数与幂函数，写出两者的定义域、值域与渐近线',
+     '熟练运用指数与对数的六条法则化简表达式、解指数方程',
+     '证明 <code>(ln x)′ = 1/x</code> 与 <code>(eˣ)′ = eˣ</code>，并写出对应的积分公式',
+     '用对数求导法处理 <code>x^x</code>、<code>(sin x)^x</code> 这类变底变指数的函数',
+     '建立并求解指数增长/衰减、牛顿冷却与 logistic 三类模型')),
+ detail=(h3('5.1 反函数')
+  + p('若 f 是<b>一一对应</b>（one-to-one）的函数，定义域 D、值域 R，则它有<b>反函数</b>（inverse function）<code>f⁻¹</code>，满足')
+  + p('<b><code>y = f⁻¹(x) ⟺ x = f(y)</code></b>。')
+  + p('要点：<code>f⁻¹</code> 的定义域是 f 的值域 R，<code>f⁻¹</code> 的值域是 f 的定义域 D。注意 <code>f⁻¹</code> 里的 −1 是「反函数」的记号，<b>不是</b>倒数 <code>1/f</code>。')
+  + p('源文件例子：<code>f(x) = x³</code> 在 ℝ 上严格递增，故一一对应。由 <code>y = x³</code> 解得 <code>x = ∛y</code>，所以 <code>f⁻¹(y) = ∛y</code>，换成自变量记号即 <code>f⁻¹(x) = ∛x</code>。')
+  + p('<b>五条性质</b>：① <code>y = f⁻¹(x) ⟺ x = f(y)</code>；② <code>dom f⁻¹ = range f</code>；③ <code>range f⁻¹ = dom f</code>；④ 消去恒等式 <code>f⁻¹(f(x)) = x</code>（<code>x ∈ dom f</code>）、<code>f(f⁻¹(x)) = x</code>（<code>x ∈ dom f⁻¹</code>）、<code>(f⁻¹)⁻¹ = f</code>；⑤ <code>f⁻¹</code> 的图像是 f 的图像关于直线 <code>y = x</code> 的<b>反射</b>。')
+  + p('第 ⑤ 条的理由很直接：f 上的点 <code>(a, b)</code> 表示 <code>f(a) = b</code>，而 <code>f⁻¹(b) = a</code>，所以 <code>(b, a)</code> 在 <code>f⁻¹</code> 上。交换两个坐标正是关于 <code>y = x</code> 的对称。要画在同一张图上比较时，必须把 <code>f⁻¹</code> 也写成以 x 为自变量的形式。')
+  + p('源文件的图例：<code>f(x) = √(2x + 1)</code>（<code>x ≥ −1/2</code>）与 <code>f⁻¹(x) = (x² − 1)/2</code>（<code>x ≥ 0</code>）。两条曲线关于 <code>y = x</code> 对称；把 <code>f⁻¹</code> 限制在 <code>x ≥ 0</code> 是必要的，因为原函数的值域是 <code>[0, ∞)</code>。')
+  + h3('5.2 反函数的导数')
+  + p('若 f 在区间 I 上可导、一一对应，且 <code>f′(x) ≠ 0</code> 对一切 <code>x ∈ I</code> 成立，则 <code>f⁻¹</code> 在 <code>y = f(x)</code> 处可导，且')
+  + p('<b><code>(f⁻¹)′(y) = 1/f′(x)</code>，其中 <code>y = f(x)</code></b>。')
+  + p('证明：由定义 <code>y = f⁻¹(x) ⟺ x = f(y)</code>。两边对 x 求导，左边得 1，右边用链式法则得 <code>f′(y)·(dy/dx)</code>，于是 <code>1 = f′(y)·(f⁻¹)′(x)</code>，即 <code>(f⁻¹)′(x) = 1/f′(y)</code>。')
+  + p('用 Leibniz 记号更好记：<code>dx/dy = 1/(dy/dx)</code>——反函数的导数等于原函数导数之倒数。几何上，两条关于 <code>y = x</code> 对称的曲线，其切线的倾斜角互补（和为 90°），所以斜率互为倒数。')
+  + p('源文件例 2：<code>f(x) = x³ + x</code>，证明它在全实数轴上可逆，并求 <code>(f⁻¹)′(2)</code>。')
+  + p('因为 <code>f′(x) = 3x² + 1 &gt; 0</code> 对一切 x 成立，f 严格递增，故一一对应、可逆。设 <code>y = f⁻¹(x)</code>，则 <code>x = f(y) = y³ + y</code>。要求 <code>(f⁻¹)′(2)</code>，先找 <code>y</code> 使 <code>f(y) = 2</code>：<code>y³ + y = 2</code>，试 <code>y = 1</code> 得 <code>2</code> ✓。于是')
+  + p('<code>(f⁻¹)′(2) = 1/f′(1) = 1/(3·1 + 1) = 1/4</code>。')
+  + cal('tip', '关键一步是「找原像」', '反函数导数公式里出现的是 <code>f′(y)</code>，其中 y 是「输出值对应的输入」。所以必须先解 <code>f(y) = 给定值</code>（通常靠试算），不能直接把给定值代入 <code>f′</code>。这是最常错的地方。')
+  + h3('5.3 代数函数与超越函数')
+  + p('<b>代数函数</b>（algebraic function）：由多项式经有限次加、减、乘、除与开方构造出来的函数，例如 <code>√(x³ − 1)/(2x + 1)</code>、<code>(x + 1)^{2/5}</code>。')
+  + p('<b>超越函数</b>（transcendental function）：不能用上述方式构造的函数，例如 <code>sin x</code>、<code>cos x</code>、<code>2ˣ</code>、<code>ln x</code>。它们常作为「非代数函数的反函数」或「微分方程的解」出现。')
+  + p('源文件给的<b>超越判别准则</b>：若 <code>y = f(x)</code> 满足任何形如 <code>pₙ(y)xⁿ + ⋯ + p₁(y)x + p₀(y) = 0</code>（其中 <code>p₀, …, pₙ</code> 是 x 的多项式）的多项式方程都不成立，则它是超越函数。历史注记：术语由 Leibniz 于 1682 年引入，Euler 在 1748 年系统化了函数分类。')
+  + h3('5.4 指数函数')
+  + p('指数函数（exponential function）形如 <code>f(x) = aˣ</code>，底数 <code>a &gt; 0</code> 为常数，指数 x 为变量。指数为整数与有理数时的定义：')
+  + ul('<code>a⁰ = 1</code>；<code>aⁿ = a·a⋯a</code>（n 个因子，<code>n = 1, 2, 3, …</code>）',
+       '<code>a^{−n} = 1/aⁿ</code>',
+       '<code>a^{m/n} = (a^{1/n})^m = ⁿ√(aᵐ)</code>，其中 <code>a^{1/n}</code> 是满足 <code>bⁿ = a</code> 的正数 b')
+  + p('指数为无理数时，用有理数逼近取极限：<code>aˣ = lim_{r→x, r 有理} a^r</code>。这个定义保证了 <code>aˣ</code> 在 ℝ 上连续。')
+  + p('源文件的图显示了不同底数的差别：<code>a &gt; 1</code> 时曲线单调递增、过 <code>(0, 1)</code>、以 x 轴为水平渐近线；<code>0 &lt; a &lt; 1</code> 时单调递减，同样过 <code>(0, 1)</code>。')
+  + p('<b>指数函数与幂函数的区别</b>（源文件专门用一页强调）：')
+  + tb(('类型', '形式', '变量位置', '例子'),
+       ('指数函数', '<code>aˣ</code>', '变量在指数上', '<code>2ˣ</code>、<code>(1/2)ˣ</code>、<code>eˣ</code>'),
+       ('幂函数', '<code>xᵃ</code>', '变量在底数上', '<code>x²</code>、<code>√x</code>、<code>x^π</code>'))
+  + p('这个区分直接决定求导方式：<code>(x²)′ = 2x</code>（幂法则），而 <code>(2ˣ)′ = 2ˣ ln 2</code>（指数法则），两者完全不同。')
+  + h3('5.5 对数函数')
+  + p('当 <code>a &gt; 0, a ≠ 1</code> 时 <code>f(x) = aˣ</code> 是一一对应，故有反函数，称为<b>以 a 为底的对数函数</b>（logarithm）：')
+  + p('<b><code>y = log_a x ⟺ x = a^y</code></b>（<code>a &gt; 0, a ≠ 1</code>）。')
+  + tb(('函数', '定义域', '值域'),
+       ('<code>aˣ</code>', '<code>(−∞, ∞)</code>', '<code>(0, ∞)</code>'),
+       ('<code>log_a x</code>', '<code>(0, ∞)</code>', '<code>(−∞, ∞)</code>'))
+  + p('消去恒等式：<code>log_a(aˣ) = x</code> 与 <code>a^{log_a x} = x</code>。图像同样是关于 <code>y = x</code> 的反射，所以对数曲线过 <code>(1, 0)</code>，以 y 轴为竖直渐近线。')
+  + h3('5.6 渐近行为对照')
+  + tb(('x 的走向', '<code>a &gt; 1</code> 时 <code>aˣ</code>', '<code>0 &lt; a &lt; 1</code> 时 <code>aˣ</code>', '<code>a &gt; 1</code> 时 <code>log_a x</code>', '<code>0 &lt; a &lt; 1</code> 时 <code>log_a x</code>'),
+       ('<code>x → ∞</code>', '→ ∞', '→ 0', '→ ∞', '→ −∞'),
+       ('<code>x → −∞</code>', '→ 0', '→ ∞', '—', '—'),
+       ('<code>x → 0⁺</code>', '—', '—', '→ −∞', '→ ∞'))
+  + p('渐近线：指数函数有<b>水平</b>渐近线 <code>y = 0</code>、没有竖直渐近线；对数函数有<b>竖直</b>渐近线 <code>x = 0</code>、没有水平渐近线。两者恰好互补——这是「互为反函数」在几何上的体现（水平渐近线反射成竖直渐近线）。')
+  + h3('5.7 指数与对数的运算法则')
+  + p('指数法则（<code>a &gt; 0, b &gt; 0</code>，x、y 为实数）：')
+  + ol('<code>a⁰ = 1</code>',
+       '<code>a^{x+y} = aˣaʸ</code>',
+       '<code>a^{−x} = 1/aˣ</code>',
+       '<code>a^{x−y} = aˣ/aʸ</code>',
+       '<code>(aˣ)ʸ = a^{xy}</code>',
+       '<code>(ab)ˣ = aˣbˣ</code>')
+  + p('对数法则（<code>a &gt; 0, a ≠ 1, b &gt; 0, b ≠ 1, x &gt; 0, y &gt; 0</code>）：')
+  + ol('<code>log_a 1 = 0</code>',
+       '<code>log_a(xy) = log_a x + log_a y</code>',
+       '<code>log_a(x/y) = log_a x − log_a y</code>',
+       '<code>log_a(1/y) = −log_a y</code>',
+       '<code>log_a(x^r) = r log_a x</code>',
+       '<code>log_b x = (log_a x)/(log_a b)</code>（换底公式）')
+  + p('第 2 条是其余各条的根：它把「乘法」变成「加法」，这正是对数在计算与建模中不可替代的原因（也是对数坐标的由来）。')
+  + p('源文件三个化简例子：(a) <code>log₂10 + log₂12 − log₂15 = log₂(10·12/15) = log₂8 = 3</code>；(b) <code>3^{log₉4}</code>：因 <code>log₉4 = ln4/ln9 = (2ln2)/(2ln3) = log₃2</code>，故 <code>3^{log₃2} = 2</code>；(c) <code>log_{√2}(2⁵) = log_{√2}32 = ln32/ln√2 = 5ln2/(0.5ln2) = 10</code>。')
+  + p('源文件例 2：解 <code>3^{x−1} = 2ˣ</code>。两边取对数（任意底）：<code>(x − 1)ln3 = x ln2</code>，即 <code>x(ln3 − ln2) = ln3</code>，故 <code>x = ln3/ln(3/2) = log_{3/2}3</code>。另一条路径：两边除以 <code>3ˣ</code> 得 <code>(2/3)ˣ = 1/3</code>，取对数得 <code>x = log_{2/3}(1/3) = log_{3/2}3</code>，答案一致。')
+  + h3('5.8 自然对数：面积定义')
+  + p('对 <code>x &gt; 0</code>，令 <code>A_x</code> 为曲线 <code>y = 1/t</code>、t 轴、竖直线 <code>t = 1</code> 与 <code>t = x</code> 围成的区域面积。<b>自然对数</b>定义为')
+  + p('<b><code>ln x = A_x</code></b>（<code>x ≥ 1</code>），<b><code>ln x = −A_x</code></b>（<code>0 &lt; x &lt; 1</code>）。')
+  + p('（<code>x &lt; 1</code> 时取负号，是为了让「<code>ln 1 = 0</code>」两侧连续、且保持单调递增。）由定义立即得到：<code>ln 1 = 0</code>；<code>x &gt; 1</code> 时 <code>ln x &gt; 0</code>；<code>0 &lt; x &lt; 1</code> 时 <code>ln x &lt; 0</code>；<code>ln x</code> 是一一对应，定义域 <code>(0, ∞)</code>、值域 <code>(−∞, ∞)</code>。')
+  + h3('5.9 (ln x)′ = 1/x 的证明')
+  + p('源文件的证明用面积夹逼。对 <code>x &gt; 0</code> 与 <code>h &gt; 0</code>，<code>ln(x + h) − ln x</code> 是 <code>1/t</code> 在 <code>[x, x+h]</code> 上的面积，它夹在两个矩形之间：')
+  + p('<code>h/(x + h) &lt; ln(x + h) − ln x &lt; h/x</code>。')
+  + p('三边除以 h 得 <code>1/(x+h) &lt; [ln(x+h) − ln x]/h &lt; 1/x</code>；令 <code>h → 0⁺</code>，两端都趋于 <code>1/x</code>，由夹逼定理得右导数。对 <code>h &lt; 0</code> 同理（此时不等式方向相反，但两端仍趋于 <code>1/x</code>），故')
+  + p('<b><code>d/dx ln x = 1/x</code></b>（<code>x &gt; 0</code>）。')
+  + p('自然对数的四条性质（源文件给出，并证明第一条）：① <code>ln(xy) = ln x + ln y</code>；② <code>ln(1/y) = −ln y</code>；③ <code>ln(x/y) = ln x − ln y</code>；④ <code>ln(x^r) = r ln x</code>。')
+  + p('第 ① 条的证法很巧：固定 y，令 <code>g(x) = ln(xy) − ln x</code>。由链式法则 <code>g′(x) = y/(xy) − 1/x = 1/x − 1/x = 0</code>，故 g 为常数；取 <code>x = 1</code> 得 <code>g(1) = ln y</code>，于是 <code>ln(xy) − ln x = ln y</code>。其余各条由 ① 与 ④ 组合推出。')
+  + p('源文件的例子：证明 <code>d/dx ln|x| = 1/x</code>（<code>x ≠ 0</code>），并求 <code>∫dx/x</code>。当 <code>x &gt; 0</code> 时就是上面的结论；当 <code>x &lt; 0</code> 时 <code>ln|x| = ln(−x)</code>，由链式法则 <code>d/dx = (1/(−x))·(−1) = 1/x</code>。所以')
+  + p('<b><code>d/dx ln|x| = 1/x</code>，<code>∫ dx/x = ln|x| + C</code></b>（<code>x ≠ 0</code>）。绝对值不能省，因为 <code>ln</code> 只接受正数。')
+  + h3('5.10 自然指数 e 与 eˣ')
+  + p('<b>欧拉数</b> e 定义为使 <code>ln e = 1</code> 的那个底数——也就是让 <code>[1, e]</code> 上 <code>1/t</code> 的面积恰为 1 的右端点。数值上')
+  + p('<code>e = 2.71828 18284 59045…</code>，并可写成级数 <code>e = 1 + 1/1! + 1/2! + 1/3! + 1/4! + ⋯</code>（本课只需知道这个形式，不必证明收敛）。')
+  + p('由于 <code>ln</code> 是一一对应，它的反函数存在，记作 <code>exp</code> 或 <code>eˣ</code>：')
+  + p('<b><code>y = eˣ ⟺ x = ln y</code></b>（<code>y &gt; 0</code>）。<code>eˣ</code> 的定义域是 <code>(−∞, ∞)</code>，值域是 <code>(0, ∞)</code>。')
+  + p('五组恒等式及来源：① <code>e⁰ = 1</code>（由 <code>ln 1 = 0</code>）；② <code>ln(eˣ) = x</code>、③ <code>e^{ln x} = x</code>（消去恒等式）；④ <code>e^{x+y} = eˣeʸ</code>、<code>(eˣ)ʸ = e^{xy}</code>；⑤ <code>e^{−x} = 1/eˣ</code>、<code>e^{x−y} = eˣ/eʸ</code>。')
+  + p('源文件对 ④ 的证明：设 <code>z = eˣeʸ</code>，则 <code>ln z = ln eˣ + ln eʸ = x + y</code>，故 <code>z = e^{x+y}</code>；设 <code>w = (eˣ)ʸ</code>，则 <code>ln w = y ln(eˣ) = xy</code>，故 <code>w = e^{xy}</code>。这种「取对数把指数运算降级为乘法」的手法贯穿整节。')
+  + h3('5.11 一般底数的指数与对数求导')
+  + p('把任意底写成 e 的幂：<code>aˣ = e^{x ln a}</code>，由链式法则')
+  + p('<b><code>(aˣ)′ = aˣ ln a</code></b>，<b><code>∫aˣ dx = aˣ/ln a + C</code></b>。')
+  + p('同理 <code>log_a x = ln x/ln a</code>，故 <b><code>(log_a x)′ = 1/(x ln a)</code></b>。')
+  + p('对幂函数 <code>xᵃ</code>（<code>x &gt; 0</code>），写成 <code>e^{a ln x}</code>：<code>(xᵃ)′ = e^{a ln x}·(a/x) = a x^{a−1}</code>——这就是第 3 讲幂法则对任意实数指数的严格证明。')
+  + p('源文件例：<code>f(x) = e^{kx}</code>（<code>k ≠ 0</code>）。各阶导数为 <code>f′ = ke^{kx}</code>、<code>f″ = k²e^{kx}</code>、…、<code>f⁽ⁿ⁾ = kⁿe^{kx}</code>；积分为 <code>∫e^{kx}dx = (1/k)e^{kx} + C</code>。')
+  + p('源文件任务：(a) <code>f(x) = log₁₀(cos x)</code>，<code>f′ = (1/(cos x·ln10))·(−sin x) = −tan x/ln10</code>；(b) <code>f(x) = xᵃ − aˣ</code>，<code>f′ = a x^{a−1} − aˣ ln a</code>。')
+  + h3('5.12 变底变指数：两种求导方法')
+  + p('对 <code>y = f(x)^{g(x)}</code>（要求 <code>f(x) &gt; 0</code>），不能直接套幂法则（底在变）也不能套指数法则（指数在变）。两种方法：')
+  + ul('<b>方法 1（改写成 e 的幂）</b>：<code>y = e^{g(x) ln f(x)}</code>，故 <code>y′ = e^{g ln f}·[g′ ln f + g f′/f] = y[g′ ln f + g f′/f]</code>',
+       '<b>方法 2（对数求导）</b>：两边取对数 <code>ln y = g ln f</code>，再对 x 隐式求导：<code>y′/y = g′ ln f + g f′/f</code>，最后乘回 y')
+  + p('两法结果完全一致，方法 2 在多因子乘积/商的情形下更快（它把乘除变成加减）。')
+  + p('源文件例：(a) <code>y = xˣ</code>（<code>x &gt; 0</code>）：<code>y = e^{x ln x}</code>，<code>y′ = xˣ(ln x + x·1/x) = xˣ(ln x + 1)</code>。')
+  + p('(b) <code>y = (sin x)ˣ</code>（<code>0 &lt; x &lt; π</code>）：取对数 <code>ln y = x ln sin x</code>，求导 <code>y′/y = ln sin x + x·cot x</code>，故 <code>y′ = (sin x)ˣ(ln sin x + x cot x)</code>。')
+  + p('(c) <code>y = x^{ln x}</code>：<code>ln y = (ln x)²</code>，求导 <code>y′/y = 2 ln x/x</code>，故 <code>y′ = x^{ln x}·2 ln x/x</code>。')
+  + h3('5.13 关键积分表')
+  + tb(('积分', '结果', '对应导数'),
+       ('<code>∫ dx/x</code>', '<code>ln|x| + C</code>', '<code>(ln|x|)′ = 1/x</code>'),
+       ('<code>∫ dx/(x ln a)</code>', '<code>log_a|x| + C</code>', '<code>(log_a x)′ = 1/(x ln a)</code>'),
+       ('<code>∫ e^{kx} dx</code>', '<code>e^{kx}/k + C</code>', '<code>(e^{kx})′ = k e^{kx}</code>'),
+       ('<code>∫ a^{kx} dx</code>', '<code>a^{kx}/(k ln a) + C</code>', '<code>(a^{kx})′ = k a^{kx} ln a</code>'))
+  + h3('5.14 增长阶：对数 &lt; 幂 &lt; 指数')
+  + p('源文件给出链式不等式（<code>x &gt; 0</code>）：')
+  + p('<b><code>ln x ≤ x − 1 &lt; x &lt; x + 1 ≤ eˣ</code></b>，')
+  + p('等号只在 <code>x = 1</code>（左边）与 <code>x = 0</code>（右边）取得。它说明：对数增长最慢、线性居中、指数最快。')
+  + p('两个重要极限（<code>a &gt; 0</code>）：')
+  + p('<b><code>lim_{x→∞} ln x/xᵃ = 0</code></b>（幂 beats 对数），<b><code>lim_{x→∞} xᵃ/eˣ = 0</code></b>（指数 beats 幂）。')
+  + p('第一个的证明：取 <code>α = a/2 &gt; 0</code>，由 <code>ln u ≤ u − 1 &lt; u</code> 得 <code>ln x = (1/α)ln(xᵃ) ≤ (1/α)(xᵃ − 1) &lt; xᵃ/α</code>，故 <code>0 &lt; ln x/xᵃ &lt; 1/(α x^{a/2})</code>，两端夹逼得 0。第二个的证明：令 <code>t = ln x</code>，则 <code>xᵃ/eˣ = (ln x)ᵃ/x = [(ln x)/x^{1/a}]ᵃ</code>，由第一个极限（指数取 <code>1/a</code>）得 0。')
+  + cal('tip', '考场用法', '遇到 <code>ln x/x</code>、<code>x²/eˣ</code>、<code>x e^{−x}</code> 这类「谁长得快」的比较，直接引用这两个极限，不必再求导。源文件把它们列进公式表，说明是允许直接引用的结论。')
+  + h3('5.15 指数增长与衰减模型')
+  + p('许多自然过程的「变化率与当前量成正比」。设 <code>y = y(t)</code> 表示某量在时刻 t 的值，则')
+  + p('<b><code>dy/dt = ky</code>，<code>y(0) = y₀</code></b>，')
+  + p('其中 k 是比例常数。这个初值问题的唯一解是')
+  + p('<b><code>y(t) = y₀ e^{kt}</code></b>。')
+  + p('验证：<code>y′ = k y₀ e^{kt} = ky</code> ✓，且 <code>y(0) = y₀</code> ✓；唯一性由一阶线性方程的理论保证（本课只需承认）。')
+  + p('<b>k &gt; 0 为增长</b>：人口增长、复利、无限制的繁殖，<code>lim_{t→∞} y = ∞</code>。<b>k &lt; 0 为衰减</b>：放射性衰变、牛顿冷却、药物代谢，<code>lim_{t→∞} y = 0</code>。<code>y₀</code> 是 t = 0 时的初值，曲线都以 <code>y = 0</code> 为水平渐近线（衰减时）。')
+  + h3('5.16 广义模型：趋向一个固定值 a')
+  + p('若变化率与「当前值与固定值 a 之差」成正比：')
+  + p('<b><code>dy/dt = k(y − a)</code>，<code>y(0) = y₀</code></b>，')
+  + p('做变量代换 <code>u = y − a</code>，则 <code>du/dt = dy/dt = ku</code>，化为标准模型，解得 <code>u = (y₀ − a)e^{kt}</code>，故')
+  + p('<b><code>y(t) = a + (y₀ − a)e^{kt}</code></b>。')
+  + p('当 <code>k &lt; 0</code> 时 <code>y → a</code>（趋向环境温度、趋向稳态浓度）；当 <code>k &gt; 0</code> 时远离 a。')
+  + p('<b>牛顿冷却定律</b>：物体温度的变化率与「物体温度 − 环境温度」成正比，即上式取 <code>a = 环境温度</code>、<code>k &lt; 0</code>。')
+  + p('源文件例子：室温 20 ℃，咖啡从 80 ℃ 降到 50 ℃ 用 5 分钟，问到 40 ℃ 还需多久。设 <code>T(t) = 20 + 60e^{kt}</code>。由 <code>T(5) = 50</code>：<code>30 = 60e^{5k}</code>，故 <code>e^{5k} = 1/2</code>、<code>k = −ln2/5</code>。')
+  + p('令 <code>T = 40</code>：<code>20 = 60e^{kt}</code>，即 <code>e^{kt} = 1/3</code>，<code>t = −ln(1/3)/k = 5ln3/ln2 ≈ 7.92</code> 分钟（从开始算）。因此还需 <code>7.92 − 5 ≈ 2.92</code> 分钟。')
+  + h3('5.17 Logistic 模型')
+  + p('当增长受环境容量限制时，模型改为')
+  + p('<b><code>dy/dt = k(1 − y/L)y</code>，<code>y(0) = y₀</code></b>，')
+  + p('其中 <code>L &gt; 0</code> 是<b>承载容量</b>（carrying capacity），<code>k &gt; 0</code> 是增长率。其解为')
+  + p('<b><code>y(t) = Ly₀/(y₀ + (L − y₀)e^{−kt})</code></b>。')
+  + p('渐近行为：<code>k &gt; 0</code> 时 <code>lim_{t→∞} y = L</code>；<code>k &lt; 0</code> 时 <code>lim_{t→∞} y = 0</code>；<code>k = 0</code> 时恒为 <code>y₀</code>。源文件要求「验证该函数满足模型」，验证方法：把它代回方程两边，或对解取对数线性化后求导（本课只需承认并会用）。')
+  + p('源文件例：已知 <code>y(0) = 3</code>、<code>y(1) = 5</code>、<code>y(2) = 6</code>，求 L。把三个值代入解式：')
+  + p('<code>5 = 3L/(3 + (L−3)e^{−k})</code>，<code>6 = 3L/(3 + (L−3)e^{−2k})</code>。')
+  + p('第一式解出 <code>e^{−k} = 3(L−5)/(5(L−3))</code>；第二式解出 <code>e^{−2k} = (L−6)/(2(L−3))</code>。由 <code>(e^{−k})² = e^{−2k}</code>：')
+  + p('<code>9(L−5)²/(25(L−3)²) = (L−6)/(2(L−3))</code>，交叉相乘得 <code>18(L−5)² = 25(L−3)(L−6)</code>。')
+  + p('展开：<code>18L² − 180L + 450 = 25L² − 225L + 450</code>，即 <code>7L² − 45L = 0</code>，故 <code>L = 45/7 ≈ 6.429</code>（舍去 L = 0）。')),
+ kws=K(('inverse function', '反函数', 'y = f⁻¹(x) iff x = f(y); exists only for one-to-one f.'),
+       ('one-to-one', '一一对应', 'f(x₁) ≠ f(x₂) for x₁ ≠ x₂; checked by the horizontal line test.'),
+       ('cancellation identity', '消去恒等式', 'f⁻¹(f(x)) = x and f(f⁻¹(x)) = x.'),
+       ('derivative of an inverse', '反函数导数', '(f⁻¹)′(y) = 1/f′(x) with y = f(x).'),
+       ('algebraic function', '代数函数', 'Built from polynomials by finitely many operations and roots.'),
+       ('transcendental function', '超越函数', 'Not algebraic: sin x, cos x, aˣ, ln x.'),
+       ('exponential function', '指数函数', 'aˣ with the variable in the exponent; base fixed.'),
+       ('power function', '幂函数', 'xᵃ with the variable in the base; exponent fixed.'),
+       ('logarithm', '对数', 'log_a x is the inverse of aˣ: y = log_a x iff x = a^y.'),
+       ('natural logarithm', '自然对数', 'ln x, the area under 1/t from 1 to x; derivative 1/x.'),
+       ('Euler number', '欧拉数 e', 'The base with ln e = 1; e ≈ 2.718281828….'),
+       ('logarithmic differentiation', '对数求导法', 'Take ln of both sides, differentiate implicitly, then multiply by y.'),
+       ('exponential growth/decay', '指数增长/衰减', 'dy/dt = ky gives y = y₀e^{kt}; k > 0 grows, k < 0 decays.'),
+       ('Newton law of cooling', '牛顿冷却定律', 'dy/dt = k(y − a) gives y = a + (y₀ − a)e^{kt}.'),
+       ('logistic model', 'Logistic 模型', 'dy/dt = k(1 − y/L)y gives y = Ly₀/(y₀ + (L−y₀)e^{−kt}).')),
+ examples=(qa('例 1（源文件 p19–p20）　细胞培养以与细胞数成正比的速度增长。初始 500 个，24 小时后 800 个，问再过 12 小时有多少个？',
+    p('设 <code>N(t) = N₀e^{kt}</code>，<code>N₀ = 500</code>。由 <code>N(24) = 800</code>：<code>500e^{24k} = 800</code>，故 <code>e^{24k} = 1.6</code>，<code>k = ln1.6/24</code>。')
+    + p('于是 <code>N(t) = 500e^{t ln1.6/24} = 500·1.6^{t/24}</code>。')
+    + p('再过 12 小时即 <code>t = 36</code>：<code>N(36) = 500·1.6^{36/24} = 500·1.6^{3/2}</code>。')
+    + p('<code>1.6^{3/2} = 1.6·√1.6 ≈ 1.6 × 1.2649 = 2.0238</code>，故 <code>N(36) ≈ 1012</code> 个。')
+    + p('<b>要点：</b>「再过 12 小时」对应 <code>t = 24 + 12 = 36</code>，不是 <code>t = 12</code>；这是本题唯一的陷阱。另外把解写成 <code>500·1.6^{t/24}</code> 比保留 k 更好算。'))
+   + qa('例 2（源文件 p22–p23）　室温 20 ℃，咖啡从 80 ℃ 降到 50 ℃ 用 5 分钟，问冷却到 40 ℃ 还需多久？',
+    p('设 <code>T(t) = 20 + 60e^{kt}</code>（<code>a = 20</code>、<code>T₀ = 80</code>）。')
+    + p('由 <code>T(5) = 50</code>：<code>50 = 20 + 60e^{5k}</code> → <code>e^{5k} = 1/2</code> → <code>k = −ln2/5</code>。')
+    + p('令 <code>T = 40</code>：<code>40 = 20 + 60e^{kt}</code> → <code>e^{kt} = 1/3</code> → <code>kt = −ln3</code> → <code>t = 5ln3/ln2 ≈ 7.92</code> 分钟。')
+    + p('这是「从取出时刻算起」的总时间，题目问「还需多久」，故答案为 <code>7.92 − 5 ≈ 2.92</code> 分钟。')
+    + p('<b>精确形式：</b><code>5log₂3 − 5</code> 或 <code>5ln3/ln2 − 5</code>。考试不允许计算器，通常写精确式即可；若要近似，用 <code>ln2 ≈ 0.693</code>、<code>ln3 ≈ 1.099</code>。'))
+   + qa('例 3（源文件 p26–p28）　已知 logistic 模型中 y(0) = 3、y(1) = 5、y(2) = 6，求承载容量 L。',
+    p('解式 <code>y(t) = 3L/(3 + (L−3)e^{−kt})</code>。')
+    + p('代 <code>t = 1</code>：<code>5(3 + (L−3)e^{−k}) = 3L</code> → <code>5(L−3)e^{−k} = 3L − 15</code> → <code>e^{−k} = 3(L−5)/(5(L−3))</code>。')
+    + p('代 <code>t = 2</code>：<code>6(3 + (L−3)e^{−2k}) = 3L</code> → <code>6(L−3)e^{−2k} = 3L − 18</code> → <code>e^{−2k} = (L−6)/(2(L−3))</code>。')
+    + p('用 <code>(e^{−k})² = e^{−2k}</code> 消去 k：<code>9(L−5)²/(25(L−3)²) = (L−6)/(2(L−3))</code>，即 <code>18(L−5)² = 25(L−3)(L−6)</code>。')
+    + p('展开化简：<code>18L² − 180L + 450 = 25L² − 225L + 450</code> → <code>7L² − 45L = 0</code> → <code>L(7L − 45) = 0</code>。')
+    + p('舍去 <code>L = 0</code>（容量必须为正，且此时模型退化），得 <b><code>L = 45/7 ≈ 6.429</code></b>。合理性检查：数据 3 → 5 → 6 单调上升且增量递减（2 然后 1），符合「逼近上限」的形态，上限 6.43 略高于 6，合理。'))
+   + qa('例 4（源文件 p23）　解 3^{x−1} = 2ˣ，并求 y = (sin x)ˣ 的导数（0 &lt; x &lt; π）。',
+    p('(a) 两边取自然对数：<code>(x−1)ln3 = x ln2</code>。整理：<code>x ln3 − ln3 = x ln2</code>，即 <code>x(ln3 − ln2) = ln3</code>，故 <code>x = ln3/ln(3/2) = log_{3/2}3</code>。')
+    + p('等价做法：两边同除 <code>3ˣ</code> 得 <code>(2/3)ˣ = 1/3</code>，取对数得 <code>x = ln(1/3)/ln(2/3) = ln3/ln(3/2)</code>，一致。')
+    + p('(b) 取对数：<code>ln y = x ln sin x</code>。两边对 x 求导：<code>y′/y = ln sin x + x·(cos x/sin x)</code>。')
+    + p('故 <code>y′ = (sin x)ˣ(ln sin x + x cot x)</code>。')
+    + p('<b>要点：</b>变底变指数的函数必须「先取对数、再求导、最后乘回 y」；直接套幂法则或指数法则都会错。'))),
+ practice=(ol('求 <code>f(x) = x³ + x</code> 的反函数在 <code>x = 2</code> 处的导数（即 <code>(f⁻¹)′(2)</code>）。',
+          '化简：<code>log₂10 + log₂12 − log₂15</code>；<code>3^{log₉4}</code>；<code>log_{√2}(2⁵)</code>。',
+          '求导数：<code>y = log₁₀(cos x)</code>；<code>f(x) = xᵃ − aˣ</code>；<code>y = x^{ln x}</code>。',
+          '求积分：<code>∫e^{3x}dx</code>；<code>∫dx/(2x)</code>；<code>∫2^{x}dx</code>。',
+          '某放射性物质每小时衰变 10%（即每小时剩余 90%），求半衰期（精确式）。',
+          '解方程 <code>3^{x−1} = 2ˣ</code>，并把答案写成两种等价形式。')
+  + det('答案与思路',
+    p('<b>1.</b> <code>f′(x) = 3x² + 1 &gt; 0</code>，严格递增，可逆。找 <code>y</code> 使 <code>y³ + y = 2</code>：<code>y = 1</code>。故 <code>(f⁻¹)′(2) = 1/f′(1) = 1/4</code>。')
+    + p('<b>2.</b> <code>log₂(10·12/15) = log₂8 = 3</code>；<code>log₉4 = log₃2</code>，故 <code>3^{log₃2} = 2</code>；<code>ln32/ln√2 = 5ln2/(0.5ln2) = 10</code>。')
+    + p('<b>3.</b> <code>−tan x/ln10</code>；<code>a x^{a−1} − aˣ ln a</code>；<code>x^{ln x}·(2 ln x)/x</code>。')
+    + p('<b>4.</b> <code>e^{3x}/3 + C</code>；<code>(1/2)ln|x| + C</code>；<code>2ˣ/ln2 + C</code>（来自 <code>∫a^{kx}dx = a^{kx}/(k ln a)</code>，此处 k = 1、a = 2）。')
+    + p('<b>5.</b> 设剩余比例为 <code>y(t) = 0.9^t</code>（以小时为单位，因为每小时乘 0.9）。半衰期满足 <code>0.9^t = 1/2</code>，故 <code>t = ln(1/2)/ln0.9 = ln2/ln(10/9)</code>。数值约 6.58 小时。')
+    + p('<b>6.</b> <code>x = ln3/ln(3/2) = log_{3/2}3 = log_{1.5}3</code>；两种写法等价，第二式更便于用换底公式统一。'))),
+ exam=(cal('exam', '必考', '①反函数存在性判定 + 反函数导数（找原像）；②指数/对数化简与解指数方程；③<code>(aˣ)′</code> 与 <code>(log_a x)′</code>；④对数求导法处理变底变指数；⑤指数增长/衰减、牛顿冷却（求 k 再求时间）；⑥logistic 模型求 L。')
+  + cal('warn', '易错 1', '<b>反函数导数公式里代错点</b>。要算 <code>(f⁻¹)′(2)</code>，必须找 <code>f(y) = 2</code> 的 y，再算 <code>1/f′(y)</code>；直接把 2 代入 <code>f′</code> 是错的。')
+  + cal('warn', '易错 2', '<b>指数求导与幂求导混用</b>。<code>d/dx(x²) = 2x</code>，而 <code>d/dx(2ˣ) = 2ˣ ln2</code>；<code>d/dx(x^π) = πx^{π−1}</code>，而 <code>d/dx(πˣ) = πˣ lnπ</code>。看到「变量在指数上」就用 ln，看到「变量在底数上」就用幂法则。')
+  + cal('warn', '易错 3', '<b>对数里漏绝对值</b>。<code>∫dx/x = ln|x| + C</code>，<code>∫dx/(ax+b) = (1/a)ln|ax+b| + C</code>；丢掉绝对值会在负区间上给出错误答案。')
+  + cal('warn', '易错 4', '<b>建模时把「再过多久」与「总共多久」混淆</b>。牛顿冷却题常问「还需多久」，要用总时间减去已过时间。')
+  + cal('tip', '进阶', '把三类模型写成统一模板：<code>dy/dt = k(y − a)</code> → <code>y = a + (y₀ − a)e^{kt}</code>；令 <code>a = 0</code> 得纯增长/衰减，令 <code>a = L</code> 并把 k 换成 <code>−k</code> 并加入「按比例缩小」的因子就得到 logistic 的骨架。理解模板比记三个公式可靠。')),
+ checklist=(h2('方法与清单')
+  + h3('求反函数及其导数（三步）')
+  + st('先证一一对应（严格单调，通常看 <code>f′ &gt; 0</code> 或 <code>f′ &lt; 0</code>）',
+       '由 <code>y = f(x)</code> 解出 <code>x = f⁻¹(y)</code>，写明定义域（原函数的值域）与值域（原函数的定义域）',
+       '求某点导数时：先解 <code>f(y) = 给定值</code> 得 y，再算 <code>1/f′(y)</code>')
+  + h3('解指数/对数方程（三步）')
+  + st('尽量把两边化成同底，或用换底公式统一底数',
+       '两边取对数，把指数降为乘积，整理出未知量的一次方程',
+       '解出后用原方程代值检验（尤其检查是否在定义域内）')
+  + h3('建立增长/衰减模型（四步）')
+  + st('判断「变化率与什么成正比」：与自身成正比 → <code>y₀e^{kt}</code>；与「自身减 a」成正比 → <code>a + (y₀−a)e^{kt}</code>',
+       '把已知条件逐条代入，先求 k（通常用一次比值或一次对数）',
+       '写出完整的 y(t) 表达式，保留精确形式（ln、e）',
+       '回答题目真正问的量：注意「还需多久」与「总共多久」的差别')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p2–p4', '反函数的概念、一一对应前提、f = x³ 的反函数'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p5–p7', '反函数五条性质、图像关于 y = x 对称、√(2x+1) 与 (x²−1)/2'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p8', '反函数导数公式及其链式法则证明'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p9–p11', 'f = x³ + x 的可逆性证明与 (f⁻¹)′(2) = 1/4（p9–p10 为图片页，按 p11 的文字复原）'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p12–p13', '代数函数与超越函数、超越判别准则、Leibniz 与 Euler 的历史注记'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p14–p16', '指数函数定义、整数/有理/无理指数、指数函数与幂函数的区别'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p17–p19', '对数函数作为反函数、定义域值域对照、消去恒等式、渐近行为表'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p20–p23', '指数六法则、对数六法则、三个化简例与 3^{x−1} = 2ˣ'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p24–p29', 'ln x 的面积定义、性质、导数 1/x 的夹逼证明、ln(xy) 恒等式证明、ln|x| 与 ∫dx/x'),
+    ('Topic 5/EMI_Week5_Lecture1.pdf', 'p30–p31', 'eˣ 作为 ln 的反函数、五组恒等式及其证明'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p2–p3', '指数与对数法则的复习'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p4–p5', '欧拉数 e 的面积定义与级数、eˣ 与 ln x 的图形与渐近线'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p6–p9', '(aˣ)′ 与 ∫aˣ 的隐式推导、一般底对数求导、幂法则的再证明、两道求导任务'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p10–p12', '变底变指数两种方法、xˣ 与 (sin x)ˣ 的求导'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p13', '关键积分表（1/x、1/(x ln a)、e^{kx}、a^{kx}）'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p14–p16', 'ln x ≤ x−1 &lt; x &lt; x+1 ≤ eˣ、ln x/xᵃ → 0、xᵃ/eˣ → 0 的证明'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p17–p20', '指数增长/衰减模型、应用清单、细胞培养例题'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p21–p23', '广义模型 dy/dt = k(y−a)、牛顿冷却定律与咖啡例题'),
+    ('Topic 5/EMI_Week5_Lecture2.pdf', 'p24–p28', 'logistic 模型的解、渐近行为、由三个数据点求承载容量 L = 45/7'),
+    ('（跳过）Topic 5 中 p9–p10 等纯图片页', '—', '无文字层，按相邻页文字与例题答案复原；Lecture One/Two.html 为登录页快照，无正文'),
+    ('（拓展）', '—', '把 <code>ln x ≤ x−1</code> 的证明、e 的级数表示与三类模型的统一模板列为归纳性补充，源文件以结论与例题给出'))
+)
+
+# ============================================================ 讲 6
+lec(
+ slug='t6-inverse-trig-lhopital-riemann',
+ tzh='第 3 章 · 反三角、双曲函数、洛必达与定积分',
+ ten='Inverse Trigonometric and Hyperbolic Functions, L’Hôpital’s Rule, Riemann Sums',
+ keywords=['inverse sine', 'inverse tangent', 'hyperbolic function', 'indeterminate form',
+           'L’Hôpital’s rule', 'Cauchy mean-value theorem', 'Riemann sum', 'partition',
+           'lower and upper sums', 'definite integral', 'integrability'],
+ files=['Topic 6/EMI_Week6_Lecture1.pdf', 'Topic 6/EMI_Week6_Lecture2.pdf'],
+ part=CH3,
+ overview=(h2('本节定位')
+  + p('本讲把「函数库」补齐最后一块（反三角函数与双曲函数），把「极限工具」升级（洛必达法则），并开启本课程的第二大主题：积分。三件事看似无关，实际共用一条逻辑：反三角函数的导数给出两个新的积分公式；洛必达法则处理所有未定式；而黎曼和把「面积」定义为和式的极限——这正是第 7 讲定积分的起点。')
+  + p('本节还包含考试事务：第一次考试在 10 月 21 日，需在 10 月 14 日前报名；考试不允许使用计算器，但会提供公式表。')
+  + p('学完本节你应当能够：')
+  + ck('写出 arcsin、arccos、arctan 的定义域、值域与导数，并会用它们求积分',
+     '处理三角函数的反函数复合（如 <code>sin⁻¹(sin 4π/5)</code>、<code>cos(sin⁻¹ x)</code>）',
+     '写出双曲函数的定义、基本恒等式与导数',
+     '识别七种未定式，针对每种选择正确的变形路径，并正确使用洛必达法则（含判断何时不能用）',
+     '把面积写成黎曼和的极限，并用求和公式求出具体值',
+     '用定积分的性质（线性、可加、奇偶）简化计算')),
+ detail=(h3('6.1 考试事务与反三角函数的必要性')
+  + p('第一次考试 <b>10 月 21 日</b>，报名截止 <b>10 月 14 日</b>。考试不允许使用计算器，但会发公式表（formula sheet，之后放在 Moodle 上）。这意味着 <code>sin⁻¹(1/2)</code>、<code>tan⁻¹(1)</code> 这类特殊值必须条件反射式地写出。')
+  + p('三角函数是周期的，因此在 ℝ 上<b>不是</b>一一对应，没有反函数。解决办法是<b>限制定义域</b>，在使函数一一对应的那段区间上定义反函数。每段区间的选择都不是随意的：要覆盖整个值域，且在该段上严格单调。')
+  + h3('6.2 反正弦 arcsin')
+  + p('把 <code>y = sin x</code> 限制在 <code>[−π/2, π/2]</code>（在此区间严格递增，值域 <code>[−1, 1]</code>），其反函数记作 <code>sin⁻¹</code> 或 <code>arcsin</code>：')
+  + p('<b><code>y = sin⁻¹ x ⟺ x = sin y</code>，其中 <code>y ∈ [−π/2, π/2]</code></b>。')
+  + p('定义域 <code>[−1, 1]</code>，值域 <code>[−π/2, π/2]</code>。示例：<code>sin⁻¹(1/2) = π/6</code>、<code>sin⁻¹(√2/2) = π/4</code>、<code>sin⁻¹(−1) = −π/2</code>、<code>sin⁻¹ 2</code> 无定义（2 超出 <code>[−1, 1]</code>）。')
+  + p('图像是 <code>y = sin x</code> 在 <code>[−π/2, π/2]</code> 这一段关于 <code>y = x</code> 的反射：过原点，两端点 <code>(±1, ±π/2)</code>，斜率为正。')
+  + p('源文件例（复合）：求 <code>sin⁻¹(sin 4π/5)</code>。因为 <code>4π/5 ∉ [−π/2, π/2]</code>，<b>不能</b>直接写 <code>= 4π/5</code>。用补角公式：<code>sin(4π/5) = sin(π − 4π/5) = sin(π/5)</code>，而 <code>π/5 ∈ [−π/2, π/2]</code>，故 <code>sin⁻¹(sin 4π/5) = π/5</code>。')
+  + p('源文件例：化简 <code>cos(sin⁻¹ x)</code>。令 <code>θ = sin⁻¹ x</code>，则 <code>sin θ = x</code> 且 <code>θ ∈ [−π/2, π/2]</code>；在该区间 <code>cos θ ≥ 0</code>，故 <code>cos θ = √(1 − sin²θ) = √(1 − x²)</code>。')
+  + cal('warn', '反函数复合不等于原值', '<code>sin⁻¹(sin θ) = θ</code> 只在 <code>θ ∈ [−π/2, π/2]</code> 时成立；超出该区间必须先用诱导公式把角折回主值区间。同理 <code>cos⁻¹(cos θ) = θ</code> 只在 <code>θ ∈ [0, π]</code> 成立。')
+  + h3('6.3 arcsin 的导数')
+  + p('<b><code>d/dx sin⁻¹ x = 1/√(1 − x²)</code></b>（<code>−1 &lt; x &lt; 1</code>）。')
+  + p('证明：设 <code>y = sin⁻¹ x</code>，则 <code>x = sin y</code>。两边对 x 求导（链式法则）：<code>1 = cos y·y′</code>，故 <code>y′ = 1/cos y</code>。因为 <code>y ∈ (−π/2, π/2)</code>，<code>cos y &gt; 0</code>，所以 <code>cos y = √(1 − sin²y) = √(1 − x²)</code>，于是 <code>y′ = 1/√(1 − x²)</code>。')
+  + p('源文件例：求 <code>d/dx sin⁻¹(x/a)</code>（<code>a &gt; 0</code>），并由此得积分公式。由链式法则')
+  + p('<code>d/dx sin⁻¹(x/a) = 1/√(1 − (x/a)²) · (1/a) = 1/√(a² − x²)</code>（<code>a &gt; 0</code> 时 <code>√(a²) = a</code>）。')
+  + p('故 <b><code>∫ dx/√(a² − x²) = sin⁻¹(x/a) + C</code></b>（<code>a &gt; 0</code>）。这是第 7 讲「三角代换」的标准出口。')
+  + h3('6.4 反余弦 arccos')
+  + p('把 <code>y = cos x</code> 限制在 <code>[0, π]</code>（严格递减），反函数 <code>cos⁻¹</code> 或 <code>arccos</code>：')
+  + p('<b><code>y = cos⁻¹ x ⟺ x = cos y</code>，<code>y ∈ [0, π]</code></b>；定义域 <code>[−1, 1]</code>，值域 <code>[0, π]</code>。')
+  + p('两个反三角函数的互补关系：由 <code>cos y = sin(π/2 − y)</code> 可得')
+  + p('<b><code>cos⁻¹ x + sin⁻¹ x = π/2</code></b>，')
+  + p('因此 <code>cos⁻¹ x = π/2 − sin⁻¹ x</code>，其导数为 <code>−1/√(1 − x²)</code>——比 arcsin 多一个负号，来源就是这个 π/2 的常数差（常数的导数为 0，负号来自对 <code>sin⁻¹ x</code> 取负）。')
+  + h3('6.5 反正切 arctan')
+  + p('把 <code>y = tan x</code> 限制在 <code>(−π/2, π/2)</code>（严格递增），反函数 <code>tan⁻¹</code> 或 <code>arctan</code>：')
+  + p('<b><code>y = tan⁻¹ x ⟺ x = tan y</code>，<code>y ∈ (−π/2, π/2)</code></b>；定义域 <code>ℝ</code>，值域 <code>(−π/2, π/2)</code>。')
+  + p('因为有两条<b>水平渐近线</b> <code>y = ±π/2</code>：<code>x → ±∞</code> 时 <code>tan⁻¹ x → ±π/2</code>。示例：<code>tan⁻¹ 1 = π/4</code>、<code>tan⁻¹ 0 = 0</code>、<code>tan⁻¹(−√3) = −π/3</code>。')
+  + p('导数：设 <code>y = tan⁻¹ x</code>，则 <code>x = tan y</code>，<code>1 = sec²y·y′ = (1 + tan²y)y′ = (1 + x²)y′</code>，故')
+  + p('<b><code>d/dx tan⁻¹ x = 1/(1 + x²)</code></b>，<b><code>∫ dx/(a² + x²) = (1/a)tan⁻¹(x/a) + C</code></b>（<code>a ≠ 0</code>）。')
+  + h3('6.6 双曲函数')
+  + p('对任意实数 x，定义<b>双曲余弦</b>与<b>双曲正弦</b>：')
+  + p('<b><code>cosh x = (eˣ + e^{−x})/2</code></b>，<b><code>sinh x = (eˣ − e^{−x})/2</code></b>。')
+  + p('四个基本事实：<code>cosh</code> 是偶函数（<code>cosh(−x) = cosh x</code>）；<code>sinh</code> 是奇函数（<code>sinh(−x) = −sinh x</code>）；<code>cosh 0 = 1</code>、<code>sinh 0 = 0</code>；<b>基本恒等式</b>')
+  + p('<b><code>cosh²x − sinh²x = 1</code></b>。')
+  + p('恒等式的验证（源文件写法）：<code>cosh²x − sinh²x = [(eˣ+e^{−x})/2]² − [(eˣ−e^{−x})/2]² = [(e^{2x} + 2 + e^{−2x}) − (e^{2x} − 2 + e^{−2x})]/4 = 4/4 = 1</code>。这个式子与双曲线 <code>x² − y² = 1</code> 同形，正是「双曲」这个名字的来源（对应 <code>cos² + sin² = 1</code> 对应圆）。')
+  + h3('6.7 双曲函数的图像与渐近行为')
+  + ul('<code>cosh x</code>：定义域 ℝ，值域 <code>[1, ∞)</code>，在 <code>x = 0</code> 取最小值 1（<code>cosh x ≥ 1</code>）；<code>x → ∞</code> 时渐近于 <code>eˣ/2</code>，<code>x → −∞</code> 时渐近于 <code>e^{−x}/2</code>',
+       '<code>sinh x</code>：定义域 ℝ，值域 ℝ，过原点且处处递增；<code>x → ∞</code> 时渐近于 <code>eˣ/2</code>，<code>x → −∞</code> 时渐近于 <code>−e^{−x}/2</code>')
+  + h3('6.8 双曲函数的导数')
+  + p('<b><code>d/dx cosh x = sinh x</code></b>，<b><code>d/dx sinh x = cosh x</code></b>——互相求导，没有负号，这是它们比 sin/cos 更好用的地方。')
+  + p('证明：<code>d/dx[(eˣ + e^{−x})/2] = (eˣ − e^{−x})/2 = sinh x</code>；<code>d/dx[(eˣ − e^{−x})/2] = (eˣ + e^{−x})/2 = cosh x</code>。')
+  + p('由此还可得 <code>∫cosh x dx = sinh x + C</code>、<code>∫sinh x dx = cosh x + C</code>。')
+  + h3('6.9 双曲恒等式的用法')
+  + p('源文件例 (a)：证明 <code>cosh 2x = 2cosh²x − 1</code>。由定义')
+  + p('<code>cosh 2x = (e^{2x} + e^{−2x})/2 = [(eˣ + e^{−x})² − 2]/2 = [(2cosh x)² − 2]/2 = 2cosh²x − 1</code>。')
+  + p('源文件例 (b)：已知 <code>cosh x = 5/4</code>，求 <code>sinh 2x</code>。先用上面的恒等式：<code>cosh 2x = 2(25/16) − 1 = 50/16 − 1 = 34/16 = 17/8</code>。再用 <code>cosh²2x − sinh²2x = 1</code>：')
+  + p('<code>sinh²2x = 289/64 − 1 = 225/64</code>，故 <code>sinh 2x = ±15/8</code>。')
+  + p('符号无法由 <code>cosh x</code> 唯一确定（因为 <code>cosh</code> 是偶函数，<code>x</code> 与 <code>−x</code> 给出同一个 <code>cosh x</code> 而 <code>sinh 2x</code> 变号），所以答案必须保留 ±；若题目另给 <code>x &gt; 0</code> 则取正。')
+  + h3('6.10 未定式与七种类型')
+  + p('若 <code>f</code> 与 <code>g</code> 在 <code>x = c</code> 处同时为 0，则 <code>lim f(x)/g(x)</code> 不能靠代入确定，代入会得到 <code>0/0</code>，称为<b>未定式</b>（indeterminate form）；需要进一步分析极限是否存在、等于多少。若两者在 c 附近都趋于 ±∞，则得到 <code>∞/∞</code> 型。')
+  + tb(('类型', '典型例子', '结果', '处理方向'),
+       ('<code>0/0</code>', '<code>lim_{x→0} sin x/x</code>', '1', '洛必达或等价化简'),
+       ('<code>∞/∞</code>', '<code>lim_{x→∞}(x²+3x+1)/x</code>', '∞', '洛必达或比较次数'),
+       ('<code>0 · ∞</code>', '<code>lim_{x→0⁺} x ln x</code>', '0', '改写成 <code>0/(1/∞)</code> 或 <code>∞/(1/0)</code>'),
+       ('<code>∞ − ∞</code>', '<code>lim_{x→0}(1/x − 1/sin x)</code>', '0', '通分或乘共轭'),
+       ('<code>0⁰</code>', '<code>lim_{x→0⁺} xˣ</code>', '1', '取对数化为 0·∞'),
+       ('<code>∞⁰</code>', '<code>lim_{x→∞} x^{1/x}</code>', '1', '取对数化为 0·∞'),
+       ('<code>1^∞</code>', '<code>lim_{x→0}(1+x)^{1/x}</code>', '<code>e</code>', '取对数化为 ∞·0'))
+  + h3('6.11 柯西中值定理')
+  + p('若 f、g 在 <code>[a, b]</code> 上连续、在 <code>(a, b)</code> 内可导，且 <code>g′(x) ≠ 0</code> 对一切 <code>x ∈ (a, b)</code> 成立，则存在 <code>c ∈ (a, b)</code> 使')
+  + p('<b><code>[f(b) − f(a)]/[g(b) − g(a)] = f′(c)/g′(c)</code></b>。')
+  + p('证明要用一个辅助函数：<code>h(x) = [f(b) − f(a)]g(x) − [g(b) − g(a)]f(x)</code>。它在两端点取值相等（<code>h(a) = h(b)</code>），且连续可导，由罗尔定理存在 c 使 <code>h′(c) = 0</code>，即 <code>[f(b)−f(a)]g′(c) = [g(b)−g(a)]f′(c)</code>，整理即得结论。')
+  + p('（源文件先说明 <code>g(b) ≠ g(a)</code>：否则由罗尔定理存在 <code>g′ = 0</code> 的点，与假设矛盾。）当 <code>g(x) = x</code> 时，柯西公式退化为拉格朗日中值定理——这是源文件特别指出的一点。')
+  + h3('6.12 洛必达法则')
+  + p('若 f、g 在含 c 的开区间内可导（c 本身可以例外），<code>g′(x) ≠ 0</code>（<code>x ≠ c</code>），且 <code>f(x)/g(x)</code> 在 <code>x → c</code> 时呈 <code>0/0</code> 或 <code>∞/∞</code> 型，则')
+  + p('<b><code>lim_{x→c} f(x)/g(x) = lim_{x→c} f′(x)/g′(x)</code></b>，')
+  + p('只要右端的极限存在（或为 ±∞）。法则对 <code>x → ±∞</code>、单侧极限、以及 <code>c = ±∞</code> 同样成立。')
+  + p('证明思路（<code>0/0</code> 型）：把 f、g 在 c 处补充定义为 0，使它们在 c 连续；再对区间 <code>[c, x]</code> 用柯西中值定理，得 <code>f(x)/g(x) = f′(ξ)/g′(ξ)</code>，其中 ξ 在 c 与 x 之间；令 <code>x → c</code> 则 <code>ξ → c</code>，结论成立。<code>∞/∞</code> 型的证明更繁，源文件说明「可参考高等微积分教材」。')
+  + cal('warn', '三条禁用情形', '① 极限<b>不是</b>未定式（例如 <code>lim (x+1)/x</code> 在 <code>x→1</code>，直接代入得 2，用洛必达会算出 1）；② 分子分母并非同时趋于 0 或同时趋于 ∞；③ 用了之后右端极限不存在且不是 ∞，此时法则失效，需回到代数变形。源文件在页末专门写了 Caution：不要对非未定式使用洛必达法则。')
+  + h3('6.13 0/0 型的三个例子')
+  + p('(a) <code>lim_{x→1} ln x/(x² − 1)</code>。代入得 0/0。用洛必达：<code>(1/x)/(2x) = 1/(2x²) → 1/2</code>。')
+  + p('(b) <code>lim_{x→0} (eˣ + e^{−x} − 2)/(1 − cos 2x)</code>。代入得 0/0。一次洛必达：<code>(eˣ − e^{−x})/(2 sin 2x)</code>，仍是 0/0；再次：<code>(eˣ + e^{−x})/(4 cos 2x) → 2/4 = 1/2</code>。')
+  + p('（也可以先用等价无穷小判断量级：分子 <code>≈ x²</code>、分母 <code>≈ 2x²</code>，直接看出答案 1/2。）')
+  + p('(c) <code>lim_{x→π/2⁻} (2x − π)/cos x</code>。代入得 0/0（分母从正侧趋于 0）。洛必达：<code>2/(−sin x) → −2</code>。')
+  + p('源文件强调：若一次洛必达后仍是未定式，可以<b>重复使用</b>，直到能定出极限；而最终极限的存在性反过来保证前面每一步的合法性。')
+  + h3('6.14 ∞/∞ 型：先变形再洛必达')
+  + p('(a) <code>lim_{x→∞} x e^{−x/2}</code>。这是 <code>0 · ∞</code> 型，改写成 <code>∞/∞</code>：<code>x/e^{x/2}</code>。洛必达一次：<code>1/((1/2)e^{x/2}) = 2/e^{x/2} → 0</code>。')
+  + p('(b) <code>lim_{x→π/2⁻} 4 tan x/(1 + sec x)</code>。代入得 <code>∞/∞</code>。洛必达：<code>4sec²x/(sec x tan x) = 4sec x/tan x = 4/sin x → 4</code>。')
+  + p('源文件还演示了一条「洛必达越用越乱」的情形：若对 <code>4tan x/(1+sec x)</code> 反复求导，会一直停在 <code>∞/∞</code>。此时应改用三角恒等式把商化简：<code>4sec x/tan x = (4/cos x)/(sin x/cos x) = 4/sin x</code>，直接看出极限为 4。这说明<b>洛必达不是万能钥匙，先化简往往更快</b>。')
+  + h3('6.15 0 · ∞ 型')
+  + p('标准做法：把 <code>f·g</code> 写成 <code>f/(1/g)</code> 或 <code>g/(1/f)</code>，选那个「变形后更好求导」的方向。')
+  + ul('<code>lim_{x→0⁺} xᵃ ln x = 0</code>（<code>a &gt; 0</code>）：改写为 <code>ln x/x^{−a}</code>，洛必达得 <code>(1/x)/(−a x^{−a−1}) = −xᵃ/a → 0</code>，再由夹逼取绝对值',
+       '<code>lim_{x→∞} ln x/xᵃ = 0</code>（<code>a &gt; 0</code>）：直接用洛必达得 <code>(1/x)/(a x^{a−1}) = 1/(a xᵃ) → 0</code>',
+       '<code>lim_{x→0⁺} x ln(1/x) = 0</code>：注意 <code>ln(1/x) = −ln x</code>，化为上一条',
+       '<code>lim_{x→0} x cot x = 1</code>：改写为 <code>x cos x/sin x</code>，<code>cos x → 1</code> 且 <code>x/sin x → 1</code>，故为 1')
+  + h3('6.16 ∞ − ∞ 型：通分或乘共轭')
+  + ul('<code>lim_{x→0}(1/x − 1/sin x) = 0</code>：通分得 <code>(sin x − x)/(x sin x)</code>，两次洛必达得 <code>0/2 = 0</code>（也可用 <code>sin x − x ≈ −x³/6</code> 快速判断）',
+       '<code>lim_{x→∞}(x − x²/(x + ln x)) = ∞</code>：通分得 <code>(x² + x ln x − x²)/(x + ln x) = x ln x/(x + ln x)</code>，分子增长更快，故为 ∞',
+       '<code>lim_{x→1⁺}(1/ln x − 1/(x−1)) = 1/2</code>：通分得 <code>(x − 1 − ln x)/((x−1)ln x)</code>，两次洛必达（或展开）得 1/2',
+       '<code>lim_{x→0}(1/(eˣ − 1) − 1/x) = −1/2</code>：通分得 <code>(x − eˣ + 1)/(x(eˣ−1))</code>，两次洛必达得 −1/2')
+  + h3('6.17 幂型：0⁰、∞⁰、1^∞ 的四步法')
+  + p('对 <code>lim f(x)^{g(x)}</code> 呈 <code>0⁰</code>、<code>∞⁰</code> 或 <code>1^∞</code> 型：')
+  + st('令 <code>y = f(x)^{g(x)}</code>，先求 <code>ln y = g(x) ln f(x)</code>',
+       '求 <code>lim ln y</code>（此时已化为 <code>0·∞</code> 型，按上节处理）',
+       '设 <code>lim ln y = L</code>，则 <code>lim y = e^L</code>')
+  + p('源文件三个例子：')
+  + ul('<code>lim_{x→0⁺} xˣ = 1</code>：<code>ln y = x ln x → 0</code>，故 <code>y → e⁰ = 1</code>',
+       '<code>lim_{x→∞} x^{1/x} = 1</code>：<code>ln y = (ln x)/x → 0</code>，故 <code>y → 1</code>',
+       '<code>lim_{x→∞}(1 + sin(3/x))ˣ = e³</code>：<code>ln y = x ln(1 + sin(3/x))</code>，用 <code>ln(1+u) ≈ u</code> 得 <code>≈ x·sin(3/x) ≈ x·(3/x) = 3</code>，故 <code>y → e³</code>')
+  + p('其他常见结果：<code>lim_{x→0}(1 + 3x)^{1/(2x)} = e^{3/2}</code>、<code>lim_{x→0}(1+x)^{1/x} = e</code>、<code>lim_{x→0}(1−x)^{1/x} = e^{−1}</code>。这三个都由标准极限 <code>lim_{u→0}(1+u)^{1/u} = e</code> 变形而来：把指数改写成 <code>(1/3x)·(3/2)</code> 之类的形式即可。')
+  + h3('6.18 面积问题与黎曼和')
+  + p('考虑区域 R：在 <code>y = f(x)</code> 之下（f 在 <code>[a, b]</code> 连续且 <code>f ≥ 0</code>）、x 轴之上、竖直线 <code>x = a</code> 与 <code>x = b</code> 之间。')
+  + p('用分割点 <code>x₀ = a &lt; x₁ &lt; ⋯ &lt; xₙ = b</code> 把区间分成 n 段，第 i 段长 <code>Δxᵢ = xᵢ − xᵢ₋₁</code>。在第 i 段上任取样本点 <code>xᵢ*∈ [xᵢ₋₁, xᵢ]</code>，以 <code>f(xᵢ*)</code> 为高作矩形，面积为 <code>f(xᵢ*)Δxᵢ</code>。把这些面积相加得<b>黎曼和</b>（Riemann sum）：')
+  + p('<b><code>Sₙ = Σ_{i=1}^{n} f(xᵢ*)Δxᵢ</code></b>。')
+  + p('当 <code>n → ∞</code> 且 <code>max Δxᵢ → 0</code> 时，<code>Sₙ</code> 趋于区域面积。这个「和式的极限」就是定积分。')
+  + h3('6.19 一个完整计算：y = x² 在 [0, b] 上的面积')
+  + p('把 <code>[0, b]</code> 等分成 n 段，<code>Δx = b/n</code>，<code>xᵢ = ib/n</code>。取右端点作样本点，矩形高 <code>(ib/n)²</code>，于是')
+  + p('<code>Sₙ = Σ_{i=1}^{n} (ib/n)²(b/n) = (b³/n³) Σ_{i=1}^{n} i² = (b³/n³)·n(n+1)(2n+1)/6</code>。')
+  + p('化简：<code>Sₙ = b³(n+1)(2n+1)/(6n²)</code>。令 <code>n → ∞</code>：')
+  + p('<b><code>lim Sₙ = b³·(2/6) = b³/3</code></b>。')
+  + p('这条推导依赖求和公式 <code>Σ_{i=1}^{n} i² = n(n+1)(2n+1)/6</code>（源文件把它列入公式表，考试可直接引用）。代入 <code>b = 1</code> 得经典结果 <code>∫₀¹x²dx = 1/3</code>。')
+  + h3('6.20 下和、上和与可积性')
+  + p('分割 <code>P = {x₀, x₁, …, xₙ}</code>（<code>a = x₀ &lt; ⋯ &lt; xₙ = b</code>）把 <code>[a, b]</code> 分成 n 个子区间，称 P 为一个<b>分割</b>；其<b>范数</b>（norm）为 <code>||P|| = max Δxᵢ</code>。')
+  + p('在每个子区间上，连续函数取到最小值 <code>mᵢ</code> 与最大值 <code>Mᵢ</code>（最值定理保证）。<b>下和</b>与<b>上和</b>定义为')
+  + p('<code>L(f, P) = Σ mᵢΔxᵢ</code>，<code>U(f, P) = Σ MᵢΔxᵢ</code>。')
+  + p('显然 <code>L(f, P) ≤ 真实面积 ≤ U(f, P)</code>，且任何黎曼和都夹在两者之间。对 <code>x²</code> 在 <code>[0, b]</code> 上等分，用左端点得下和')
+  + p('<code>L = (b³/n³)Σ_{i=1}^{n}(i−1)² = b³(n−1)(2n−1)/(6n²)</code>，')
+  + p('用右端点得上和 <code>U = b³(n+1)(2n+1)/(6n²)</code>。当 <code>n → ∞</code> 时两者都趋于 <code>b³/3</code>——这就是「可积」的含义。')
+  + p('<b>可积的定义</b>：若存在唯一的数 I，使对 <code>[a, b]</code> 的<b>每个</b>分割 P 都有 <code>L(f, P) ≤ I ≤ U(f, P)</code>，则称 f 在 <code>[a, b]</code> 上可积（integrable），并定义')
+  + p('<b><code>I = ∫ₐᵇ f(x) dx</code></b>，即 <code>lim_{||P||→0} L(f, P) = I = lim_{||P||→0} U(f, P)</code>。')
+  + p('记号各部分：<code>∫</code> 是积分号（integral sign）；a、b 是积分下限与上限；<code>f(x)</code> 是被积函数（integrand）；x 是积分变量；<code>dx</code> 是 x 的微分。积分变量用什么字母都不影响结果（哑变量）。')
+  + h3('6.21 定积分的几何意义与性质')
+  + p('几何上，定积分是<b>有向面积</b>：x 轴上方部分计正、下方部分计负。若 <code>f ≥ 0</code>，<code>∫ₐᵇ f</code> 就是面积；若 <code>f ≤ 0</code>，积分为负的面积；若 f 变号，则正负相消，得到「上方面积减下方面积」。')
+  + p('性质（设 f、g 在含 a、b、c 的区间上可积）：')
+  + ul('<code>∫ₐᵃ f = 0</code>（零宽度，面积为 0）',
+       '<code>∫ₐᵇ f = −∫ᵦᵃ f</code>（交换上下限变号）',
+       '线性：<code>∫ₐᵇ(αf + βg) = α∫ₐᵇf + β∫ₐᵇg</code>',
+       '可加：<code>∫ₐᶜ f + ∫꜀ᵇ f = ∫ₐᵇ f</code>（c 可以在区间内、外都成立）',
+       '比较：若 <code>a ≤ b</code> 且 <code>f ≤ g</code>，则 <code>∫ₐᵇ f ≤ ∫ₐᵇ g</code>',
+       '绝对值不等式：<code>|∫ₐᵇ f| ≤ ∫ₐᵇ |f|</code>',
+       '奇偶性：f 奇则 <code>∫_{−a}^{a} f = 0</code>；f 偶则 <code>∫_{−a}^{a} f = 2∫₀^{a} f</code>')
+  + p('最后一条来自「有向面积的正负相消」：奇函数在对称区间的左右两块面积大小相等、符号相反，故总和为 0。这条性质在考试里能省下大量计算。')
+  + p('<b>连续与可积</b>：若 f 在 <code>[a, b]</code> 上连续，则 f 在 <code>[a, b]</code> 上可积。逆命题不成立——可积函数可以是不连续的（例如分段连续、只有有限个跳跃点的函数）。')
+  + p('<b>积分中值定理</b>：若 f 在 <code>[a, b]</code> 上连续，则存在 <code>c ∈ [a, b]</code> 使 <code>f(c) = (1/(b−a))∫ₐᵇ f(x)dx</code>。也就是说，连续函数在区间上的平均值一定能被某点的函数值取到。')),
+ kws=K(('inverse sine', '反正弦', 'y = sin⁻¹x on [−1,1], range [−π/2, π/2].'),
+       ('inverse cosine', '反余弦', 'cos⁻¹x = π/2 − sin⁻¹x, range [0, π].'),
+       ('inverse tangent', '反正切', 'tan⁻¹x on ℝ, range (−π/2, π/2), horizontal asymptotes ±π/2.'),
+       ('hyperbolic cosine', '双曲余弦', 'cosh x = (eˣ + e^{−x})/2, even, range [1, ∞).'),
+       ('hyperbolic sine', '双曲正弦', 'sinh x = (eˣ − e^{−x})/2, odd, range ℝ.'),
+       ('fundamental identity', '双曲基本恒等式', 'cosh²x − sinh²x = 1.'),
+       ('indeterminate form', '未定式', 'Limits of type 0/0, ∞/∞, 0·∞, ∞−∞, 0⁰, ∞⁰, 1^∞.'),
+       ('Cauchy mean-value theorem', '柯西中值定理', '[f(b)−f(a)]/[g(b)−g(a)] = f′(c)/g′(c).'),
+       ('L’Hôpital’s rule', '洛必达法则', 'For 0/0 or ∞/∞, lim f/g = lim f′/g′.'),
+       ('logarithmic limit', '对数化处理', 'For powers, take ln y, find the limit, then exponentiate.'),
+       ('Riemann sum', '黎曼和', 'Σ f(xᵢ*)Δxᵢ approximating the area under the graph.'),
+       ('partition', '分割', 'A finite set a = x₀ < x₁ < ⋯ < xₙ = b; its norm is max Δxᵢ.'),
+       ('lower and upper sums', '下和与上和', 'Σ mᵢΔxᵢ and Σ MᵢΔxᵢ bracketing the true area.'),
+       ('definite integral', '定积分', 'The unique number I with L(f,P) ≤ I ≤ U(f,P) for every partition.'),
+       ('integrable', '可积', 'A definite integral exists; every continuous function on [a,b] is integrable.')),
+ examples=(qa('例 1（源文件 p8）　求 (a) sin⁻¹(sin 4π/5)；(b) cos(sin⁻¹ x)。',
+    p('(a) <code>4π/5</code> 不在主值区间 <code>[−π/2, π/2]</code>，不能直接抵消。用补角公式：<code>sin(4π/5) = sin(π − 4π/5) = sin(π/5)</code>。')
+    + p('而 <code>π/5 ∈ [−π/2, π/2]</code>，故 <code>sin⁻¹(sin 4π/5) = sin⁻¹(sin π/5) = π/5</code>。')
+    + p('(b) 令 <code>θ = sin⁻¹ x</code>，则 <code>sin θ = x</code>、<code>θ ∈ [−π/2, π/2]</code>。在该区间 <code>cos θ ≥ 0</code>，故 <code>cos θ = √(1 − sin²θ) = √(1 − x²)</code>，取正号。')
+    + p('<b>要点：</b>反三角复合题一律「先判断角是否在主值区间 → 用诱导公式折回 → 再抵消」；开方时用主值区间的符号确定正负。'))
+   + qa('例 2（源文件 p30–p31）　用洛必达法则求 (a) lim_{x→1} ln x/(x²−1)；(b) lim_{x→0}(eˣ + e^{−x} − 2)/(1 − cos 2x)；(c) lim_{x→π/2⁻}(2x − π)/cos x。',
+    p('(a) 代入得 <code>0/0</code>。一次洛必达：<code>(1/x)/(2x) = 1/(2x²)</code>，令 <code>x → 1</code> 得 <code>1/2</code>。')
+    + p('(b) 代入得 <code>0/0</code>。一次：<code>(eˣ − e^{−x})/(2 sin 2x)</code>（仍是 0/0）；二次：<code>(eˣ + e^{−x})/(4 cos 2x)</code>。令 <code>x → 0</code>：<code>(1+1)/(4·1) = 1/2</code>。')
+    + p('(c) 代入得 <code>0/0</code>（<code>cos x → 0⁺</code>）。一次：<code>2/(−sin x)</code>，令 <code>x → π/2⁻</code> 得 <code>2/(−1) = −2</code>。')
+    + p('<b>要点：</b>每用一次都要重新检查是否仍是未定式；一旦不再是（如 (c) 第二次已是有限值），立刻停止并代值。'))
+   + qa('例 3（源文件 p9–p13）　求 (a) lim_{x→0}(1 + 3x)^{1/(2x)}；(b) lim_{x→0⁺} xˣ；(c) lim_{x→∞}(1 + sin(3/x))ˣ。',
+    p('(a) 这是 <code>1^∞</code> 型。设 <code>y = (1+3x)^{1/(2x)}</code>，则 <code>ln y = ln(1+3x)/(2x)</code>。')
+    + p('洛必达：<code>(3/(1+3x))/2 → 3/2</code>（令 x → 0）。故 <code>y → e^{3/2}</code>。')
+    + p('(b) 这是 <code>0⁰</code> 型。<code>ln y = x ln x</code>，由上节结果 <code>x ln x → 0</code>，故 <code>y → e⁰ = 1</code>。')
+    + p('(c) 这是 <code>1^∞</code> 型（<code>sin(3/x) → 0</code>）。<code>ln y = x ln(1 + sin(3/x))</code>。用 <code>ln(1+u) ≈ u</code>（<code>u → 0</code>）：<code>ln y ≈ x sin(3/x) ≈ x·(3/x) = 3</code>，故 <code>y → e³</code>。')
+    + p('<b>统一模板：</b>取对数 → 变成 <code>0·∞</code> → 改写成商 → 洛必达或等价化简 → 取指数。三步走，所有幂型未定式都适用。'))
+   + qa('例 4（源文件 p18–p20）　用黎曼和求 y = x² 在 [0, b] 下方的面积。',
+    p('把 <code>[0, b]</code> 等分，<code>Δx = b/n</code>，分割点 <code>xᵢ = ib/n</code>（<code>i = 0, …, n</code>）。')
+    + p('取右端点作样本点 <code>xᵢ* = ib/n</code>，矩形高 <code>(ib/n)²</code>，黎曼和')
+    + p('<code>Sₙ = Σ_{i=1}^{n}(ib/n)²(b/n) = (b³/n³)Σ_{i=1}^{n}i²</code>。')
+    + p('代入 <code>Σi² = n(n+1)(2n+1)/6</code>：<code>Sₙ = b³(n+1)(2n+1)/(6n²)</code>。')
+    + p('令 <code>n → ∞</code>：<code>(n+1)(2n+1)/(6n²) → 2/6 = 1/3</code>，故面积 <code>= b³/3</code>。')
+    + p('<b>检验：</b><code>b = 1</code> 时 <code>1/3</code>；<code>b = 3</code> 时 <code>9</code>。量纲检查：面积应与 <code>b³</code> 同量纲，因为曲线是 <code>y = x²</code>（长度²），再乘长度得长度³——结果形式合理。'))),
+ practice=(ol('求 <code>d/dx tan⁻¹(3x)</code>；并写出 <code>∫dx/(x² + 9)</code>。',
+          '已知 <code>cosh x = 5/4</code>，求 <code>cosh 2x</code> 与 <code>sinh 2x</code>。',
+          '用洛必达法则求 <code>lim_{x→0}(sin x − x)/x³</code>。',
+          '用洛必达法则求 <code>lim_{x→0}(tan x − x)/x³</code>。',
+          '求 <code>lim_{x→1⁺}(1/ln x − 1/(x−1))</code>。',
+          '用黎曼和求 <code>∫₀¹ x² dx</code>，并用定积分性质计算 <code>∫_{−2}^{2}(x³ + x) dx</code>。')
+  + det('答案与思路',
+    p('<b>1.</b> <code>d/dx tan⁻¹(3x) = 3/(1 + 9x²)</code>；<code>∫dx/(x²+9) = (1/3)tan⁻¹(x/3) + C</code>（公式 <code>∫dx/(a²+x²) = (1/a)tan⁻¹(x/a)</code>，此处 a = 3）。')
+    + p('<b>2.</b> <code>cosh2x = 2(5/4)² − 1 = 50/16 − 1 = 17/8</code>；<code>sinh²2x = (17/8)² − 1 = 225/64</code>，故 <code>sinh2x = ±15/8</code>（符号取决于 x 的正负，题目未给则写 ±）。')
+    + p('<b>3.</b> 三次洛必达：<code>(sin x − x)/x³ → (cos x − 1)/(3x²) → (−sin x)/(6x) → (−cos x)/6 → −1/6</code>。')
+    + p('<b>4.</b> <code>(tan x − x)/x³ → (sec²x − 1)/(3x²) = tan²x/(3x²) → (1/3)(tan x/x)² → 1/3</code>。注意第二步用了 <code>sec²x − 1 = tan²x</code>，这比继续求导更快。')
+    + p('<b>5.</b> 通分：<code>(x − 1 − ln x)/((x−1)ln x)</code>。第一次洛必达得 <code>(1 − 1/x)/(ln x + 1 − 1/x)</code>（仍是 0/0），第二次得 <code>(1/x²)/(1/x + 1/x²) = 1/(x+1)</code>，令 <code>x → 1⁺</code> 得 <code>1/2</code>。也可用展开 <code>ln x ≈ (x−1) − (x−1)²/2</code> 直接看出结果，两种做法互相印证。')
+    + p('<b>6.</b> 黎曼和：<code>Sₙ = (1/n³)Σi² = (n+1)(2n+1)/(6n²) → 1/3</code>。<code>∫_{−2}^{2}(x³+x)dx = 0</code>：被积函数是奇函数（<code>(−x)³ + (−x) = −(x³+x)</code>），在对称区间上积分为 0。'))),
+ exam=(cal('exam', '必考', '①<code>sin⁻¹、cos⁻¹、tan⁻¹</code> 的导数与三个配套积分公式；②反三角复合（主值区间问题）；③双曲函数恒等式与导数；④洛必达处理 0/0、∞/∞、0·∞、∞−∞、幂型；⑤黎曼和求面积；⑥定积分性质（尤其奇偶性）。')
+  + cal('warn', '易错 1', '<b>对非未定式用洛必达</b>。用之前必须确认是 0/0 或 ∞/∞；否则会得到荒谬结果（源文件页末专门写了 Caution）。')
+  + cal('warn', '易错 2', '<b>反三角复合直接抵消</b>。<code>sin⁻¹(sin 4π/5) ≠ 4π/5</code>，必须先用诱导公式折算回主值区间。')
+  + cal('warn', '易错 3', '<b>幂型未定式忘记取指数</b>。算出 <code>lim ln y = L</code> 后必须写 <code>lim y = e^L</code>，很多人停在 <code>L</code> 上。')
+  + cal('warn', '易错 4', '<b>黎曼和漏乘 Δx 或求和上限写错</b>。矩形面积是「高 × 宽」，宽是 <code>b/n</code> 而不是 1；<code>Σi²</code> 的上限是 n（右端点）或 n−1（左端点），两者极限相同但中间式子不同。')
+  + cal('tip', '进阶', '把洛必达与等价无穷小结合：<code>sin x ≈ x</code>、<code>tan x ≈ x</code>、<code>1 − cos x ≈ x²/2</code>、<code>ln(1+u) ≈ u</code>、<code>e^u − 1 ≈ u</code>。先用等价量判断阶数，再用洛必达收尾，通常能少求一两次导。')),
+ checklist=(h2('方法与清单')
+  + h3('处理未定式（先分类，再选工具）')
+  + st('代入判断类型：<code>0/0</code>、<code>∞/∞</code>、<code>0·∞</code>、<code>∞−∞</code>、<code>0⁰</code>、<code>∞⁰</code>、<code>1^∞</code>',
+       '<code>0·∞</code> 改写成商；<code>∞−∞</code> 通分或乘共轭；幂型取对数化成 <code>0·∞</code>',
+       '变成 <code>0/0</code> 或 <code>∞/∞</code> 后才用洛必达，每用一次重新检查类型',
+       '若洛必达越用越乱，改回代数变形或三角恒等式化简')
+  + h3('反三角复合（三步）')
+  + st('看内层角是否落在主值区间（arcsin 为 <code>[−π/2, π/2]</code>，arccos 为 <code>[0, π]</code>）',
+       '不在则用周期性或诱导公式把角折回主值区间',
+       '抵消后若需开方（如 <code>cos(sin⁻¹x)</code>），符号由主值区间决定')
+  + h3('黎曼和求面积（四步）')
+  + st('等分区间，写出 <code>Δx</code> 与分割点 <code>xᵢ</code>',
+       '选样本点（左端、右端或中点），写出矩形高 <code>f(xᵢ*)</code>',
+       '写出和式并代入 <code>Σ1 = n</code>、<code>Σi</code>、<code>Σi²</code> 等公式化简',
+       '令 <code>n → ∞</code> 取极限，并用特殊值或量纲检查结果')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p1–p2', '第一次考试时间与报名截止、不允许计算器、公式表'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p4–p8', '反三角函数的必要性、arcsin 的定义域值域与图像、反三角复合两例'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p9–p10', 'arcsin 导数证明、sin⁻¹(x/a) 的导数与 ∫dx/√(a²−x²)'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p11–p15', 'arccos 的定义与互补关系、其导数；arctan 的定义、渐近线、导数与积分公式'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p16–p17', '双曲函数的定义、奇偶性、基本恒等式、图像与渐近行为'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p18–p19', 'cosh 与 sinh 的导数推导、cosh2x 恒等式、由 cosh x 求 sinh 2x'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p20–p21', '未定式概念、七种类型及其代表例'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p22–p25', '柯西中值定理、辅助函数与罗尔定理证明、MVT 作为特例'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p26–p29', '洛必达法则的陈述、0/0 型的证明、∞/∞ 与 x→∞ 的说明'),
+    ('Topic 6/EMI_Week6_Lecture1.pdf', 'p30–p32', '三个 0/0 型例子、重复使用法则、四道任务与「不要滥用」的警告'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p2–p4', '∞/∞ 型与 0·∞ 改写、4tan x/(1+sec x) 的恒等式化简、四道 0·∞ 任务'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p5–p7', '∞−∞ 型的通分处理、两个例子与四道任务'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p8–p13', '幂型 0⁰、∞⁰、1^∞ 的四步法、三个例子与四道任务'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p14–p20', '面积问题、分割与样本点、黎曼和、y = x² 的完整计算'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p21–p23', '分割的范数、下和与上和、x² 的上下和、夹逼到 b³/3'),
+    ('Topic 6/EMI_Week6_Lecture2.pdf', 'p24–p28', '定积分定义与记号、几何意义（有向面积）、六条性质、连续 ⇒ 可积、积分中值定理'),
+    ('（跳过）Topic 6 中纯图片页与 _info 页面', '—', 'p4–p5 等图形页按相邻文字复原；Lecture One/Two.html 为登录页快照'),
+    ('（拓展）', '—', '七种未定式的处理流程图、双曲函数的积分公式与黎曼和的分割范数讨论为衔接性补充'))
+)
+
+# ============================================================ 讲 7
+lec(
+ slug='t7-integration-techniques',
+ tzh='第 4 章 · 微积分基本定理与积分方法',
+ ten='Fundamental Theorem of Calculus and Techniques of Integration',
+ keywords=['fundamental theorem of calculus', 'average value', 'piecewise continuous',
+           'substitution', 'integration by parts', 'reduction formula',
+           'trigonometric integral', 'trigonometric substitution', 'partial fractions',
+           'rational function', 'completing the square'],
+ files=['Topic 7/EMI_Week7_Lecture.pdf', 'Topic 7/EMI_7.pdf', 'Topic 7/EM_7_sol.pdf'],
+ part=CH4,
+ overview=(h2('本节定位')
+  + p('第 6 讲把定积分定义成黎曼和的极限，但那个定义几乎不能用来算题——除了 x² 这类极简单的函数，求和公式都不存在。本讲给出真正的计算工具：微积分基本定理（FTC）把定积分转成「找原函数 + 代端点」，随后是换元、分部积分、三角积分、三角代换与部分分式五套方法，覆盖本课程所有积分题。')
+  + p('这五套方法不是并列的选项，而是一棵决策树：先看被积函数的结构（复合、乘积、三角幂、根式、有理式），再决定用哪一套。本讲会把判断顺序写清楚，并在 checklist 里给出可执行流程。')
+  + p('学完本节你应当能够：')
+  + ck('陈述并证明 FTC 的两个部分，用它计算定积分并求函数在区间上的平均值（含分段连续函数）',
+     '用换元法（定积分要同时换上下限）计算复合型积分',
+     '用分部积分处理「多项式 × 指数/三角/对数/反三角」型积分',
+     '按幂次奇偶选择三角积分的代换，必要时用倍角公式降幂',
+     '用 <code>a sin θ</code>、<code>a tan θ</code>、<code>a sec θ</code> 消除根式',
+     '把有理函数拆成部分分式并逐项积分')),
+ detail=(h3('7.1 微积分基本定理（第一部分）')
+  + p('设 f 在含点 a 的区间 I 上连续，定义<b>累积函数</b>')
+  + p('<code>F(x) = ∫ₐˣ f(t) dt</code>（<code>x ∈ I</code>）。')
+  + p('<b>FTC 第一部分</b>：<code>F′(x) = f(x)</code>。也就是说，累积函数是 f 的一个原函数——「先积分再求导」会回到原函数。')
+  + p('证明：由导数定义')
+  + p('<code>F′(x) = lim_{h→0}[F(x+h) − F(x)]/h = lim_{h→0}(1/h)∫ₓ^{x+h} f(t)dt</code>。')
+  + p('由积分中值定理，<code>∫ₓ^{x+h} f(t)dt = h·f(ξ)</code>，其中 ξ 在 x 与 x+h 之间；当 <code>h → 0</code> 时 <code>ξ → x</code>，由 f 的连续性得 <code>f(ξ) → f(x)</code>。故 <code>F′(x) = f(x)</code>。')
+  + p('直观解释（源文件）：若 <code>x(t)</code> 是位置，则 <code>∫ₐᵇ x′(t)dt</code> 把「速度表读数」按时间累加，得到「从 t = a 到 t = b 走了多远」。FTC 说的就是「速度的累积等于位移」，这正是里程表与速度表的关系。')
+  + h3('7.2 微积分基本定理（第二部分）')
+  + p('<b>FTC 第二部分</b>：若 F 是 f 在 I 上的任一原函数（即 <code>F′ = f</code>），则')
+  + p('<b><code>∫ₐᵇ f(x)dx = F(b) − F(a)</code></b>。')
+  + p('证明：设 <code>G(x) = ∫ₐˣ f</code>，由第一部分 <code>G′ = f</code>，故 <code>F − G</code> 的导数为 0，即为常数 C：<code>F = G + C</code>。取 <code>x = a</code> 得 <code>0 = G(a) = F(a) − C</code>，故 <code>C = −F(a)</code>。于是 <code>G(b) = F(b) − F(a)</code>。')
+  + p('求值符号：<code>F(x)|ₐᵇ = F(b) − F(a)</code>。写题时标准格式是 <code>∫ₐᵇ f(x)dx = [F(x)]ₐᵇ = F(b) − F(a)</code>。')
+  + cal('tip', 'FTC 把「求和」变成「找原函数」', '这是整门课最有价值的一句话：定积分不再需要求和公式，只需要一个原函数。而原函数可以通过第 4 讲的不定积分（+C 的那个）来求，因此「积分表 + 五套方法」就足以应付所有题目。')
+  + h3('7.3 函数的平均值')
+  + p('若 f 在 <code>[a, b]</code> 上可积，则它在区间上的<b>平均值</b>（average / mean value）为')
+  + p('<b><code>f̄ = (1/(b−a))∫ₐᵇ f(x)dx</code></b>。')
+  + p('源文件例：求 <code>f(x) = √x</code> 在 <code>[1, 5]</code> 上的平均值。')
+  + p('<code>f̄ = (1/4)∫₁⁵ √x dx = (1/4)·(2/3)x^{3/2}|₁⁵ = (1/6)(5√5 − 1)</code>。')
+  + p('（源文件把结果写成 <code>(5√5 − 1)/6</code>，是一样的。）注意平均值不是「端点的平均」，也不是「中点的函数值」。')
+  + h3('7.4 分段连续函数')
+  + p('若 f 在 <code>[a, b]</code> 上只有有限个间断点、在间断点之间连续，且在每个间断点处的单侧极限存在（有限），则称 f 在 <code>[a, b]</code> 上<b>分段连续</b>（piecewise continuous）。分段连续函数可积，且积分可以按段相加。')
+  + p('源文件例：<code>f(x) = √(1−x²)</code>（<code>0 ≤ x ≤ 1</code>）、<code>f(x) = 2</code>（<code>1 &lt; x ≤ 2</code>）、<code>f(x) = x − 2</code>（<code>2 &lt; x ≤ 3</code>），求 <code>∫₀³ f</code>。')
+  + p('<code>∫₀³ f = ∫₀¹√(1−x²)dx + ∫₁²2dx + ∫₂³(x−2)dx</code>。')
+  + p('第一段是单位圆在第一象限的四分之一，面积 <code>π/4</code>（用几何意义而非原函数，因为 <code>√(1−x²)</code> 的原函数要用三角代换，见 7.16）；第二段 <code>= 2(2−1) = 2</code>；第三段 <code>= (1/2)(1)(1) = 1/2</code>。故')
+  + p('<code>∫₀³ f = π/4 + 2 + 1/2 = π/4 + 5/2</code>。')
+  + h3('7.5 用 FTC 计算定积分')
+  + p('源文件例 1(a)：<code>∫₀²(x² − x)dx = [x³/3 − x²/2]₀² = 8/3 − 2 = 2/3</code>。')
+  + p('源文件例 1(b)：<code>∫₋₁²(x² − 3x + 2)dx = [x³/3 − 3x²/2 + 2x]₋₁² = (8/3 − 6 + 4) − (−1/3 − 3/2 − 2) = 2/3 − (−23/6) = 9/2</code>。')
+  + p('第二题最容易错在「代下限」时的符号：先把原函数在 a 处的值整体算出，再用 <code>F(b) − F(a)</code>，不要在式子中间随手加减。')
+  + h3('7.6 曲线下方的面积')
+  + p('源文件例 2：求 <code>y = 3x − x²</code> 在 x 轴上方部分的面积。先找 x 截距：<code>3x − x² = x(3 − x) = 0</code>，得 <code>x = 0, 3</code>；在 <code>(0, 3)</code> 内 <code>3x − x² &gt; 0</code>，故')
+  + p('<code>A = ∫₀³(3x − x²)dx = [3x²/2 − x³/3]₀³ = 27/2 − 9 = 9/2</code>。')
+  + p('要点：面积题必须先定积分区间（找交点或截距），再确认被积函数在该区间上非负；否则会用「有向面积」算出错误的正负。')
+  + h3('7.7 两曲线之间的面积')
+  + p('源文件例 3：求 <code>y = 5/(x²+1)</code> 与 <code>y = 1</code> 在 <code>x = −2</code> 到 <code>x = 2</code> 之间的面积。先求交点：<code>5/(x²+1) = 1</code> 得 <code>x² = 4</code>，<code>x = ±2</code>。在该区间上 <code>5/(x²+1) ≥ 1</code>，故')
+  + p('<code>A = ∫₋₂²[5/(x²+1) − 1]dx = 2∫₀²[5/(x²+1) − 1]dx</code>（被积函数为偶函数）。')
+  + p('原函数：<code>5tan⁻¹x − x</code>。故 <code>A = 2[5tan⁻¹2 − 2]</code>。')
+  + cal('warn', '上减下的顺序', '「两曲线之间的面积」永远是<code>上函数 − 下函数</code>；若不确定谁在上，先在区间内取一个测试点算两者的值。若两曲线在区间内交叉，必须分段积分，否则会正负抵消。')
+  + h3('7.8 定积分的换元法')
+  + p('若 <code>u = g(x)</code> 在 <code>[a, b]</code> 上可导、<code>g′</code> 连续，f 在 g 的值域上连续，则')
+  + p('<b><code>∫ₐᵇ f(g(x))g′(x)dx = ∫_{g(a)}^{g(b)} f(u)du</code></b>。')
+  + p('证明：设 F 是 f 的原函数，则 <code>(F∘g)′ = f(g(x))g′(x)</code>（链式法则），由 FTC：')
+  + p('<code>∫ₐᵇ f(g(x))g′(x)dx = F(g(b)) − F(g(a)) = ∫_{g(a)}^{g(b)} f(u)du</code>。')
+  + p('关键差别：<b>定积分换元必须同时把上下限换成 u 的值</b>，换完直接算，不需要再换回 x。若坚持换回 x，就要把上下限也换回来（多一步、易错）。')
+  + p('源文件例：<code>∫₀⁸ cos√(x+1)/√(x+1) dx</code>。令 <code>u = √(x+1)</code>，则 <code>du = dx/(2√(x+1))</code>，即 <code>dx/√(x+1) = 2du</code>。')
+  + p('换限：<code>x = 0 → u = 1</code>；<code>x = 8 → u = 3</code>。于是')
+  + p('<code>∫₀⁸ ... = 2∫₁³ cos u du = 2[sin u]₁³ = 2(sin3 − sin1)</code>。')
+  + h3('7.9 不定积分的换元与三道任务')
+  + p('不定积分换元后必须<b>换回原变量</b>（因为答案要以 x 表示），并加 C。源文件三道任务：')
+  + ul('<code>∫(2x−3)/√(x²−3x+1) dx</code>：令 <code>u = x²−3x+1</code>，<code>du = (2x−3)dx</code>，得 <code>∫u^{−1/2}du = 2√u + C = 2√(x²−3x+1) + C</code>',
+       '<code>∫dx/√(6x−x²)</code>：配方 <code>6x−x² = 9 − (x−3)²</code>，令 <code>u = x−3</code>，得 <code>sin⁻¹((x−3)/3) + C</code>',
+       '<code>∫(2x−1)/√(1−x²) dx</code>：拆成 <code>2∫x/√(1−x²)dx − ∫dx/√(1−x²)</code>，前者令 <code>u = 1−x²</code> 得 <code>−2√(1−x²)</code>，后者为 <code>sin⁻¹x</code>，故 <code>−2√(1−x²) − sin⁻¹x + C</code>')
+  + p('第三题示范了「拆项」技巧：一个积分拆成两个各自可算的部分，比分母整体换元更省力。')
+  + h3('7.10 三角函数的积分')
+  + p('四个基本结果（源文件给出并推导前两个）：')
+  + tb(('积分', '结果', '代换'),
+       ('<code>∫tan x dx</code>', '<code>ln|sec x| + C</code>', '<code>u = cos x</code>'),
+       ('<code>∫cot x dx</code>', '<code>ln|sin x| + C</code>', '<code>u = sin x</code>'),
+       ('<code>∫sec x dx</code>', '<code>ln|sec x + tan x| + C</code>', '<code>u = sec x + tan x</code>'),
+       ('<code>∫csc x dx</code>', '<code>−ln|csc x + cot x| + C</code>', '<code>u = csc x − cot x</code>'))
+  + p('<code>∫tan x dx</code>：<code>∫(sin x/cos x)dx</code>，令 <code>u = cos x</code>、<code>du = −sin x dx</code>，得 <code>−∫du/u = −ln|u| = −ln|cos x| = ln|sec x|</code>。')
+  + p('<code>∫sec x dx</code>：分子分母同乘 <code>(sec x + tan x)</code>，得 <code>∫(sec²x + sec x tan x)/(sec x + tan x)dx</code>；令 <code>u = sec x + tan x</code>，则 <code>du</code> 恰为分子，故 <code>= ln|u| = ln|sec x + tan x|</code>。这个「乘一个巧妙的因子」是本节唯一的技巧点，记不住可以现场推。')
+  + h3('7.11 sinᵐx cosⁿx 型')
+  + p('按幂次奇偶分三种情形：')
+  + ul('<b>m 为奇数</b>：留一个 <code>sin x</code> 与 <code>dx</code> 配对，其余用 <code>sin² = 1 − cos²</code> 转成 cos，令 <code>u = cos x</code>',
+       '<b>n 为奇数</b>：对称处理，令 <code>u = sin x</code>',
+       '<b>m、n 都是偶数</b>：用倍角公式降幂：<code>sin²x = (1 − cos2x)/2</code>、<code>cos²x = (1 + cos2x)/2</code>')
+  + p('源文件例 (a)：<code>∫sin³x cos⁸x dx</code>。sin 的幂为奇，令 <code>u = cos x</code>，<code>du = −sin x dx</code>：')
+  + p('<code>∫sin³x cos⁸x dx = ∫(1 − cos²x)cos⁸x sin x dx = −∫(1 − u²)u⁸du = ∫(u¹⁰ − u⁸)du</code>，')
+  + p('故 <code>= u¹¹/11 − u⁹/9 + C = (1/11)cos¹¹x − (1/9)cos⁹x + C</code>。')
+  + p('源文件例 (b)：<code>∫cos⁴x dx</code>。用倍角公式：<code>cos⁴x = [(1 + cos2x)/2]² = (1 + 2cos2x + cos²2x)/4</code>；再对 <code>cos²2x</code> 用一次倍角：<code>= (1 + cos4x)/2</code>。于是')
+  + p('<code>∫cos⁴x dx = (1/4)∫[1 + 2cos2x + (1 + cos4x)/2]dx = (3/8)x + (1/4)sin2x + (1/32)sin4x + C</code>。')
+  + h3('7.12 secᵐx tanⁿx 型与 cscᵐx cotⁿx 型')
+  + p('<code>secᵐ tanⁿ</code>：若 n 为偶数，留 <code>sec²x dx</code>，令 <code>u = tan x</code>；若 m 为偶数，留 <code>sec²x</code> 转成 <code>1 + tan²</code>；若 m 为奇数、n 为偶数，用分部积分。恒等式：<code>sec² = 1 + tan²</code>。')
+  + p('例：<code>∫sec⁴x dx = ∫(1 + tan²x)sec²x dx</code>，令 <code>u = tan x</code>，得 <code>∫(1 + u²)du = u + u³/3 = tan x + (1/3)tan³x + C</code>。')
+  + p('<code>cscᵐ cotⁿ</code>：若 n 为偶数，留 <code>csc²x dx</code>，令 <code>u = cot x</code>；若 m 为奇数，令 <code>u = csc x</code>；恒等式 <code>csc² = 1 + cot²</code>。')
+  + p('例：<code>∫csc³x cot³x dx = ∫csc²x·cot²x·csc x cot x dx</code>，令 <code>u = csc x</code>、<code>du = −csc x cot x dx</code>，且 <code>cot² = u² − 1</code>：')
+  + p('<code>= −∫u²(u² − 1)du = ∫(u² − u⁴)du = u³/3 − u⁵/5 + C = (1/3)csc³x − (1/5)csc⁵x + C</code>。')
+  + p('源文件另一道任务：<code>∫(sec x + tan x)²dx</code>。展开得 <code>sec²x + 2sec x tan x + tan²x</code>，用 <code>tan² = sec² − 1</code> 化为 <code>2sec²x + 2sec x tan x − 1</code>，逐项积分得 <code>2tan x + 2sec x − x + C</code>。')
+  + p('产品化公式：<code>∫sin2x cos3x dx</code> 用积化和差 <code>sinA cosB = [sin(A−B) + sin(A+B)]/2</code>，得 <code>(1/2)cos x − (1/10)cos5x + C</code>。')
+  + p('<code>∫√(1 − cos4x)dx</code>（<code>0 ≤ x ≤ π/2</code>）：由 <code>1 − cos4x = 2sin²2x</code> 得被积函数 <code>√2 sin2x</code>（该区间内 sin2x ≥ 0），故积分为 <code>−(√2/2)cos2x + C</code>。')
+  + h3('7.13 三角代换：消除根式')
+  + p('当被积函数含下列根式时，用三角代换把根式变成有理式：')
+  + tb(('根式', '代换', '化简结果', 'θ 的范围'),
+       ('<code>√(a² − x²)</code>', '<code>x = a sin θ</code>', '<code>a cos θ</code>', '<code>[−π/2, π/2]</code>'),
+       ('<code>√(a² + x²)</code>', '<code>x = a tan θ</code>', '<code>a sec θ</code>', '<code>(−π/2, π/2)</code>'),
+       ('<code>√(x² − a²)</code>', '<code>x = a sec θ</code>', '<code>a tan θ</code>', '<code>x ≥ a: [0, π/2)</code>；<code>x ≤ −a: (π/2, π]</code>'))
+  + p('记忆方式：画直角三角形。<code>x = a sin θ</code> 时对边 x、斜边 a，邻边 <code>√(a²−x²)</code>；<code>x = a tan θ</code> 时对边 x、邻边 a，斜边 <code>√(a²+x²)</code>；<code>x = a sec θ</code> 时斜边 x、邻边 a，对边 <code>√(x²−a²)</code>。')
+  + p('源文件例 (a)：<code>∫dx/(x²√(16−x²))</code>。令 <code>x = 4sin θ</code>，<code>dx = 4cos θ dθ</code>，<code>√(16−x²) = 4cos θ</code>：')
+  + p('<code>∫ = ∫(4cos θ dθ)/(16sin²θ·4cos θ) = (1/16)∫csc²θ dθ = −(1/16)cot θ + C</code>。')
+  + p('由三角形：<code>cot θ = (邻边)/(对边) = √(16−x²)/x</code>，故 <code>= −√(16−x²)/(16x) + C</code>。')
+  + p('源文件例 (b)：<code>∫dx/√(4+x²)</code>。令 <code>x = 2tan θ</code>，<code>dx = 2sec²θ dθ</code>，<code>√(4+x²) = 2sec θ</code>：')
+  + p('<code>∫ = ∫sec θ dθ = ln|sec θ + tan θ| + C = ln|√(4+x²)/2 + x/2| + C = ln(√(4+x²) + x) + C₁</code>，其中 <code>C₁ = C − ln2</code>。')
+  + cal('warn', '换回原变量时别漏常数', '三角代换常会带出 <code>ln 2</code> 之类的常数，把它并进 C 即可；但必须显式说明「令 <code>C₁ = C − ln2</code>」，否则答案形式与标准答案不一致会被扣分。')
+  + h3('7.14 分部积分')
+  + p('由乘积法则 <code>(uv)′ = u′v + uv′</code> 移项、积分，得')
+  + p('<b><code>∫u dv = uv − ∫v du</code></b>，或写成 <b><code>∫u(x)v′(x)dx = u(x)v(x) − ∫v(x)u′(x)dx</code></b>。')
+  + p('它的作用是「把不好积的 <code>u dv</code> 换成可能好积的 <code>v du</code>」。选 u 的顺序（源文件虽未明说，但由例题可归纳）：<b>反三角 → 对数 → 幂 → 三角 → 指数</b>（越靠前越适合当 u，因为求导后会变简单）。')
+  + p('源文件例 1(a)：<code>∫x cos x dx</code>。取 <code>u = x</code>、<code>dv = cos x dx</code>，则 <code>du = dx</code>、<code>v = sin x</code>：')
+  + p('<code>= x sin x − ∫sin x dx = x sin x + cos x + C</code>。')
+  + p('源文件例 1(b)：<code>∫x²eˣ dx</code>。取 <code>u = x²</code>、<code>dv = eˣdx</code>，两次分部：')
+  + p('<code>= x²eˣ − 2∫xeˣdx = x²eˣ − 2(xeˣ − ∫eˣdx) = eˣ(x² − 2x + 2) + C</code>。')
+  + p('源文件例 2(a)：<code>∫ln x dx</code>。取 <code>u = ln x</code>、<code>dv = dx</code>，则 <code>du = dx/x</code>、<code>v = x</code>：')
+  + p('<code>= x ln x − ∫x·(1/x)dx = x ln x − x + C</code>。')
+  + p('源文件例 2(b)：<code>∫x tan⁻¹x dx</code>。取 <code>u = tan⁻¹x</code>、<code>dv = x dx</code>，则 <code>du = dx/(1+x²)</code>、<code>v = x²/2</code>：')
+  + p('<code>= (x²/2)tan⁻¹x − (1/2)∫x²/(1+x²)dx = (x²/2)tan⁻¹x − (1/2)∫(1 − 1/(1+x²))dx</code>，')
+  + p('故 <code>= (x²/2)tan⁻¹x − x/2 + (1/2)tan⁻¹x + C = ((x²+1)/2)tan⁻¹x − x/2 + C</code>。')
+  + p('源文件任务：<code>∫x²sin x dx = −x²cos x + 2x sin x + 2cos x + C</code>；<code>∫sin⁻¹x dx = x sin⁻¹x + √(1−x²) + C</code>；<code>∫eˣcos x dx = (1/2)eˣ(sin x + cos x) + C</code>。')
+  + p('最后这个「循环型」值得单独记：两次分部后右边重新出现原积分，把它移到左边解方程即可（系数为 1/2）。')
+  + h3('7.15 递推公式')
+  + p('分部积分还可以用来把高次幂降到低次幂，得到<b>递推公式</b>（reduction formula）。源文件推导 <code>∫sinⁿx dx</code>：取 <code>u = sin^{n−1}x</code>、<code>dv = sin x dx</code>，则 <code>du = (n−1)sin^{n−2}x cos x dx</code>、<code>v = −cos x</code>：')
+  + p('<code>∫sinⁿx dx = −cos x sin^{n−1}x + (n−1)∫cos²x sin^{n−2}x dx</code>，')
+  + p('把 <code>cos² = 1 − sin²</code> 代入，右边的 <code>∫sinⁿ</code> 移项，得')
+  + p('<b><code>∫sinⁿx dx = −(1/n)cos x sin^{n−1}x + ((n−1)/n)∫sin^{n−2}x dx</code></b>。')
+  + p('应用（<code>n = 4</code>）：<code>∫sin⁴x dx = −(1/4)cos x sin³x + (3/4)∫sin²x dx</code>；再用 <code>n = 2</code>：<code>∫sin²x dx = −(1/2)cos x sin x + (1/2)∫dx = −(1/2)sin x cos x + x/2</code>。合并得')
+  + p('<code>∫sin⁴x dx = −(1/4)cos x sin³x − (3/8)sin x cos x + (3/8)x + C</code>，')
+  + p('与用倍角公式得到的 <code>(3/8)x − (1/4)sin2x + (1/32)sin4x + C</code> 等价（展开 <code>sin2x</code>、<code>sin4x</code> 可互相转化）。')
+  + h3('7.16 有理函数的积分：第一步永远是除法')
+  + p('形如 <code>∫P(x)/Q(x)dx</code> 的积分。若 <code>deg P ≥ deg Q</code>，先用多项式除法把它写成「多项式 + 真分式」：')
+  + p('<code>P/Q = S + R/Q</code>，其中 <code>deg R &lt; deg Q</code>。')
+  + p('源文件例：<code>∫(x³ + 3x²)/(x² + 1)dx</code>。除法得 <code>= x + 3 − (x+3)/(x²+1)</code>，故')
+  + p('<code>= x²/2 + 3x − (1/2)ln(x²+1) − 3tan⁻¹x + C</code>。')
+  + p('三个基本公式（分母是一次或二次）：')
+  + tb(('积分', '结果'),
+       ('<code>∫dx/(ax + b)</code>', '<code>(1/a)ln|ax + b| + C</code>'),
+       ('<code>∫x dx/(x² ± a²)</code>', '<code>(1/2)ln|x² ± a²| + C</code>'),
+       ('<code>∫dx/(x² + a²)</code>', '<code>(1/a)tan⁻¹(x/a) + C</code>'),
+       ('<code>∫dx/(x² − a²)</code>', '<code>(1/(2a))ln|(x−a)/(x+a)| + C</code>'))
+  + h3('7.17 部分分式：四种情形')
+  + p('设 <code>f(x) = P(x)/Q(x)</code> 且 <code>deg P &lt; deg Q</code>（否则先除法）：')
+  + ul('<b>互不相同的线性因子</b> <code>Q = (x−a)(x−b)⋯</code>：<code>f = A/(x−a) + B/(x−b) + ⋯</code>',
+       '<b>重复线性因子</b> <code>(x−a)²</code>：<code>f = A/(x−a) + B/(x−a)² + ⋯</code>',
+       '<b>不可约二次因子</b> <code>ax²+bx+c</code>（判别式 &lt; 0）：<code>f = (Ax+B)/(ax²+bx+c) + ⋯</code>',
+       '<b>重复不可约二次因子</b>：<code>f = (Ax+B)/(ax²+bx+c) + (Cx+D)/(ax²+bx+c)² + ⋯</code>')
+  + p('求系数的方法：两边乘以 Q(x) 得到多项式恒等式，再「代入特殊值」或「比较同次项系数」。前者更快，后者更稳。')
+  + p('源文件例（互异线性）：<code>1/(x² − a²) = (1/(2a))[1/(x−a) − 1/(x+a)]</code>，故 <code>∫ = (1/(2a))ln|x−a| − (1/(2a))ln|x+a| + C</code>。')
+  + p('源文件例（重复线性）：<code>1/(x(x−1)²) = 1/x − 1/(x−1) + 1/(x−1)²</code>。验证：通分后分子 <code>(x−1)² − x(x−1) + x = x² − 2x + 1 − x² + x + x = 1</code> ✓。故积分为 <code>ln|x| − ln|x−1| − 1/(x−1) + C</code>。')
+  + p('源文件例（不可约二次）：<code>∫dx/(x³+1)</code>。分解 <code>x³+1 = (x+1)(x²−x+1)</code>，设')
+  + p('<code>1/((x+1)(x²−x+1)) = A/(x+1) + (Bx+C)/(x²−x+1)</code>，')
+  + p('解得 <code>A = 1/3</code>、<code>B = −1/3</code>、<code>C = 2/3</code>。二次因子配方：<code>x² − x + 1 = (x − 1/2)² + 3/4</code>。于是')
+  + p('<code>∫ = (1/3)ln|x+1| − (1/6)ln(x²−x+1) + (1/√3)tan⁻¹((2x−1)/√3) + C</code>。')
+  + p('其中二次项的处理技巧：把分子 <code>(−x+2)/3</code> 拆成 <code>−(1/6)(2x−1) + (1/2)</code>，第一块凑成「分母的导数」得到对数，第二块用 <code>tan⁻¹</code> 公式。')
+  + p('源文件综合例：<code>∫(x³+2)/(x³−x)dx</code>。除法：<code>(x³+2)/(x³−x) = 1 + (x+2)/(x(x−1)(x+1))</code>；部分分式解得 <code>A = −2</code>（对应 <code>1/x</code>）、<code>B = 3/2</code>（对应 <code>1/(x−1)</code>）、<code>C = 1/2</code>（对应 <code>1/(x+1)</code>）。故')
+  + p('<code>= x − 2ln|x| + (3/2)ln|x−1| + (1/2)ln|x+1| + C</code>。')),
+ kws=K(('fundamental theorem of calculus', '微积分基本定理', 'd/dx∫ₐˣf = f(x) and ∫ₐᵇf = F(b) − F(a).'),
+       ('average value', '平均值', 'f̄ = (1/(b−a))∫ₐᵇ f(x)dx.'),
+       ('piecewise continuous', '分段连续', 'Finitely many discontinuities with finite one-sided limits; integrable.'),
+       ('substitution', '换元法', '∫f(g(x))g′(x)dx = ∫f(u)du; for definite integrals also change the limits.'),
+       ('change of limits', '换上下限', 'In a definite integral, x = a gives u = g(a), x = b gives u = g(b).'),
+       ('integration by parts', '分部积分', '∫u dv = uv − ∫v du.'),
+       ('reduction formula', '递推公式', 'Expresses ∫sinⁿ in terms of ∫sin^{n−2}.'),
+       ('trigonometric integral', '三角积分', 'Choose u = cos x or sin x according to which power is odd.'),
+       ('double-angle formula', '倍角公式', 'sin²x = (1−cos2x)/2, cos²x = (1+cos2x)/2, used when both powers are even.'),
+       ('trigonometric substitution', '三角代换', 'x = a sin θ, a tan θ, a sec θ to remove √(a²−x²), √(a²+x²), √(x²−a²).'),
+       ('partial fractions', '部分分式', 'Decompose P/Q into simple fractions according to the factor type of Q.'),
+       ('improper factor', '不可约二次因子', 'ax²+bx+c with negative discriminant; its partial fraction has a linear numerator.'),
+       ('completing the square', '配方', 'ax²+bx+c = a(x + b/2a)² + (c − b²/4a).'),
+       ('polynomial division', '多项式除法', 'Write P/Q = S + R/Q before decomposing, when deg P ≥ deg Q.'),
+       ('improper integral form', '假分式', 'deg P ≥ deg Q; must be divided first.')),
+ examples=(qa('例 1（源文件 p11）　计算 (a) ∫₀²(x² − x)dx；(b) ∫₋₁²(x² − 3x + 2)dx。',
+    p('(a) 原函数 <code>x³/3 − x²/2</code>。代入：<code>[8/3 − 2] − [0] = 2/3</code>。')
+    + p('(b) 原函数 <code>x³/3 − 3x²/2 + 2x</code>。')
+    + p('上端：<code>8/3 − 6 + 4 = 2/3</code>；下端：<code>−1/3 − 3/2 − 2 = −23/6</code>。')
+    + p('相减：<code>2/3 − (−23/6) = 4/6 + 23/6 = 27/6 = 9/2</code>。')
+    + p('<b>要点：</b>先把 <code>F(b)</code> 与 <code>F(a)</code> 各自算成一个数，再做减法；分式运算不要在中途混着做，容易丢负号。'))
+   + qa('例 2（源文件 p15）　计算 ∫₀⁸ cos√(x+1)/√(x+1) dx。',
+    p('令 <code>u = √(x+1)</code>，则 <code>u² = x + 1</code>、<code>2u du = dx</code>，故 <code>dx/√(x+1) = 2du</code>。')
+    + p('换限：<code>x = 0 → u = 1</code>；<code>x = 8 → u = 3</code>。')
+    + p('原式 <code>= ∫₁³ 2cos u du = 2[sin u]₁³ = 2(sin3 − sin1)</code>。')
+    + p('<b>结果保留精确形式</b>（考试无计算器），不要写 0.28 之类的小数。若题目要求近似，用 <code>sin3 ≈ 0.141</code>、<code>sin1 ≈ 0.841</code> 得 <code>2(−0.700) ≈ −1.40</code>。')
+    + p('<b>对照：</b>若用不定积分换元再回代，会得到 <code>2sin√(x+1)</code>，再代 0 与 8，结果相同——但多一步回代，容易在回代时把 <code>√(x+1)</code> 写成 <code>x+1</code>。')
+   + qa('例 3（源文件 p30–p33）　求 (a) ∫x²eˣ dx；(b) ∫x tan⁻¹x dx。',
+    p('(a) 取 <code>u = x²</code>、<code>dv = eˣdx</code>，<code>v = eˣ</code>：<code>= x²eˣ − 2∫xeˣdx</code>。')
+    + p('对 <code>∫xeˣdx</code> 再用一次（<code>u = x</code>、<code>dv = eˣdx</code>）：<code>= xeˣ − ∫eˣdx = xeˣ − eˣ</code>。')
+    + p('代回：<code>= x²eˣ − 2(xeˣ − eˣ) + C = eˣ(x² − 2x + 2) + C</code>。')
+    + p('(b) 取 <code>u = tan⁻¹x</code>、<code>dv = x dx</code>，<code>v = x²/2</code>、<code>du = dx/(1+x²)</code>：')
+    + p('<code>= (x²/2)tan⁻¹x − (1/2)∫x²/(1+x²)dx</code>。')
+    + p('拆项：<code>x²/(1+x²) = 1 − 1/(1+x²)</code>，故 <code>∫ = x − tan⁻¹x</code>。')
+    + p('代回：<code>= (x²/2)tan⁻¹x − x/2 + (1/2)tan⁻¹x + C = ((x²+1)/2)tan⁻¹x − x/2 + C</code>。')
+    + p('<b>要点：</b>分部积分后剩下的积分要「凑成可算的形状」——通常靠拆项、配方或再分部。<code>x²/(1+x²)</code> 的拆项是固定套路。'))
+   + qa('例 4（源文件 p41–p42）　计算 ∫(x³ + 2)/(x³ − x) dx。',
+    p('<b>步骤 1（除法）：</b><code>(x³+2)/(x³−x) = (x³ − x + x + 2)/(x³−x) = 1 + (x+2)/(x³−x)</code>。')
+    + p('<b>步骤 2（分解分母）：</b><code>x³ − x = x(x−1)(x+1)</code>。')
+    + p('<b>步骤 3（部分分式）：</b>设 <code>(x+2)/(x(x−1)(x+1)) = A/x + B/(x−1) + C/(x+1)</code>。两边乘分母：<code>x + 2 = A(x−1)(x+1) + Bx(x+1) + Cx(x−1)</code>。')
+    + p('代 <code>x = 0</code>：<code>2 = A(−1)(1)</code>，故 <code>A = −2</code>；代 <code>x = 1</code>：<code>3 = B(1)(2)</code>，故 <code>B = 3/2</code>；代 <code>x = −1</code>：<code>1 = C(−1)(−2)</code>，故 <code>C = 1/2</code>。')
+    + p('<b>步骤 4（逐项积分）：</b>')
+    + p('<code>∫ = ∫1dx − 2∫dx/x + (3/2)∫dx/(x−1) + (1/2)∫dx/(x+1)</code>')
+    + p('<code>= x − 2ln|x| + (3/2)ln|x−1| + (1/2)ln|x+1| + C</code>。')
+    + p('<b>验算：</b>对结果求导，应回到 <code>(x³+2)/(x³−x)</code>；也可取 <code>x = 2</code> 数值核对（结果约 <code>2 − 1.386 + 0 + 0.549 = 1.163</code>，与 <code>10/6 ≈ 1.667</code>？——注意数值核对要连同 C 的任意性一起看，通常验算导数更可靠）。')))),
+ practice=(ol('求 <code>∫dx/(x² − 9)</code>。',
+          '求 <code>∫(2x − 3)/√(x² − 3x + 1) dx</code>。',
+          '求 <code>∫sin³x cos⁸x dx</code>。',
+          '求 <code>∫dx/(x²√(16 − x²))</code>。',
+          '求 <code>∫x² cos(πx) dx</code>。',
+          '求 <code>∫₀^{π/4} sec⁵x dx</code>（作业七第 4(b) 题）。')
+  + det('答案与思路',
+    p('<b>1.</b> 分解 <code>1/(x²−9) = (1/6)[1/(x−3) − 1/(x+3)]</code>，故 <code>(1/6)ln|(x−3)/(x+3)| + C</code>。')
+    + p('<b>2.</b> 令 <code>u = x² − 3x + 1</code>、<code>du = (2x−3)dx</code>，得 <code>2√(x²−3x+1) + C</code>。')
+    + p('<b>3.</b> 令 <code>u = cos x</code>：<code>−∫(1−u²)u⁸du = ∫(u¹⁰ − u⁸)du = (1/11)cos¹¹x − (1/9)cos⁹x + C</code>。')
+    + p('<b>4.</b> 令 <code>x = 4sin θ</code>：<code>(1/16)∫csc²θ dθ = −(1/16)cot θ = −√(16−x²)/(16x) + C</code>。')
+    + p('<b>5.</b> 两次分部：<code>u = x²</code>、<code>dv = cos πx dx</code>，得 <code>v = sin πx/π</code>；<code>= (x²/π)sin πx − (2/π)∫x sin πx dx</code>；再对 <code>∫x sin πx dx</code> 分部（<code>v = −cos πx/π</code>），最终 <code>(x²/π)sin πx + (2x/π²)cos πx − (2/π³)sin πx + C</code>。')
+    + p('<b>6.</b> 用递推公式：<code>∫sec⁵ = (1/4)sec³x tan x + (3/4)∫sec³x</code>，<code>∫sec³ = (1/2)sec x tan x + (1/2)ln|sec x + tan x|</code>。合并后代入上下限：在 <code>π/4</code> 处 <code>sec = √2</code>、<code>tan = 1</code>，得 <code>(1/4)(2√2) + (3/8)(√2) + (3/8)ln(1+√2) = 7√2/8 + (3/8)ln(1+√2)</code>；在 0 处各项为 0。'))),
+ exam=(cal('exam', '必考', '①FTC 求定积分（含分段函数）；②换元法（定积分换上下限）；③分部积分（多项式 × eˣ/三角/ln/反三角）；④三角幂的积分（奇偶判断 + 倍角）；⑤三角代换；⑥部分分式（四种情形，含先除法）。这六类基本覆盖全部积分题，每一类都要能独立完成一道中等难度的题。')
+  + cal('warn', '易错 1', '<b>定积分换元后忘记换上下限</b>。换元后仍用旧的 a、b 会得到完全错误的结果；要么换限，要么换回 x 后再代原限（二选一，不能混）。')
+  + cal('warn', '易错 2', '<b>部分分式前忘记做多项式除法</b>。当 <code>deg P ≥ deg Q</code> 时必须先除，否则分解形式不成立。')
+  + cal('warn', '易错 3', '<b>三角积分选错代换</b>。规则是「谁的幂是奇数就令 u 等于另一个」（<code>sin</code> 奇则 <code>u = cos</code>，<code>cos</code> 奇则 <code>u = sin</code>）；两者都偶时必须降幂，不能硬代换。')
+  + cal('warn', '易错 4', '<b>面积题不检查上下关系</b>。两曲线之间的面积是「上减下」，若曲线交叉必须分段；直接用 <code>∫(f − g)</code> 会在交叉处出现负面积抵消。')
+  + cal('tip', '进阶', '把积分方法画成决策树：先看是否「基本公式/直接换元」→ 再看是否「乘积」（分部）→ 再看是否「三角幂」（奇偶/降幂）→ 再看是否「根式」（三角代换）→ 最后看是否「有理式」（除法 + 部分分式）。按这个顺序扫一遍，几乎不会选错方法。')),
+ checklist=(h2('方法与清单')
+  + h3('定积分计算（四步）')
+  + st('先看能否直接用基本公式或 FTC：找原函数',
+       '复合型先换元；若做定积分换元，立即把上下限换成新变量并写清新限',
+       '分段函数按段积分再相加；含绝对值先按零点分段去绝对值',
+       '用几何意义（面积、奇偶性）交叉验证结果的正负与量级')
+  + h3('分部积分的 u 选择顺序')
+  + st('优先级：反三角函数 → 对数函数 → 幂函数（多项式）→ 三角函数 → 指数函数，越靠前越适合作 u',
+       '把剩下的部分整体作 dv，并确认 dv 容易积分出 v',
+       '套 <code>uv − ∫v du</code>，检查新积分是否比原积分更简单',
+       '若新积分与原积分同型（如 <code>eˣcos x</code>），移项解出原积分')
+  + h3('有理函数积分（四步）')
+  + st('若 <code>deg P ≥ deg Q</code>，先做多项式除法',
+       '把 Q 在实数范围内分解成线性因子与不可约二次因子的乘积',
+       '按因子类型写出部分分式（互异线性、重复线性、不可约二次、重复二次）',
+       '用代特殊值或比较系数求系数，逐项积分（对数项 + tan⁻¹ 项）')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p2–p3', '黎曼和与定积分定义的复习'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p4–p7', 'FTC 两部分、直觉解释、第一部分的证明、求值符号'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p8', '平均值定义与 √x 在 [1,5] 上的例子'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p9–p10', '分段连续函数与三分段例题'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p11–p13', '两道定积分计算、y = 3x−x² 的面积、两曲线间面积'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p14–p16', '定积分换元定理与证明、∫₀⁸ 的例题、三道换元任务'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p17–p24', '∫tan/cot/sec/csc 的公式与推导、sinᵐcosⁿ 策略与两例、secᵐtanⁿ 与 cscᵐcotⁿ 策略与两例、三道三角积分任务'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p25–p28', '三类三角代换与三角形图示、两个根式积分例子'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p29–p33', '分部积分的推导与 Leibniz 写法、四道例题、三道任务'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p36–p37', '∫sinⁿ 的递推公式推导与 ∫sin⁴ 的应用'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p38–p40', '有理函数与除法算法、(x³+3x²)/(x²+1)、线性与二次分母公式、互异线性因子的部分分式'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p41–p42', '(x³+2)/(x³−x) 的四步分解与积分'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p43–p45', '重复线性因子、不可约二次因子、重复二次因子的部分分式形式'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p46–p48', '1/(x³+1) 的部分分式、配方与最终结果'),
+    ('Topic 7/EMI_Week7_Lecture.pdf', 'p49–p50', '六道综合任务（4x²+13x−9 型、1/(x(x−1)²) 型等）及答案'),
+    ('Topic 7/EMI_7.pdf', 'p1', '作业七的五道题（平均值、sgn 与 |cos| 的定积分、三角幂、分部积分、有理函数）'),
+    ('Topic 7/EM_7_sol.pdf', 'p1–p3', '作业七的完整解答：π/4、1、8、sin 幂代换、sec⁵tan、x²cos πx、∫₀^{π/4}sec⁵、三个有理函数积分'),
+    ('（跳过）Topic 7/Lecture One.html、Exercise Seven.html、Exercise Seven Solutions.html', '—', '均为 Moodle 登录页快照，无可读正文；作业与解答以 EMI_7.pdf、EM_7_sol.pdf 为准'),
+    ('（拓展）', '—', '分部积分的 u 选择顺序、积分方法决策树、secⁿ 递推公式为归纳性补充，源文件以例题形式呈现'))
+)
+
+# ============================================================ 讲 8
+lec(
+ slug='mock-exam-and-question-types',
+ tzh='第 5 章 · 模拟卷与题型',
+ ten='Mock Exam and Question Types',
+ keywords=['mock exam', 'formula sheet', 'integration by parts', 'inverse function derivative',
+           'partial fractions', 'average value', 'Newton cooling', 'logistic model',
+           'removable discontinuity', 'differentiability condition', 'marking scheme'],
+ files=['General/MockExam.pdf', 'General/MockExam_answers.pdf', 'General/General Course Information.html'],
+ part=CH5,
+ overview=(h2('本节定位')
+  + p('这是全课程的收束讲。前面七讲按 Topic 推进，本讲换成「考试视角」：把官方模拟卷（MockExam.pdf）与官方答案（MockExam_answers.pdf）逐题拆开，说明每道题考的是哪一讲的哪个知识点、评分点在哪里、常见失分是什么。')
+  + p('模拟卷的结构很稳定：总分 60，六道题等分（每题 10 分），全部必答；不允许使用计算器，考场提供公式表；评分要求「写出所用公式、代入过程与中间步骤」，只写最终答案不给分。因此本讲不仅给答案，更给「应该写成什么样的解题过程」。')
+  + p('学完本节你应当能够：')
+  + ck('在无计算器条件下写出精确形式的答案（含 e、ln、√、π）',
+     '把六道模拟题的解法压缩成可复用的模板',
+     '识别每道题背后的章节与考点，遇到同型题能立刻定位方法',
+     '按评分要求组织解题过程（公式 → 代换 → 中间步骤 → 结论）',
+     '判断哪些题必须先做、哪些可以最后收尾，合理分配时间')),
+ detail=(h3('8.1 试卷结构与评分规则')
+  + p('官方模拟卷的抬头写得很明确：总分 60 分；不允许使用计算器（Calculators are not allowed）；解答必须包含所用公式、代换与中间步骤（Solutions must include the applied formulas, substitutions, and intermediate steps），只提交最终答案不可接受；全卷六题，全部必答，每题等分。')
+  + p('这四条规则直接决定答题策略：')
+  + ul('<b>无计算器</b>：答案写精确式，例如 <code>10ln(3/2)/ln2</code> 而不是 <code>5.85</code>；特殊值（<code>sin(π/6) = 1/2</code>、<code>ln1 = 0</code>、<code>e⁰ = 1</code>）必须脱口而出',
+       '<b>要写公式</b>：每道积分题第一行就写「用分部积分 <code>∫u dv = uv − ∫v du</code>」或「用部分分式」',
+       '<b>要写代换</b>：换元题必须写明 <code>u = …</code>、<code>du = …</code>，定积分换元还要写「<code>x = a → u = …</code>」',
+       '<b>要写中间步骤</b>：即使心算得出结果，也要把关键的一两行写出来，否则按「只有答案」处理')
+  + p('六道题的分值分布与考点（按官方答案顺序）：第 1 题—分部积分 + 反函数导数；第 2 题—有理函数积分 + 平均值；第 3 题—牛顿冷却 + 运动学判断；第 4 题—重要极限 + 定义域值域 + 无穷远极限；第 5 题—一阶线性微分方程（广义指数模型）+ 切线与法线；第 6 题—可去间断 + 可导条件 + 二阶初值问题。可以看出：<b>六道题几乎覆盖了全部七个 Topic</b>，每题内部又各有「计算 + 概念」两部分。')
+  + h3('8.2 公式表里有什么（以及为什么够用）')
+  + p('模拟卷附了一张「List of Potentially Useful Formulas」，内容按主题排列，可以视为本课程的官方公式清单：')
+  + tb(('公式组', '主要内容', '对应讲次'),
+       ('坐标与直线', '距离、中点、斜率、垂直条件 <code>m₁m₂ = −1</code>、点斜式、圆', '第 1 讲'),
+       ('函数基础', '奇偶性、复合、sgn、Heaviside、求根公式、代数恒等式', '第 1 讲'),
+       ('三角', '弧度换算、平方关系、周期与奇偶、诱导公式、和角、倍角、积化和差、特殊值表', '第 1、3 讲'),
+       ('极限', '夹逼、<code>sinθ/θ</code>、<code>(cosθ−1)/θ</code>、<code>ln x/xᵃ</code>、<code>xᵃ/eˣ</code>、洛必达、渐近线判据、连续性、可导性、左右导数', '第 2、6 讲'),
+       ('求导', '四则与链式法则、基本导数表（含 <code>|x|</code>、六个三角函数、<code>aˣ</code>、<code>log_a x</code>）', '第 3、5 讲'),
+       ('积分', '幂函数、<code>f′/f</code>、<code>1/x</code>、<code>e^{kx}</code>、<code>a^{kx}</code>、四个三角积分、反三角积分、双曲、分部积分、换元、三角代换、有理函数公式、部分分式、配方', '第 4、6、7 讲'),
+       ('模型', '指数增长/衰减、广义模型、logistic 模型、位置-速度-加速度', '第 4、5 讲'),
+       ('求和', '<code>Σk² = n(n+1)(2n+1)/6</code>、几何级数、定积分定义、FTC', '第 6、7 讲'))
+  + cal('tip', '公式表不是「免背卡」', '公式表给的是形式，不给「什么时候用」。例如它列了三种三角代换，但不会告诉你「看到 <code>√(16−x²)</code> 要用 <code>4sinθ</code>」；它列了部分分式的四种形式，但不会提醒你「先做除法」。判断力必须自己带进考场。')
+  + h3('8.3 第 1 题：分部积分与反函数导数')
+  + p('<b>(a) 求 <code>∫eˣ sin x dx</code></b>。这是「循环型」分部积分：两次分部后原积分重现，移项解出。')
+  + p('第一次：取 <code>u = eˣ</code>、<code>dv = sin x dx</code>，则 <code>du = eˣdx</code>、<code>v = −cos x</code>：')
+  + p('<code>I = −eˣcos x + ∫eˣcos x dx</code>。')
+  + p('第二次（对 <code>∫eˣcos x dx</code>）：取 <code>u = eˣ</code>、<code>dv = cos x dx</code>，<code>v = sin x</code>：')
+  + p('<code>∫eˣcos x dx = eˣsin x − ∫eˣsin x dx = eˣsin x − I</code>。')
+  + p('代回：<code>I = −eˣcos x + eˣsin x − I</code>，故 <code>2I = eˣ(sin x − cos x)</code>，')
+  + p('<b><code>I = (1/2)eˣ(sin x − cos x) + C</code></b>，与官方答案一致。')
+  + p('<b>(b) 证明 <code>f(x) = x³ + x − 9</code> 可逆，并求 <code>(f⁻¹)′(1)</code></b>。')
+  + p('先证一一对应：<code>f′(x) = 3x² + 1 &gt; 0</code> 对一切实数成立，故 f 在 ℝ 上严格递增，从而是一一对应，反函数存在。')
+  + p('再用反函数导数公式 <code>(f⁻¹)′(y) = 1/f′(x)</code>，其中 <code>y = f(x)</code>。要求 <code>(f⁻¹)′(1)</code>，先找 x 使 <code>f(x) = 1</code>：')
+  + p('<code>x³ + x − 9 = 1 ⟺ x³ + x = 10</code>，试 <code>x = 2</code>：<code>8 + 2 = 10</code> ✓（严格递增保证解唯一）。')
+  + p('于是 <code>(f⁻¹)′(1) = 1/f′(2) = 1/(3·4 + 1) = 1/13</code>，与官方答案一致。')
+  + cal('warn', '评分点', '第 (b) 问必须出现三句话：①「<code>f′ &gt; 0</code>，故严格递增」；②「故一一对应，反函数存在」；③「解 <code>f(x) = 1</code> 得 <code>x = 2</code>」。少任何一句都会扣过程分，即便最后的 1/13 对了。')
+  + h3('8.4 第 2 题：有理函数积分与平均值')
+  + p('<b>(a) 求 <code>∫(x³ − 5x² + 4x + 8)/(x² − 6x + 9)dx</code></b>。分母是 <code>(x−3)²</code>，属于「重复线性因子」。')
+  + p('第一步除法（因为分子次数 3 ≥ 分母次数 2）：设商 <code>x + 1</code>，则 <code>(x+1)(x²−6x+9) = x³ − 5x² + 3x + 9</code>，与原分子相减得余式 <code>x − 1</code>。故')
+  + p('<code>(x³−5x²+4x+8)/(x²−6x+9) = x + 1 + (x−1)/(x−3)²</code>。')
+  + p('第二步把余式拆成重复因子的两块：<code>(x−1)/(x−3)² = (x−3+2)/(x−3)² = 1/(x−3) + 2/(x−3)²</code>。')
+  + p('第三步逐项积分：<code>∫(x+1)dx = x²/2 + x</code>；<code>∫dx/(x−3) = ln|x−3|</code>；<code>∫2(x−3)^{−2}dx = −2/(x−3)</code>。故')
+  + p('<b><code>= x²/2 + x + ln|x−3| − 2/(x−3) + C</code></b>，与官方答案一致。')
+  + p('<b>(b) 求 <code>f(x) = 3x − x²</code> 在 <code>[0, 6]</code> 上的平均值</b>。')
+  + p('<code>f̄ = (1/(6−0))∫₀⁶(3x − x²)dx = (1/6)[3x²/2 − x³/3]₀⁶ = (1/6)(54 − 72) = −3</code>。')
+  + p('平均值为负是允许的：函数在 <code>[0, 3]</code> 为正、在 <code>[3, 6]</code> 为负，且负的部分更大（有向面积之和为 −18）。')
+  + cal('warn', '易错', '(a) 若忘记先做除法，直接对分母配方后硬拆，会得到错误的形式；(b) 若把 <code>[0, 6]</code> 误读为 <code>[0, 3]</code>（只取正的部分），会算出 3/2 而不是 −3。')
+  + h3('8.5 第 3 题：牛顿冷却与运动学')
+  + p('<b>(a) 面包从 200 ℃ 烤箱取出，房间 20 ℃，10 分钟后降到 110 ℃，问到 80 ℃ 还需多久（给精确答案）</b>。')
+  + p('设 <code>T(t) = 20 + 180e^{kt}</code>（环境 20、初值 200，故 <code>y₀ − a = 180</code>）。')
+  + p('由 <code>T(10) = 110</code>：<code>90 = 180e^{10k}</code>，故 <code>e^{10k} = 1/2</code>，<code>k = −ln2/10</code>。')
+  + p('令 <code>T = 80</code>：<code>60 = 180e^{kt}</code>，即 <code>e^{kt} = 1/3</code>，<code>t = 10ln3/ln2</code>（从取出时刻算起）。')
+  + p('题目问「还需多久」，故答案为 <b><code>10ln3/ln2 − 10 = 10ln(3/2)/ln2</code></b> 分钟，与官方答案一致；数值约 5.85 分钟。')
+  + p('<b>(b) <code>x(t) = t³ − 6t² + 1</code>，判断 t = 3 时加速还是减速</b>。')
+  + p('<code>v = 3t² − 12t</code>，<code>a = 6t − 12</code>；<code>v(3) = 27 − 36 = −9</code>，<code>a(3) = 18 − 12 = 6</code>。')
+  + p('v 与 a 异号（负、正），速率 |v| 在减小，故<b>减速</b>。官方答案只说「decelerating at t = 3」，过程分要求写出 v 与 a 的符号比较。')
+  + cal('tip', '「减速」的判据只有一句话', 'v 与 a 异号即减速。不要用「a &lt; 0」判断——本例 a = 6 &gt; 0 却仍是减速，因为速度方向为负。')
+  + h3('8.6 第 4 题：三个极限与函数分析')
+  + p('<b>(a) <code>lim_{x→∞}(1 + 1/x)ˣ</code></b>。这是 <code>1^∞</code> 型。设 <code>y = (1+1/x)ˣ</code>，则 <code>ln y = x ln(1 + 1/x)</code>。')
+  + p('令 <code>u = 1/x → 0⁺</code>，则 <code>ln y = ln(1+u)/u → 1</code>（洛必达或标准极限），故 <code>y → e</code>。')
+  + p('这是标准极限 <code>lim(1+1/x)ˣ = e</code>，可直接引用公式表。')
+  + p('<b>(b) 求 <code>g(x) = 12x/(x² + 9)</code> 的定义域与值域</b>。')
+  + p('定义域：分母 <code>x² + 9 &gt; 0</code> 恒成立，故为 <code>(−∞, ∞)</code>。')
+  + p('值域：求导 <code>g′ = [12(x²+9) − 12x·2x]/(x²+9)² = 12(9 − x²)/(x²+9)²</code>。临界点 <code>x = ±3</code>；<code>g(3) = 36/18 = 2</code>（最大），<code>g(−3) = −2</code>（最小）。')
+  + p('又 <code>x → ±∞</code> 时 <code>g → 0</code>，故值域为 <code>[−2, 2]</code>。官方答案一致。')
+  + p('<b>(c) <code>lim_{x→∞}(x² + sin x)/(x² + cos x)</code></b>。分子分母同除 <code>x²</code>：')
+  + p('<code>= (1 + sin x/x²)/(1 + cos x/x²)</code>。由夹逼（<code>|sin x| ≤ 1</code>）得 <code>sin x/x² → 0</code>、<code>cos x/x² → 0</code>，故极限为 <code>1/1 = 1</code>。')
+  + p('这题是「夹逼 + 分式」的组合：不能用洛必达（求导后仍在振荡，且分子分母并非同趋于 0 或 ∞ 的干净形式）。')
+  + h3('8.7 第 5 题：药物浓度模型与切线法线')
+  + p('<b>(a) <code>dy/dt = a − by</code>，<code>a = 3</code>、<code>b = 1</code>，<code>y(0) = 0</code></b>。')
+  + p('这是广义模型 <code>dy/dt = k(y − A)</code> 的变体：把右边写成 <code>−1·(y − 3)</code>，即 <code>k = −1</code>、<code>A = 3</code>。由公式 <code>y = A + (y₀ − A)e^{kt}</code>：')
+  + p('<code>y(t) = 3 + (0 − 3)e^{−t} = 3 − 3e^{−t}</code>。')
+  + p('（也可直接分离变量验证：<code>y′ = 3 − y</code>，<code>y(0) = 0</code>，<code>y ≡ 3</code> 是一个特解，通解 <code>y = 3 + Ce^{−t}</code>，代初值得 C = −3。）')
+  + p('(2) 极限浓度：<code>lim_{t→∞}y = 3</code>（<code>e^{−t} → 0</code>）。')
+  + p('(3) 达到一半（1.5）所需时间：<code>3 − 3e^{−t} = 1.5</code> → <code>e^{−t} = 1/2</code> → <code>t = ln2</code>。官方答案一致。')
+  + p('<b>(b) 求 <code>y = (1 − x²)/(1 + x²)</code> 在 x = 1 处的切线与法线</b>。')
+  + p('切点：<code>y(1) = 0/2 = 0</code>，即 <code>(1, 0)</code>。')
+  + p('导数（商法则）：<code>y′ = [(−2x)(1+x²) − (1−x²)(2x)]/(1+x²)² = −4x/(1+x²)²</code>；在 <code>x = 1</code> 处 <code>y′ = −4/4 = −1</code>。')
+  + p('切线：<code>y = −1(x − 1) = 1 − x</code>；法线斜率 1，<code>y = 1·(x − 1) = x − 1</code>。与官方答案一致。')
+  + h3('8.8 第 6 题：间断点、可导条件与二阶初值问题')
+  + p('<b>(a) <code>f(x) = (3x² − 15x − 18)/(x³ + 1)</code>，找出 x 轴上的间断点，并说明如何补充定义使之连续</b>。')
+  + p('分解：分子 <code>3(x² − 5x − 6) = 3(x−6)(x+1)</code>；分母 <code>x³+1 = (x+1)(x² − x + 1)</code>。')
+  + p('约去 <code>x+1</code> 得 <code>f(x) = 3(x−6)/(x² − x + 1)</code>（<code>x ≠ −1</code>）。分母 <code>x² − x + 1</code> 的判别式 <code>1 − 4 = −3 &lt; 0</code>，无实根，故唯一的间断点是 <code>x = −1</code>。')
+  + p('求极限：<code>lim_{x→−1}f(x) = 3(−7)/(1 + 1 + 1) = −21/3 = −7</code>。因此这是<b>可去间断</b>，重新定义 <code>f(−1) = −7</code> 即可使函数在 −1 处连续。官方答案一致。')
+  + p('<b>(b) 求 a、b 使 <code>f(x) = ax + 1</code>（<code>x &lt; 1</code>）、<code>f(x) = bx² + x + 2</code>（<code>x ≥ 1</code>）在 x = 1 处可导</b>。')
+  + p('可导必连续，先写连续条件（左极限 = 右极限 = 函数值）：<code>a·1 + 1 = b·1 + 1 + 2</code>，即 <code>a + 1 = b + 3</code>，<code>a = b + 2</code>。')
+  + p('再写可导条件（左右导数相等）：左边导数 <code>a</code>；右边导数 <code>2bx + 1</code> 在 1 处为 <code>2b + 1</code>。故 <code>a = 2b + 1</code>。')
+  + p('联立：<code>b + 2 = 2b + 1</code> → <code>b = 1</code>，<code>a = 3</code>。官方答案 <code>a = 3, b = 1</code> ✓。')
+  + p('<b>(c) <code>a(t) = 6t − cos t</code>，初速度 2、初始位置 0，求 <code>x(t)</code></b>。')
+  + p('第一次积分：<code>v(t) = 3t² − sin t + C₁</code>；由 <code>v(0) = 2</code> 得 <code>C₁ = 2</code>。')
+  + p('第二次积分：<code>x(t) = t³ + cos t + 2t + C₂</code>；由 <code>x(0) = 0</code> 得 <code>1 + C₂ = 0</code>，<code>C₂ = −1</code>。')
+  + p('故 <b><code>x(t) = t³ + 2t + cos t − 1</code></b>，与官方答案一致。')
+  + h3('8.9 题型分布与章节映射')
+  + tb(('题号', '考点', '所属讲次', '主要方法'),
+       ('1(a)', '指数 × 三角的循环分部积分', '第 7 讲', '两次分部 + 移项'),
+       ('1(b)', '反函数存在性与反函数导数', '第 3、5 讲', '<code>f′ &gt; 0</code> + <code>1/f′(y)</code>'),
+       ('2(a)', '假分式 + 重复线性因子', '第 1、7 讲', '除法 + 拆项 + 对数'),
+       ('2(b)', '定积分求平均值', '第 7 讲', 'FTC + 代端点'),
+       ('3(a)', '牛顿冷却（广义指数模型）', '第 5 讲', '求 k 再求 t，注意「还需」'),
+       ('3(b)', '速度与加速度的符号', '第 4 讲', 'v、a 异号即减速'),
+       ('4(a)', '<code>1^∞</code> 型极限', '第 6 讲', '取对数或标准极限'),
+       ('4(b)', '有理函数的定义域与值域', '第 1、4 讲', '求导找极值 + 无穷远行为'),
+       ('4(c)', '含振荡项的无穷远极限', '第 2 讲', '同除最高次 + 夹逼'),
+       ('5(a)', '一阶线性微分方程 / 广义模型', '第 5 讲', '通解 + 初值 + 极限'),
+       ('5(b)', '切线与法线', '第 3 讲', '商法则 + 点斜式'),
+       ('6(a)', '可去间断与补充定义', '第 1、2 讲', '分解约分 + 极限'),
+       ('6(b)', '分段函数的可导条件', '第 2、3 讲', '连续 + 左右导数相等'),
+       ('6(c)', '二阶初值问题', '第 4 讲', '两次积分 + 两个常数'))
+  + p('观察这张表：六道大题共 14 个小问，其中积分类（1a、2a、2b）占 3 问、极限类（4a、4c）2 问、导数应用类（3b、5b、6b）3 问、模型类（3a、5a）2 问、函数与连续性（4b、6a）2 问、初值问题（6c）1 问、反函数（1b）1 问。也就是说，<b>第 7 讲的积分方法、第 4–5 讲的导数应用与模型、第 2 讲的极限各占约三分之一</b>，没有任何一讲可以放弃。')
+  + h3('8.10 答题顺序与时间分配')
+  + p('六题等分，因此理论上每题时间相同；但难度差异明显。建议的顺序是先扫一遍全卷，按「一眼能下手」排序：')
+  + ol('先做 4(b)、5(b)、6(c)、3(b) 这类「流程固定、计算量小」的小问，拿到基本分；',
+       '再做 2(b)、4(a)、4(c) 这类「一步到位」的极限与定积分；',
+       '然后做 6(a)、6(b)，注意写全「连续 + 可导」两条；',
+       '最后攻 1(a)、2(a)、5(a) 这类步骤多、容易算错的大题，留足检查时间。')
+  + p('每题至少留一分钟检查三件事：符号（尤其负号与绝对值）、常数 C 或 C₁/C₂ 是否齐全、答案是否符合量纲或量级（如面积为正、浓度为 3 而不是 30）。')
+  + h3('8.11 六类高频失分点')
+  + ul('<b>只写答案</b>：模拟卷明文规定不可接受，过程分至少占一半；',
+       '<b>无计算器却写小数</b>：<code>10ln(3/2)/ln2</code> 写成 <code>5.85</code> 会被视为未经允许的近似；',
+       '<b>忘记「还需多久」</b>：第 3(a) 题必须减去已经过的 10 分钟；',
+       '<b>连续与可导混为一谈</b>：第 6(b) 题必须写两组方程，只写连续性只能得一半分；',
+       '<b>反函数导数代错点</b>：第 1(b) 题要解 <code>f(x) = 1</code> 找原像，不能直接用 1；',
+       '<b>模型常数未定</b>：第 5(a) 题必须先用 <code>y(0) = 0</code> 定出常数，再求极限与半值时间。')),
+ kws=K(('mock exam', '模拟卷', 'Six questions, 60 marks, equal weight, all compulsory.'),
+       ('marking scheme', '评分规则', 'Formulas, substitutions and intermediate steps are required.'),
+       ('formula sheet', '公式表', 'Provided in the exam; lists forms but not when to use them.'),
+       ('integration by parts', '分部积分', '∫u dv = uv − ∫v du; iterate twice for eˣsin x.'),
+       ('inverse function derivative', '(f⁻¹)′', '(f⁻¹)′(y) = 1/f′(x) with y = f(x); find the preimage first.'),
+       ('improper rational function', '假分式', 'deg P ≥ deg Q; divide before decomposing.'),
+       ('repeated linear factor', '重复线性因子', 'Produces terms A/(x−a) + B/(x−a)².'),
+       ('average value', '平均值', 'f̄ = (1/(b−a))∫ₐᵇ f.'),
+       ('Newton cooling', '牛顿冷却', 'T = a + (T₀ − a)e^{kt}; solve for k, then for t.'),
+       ('deceleration', '减速', 'v and a have opposite signs.'),
+       ('one-to-the-infinity', '1^∞ 型', 'Take logarithms; the limit equals e^L.'),
+       ('squeeze with oscillation', '振荡夹逼', 'sin x/x² → 0 by boundedness times vanishing factor.'),
+       ('generalized exponential model', '广义指数模型', 'dy/dt = a − by gives y = a/b + Ce^{−bt}.'),
+       ('removable discontinuity', '可去间断', 'Factor, cancel, take the limit, then redefine f at that point.'),
+       ('differentiability condition', '可导条件', 'Continuity plus equality of the one-sided derivatives.')),
+ examples=(qa('例 1（模拟卷第 1 题）　(a) 求 ∫eˣ sin x dx；(b) 证明 f(x) = x³ + x − 9 可逆并求 (f⁻¹)′(1)。',
+    p('(a) <b>第一次分部</b>：<code>u = eˣ</code>、<code>dv = sin x dx</code> → <code>v = −cos x</code>：<code>I = −eˣcos x + ∫eˣcos x dx</code>。')
+    + p('<b>第二次分部</b>：对后者取 <code>u = eˣ</code>、<code>dv = cos x dx</code> → <code>v = sin x</code>：<code>∫eˣcos x dx = eˣsin x − I</code>。')
+    + p('代回并移项：<code>I = −eˣcos x + eˣsin x − I</code> → <code>2I = eˣ(sin x − cos x)</code> → <code>I = (1/2)eˣ(sin x − cos x) + C</code>。')
+    + p('(b) <code>f′(x) = 3x² + 1 &gt; 0</code> ⟹ f 严格递增 ⟹ 一一对应 ⟹ 反函数存在。')
+    + p('解 <code>f(x) = 1</code>：<code>x³ + x = 10</code>，<code>x = 2</code>（唯一）。故 <code>(f⁻¹)′(1) = 1/f′(2) = 1/13</code>。')
+    + p('<b>过程分要点：</b>分部积分要写出 <code>u</code>、<code>dv</code>、<code>v</code> 的选择；反函数题要写出「严格递增 ⟹ 可逆」这一句。'))
+   + qa('例 2（模拟卷第 2 题）　(a) 求 ∫(x³−5x²+4x+8)/(x²−6x+9)dx；(b) 求 3x−x² 在 [0,6] 上的平均值。',
+    p('(a) 分母 <code>= (x−3)²</code>。除法：<code>(x+1)(x²−6x+9) = x³ − 5x² + 3x + 9</code>，余式 <code>x − 1</code>，故')
+    + p('<code>= x + 1 + (x−1)/(x−3)²</code>；又 <code>(x−1)/(x−3)² = 1/(x−3) + 2/(x−3)²</code>。')
+    + p('积分：<code>x²/2 + x + ln|x−3| − 2/(x−3) + C</code>。')
+    + p('(b) <code>f̄ = (1/6)[3x²/2 − x³/3]₀⁶ = (1/6)(54 − 72) = −3</code>。')
+    + p('<b>检验：</b>(a) 对结果求导应还原被积函数；(b) 平均值为负说明负面积更大，与 <code>3x−x²</code> 在 <code>[3,6]</code> 上为负的图形一致。'))
+   + qa('例 3（模拟卷第 3 题）　(a) 面包 200 ℃ → 110 ℃（10 分钟，室温 20 ℃），到 80 ℃ 还需多久？(b) x(t) = t³−6t²+1 在 t=3 时加速还是减速？',
+    p('(a) <code>T = 20 + 180e^{kt}</code>；<code>T(10) = 110</code> → <code>e^{10k} = 1/2</code> → <code>k = −ln2/10</code>。')
+    + p('<code>T = 80</code> → <code>e^{kt} = 1/3</code> → <code>t = 10ln3/ln2</code>（总时间）。还需 <code>10ln3/ln2 − 10 = 10ln(3/2)/ln2 ≈ 5.85</code> 分钟。')
+    + p('(b) <code>v = 3t² − 12t</code>、<code>a = 6t − 12</code>；<code>v(3) = −9</code>、<code>a(3) = 6</code>，异号，故减速。')
+    + p('<b>失分点：</b>(a) 忘记减 10 分钟；(b) 用 a &gt; 0 判成加速。'))
+   + qa('例 4（模拟卷第 6 题）　(a) 求 f(x) = (3x²−15x−18)/(x³+1) 的间断点并补充定义；(b) 求 a、b 使分段函数在 x=1 可导；(c) 由 a(t)=6t−cos t、v(0)=2、x(0)=0 求 x(t)。',
+    p('(a) 分子 <code>3(x−6)(x+1)</code>、分母 <code>(x+1)(x²−x+1)</code>；约分后 <code>3(x−6)/(x²−x+1)</code>，分母无实根，故唯一间断点 <code>x = −1</code>。')
+    + p('极限 <code>= 3(−7)/3 = −7</code>，故为可去间断，定义 <code>f(−1) = −7</code>。')
+    + p('(b) 连续：<code>a + 1 = b + 3</code>；可导：<code>a = 2b + 1</code>。解得 <code>a = 3</code>、<code>b = 1</code>。')
+    + p('(c) <code>v = 3t² − sin t + 2</code>（用 <code>v(0) = 2</code>）；<code>x = t³ + cos t + 2t − 1</code>（用 <code>x(0) = 0</code>）。')
+    + p('<b>验证：</b><code>x′(t) = 3t² − sin t + 2 = v(t)</code> ✓；<code>v′(t) = 6t − cos t = a(t)</code> ✓；<code>x(0) = 1 − 1 = 0</code> ✓。'))), 
+ practice=(ol('用分部积分求 <code>∫x² sin x dx</code>，并说明每一步的 <code>u</code> 与 <code>dv</code>。',
+          '求 <code>∫(x³ + 1)/(x² + 7x + 12) dx</code>（作业七第 5(c) 题）。',
+          '求 <code>∫dx/(1 − 6x + 9x²)</code>（作业七第 5(b) 题）。',
+          '求 <code>f(x) = √(2x − x²)</code> 在 <code>[0, 2]</code> 上的平均值（作业七第 1 题）。',
+          '求 <code>∫_{−1}^{2} sgn x dx</code> 与 <code>∫₀^{4π}|cos x| dx</code>（作业七第 2 题）。',
+          '某药物浓度满足 <code>dy/dt = 5 − 2y</code>、<code>y(0) = 0</code>，求 <code>y(t)</code>、极限浓度与达到一半浓度的时间。')
+  + det('答案与思路',
+    p('<b>1.</b> <code>u = x²</code>、<code>dv = sin x dx</code> → <code>−x²cos x + 2∫x cos x dx</code>；再取 <code>u = x</code>、<code>dv = cos x dx</code> → <code>x sin x + cos x</code>。合并：<code>−x²cos x + 2x sin x + 2cos x + C</code>。')
+    + p('<b>2.</b> 除法：<code>(x³+1)/(x²+7x+12) = x − 7 + (37x + 85)/((x+3)(x+4))</code>；部分分式得 <code>A = −26</code>、<code>B = 63</code>。故 <code>x²/2 − 7x − 26ln|x+3| + 63ln|x+4| + C</code>。')
+    + p('<b>3.</b> <code>1 − 6x + 9x² = (3x−1)²</code>；令 <code>u = 3x−1</code>，<code>dx = du/3</code>，得 <code>(1/3)∫u^{−2}du = −1/(3u) = −1/(3(3x−1)) + C</code>。')
+    + p('<b>4.</b> <code>√(2x−x²) = √(1 − (x−1)²)</code> 是圆心 (1,0)、半径 1 的上半圆，<code>∫₀² = π/2</code>，故平均值 <code>(1/2)(π/2) = π/4</code>。')
+    + p('<b>5.</b> <code>∫_{−1}^{2}sgn x dx = ∫_{−1}^{0}(−1)dx + ∫₀²1dx = −1 + 2 = 1</code>；<code>|cos x|</code> 周期为 π 且 <code>∫₀^π|cos x| = 2</code>，故 <code>∫₀^{4π} = 4·2 = 8</code>。')
+    + p('<b>6.</b> <code>y′ = −2(y − 2.5)</code>，故 <code>y = 2.5(1 − e^{−2t})</code>；极限浓度 2.5；一半为 1.25，由 <code>1 − e^{−2t} = 1/2</code> 得 <code>t = ln2/2</code>。'))),
+ exam=(cal('exam', '必考', '按模拟卷的分布，必考六大块：①分部积分（尤其循环型与多项式乘 eˣ/三角）；②有理函数积分（先除法 + 部分分式）；③平均值与 FTC；④牛顿冷却/广义指数模型（求 k、求时间、注意「还需」）；⑤运动学符号判断（加速/减速）；⑥分段函数的连续与可导条件（两组方程）。')
+  + cal('warn', '易错 1', '<b>省略步骤</b>。模拟卷明文规定「只写最终答案不可接受」，每道大题至少写出「用了什么公式 → 代换或变形 → 关键中间式 → 结论」四行。')
+  + cal('warn', '易错 2', '<b>把「还需多久」答成「总共多久」</b>。第 3(a) 题的标准答案是 <code>10ln(3/2)/ln2</code>，不是 <code>10ln3/ln2</code>。')
+  + cal('warn', '易错 3', '<b>可导条件只写连续</b>。第 6(b) 题必须写 <code>a + 1 = b + 3</code>（连续）与 <code>a = 2b + 1</code>（左右导数相等）两个方程。')
+  + cal('warn', '易错 4', '<b>用小数代替精确值</b>。无计算器考试中，<code>e</code>、<code>ln2</code>、<code>√2</code> 一律保留符号形式；只有在题目明确要求近似值时才写小数。')
+  + cal('tip', '进阶', '把六道题改造成「模板卡」：每种题型记住一个起手式（分部积分写 u/dv、有理函数先除法、模型先写通解、分段函数先连续后可导），考场上看到同型题直接套起手式，能省下大量思考时间。')),
+ checklist=(h2('考场清单')
+  + h3('开卷三分钟')
+  + st('通读六题，标出「一眼能下手」的小问',
+       '把公式表按主题扫一遍，确认三角特殊值、积分公式、模型公式的位置',
+       '按「先易后难」排出做题顺序，给每道大题预留检查时间')
+  + h3('每题的书写模板（四行）')
+  + st('第一行：写出所用的公式或方法名（分部积分、部分分式、FTC、牛顿冷却公式等）',
+       '第二行：写出关键代换或变形（<code>u = …</code>、除法结果、配方结果、通解形式）',
+       '第三行：写出中间计算式（至少一步）',
+       '第四行：结论（含常数 C、精确形式、必要的单位或判断词）')
+  + h3('交卷前检查')
+  + st('符号：负号、绝对值、<code>±</code> 是否齐全',
+       '常数：不定积分的 C、二阶 IVP 的 C₁ 与 C₂、模型的初值常数',
+       '合理性：面积为正、浓度不超过极限值、减速/加速的判据用了 v 与 a 的符号',
+       '精确性：没有擅自把 <code>ln2</code>、<code>√2</code> 写成小数')),
+ mapping=tb(('源文件', '页码', '覆盖知识点'),
+    ('General/MockExam.pdf', 'p1', '第 1–4 题的题干：分部积分、反函数、有理函数、平均值、牛顿冷却、运动学、三个极限'),
+    ('General/MockExam.pdf', 'p2', '第 5–6 题的题干：药物浓度模型、切线与法线、间断点、可导条件、二阶初值问题'),
+    ('General/MockExam.pdf', 'p3–p4', '公式表：坐标与直线、函数基础、三角、极限、求导、积分、模型、求和'),
+    ('General/MockExam_answers.pdf', 'p1', '官方答案：1/2eˣ(sin x − cos x)、1/13、x²/2 + x + ln|x−3| − 2/(x−3)、−3、10ln(3/2)/ln2、减速'),
+    ('General/MockExam_answers.pdf', 'p1', '官方答案：e、[−2, 2]、1、3 − 3e^{−t}、极限 3、ln2、切线与法线、可去间断 f(−1) = −7、a = 3、b = 1、x(t) = t³ + 2t + cos t − 1'),
+    ('General/General Course Information.html', 'p1', '考试规则：不允许计算器、提供公式表、参考书与历年试卷入口'),
+    ('Topic 7/EMI_7.pdf 与 Topic 7/EM_7_sol.pdf', 'p1–p3', '作业七的题型与解法，用于补充练习（平均值、|cos|、sec⁵、部分分式）'),
+    ('（跳过）General/Mock exam.html 与 Mock exam_answer.html', '—', 'Moodle 登录页快照，无正文；PDF 版本已覆盖全部内容'),
+    ('（拓展）', '—', '把六道题改造成模板卡、以及各题的评分链拆解，属于复习方法层面的补充，源文件只给题与答案'))
+)
+
+emit('62', 20, 'HDD4010 工程数学 I', 'Engineering Mathematics I', 'HDD4010 工程数学 I',
+     '面向工程专业的一元微积分全流程课程：从实数、直线与函数出发，经极限与连续、导数与求导法则、高阶导数与中值定理，到反函数与指数对数、洛必达法则与定积分，最后以换元、分部积分、三角代换与部分分式完成积分技术，并在模拟卷中检验。考试不允许计算器，提供公式表，要求写全推导步骤。',
+     LEC)

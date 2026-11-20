@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 3 讲 · 演示工具与 AI · 30332</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT30A1000 学习工具与AI</a> / <a href="part-2.html">第 2 章 演示与设计工具</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位</a><a class="toc-l2" href="#s2">一、PowerPoint 是什么</a><a class="toc-l3" href="#s3">1.1 一页幻灯片的三件套</a><a class="toc-l3" href="#s4">1.2 从报告目录到幻灯片结构</a><a class="toc-l3" href="#s5">1.3 幻灯片的“可读距离”</a><a class="toc-l2" href="#s6">二、设计好幻灯片：七条规则</a><a class="toc-l3" href="#s7">2.1 字号与信息量的经验规则</a><a class="toc-l3" href="#s8">2.2 图表怎么选</a><a class="toc-l3" href="#s9">2.3 套用官方模板而不破坏版式</a><a class="toc-l2" href="#s10">三、讲好：六条与三个技术检查</a><a class="toc-l3" href="#s11">3.1 现场讲述的三个动作</a><a class="toc-l3" href="#s12">3.2 线上演示与线下演示的差别</a><a class="toc-l2" href="#s13">四、在 LUT 找到 PowerPoint 与官方模板</a><a class="toc-l2" href="#s14">五、放映、讲稿与录制</a><a class="toc-l3" href="#s15">5.1 演讲者视图里的三块信息</a><a class="toc-l3" href="#s16">5.2 录像回看检查什么</a><a class="toc-l3" href="#s17">5.3 排练的时间安排</a><a class="toc-l3" href="#s18">5.4 录制演示的三种用途与一个边界</a><a class="toc-l2" href="#s19">六、用 M365 Copilot 生成一份演示</a><a class="toc-l2" href="#s20">八、问答与突发情况</a><a class="toc-l2" href="#s21">七、一次 10 分钟项目汇报的完整设计</a><a class="toc-l2" href="#s22">做幻灯片</a><a class="toc-l2" href="#s23">讲之前</a><a class="toc-l2" href="#s24">用 Copilot 生成后</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="tools-services.html">第 1 讲 · 学习工具与服务</a><a href="office-ai.html">第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a class="toc-l3" href="presentation-tools.html">▸ 第 3 讲 · 演示工具与 AI</a><a href="drawing-design.html">第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro）</a><a href="ai-generated-content.html">第 5 讲 · 各类 AI 生成内容（音乐、图像、视频）</a><a href="ai-in-studies.html">第 6 讲 · 在学习中使用 AI：提示技巧与成绩说明</a></div></aside><article><h1>第 3 讲 · 演示工具与 AI</h1><p class="lead">Presentation Tools and AI <span class="badge mute">30332</span> <span class="badge mute">第 3 / 6 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 演示与设计工具</a></p><p class="src">原始文件：<code>Lecture 3 Presentation tools.pdf.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位</h2><p>第 2 讲解决“写”，本讲解决“讲”。课件把演示拆成三件事：做出幻灯片（PowerPoint）、设计好幻灯片（结构、简洁、一致、可读）、以及现场讲好（讲稿、计时、设备）。最后还演示了用 M365 Copilot 直接生成一份 pptx。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>按“引言—要点—结论”的结构在 10 分钟内讲清一个项目</li><li>用模板、字号、留白与图表把一页幻灯片的信息量控制在可读范围</li><li>用 Speaker Notes 写讲稿，并做一次带计时的彩排</li><li>完成现场技术检查：投影、声音、翻页器、屏幕共享</li><li>判断 Copilot 生成的演示需要改什么、声明什么</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、PowerPoint 是什么</h2><p>PowerPoint 用来制作含文字、图片、图表与多媒体内容的幻灯片（slide decks）；提供专业版式的模板；可以整合 Word、Excel 与 OneDrive 的内容；可以与同学或教师实时协作。</p><p>它在学习中的四个作用（课件原文）：清晰、专业地呈现想法；总结研究、项目或作业；为口头报告提供视觉辅助；为学术与职业场景做准备。</p><h3 id="s3">1.1 一页幻灯片的三件套</h3><p>把每页拆成三件套，设计就有了抓手：<b>标题</b>写结论（一句完整的话）、<b>证据</b>放一张图或一组数字、<b>落点</b>用一行字说明“所以呢”。三件套齐全，听众不需要你念稿也能读懂这一页。</p><p>如果一页里有两张图、三段文字、四个颜色，说明你想讲两个观点。拆成两页，或者把次要内容移到附录——附录不是浪费，它让你在被追问时有东西可翻。</p><h3 id="s4">1.2 从报告目录到幻灯片结构</h3><p>最省力的做法不是“重新想一套结构”，而是把报告的目录映射过来：引言对应“问题与动机”，方法对应“我们怎么做”，结果对应 2–3 页证据，讨论对应“局限与下一步”，结论对应最后一页。映射完再删：报告里为评审写的细节（参数、推导、完整表格）在演示里通常只需要一句结论加一个附录入口。</p><p>映射的好处是内容不会漏，页数也不会失控：一份 6 章的报告大约对应 9–12 页演示，超过 15 页通常说明你把附录搬上了台。</p><h3 id="s5">1.3 幻灯片的“可读距离”</h3><p>判断字号够不够，不必猜磅数：把幻灯片缩到 40% 左右看屏幕，如果标题仍能读出、正文仍能辨认，投影到教室后排通常也能看清。缩到 25% 就完全糊掉的，现场一定看不清。</p><p>这个测试同时能测出信息量：缩略图状态下每页只剩标题与一块图像，说明结构清楚；缩略图里仍是一片文字，说明你还停留在“文档”而不是“演示”。</p><h2 id="s6">二、设计好幻灯片：七条规则</h2><p>课件的七条规则几乎覆盖了学生演示的所有扣分点：</p><ol><li>有清晰的结构与逻辑流：引言、主要观点、结论。</li><li>幻灯片保持简洁，用短句或要点，而不是整段文字。</li><li>用图片、图表、示意图或图标支持你的观点。</li><li>统一使用同一套模板、颜色、字体与版式。</li><li>文字易读：字体清晰、字号足够大。</li><li>减少干扰：避免过多动画、切换效果与堆砌。</li><li>为图片、数据与引用标注来源，保持可信度。</li></ol><div class="callout tip"><b>一页一个观点</b>把每页标题写成一句完整的话（“需求变更导致 30% 返工”），而不是一个名词（“需求变更”）。听众读标题就懂，正文只是证据。</div><h3 id="s7">2.1 字号与信息量的经验规则</h3><p>课件要求“可读的字体与足够的字号”，但没有给具体数字。可操作的做法是：正文不小于 20–24 pt，标题不小于 28–32 pt；每页不超过 6 行、每行不超过约 10 个词；图表只保留支撑结论的那一条信息，其余移入附录。这些是从“简洁 + 可读”两条规则推出的操作标准，不是课件原文。</p><h3 id="s8">2.2 图表怎么选</h3><p>课件要求“用图片、图表、示意图或图标支持观点”，选错图表会让观点变模糊。操作规则是：比较大小用柱状图，看趋势用折线图，看占比用饼图（类别不超过 5 个），看两个变量的关系用散点图，看流程用流程图。</p><p>无论选哪种，只保留支撑结论的那一条信息：删掉网格线、删掉图例中不用的系列、把要强调的那根柱子换颜色。图表不是数据的展览，是论点的证据。</p><h3 id="s9">2.3 套用官方模板而不破坏版式</h3><p>拿到 Copilot 或旧文档的内容后，不要直接整页粘贴。正确顺序是：先在官方模板里新建页，选择对应版式（标题页、标题+内容、两栏、图表页），再把内容<b>以纯文本</b>粘进占位框，最后用模板的主题字体与颜色重新排版。</p><p>这样做的原因是：直接粘贴会把原文档的字体、行距、项目符号一起带进来，后面每一页都要手工修；用占位框则一次成型。判断标准是“改完全部页后，字体面板里只出现模板规定的两种字体”。</p><h2 id="s10">三、讲好：六条与三个技术检查</h2><p>课件给的六条：用关键观点、例子或故事吸引听众；幻灯片是<b>支持</b>你的讲述，不是复述你要说的话；用 Speaker Notes 引导讲述，同时不把幻灯片塞满；按听众的水平与兴趣调整内容；练习讲述以控制时间与建立信心；提前测试技术设置。</p><p>技术检查三项：练习屏幕共享；测试投影仪、声音与遥控翻页器（remote clicker）；练习如何使用 Speaker Notes。</p><table><tr><th>准备项</th><th>检查什么</th><th>失败后果</th></tr><tr><td>屏幕共享</td><td>能否只共享窗口、字体是否可读</td><td>听众看到通知或看不清代码</td></tr><tr><td>投影与比例</td><td>16:9/4:3、颜色是否发白</td><td>图表变形、深色背景看不清</td></tr><tr><td>声音</td><td>视频音量、麦克风</td><td>开场十分钟在调设备</td></tr><tr><td>翻页器</td><td>电池、连接、下一页键</td><td>讲到一半要回电脑按键</td></tr><tr><td>Speaker Notes</td><td>是否在演讲者视图可见、字号够大</td><td>现场低头看稿、失去眼神交流</td></tr></table><h3 id="s11">3.1 现场讲述的三个动作</h3><p>讲述时可以只用三个动作控制节奏：<b>指</b>（说到图表的某一点时用手或指针明确指过去）、<b>停</b>（说完结论后停两秒，让听众消化）、<b>问</b>（在过渡处抛一个问题，把注意力拉回你身上）。三个动作都不需要额外准备，但能显著减少“念幻灯片”的感觉。</p><p>如果紧张，把第一页的前三句写进 Notes 并背下来。开场稳住了，后面通常就顺了。</p><h3 id="s12">3.2 线上演示与线下演示的差别</h3><p>线上演示多两个变量：共享方式与延迟。共享整个屏幕会把通知、私聊、桌面文件暴露给听众；共享单个窗口更安全。切换窗口时会有 1–2 秒延迟，所以每次切换前先说一句“接下来看第二张图”，让听众知道画面要变。</p><p>线下演示多两个变量：光线与距离。投影会把深色背景与细线冲淡，正文对比度要比在笔记本上看到的更高；后排距离决定字号，最后一排能看清的最小字号就是你的下限。</p><p>两种场景的共同点是：都要提前到场测试。课件把“测试技术设置”列为讲好的第六条，不是可选项。</p><h2 id="s13">四、在 LUT 找到 PowerPoint 与官方模板</h2><p>PowerPoint 从 Office 365 进入，也可以从 M365 Copilot 侧进入；LUT 提供<b>官方模板</b>（Official LUT Templates），用于课程与学位演示，能保证配色、字体与标志符合学校规范。</p><p>使用官方模板的额外好处：模板已经处理好标题层级与占位框，你把内容填进去即可，不必从空白页调格式。</p><h2 id="s14">五、放映、讲稿与录制</h2><p>课件的界面示意标出三处：Speaker Notes（讲稿区）、Start slide show（开始放映）、Presentation tools（演示工具，如指针、标注、放大）。</p><p>还有一个常被忽略的能力：<b>桌面版可以录制演示，并把录制导出为视频</b>。用途包括：提交“录播式”作业、提前彩排看自己的语速与口头禅、给不能到场的组员看。</p><ol class="steps"><li>在 Speaker Notes 里写“每页 3 句”：结论、证据、过渡</li><li>用 Start slide show 进入演讲者视图，确认 Notes 可见</li><li>用手机计时完整讲一遍，记录每页实际用时</li><li>回看录制，删掉重复词与口头禅</li><li>按 80% 的时间余量准备（10 分钟的报告准备 8 分钟内容）</li></ol><h3 id="s15">5.1 演讲者视图里的三块信息</h3><p>放映时的演讲者视图通常给三块信息：当前页、下一页预览、Speaker Notes。它的价值是让你在看观众的同时知道下一句讲什么；练习时要专门练“看一眼 Notes 就抬头”的动作，而不是低头念完。</p><h3 id="s16">5.2 录像回看检查什么</h3><p>回看录制时只看四项：<b>语速</b>（是否越讲越快）、<b>填充词</b>（嗯、那个、然后）、<b>页面切换</b>（是否在讲完前就翻页）、<b>时间分配</b>（前 3 页是否占了 40% 的时间）。每项记一个具体数字，下次才有改进目标。</p><h3 id="s17">5.3 排练的时间安排</h3><p>一次 10 分钟的演示，至少排三遍：第一遍不看时间，只求讲完，记录每页卡住的地方；第二遍计时，标出超时的页；第三遍只练超时页与被追问的三个问题。三遍的总投入约 40 分钟，比临场加快语速有效得多。</p><p>组队演示还要多一遍“交接排练”：谁讲完把话交给谁、翻页由谁负责、两人之间不重复内容。交接不顺，听众会立刻感觉到团队没准备。</p><h3 id="s18">5.4 录制演示的三种用途与一个边界</h3><p>三种用途：给自己回看语速与填充词；给缺席的组员补看；作为“录播式”作业提交。桌面版可以直接录制并导出视频，这比用手机拍屏幕清晰得多。</p><p>一个边界：录制会同时拍下画面与声音，如果画面里有同学的头像、聊天窗口或未公开的数据，导出前要确认对方同意，必要时只共享幻灯片窗口再录。</p><h2 id="s19">六、用 M365 Copilot 生成一份演示</h2><p>课件的流程是：开始一个新的 chat（Start a new chat）；写一段描述性的提示词（descriptive prompt），说明你要做什么主题的演示；<b>并要求它以 pptx 文件提供下载</b>；生成后会给出一个可下载的链接（Downloadable link to the presentation that was generated）。课件注明使用的是 GPT-5。</p><p>提示词里至少要写清五件事：主题与目的、听众（同学/教师/企业）、时长与页数、必须包含的内容（数据、案例、结论）、格式要求（语言、模板、是否需要讲稿）。</p><div class="callout warn"><b>生成之后必须做的事</b>Copilot 生成的幻灯片只是骨架：事实要核对、数据要补来源、版式要套官方模板、图片版权要确认；提交前按课程要求写 AI 使用声明。</div><h2 id="s20">八、问答与突发情况</h2><p>演示的最后一分钟往往决定印象。课件没有展开问答，但可以用它的两条原则推导：幻灯片是支持而不是讲稿，所以问答时不要回去翻页找答案；为图片与数据标注来源，所以被问“这个数字哪来的”时能立刻答出出处。</p><ul><li>准备三个最可能被问的问题，各写一句答案与一个证据</li><li>被问到不会的，先说“我没有这个数据”，再说“我会在什么时候补给你”</li><li>设备故障时切到 PDF 备份，并口头继续讲结论</li><li>超时被提醒时，直接跳到结论页，不解释“我还有几页”</li></ul><h2 id="s21">七、一次 10 分钟项目汇报的完整设计</h2><table><tr><th>页</th><th>内容</th><th>目标</th></tr><tr><td>1</td><td>标题、姓名、项目名、日期</td><td>让人知道这是谁讲的什么</td></tr><tr><td>2</td><td>问题与动机（一张图或一个数字）</td><td>30 秒内建立“为什么值得听”</td></tr><tr><td>3</td><td>目标与范围（做了什么、不做什么）</td><td>避免听众期待错位</td></tr><tr><td>4–6</td><td>方法、实现、关键结果（每页一个观点）</td><td>用证据支撑结论</td></tr><tr><td>7</td><td>演示或截图（可选）</td><td>让抽象结果可感知</td></tr><tr><td>8</td><td>局限与下一步</td><td>显示判断力</td></tr><tr><td>9</td><td>结论（一句话）+ 致谢/提问</td><td>留下可记住的句子</td></tr></table><div class="callout idea" data-ext="presentation-tools-0"><b>前后衔接</b><p>最省力的结构设计不是重新构思，而是把报告目录映射过来：引言→问题与动机，方法→我们怎么做，结果→2–3 页证据，讨论→局限与下一步，结论→最后一页。6 章报告约对应 9–12 页演示，超过 15 页通常说明把附录搬上了台。映射后每页压成三件套：标题写一句完整结论、证据放一张图或一组数字、落点写一行“所以呢”。</p></div><div class="callout tip" data-ext="presentation-tools-1"><b>常见误解</b><p>课件把“Use slides to support what you say, not to repeat it”列为讲好的关键：幻灯片不是提词器。Speaker Notes 只写三行——让人记住什么、支撑它的证据、过渡到下一页的话；念整页正文是最大失分点。另一个常被忽略的能力是桌面版可录制并导出视频：按 80% 时间余量准备（10 分钟报告备 8 分钟内容），回看只查语速、填充词、页面切换、时间分配四项。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>slide deck</td><td>幻灯片组</td><td>The full set of slides for one presentation.</td></tr><tr><td>template</td><td>模板</td><td>A predefined layout, colour and font set; LUT provides official templates.</td></tr><tr><td>placeholder</td><td>占位框</td><td>Boxes in a layout where text, images or charts go.</td></tr><tr><td>speaker notes</td><td>演讲者备注</td><td>Notes visible to the presenter, not to the audience.</td></tr><tr><td>slide show</td><td>放映</td><td>The full-screen presentation mode.</td></tr><tr><td>presentation tools</td><td>演示工具</td><td>Pointer, annotation and zoom tools available while presenting.</td></tr><tr><td>transition</td><td>切换效果</td><td>Animation between slides; use sparingly.</td></tr><tr><td>animation</td><td>动画</td><td>Movement of objects within a slide; avoid clutter.</td></tr><tr><td>screen sharing</td><td>屏幕共享</td><td>Sharing a window or screen in an online presentation.</td></tr><tr><td>remote clicker</td><td>遥控翻页器</td><td>A device to change slides away from the laptop.</td></tr><tr><td>record presentation</td><td>录制演示</td><td>The desktop version can record and export the presentation as video.</td></tr><tr><td>pptx</td><td>audience</td><td>演示文件格式</td><td>The PowerPoint file format Copilot can provide for download.</td></tr><tr><td>audience</td><td>听众</td><td>The people the presentation is tailored to.</td></tr><tr><td>logical flow</td><td>逻辑流</td><td>Introduction, main points, conclusion.</td></tr><tr><td>citation of visuals</td><td>图表来源标注</td><td>Credit the source of images, data and quotes.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把 20 页的课程报告压成 9 页、10 分钟的演示</div><p><b>第 1 步：</b>先写结论句（一句话），再倒推需要哪三组证据；报告里的方法细节只留一页，其余进附录。</p><p><b>第 2 步：</b>按第七节的结构排页：标题、问题、目标、方法、结果 2–3 页、演示、局限、结论。</p><p><b>第 3 步：</b>每页只留一个观点：标题写成完整句子，正文最多 6 行；把长段落改成图或表。</p><p><b>第 4 步：</b>统一模板与字号（正文 ≥20–24 pt），给每张图标注来源。</p><p><b>第 5 步：</b>在 Speaker Notes 写“结论—证据—过渡”三句，计时讲一遍；超过 10 分钟就删页，而不是加快语速。</p></div><div class="qa"><div class="q">例 2　用 Speaker Notes 写讲稿，而不是背稿</div><p>每页 Notes 只写三行：<b>这一页要让人记住什么</b>（一句）、<b>支撑它的证据</b>（一个数字或一张图）、<b>过渡到下一页的话</b>（一句）。</p><p>例如结果页：“记住返工率从 18% 降到 6%——证据是这三周的缺陷数——接下来讲我们怎么做到的。”</p><p>好处：不背整段文字，现场可以看听众反应调整；忘词时看一眼三行就能接上；也便于组员轮流讲同一份稿。</p></div><div class="qa"><div class="q">例 3　让 Copilot 生成骨架，再改造成可交付的演示</div><p><b>提示词：</b>“Create a 10-slide presentation (pptx) for a 10-minute course project demo. Audience: teacher and classmates. Topic: our library-loan system. Include: problem, scope, architecture diagram, three results with numbers, limitations, next steps. Use short bullet points, English, and leave space for a LUT template.”</p><p><b>拿到文件后：</b>套用 LUT 官方模板；把示例数据换成自己的真实数据并补来源；把架构图重画成自己能讲清的样子；删掉多余页；在 Notes 写三行讲稿。</p><p><b>合规：</b>按课程要求声明使用了 Copilot（生成骨架/初稿），并说明你改写了哪些部分。</p></div><div class="qa"><div class="q">例 4　答辩或课堂演示前的 10 分钟技术检查</div><p>① 打开投影，确认比例与颜色；② 播放一段含声音的视频，确认音量；③ 连上翻页器，测试下一页与黑屏键；④ 用演讲者视图确认 Notes 可见；⑤ 若线上，测试屏幕共享（只共享窗口）与麦克风；⑥ 准备一份 PDF 备份，防止字体或版本问题。</p><p><b>判断标准：</b>你能在不看电脑的情况下翻页、看 Notes、切到视频再切回来。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>把一份 20 页报告压成 8 页演示：写出每页的标题句（完整句子，不是名词）。</li><li>列出设计幻灯片的七条规则，并指出你自己最常违反的两条。</li><li>说明 Speaker Notes 与幻灯片正文的分工，并给一页写三行示例。</li><li>用 Copilot 生成演示的提示词必须包含哪五类信息？各举一例。</li><li>现场演示前必须测试哪五项？分别说明失败后果。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 示例标题句：“现有借阅流程平均耗时 4 分钟”“我们把查询与续借合并到一步”“测试组把错误率降到 2%”“剩余风险是并发借同一本书”“下一步接入校园卡”。</p><p><b>2.</b> 七条见正文；最常见的两条是“幻灯片写成整段文字”与“模板/字号不统一”。</p><p><b>3.</b> 正文给听众看（短句、图、数字）；Notes 给讲者看（结论、证据、过渡）。示例：“记住：返工率 18%→6%。证据：三周缺陷数。过渡：接下来讲做法。”</p><p><b>4.</b> 主题与目的、听众、时长与页数、必须包含的内容、格式要求（语言/模板/讲稿）。</p><p><b>5.</b> 屏幕共享（共享错窗口）、投影与比例（图表变形）、声音（视频无声）、翻页器（无法翻页）、Speaker Notes（看不见稿）。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>设计七规则（结构、简洁、视觉支持、一致、可读、少干扰、标来源）；讲好六条；三项技术检查；桌面版可录制并导出视频；Copilot 生成 pptx 的流程。</div><div class="callout warn"><b>易错 1</b><b>把幻灯片当提词器。</b>课件明确：Use slides to support your talk, not to repeat what you say。</div><div class="callout warn"><b>易错 2</b><b>动画与切换越多越“专业”。</b>课件把 excessive animations / transitions 列为干扰。</div><div class="callout warn"><b>易错 3</b><b>不标图片来源。</b>课件要求 cite sources for images, data, or quotes。</div><div class="callout tip"><b>进阶</b>能解释“为什么录音回看比反复练习更有效”：它把语速、口头禅与超时变成可观察的证据。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s22">做幻灯片</h2><ul class="checklist"><li>已确定一句话结论，并倒推出三组证据</li><li>每页标题是完整句子，正文不超过 6 行</li><li>使用同一套模板、字体与字号（正文 ≥20–24 pt）</li><li>图片、数据、引用都标了来源</li><li>动画与切换只保留必要的</li><li>长内容移入附录而不是硬塞</li></ul><h2 id="s23">讲之前</h2><ul class="checklist"><li>每页 Speaker Notes 写了结论、证据、过渡三行</li><li>完整计时讲了一遍，留 20% 余量</li><li>看过一次录制，删掉重复词</li><li>测试投影、声音、翻页器、屏幕共享</li><li>准备 PDF 备份</li><li>线上会议提前 5 分钟进入并测试麦克风</li></ul><h2 id="s24">用 Copilot 生成后</h2><ul class="checklist"><li>事实与数据已逐条核对</li><li>已套用 LUT 官方模板</li><li>架构图/示意图能自己讲清</li><li>删除与主题无关的页</li><li>按课程要求写了 AI 使用声明</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p3</td><td>PowerPoint 的功能与在学习中的四个作用</td></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p4</td><td>设计幻灯片的七条规则</td></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p5</td><td>讲好的六条与技术检查三项</td></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p6</td><td>Office 365 与 M365 Copilot 入口、官方 LUT 模板</td></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p7</td><td>Speaker Notes、Start slide show、Presentation tools、录制并导出视频</td></tr><tr><td>Lecture 3 Presentation tools.pdf.txt</td><td>p8–p9</td><td>Copilot 生成演示：新 chat、描述性提示词、要求 pptx 下载、结果</td></tr><tr><td>（跳过）</td><td>p1、p10</td><td>封面与结束空白页</td></tr><tr><td>（补充）</td><td>—</td><td>字号与每页行数的具体数值、10 分钟演示的九页结构，属于把“简洁 + 可读”落成操作标准的推算，非课件原文</td></tr></table></section><div class="lnav"><a class="prev" href="office-ai.html">← 第 2 讲 · 办公软件与 AI（Word、Excel、Copilot）</a><a class="next" href="drawing-design.html">第 4 讲 · 绘图与设计软件（OneNote、Visio、Miro） →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

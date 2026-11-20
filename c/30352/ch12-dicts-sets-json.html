@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>⑫ 字典、集合与 JSON · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-4.html">第 4 章 容器与数据组织</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、先看数据处理的全貌</a><a class="toc-l2" href="#s3">二、字典：用键找值</a><a class="toc-l3" href="#s4">2.1 创建与访问</a><a class="toc-l3" href="#s5">2.2 修改与添加</a><a class="toc-l3" href="#s6">2.3 遍历</a><a class="toc-l3" href="#s7">2.4 字典 vs 列表</a><a class="toc-l2" href="#s8">三、字典的常用操作</a><a class="toc-l2" href="#s9">四、列表 + 字典：一条记录</a><a class="toc-l2" href="#s10">五、浅拷贝与深拷贝</a><a class="toc-l2" href="#s11">六、集合：只关心「有没有」</a><a class="toc-l3" href="#s12">6.1 增删</a><a class="toc-l3" href="#s13">6.2 集合运算</a><a class="toc-l2" href="#s14">七、CSV 的 DictReader</a><a class="toc-l2" href="#s15">八、JSON：能装嵌套结构的数据格式</a><a class="toc-l2" href="#s16">九、把自己的函数变成模块</a><a class="toc-l3" href="#s17">9.1 if __name__ == &quot;__main__&quot;</a><a class="toc-l2" href="#s18">十、常见错误与调试</a><a class="toc-l2" href="#s19">操作清单</a><a class="toc-l3" href="#s20">选数据结构</a><a class="toc-l3" href="#s21">写完后的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a class="toc-l3" href="ch12-dicts-sets-json.html">▸ ⑫ 字典、集合与 JSON</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a></div></aside><article><h1>⑫ 字典、集合与 JSON</h1><p class="lead">Dictionaries, Sets and JSON <span class="badge mute">30352</span> <span class="badge mute">第 12 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 容器与数据组织</a></p><p class="src">原始文件：<code>Chapter 10 - Part 1 - About data.pdf</code> <code>Chapter 10 - Part 2 - Dictionaries.pdf</code> <code>Chapter 10 - Part 3 - CSV.pdf</code> <code>Chapter 10 - Part 4 - JSON.pdf</code> <code>Chapter 10 - Part 5 - Own modules.pdf</code> <code>sets.pdf</code> <code>16_Chapter 10_1_Code Examples_W10E04.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是全课程最后一讲新内容，也是把前面所有容器收口的一讲：字典用来「按键查找」，集合用来「去重与比较」，JSON 把嵌套数据存成文本。项目作业里的车辆、客户、交易记录，形状就是这一讲的「列表套字典」。</p><p>它同时回收了三条旧线：第 8 讲的列表与元组（字典的值常常是列表，<code>items()</code> 返回元组）、第 9 讲的文件读写（JSON 就是文件里的文本）、第 10 讲的模块（这一讲把你自己的文件变成模块）。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>创建字典、按键取值与赋值，并解释 <code>KeyError</code> 从哪来</li><li>用字典统计频次，处理「新键先建初值」的问题</li><li>把多条记录写成「列表套字典」，并遍历筛选</li><li>说清浅拷贝与深拷贝的区别，知道什么时候必须 <code>deepcopy</code></li><li>用集合去重并做并、交、差、对称差运算</li><li>用 <code>DictReader</code> 读 CSV、用 <code>json</code> 模块存取嵌套数据</li><li>把自己的函数写成模块，并用 <code>__main__</code> 判断隔离测试代码</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、先看数据处理的全貌</h2><p>课件在第 10 章开头先讲了「数据」这件事本身（Chapter 10 Part 1 p3）：数据分析（data analytics）是把原始数据变成可用于决策的信息，分四层——数据层（数据库、API、CSV）、分析层（Python、R、Excel）、可视化层（图表、网页）、AI 层（机器学习）。这门课只做分析层里最基础的一段：用 Python 处理原始数据。</p><p>课件给的四个阶段（Part 1 p5）值得记住，因为每一阶段都对应一种数据结构：</p><table><tr><th>阶段</th><th>做什么</th><th>本讲对应的结构</th></tr><tr><td>1. 数据收集 collection</td><td>从公开数据、日志、CSV 里拿到原始数据</td><td>文件读取（第 9 讲）</td></tr><tr><td>2. 数据处理 processing</td><td>整理成表格、列表、对象等好处理的形状</td><td>列表套字典（记录）</td></tr><tr><td>3. 数据清洗 cleanup</td><td>去掉坏数据、补缺失、检查合理性</td><td>字典遍历 + 条件判断</td></tr><tr><td>4. 探索性分析 EDA</td><td>算统计量、找趋势</td><td>字典计数、集合去重</td></tr></table><h2 id="s3">二、字典：用键找值</h2><h3 id="s4">2.1 创建与访问</h3><p>字典（dictionary）是键值对（key-value pair）的集合（Part 2 p2）：每个值配一个键，用键就能直接取到值，不必知道它在第几个。</p><pre><code>person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+print(person)
+print(person["name"])
+print(person["age"])</code></pre><pre><code>{'name': 'John', 'age': 30, 'city': 'New York'}
+John
+30</code></pre><p>键必须是<b>不可变</b>类型：字符串、数字、元组可以，列表不行（<code>TypeError: unhashable type</code>）。值可以是任何东西，包括列表与另一个字典。</p><p>取值用方括号加键：<code>person["name"]</code>。键不存在时抛 <code>KeyError</code>——这是字典最典型的错误：</p><pre><code>person = {"name": "John"}
+print(person["age"])</code></pre><pre><code>KeyError: 'age' </code></pre><h3 id="s5">2.2 修改与添加</h3><p>字典是<b>可变</b>的（Part 2 p2）：赋值语句既能改已有的键，也能新建键——语法完全一样，区别只在键是否存在。</p><pre><code>phone_numbers = {"Elon Musk": "555-3928372"}
+phone_numbers["Elon Musk"] = "555-0000000"
+phone_numbers["Bill Gates"] = "555-39482949"
+print(phone_numbers)</code></pre><pre><code>{'Elon Musk': '555-0000000', 'Bill Gates': '555-39482949'}</code></pre><p>正因为「赋值即新增」，拼错键名不会报错，只会多出一条没人用的数据。这类错误只能靠「打印出来看看」发现。</p><h3 id="s6">2.3 遍历</h3><p><code>for</code> 直接遍历字典时，拿到的是<b>键</b>（Part 2 p4）；要取值再用 <code>d[key]</code>：</p><pre><code>my_dict = {"a": 1, "b": 2, "c": 3}
+for key in my_dict:
+    print(key, my_dict[key])</code></pre><pre><code>a 1
+b 2
+c 3</code></pre><p>顺序按插入顺序（Python 3.7 起保证），但不要把它当排序结果——要排序请用 <code>sorted()</code>。</p><h3 id="s7">2.4 字典 vs 列表</h3><p>课件用「按名字查电话」把两者对比得很清楚（Part 2 p5）：</p><table><tr><th>维度</th><th>列表</th><th>字典</th></tr><tr><td>存法</td><td>按顺序堆进去</td><td>按键值对存</td></tr><tr><td>查找方式</td><td>下标 <code>L[2]</code>，或循环比对值</td><td>键 <code>d["Sarah"]</code></td></tr><tr><td>查找代价</td><td>与元素个数成正比（线性）</td><td>基本恒定（哈希）</td></tr><tr><td>适合</td><td>有顺序、要遍历、要排序</td><td>按名字/编号快速查找</td></tr></table><pre><code># 用列表：要循环找
+names = ["Janne", "Elon"]
+phones = ["555-492843", "555-2943483"]
+for i in range(len(names)):
+    if names[i] == "Elon":
+        print(phones[i])
+
+# 用字典：直接取
+phone_numbers = {"Janne": "555-492843", "Elon": "555-2943483"}
+print(phone_numbers["Elon"])</code></pre><pre><code>555-2943483
+555-2943483</code></pre><p>两个列表「平行存放」是常见但脆弱的写法：插入一个元素要同时改两个列表，一旦顺序错位，数据就全乱了。字典把键和值绑在一起，从结构上避免这种错位。</p><h2 id="s8">三、字典的常用操作</h2><table><tr><th>操作</th><th>作用</th><th>说明</th></tr><tr><td><code>d[key]</code></td><td>取值</td><td>键不存在 → <code>KeyError</code></td></tr><tr><td><code>d[key] = v</code></td><td>改值或新增</td><td>键存在就改，不存在就加</td></tr><tr><td><code>key in d</code></td><td>判断键是否存在</td><td>只查键，不查值</td></tr><tr><td><code>len(d)</code></td><td>键值对数量</td><td>—</td></tr><tr><td><code>d.pop(key)</code></td><td>删掉并返回值</td><td>键不存在 → <code>KeyError</code></td></tr><tr><td><code>d.popitem()</code></td><td>删掉并返回最后一对</td><td>返回 <code>(key, value)</code></td></tr><tr><td><code>d.clear()</code></td><td>清空</td><td>—</td></tr><tr><td><code>sorted(d)</code></td><td>把键排序成列表</td><td>不改原字典</td></tr><tr><td><code>d.copy()</code></td><td>浅拷贝</td><td>嵌套对象仍共享</td></tr></table><pre><code>d = {"a": 1, "b": 2, "c": 3}
+print("b" in d)
+print(sorted(d))
+print(d.pop("b"))
+print(d)
+print(d.popitem())
+print(d)</code></pre><pre><code>True
+['a', 'b', 'c']
+2
+{'a': 1, 'c': 3}
+('c', 3)
+{'a': 1}</code></pre><p>统计类程序的标准套路是「键存在就加一，不存在就建 1」，可以写成 <code>d[k] = d.get(k, 0) + 1</code>（<code>get</code> 属拓展），也可以先判断 <code>if k in d</code>。两种写法都不报错，直接写 <code>d[k] += 1</code> 在第一次遇到新键时会抛 <code>KeyError</code>。</p><h2 id="s9">四、列表 + 字典：一条记录</h2><p>真实数据通常是一堆「结构相同的记录」，每条记录用字典，整体用列表装（Part 2 p9）。这是本课处理 CSV、JSON 的通用形状。</p><pre><code>cars = [
+    {"brand": "Ford", "year": 2015, "price": 15000},
+    {"brand": "Skoda", "year": 2012, "price": 5000}
+]
+
+for car in cars:
+    if car["brand"] == "Ford":
+        print("Year of the Ford is:", car["year"])</code></pre><pre><code>Year of the Ford is: 2015</code></pre><p>读法：<code>car</code> 是一条记录（字典），<code>car["year"]</code> 取这一条的年份。要统计「每个品牌几辆车」，就用「品牌做键、数量做值」的字典累加。</p><h2 id="s10">五、浅拷贝与深拷贝</h2><p>课件专门讲了这一对概念（Part 2 p10–p11），因为它在「复制一份再改」时是隐形杀手。</p><pre><code>person = {"name": "John", "city": ["Helsinki", "Tallinn"]}
+shallow = person.copy()
+shallow["city"][0] = "Stockholm"
+
+print(person)
+print(shallow)</code></pre><pre><code>{'name': 'John', 'city': ['Stockholm', 'Tallinn']}
+{'name': 'John', 'city': ['Stockholm', 'Tallinn']}</code></pre><p><code>copy()</code> 只复制了最外层：新字典的 <code>city</code> 仍指向<b>同一个列表</b>，所以改浅拷贝里的列表，原字典也变。</p><pre><code>import copy
+
+person = {"name": "John", "city": ["Helsinki", "Tallinn"]}
+deep = copy.deepcopy(person)
+deep["city"][0] = "Oslo"
+
+print(person)
+print(deep)</code></pre><pre><code>{'name': 'John', 'city': ['Helsinki', 'Tallinn']}
+{'name': 'John', 'city': ['Oslo', 'Tallinn']}</code></pre><p><code>copy.deepcopy()</code> 递归复制所有层，两个对象彻底独立。判断标准很简单：<b>值里有列表/字典等可变对象，就要深拷贝。</b></p><h2 id="s11">六、集合：只关心「有没有」</h2><p>集合（set）像数学里的集合（sets p2）：元素不重复、没有顺序、用花括号写。它最适合两件事——去重与 membership 判断。</p><pre><code>numbers = [1, 2, 2, 3, 3, 3]
+unique = set(numbers)
+print(len(numbers), len(unique))
+print(sorted(unique))
+
+empty = {}      # 这是空字典，不是空集合！
+empty_set = set()
+print(type(empty), type(empty_set))</code></pre><pre><code>6 3
+[1, 2, 3]
+&lt;class 'dict'&gt; &lt;class 'set'&gt;</code></pre><p>元素必须可哈希（hashable），也就是不可变：整数、字符串、元组可以，列表与字典不行（sets p3）。原因是集合用哈希表实现，靠哈希值快速定位。</p><h3 id="s12">6.1 增删</h3><table><tr><th>方法</th><th>作用</th><th>注意</th></tr><tr><td><code>s.add(x)</code></td><td>加一个元素</td><td>已存在则不重复加</td></tr><tr><td><code>s.update(iterable)</code></td><td>批量加</td><td>把列表/字符串的元素逐个加</td></tr><tr><td><code>s.remove(x)</code></td><td>删指定元素</td><td>不存在 → <code>KeyError</code></td></tr><tr><td><code>s.discard(x)</code></td><td>删指定元素</td><td>不存在也不报错</td></tr><tr><td><code>s.pop()</code></td><td>删并返回任意一个</td><td>集合无序，无法预测是哪个</td></tr><tr><td><code>s.clear()</code></td><td>清空</td><td>—</td></tr></table><h3 id="s13">6.2 集合运算</h3><p>这是集合最有价值的部分，方法与运算符一一对应（sets p6–p7）：</p><table><tr><th>运算</th><th>方法</th><th>运算符</th><th>含义</th></tr><tr><td>并集</td><td><code>a.union(b)</code></td><td><code>a | b</code></td><td>两边的全部元素</td></tr><tr><td>交集</td><td><code>a.intersection(b)</code></td><td><code>a &amp; b</code></td><td>两边都有的</td></tr><tr><td>差集</td><td><code>a.difference(b)</code></td><td><code>a - b</code></td><td>在 a 不在 b</td></tr><tr><td>对称差</td><td><code>a.symmetric_difference(b)</code></td><td><code>a ^ b</code></td><td>只在一边出现的</td></tr><tr><td>子集</td><td><code>a.issubset(b)</code></td><td><code>a &lt;= b</code></td><td>a 全在 b 里</td></tr><tr><td>超集</td><td><code>a.issuperset(b)</code></td><td><code>a &gt;= b</code></td><td>a 包含 b</td></tr></table><pre><code>IEEE = {"Python", "Java", "JavaScript", "C++", "TypeScript"}
+TIOBE = {"Python", "C++", "Java", "C", "C#"}
+
+print(sorted(IEEE | TIOBE))
+print(sorted(IEEE &amp; TIOBE))
+print(sorted(IEEE - TIOBE))
+print(sorted(IEEE ^ TIOBE))</code></pre><pre><code>['C', 'C#', 'C++', 'Java', 'JavaScript', 'Python', 'TypeScript']
+['C++', 'Java', 'Python']
+['JavaScript', 'TypeScript']
+['C', 'C#', 'JavaScript', 'TypeScript']</code></pre><p>课件留了四个问题（sets p9）：两个榜单里出现过的语言（并集）、同时上榜的（交集）、只在 IEEE 的（差集）、只在一个榜单的（对称差）。上面四行输出就是四个答案，注意结果都<b>先 <code>sorted()</code> 再打印</b>——集合无序，直接打印每次顺序可能不同。</p><h2 id="s14">七、CSV 的 DictReader</h2><p>第 9 讲用 <code>split(",")</code> 手工切 CSV。字段里若含逗号或引号，手工切就会错位；标准库的 <code>csv</code> 模块能正确处理，<code>DictReader</code> 还会把每行变成字典（Part 3 p4–p5）：</p><pre><code>import csv
+
+csvfile = open("csv_e04.csv")
+reader = csv.DictReader(csvfile)
+for row in reader:
+    print(row["name"], row["age"], row["gender"])
+csvfile.close()</code></pre><pre><code>Alice 25 Female
+Bob 30 Male
+Charlie 28 Male</code></pre><p><code>csv_e04.csv</code> 的第一行是表头 <code>name,age,gender</code>；<code>DictReader</code> 用它当键，于是可以按列名取值 <code>row["age"]</code>，不必记「年龄是第 1 列」。值仍是字符串，算术前要 <code>int()</code>。</p><h2 id="s15">八、JSON：能装嵌套结构的数据格式</h2><p>CSV 只能表示「二维表」，装不了嵌套。JSON（JavaScript Object Notation）用花括号表示对象、方括号表示数组，能表达任意层嵌套（Part 4 p2）。它起源于 2000 年代初，现在是配置文件与网络接口的事实标准。</p><p>JSON 与 Python 字典长得很像，但有两条硬差别（Part 4 p3）：</p><table><tr><th>维度</th><th>Python 字典</th><th>JSON</th></tr><tr><td>键的类型</td><td>任何不可变类型</td><td><b>只能是字符串</b></td></tr><tr><td>字符串引号</td><td>单双引号都行</td><td><b>必须双引号</b></td></tr><tr><td>额外值</td><td><code>True / False / None</code></td><td><code>true / false / null</code></td></tr><tr><td>注释</td><td>可以有 <code>#</code></td><td>不允许</td></tr></table><pre><code>import json
+
+person = {"name": "Alice", "age": 25, "hobbies": ["reading", "coding"]}
+text = json.dumps(person)
+print(text)
+
+back = json.loads(text)
+print(back)
+print(type(back))</code></pre><pre><code>{"name": "Alice", "age": 25, "hobbies": ["reading", "coding"]}
+{'name': 'Alice', 'age': 25, 'hobbies': ['reading', 'coding']}
+&lt;class 'dict'&gt;</code></pre><p><code>json.dumps()</code> 把对象变成字符串（dump <b>s</b>tring），<code>json.loads()</code> 把字符串变回对象；读写文件用 <code>json.dump()</code> / <code>json.load()</code>（没有 s）。四个名字只差一个字母，方向记法：<b>s = string</b>。</p><pre><code>import json
+
+books = [
+    {"title": "Python Basics", "year": 2020},
+    {"title": "Data Handling", "year": 2023}
+]
+
+file = open("books.json", "w")
+json.dump(books, file)
+file.close()
+
+file = open("books.json", "r")
+loaded = json.load(file)
+file.close()
+print(len(loaded), loaded[0]["title"])</code></pre><pre><code>2 Python Basics</code></pre><p>多个对象存成 JSON 的标准形状是「对象数组」：外层方括号，里面每个元素是一个花括号对象。读回来就是一个「列表套字典」，与第四节的结构完全一致。</p><h2 id="s16">九、把自己的函数变成模块</h2><p>第 10 讲用的是别人的模块；这一节把自己的代码变成模块（Part 5 p2–p3）。做法只有四步：</p><ol class="steps"><li>新建一个 <code>.py</code> 文件，名字是合法的 Python 标识符（如 <code>calculator.py</code>）</li><li>在里面写函数、类、常量</li><li>把文件放在与调用者相同的目录（最简单）</li><li>在另一个文件里 <code>import calculator</code>，然后 <code>calculator.add(2, 3)</code></li></ol><pre><code># calculator.py
+PI = 3.14159
+
+def add(x, y):
+    return x + y
+
+def divide(x, y):
+    if y == 0:
+        return "Cannot divide by zero"
+    return x / y</code></pre><pre><code># main.py
+import calculator
+
+print(calculator.PI)
+print(calculator.add(2, 3))
+print(calculator.divide(10, 0))</code></pre><pre><code>3.14159
+5
+Cannot divide by zero</code></pre><p>导入时 Python 会生成一个 <code>__pycache__</code> 目录，里面是编译后的字节码，用来加速下次导入（Part 5 p5）。它不是给人读的，可以删掉，删了也不影响运行；打包给别人时最好删掉。</p><h3 id="s17">9.1 if __name__ == "__main__"</h3><p>一个文件既可能被「直接运行」，也可能被「导入」。导入时我们不希望它的测试代码自动执行，于是用这个判断把「只有直接运行时才做的事」包起来（Part 5 p6）：</p><pre><code># greet_module.py
+def greet(name):
+    return "Hello, " + name
+
+if __name__ == "__main__":
+    print(greet("world"))
+    print("This runs only when the file is executed directly.")</code></pre><pre><code># other.py
+import greet_module
+print(greet_module.greet("Alice"))</code></pre><p>直接运行 <code>greet_module.py</code> 会打印那两行；被 <code>other.py</code> 导入时只输出 <code>Hello, Alice</code>，因为此时 <code>__name__</code> 是 <code>"greet_module"</code> 而不是 <code>"__main__"</code>。项目作业里把测试代码放进去，评分脚本导入你的模块时才不会被打扰。</p><h2 id="s18">十、常见错误与调试</h2><div class="callout warn"><b>KeyError：键不存在或拼错</b><code>d["nmae"]</code> 一定报错。<code>print(d)</code> 看真实键名；不确定时用 <code>if key in d</code> 先判断，或 <code>d.get(key, default)</code> 取默认值。</div><div class="callout warn"><b>{} 是空字典不是空集合</b>空集合只能写 <code>set()</code>。<code>type({})</code> 是 <code>dict</code>，很多「去重没生效」的 bug 就出在这里。</div><div class="callout warn"><b>对集合下标 / 排序</b>集合无序，<code>s[0]</code> 直接抛 <code>TypeError</code>。要顺序就先 <code>sorted(s)</code> 变成列表。</div><div class="callout warn"><b>copy 之后改嵌套仍影响原数据</b><code>d.copy()</code> 是浅拷贝。含列表/字典的值要 <code>copy.deepcopy()</code>。</div><div class="callout tip"><b>JSON 报错先看引号</b><code>json.loads("{'a': 1}")</code> 抛 <code>JSONDecodeError</code>，因为 JSON 只认双引号。把单引号换成双引号，或干脆用 <code>json.dumps</code> 生成字符串。</div><div class="callout idea" data-ext="ch12-dicts-sets-json-0"><b>前后衔接</b><p>这一讲回收三条旧线：字典的值是列表、<code>items()</code> 返回元组（容器讲），JSON 是文件里的文本（文件讲），函数写进 <code>.py</code> 就是模块。数据四阶段——收集、处理、清洗、探索分析——对应“文件读取 → 列表套字典 → 字典遍历加判断 → 字典计数与集合去重”。真实记录就是列表套字典：一条记录一个 dict，<code>car["year"]</code> 取字段。</p></div><div class="callout tip" data-ext="ch12-dicts-sets-json-1"><b>常见误解</b><p>字典赋值即新增，拼错键名不报错，只会多出无用数据——只能靠打印发现；直接 <code>d[k] += 1</code> 第一次遇新键抛 KeyError，要先判断或用 <code>d.get(k, 0) + 1</code>。<code>copy()</code> 是<strong>浅拷贝</strong>，值里有可变对象时改浅拷贝会动到原对象，要 <code>copy.deepcopy</code>。空集合写 <code>set()</code>，<code>{}</code> 是空字典；集合无序，打印前先 <code>sorted()</code>。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>dictionary</td><td>字典</td><td>A collection of key-value pairs.</td></tr><tr><td>key / value</td><td>键 / 值</td><td>You look up a value by its key.</td></tr><tr><td>key-value pair</td><td>键值对</td><td>"name": "John" is one pair.</td></tr><tr><td>KeyError</td><td>键不存在</td><td>Raised when the key is not in the dictionary.</td></tr><tr><td>hashable</td><td>可哈希</td><td>Only immutable objects can be dictionary keys or set elements.</td></tr><tr><td>set</td><td>集合</td><td>An unordered collection of unique elements.</td></tr><tr><td>union</td><td>并集</td><td>a | b contains everything from both sets.</td></tr><tr><td>intersection</td><td>交集</td><td>a &amp; b contains elements in both.</td></tr><tr><td>difference</td><td>差集</td><td>a - b contains elements in a but not in b.</td></tr><tr><td>symmetric difference</td><td>对称差</td><td>a ^ b contains elements in exactly one set.</td></tr><tr><td>shallow copy</td><td>浅拷贝</td><td>copy() duplicates the outer level only.</td></tr><tr><td>deep copy</td><td>深拷贝</td><td>copy.deepcopy() duplicates every nested level.</td></tr><tr><td>JSON</td><td>JSON 格式</td><td>A text format for nested data; keys are strings in double quotes.</td></tr><tr><td>DictReader</td><td>字典读取器</td><td>csv.DictReader turns each row into a dictionary keyed by the header.</td></tr><tr><td>module</td><td>模块</td><td>Your own .py file can be imported like any library.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用字典做一个电话簿：加入三条记录，按名字查询，删除一条后打印全部。</div><p>「键是姓名、值是号码」是最小可用的字典；遍历时同时打印键与值。</p><pre><code>phone_book = {}
+phone_book["Alice"] = "555-0101"
+phone_book["Bob"] = "555-0202"
+phone_book["Charlie"] = "555-0303"
+
+print(phone_book["Bob"])
+print("Bob" in phone_book)
+
+del_number = phone_book.pop("Charlie")
+print("removed:", del_number)
+
+for name in phone_book:
+    print(name, phone_book[name])</code></pre><p>输出：</p><pre><code>555-0202
+True
+removed: 555-0303
+Alice 555-0101
+Bob 555-0202</code></pre><p>解释：空字典写 <code>{}</code>；赋值即新增；<code>in</code> 只查键；<code>pop</code> 删除并返回值。若查一个不存在的名字，例如 <code>phone_book["Dan"]</code>，会抛 <code>KeyError</code>——所以查之前通常先 <code>in</code> 一下。</p></div><div class="qa"><div class="q">例 2　统计一段文字里每个单词出现的次数，并按次数从高到低输出前三名。</div><p>「单词做键、次数做值」是字典最经典的用法；排序时用 <code>sorted</code> 的 <code>key</code> 参数按值排（拓展用法，理解即可）。</p><pre><code>text = "the quick brown fox jumps over the lazy dog the fox"
+words = text.split()
+
+counts = {}
+for w in words:
+    if w in counts:
+        counts[w] = counts[w] + 1
+    else:
+        counts[w] = 1
+
+pairs = sorted(counts.items(), key=lambda kv: kv[1], reverse=True)
+for word, n in pairs[:3]:
+    print(word, n)</code></pre><p>输出：</p><pre><code>the 3
+fox 2
+quick 1</code></pre><p>解释：<code>if w in counts</code> 分支保证第一次遇到新词时先建 1，否则 <code>counts[w] += 1</code> 会 <code>KeyError</code>；<code>counts.items()</code> 把键值对变成 <code>(key, value)</code> 元组列表（第 8 讲解包）；<code>key=lambda ...</code> 指定按值排序。若不想用 lambda，可以先按次数把字典反转再排序，思路相同。</p></div><div class="qa"><div class="q">例 3　给定两个集合，输出并集、交集、只在第一个集合里的元素，以及「恰好在一个集合里」的元素。</div><p>四个问题正好对应四种集合运算，结果都先 <code>sorted()</code> 再打印，避免顺序随机。</p><pre><code>A = {"Python", "Java", "C++", "Go"}
+B = {"Python", "C#", "Java", "Rust"}
+
+print("union:", sorted(A | B))
+print("intersection:", sorted(A &amp; B))
+print("only A:", sorted(A - B))
+print("exactly one:", sorted(A ^ B))</code></pre><p>输出：</p><pre><code>union: ['C#', 'C++', 'Go', 'Java', 'Python', 'Rust']
+intersection: ['Java', 'Python']
+only A: ['C++', 'Go']
+exactly one: ['C#', 'C++', 'Go', 'Rust']</code></pre><p>解释：<code>^</code> 是「并集减去交集」，等价于 <code>(A | B) - (A &amp; B)</code>。若把集合换成列表做同样的事，就得写四层循环加 <code>in</code> 判断——这就是集合的价值。</p></div><div class="qa"><div class="q">例 4　把字典写成 JSON 文件，再读回来修改一个字段并写回。</div><p>写用 <code>json.dump</code>，读用 <code>json.load</code>，两侧都要 <code>open</code> / <code>close</code>（第 9 讲）。</p><pre><code>import json
+
+config = {"user": "alice", "theme": "dark", "font_size": 14}
+
+file = open("config.json", "w")
+json.dump(config, file)
+file.close()
+
+file = open("config.json", "r")
+loaded = json.load(file)
+file.close()
+
+loaded["font_size"] = 16
+print(loaded)
+print(json.dumps(loaded))</code></pre><p>输出：</p><pre><code>{'user': 'alice', 'theme': 'dark', 'font_size': 16}
+{"user": "alice", "theme": "dark", "font_size": 16}</code></pre><p>解释：<code>json.dump</code> 直接写进文件对象；读回来是普通字典，可以照常改；<code>json.dumps</code> 把结果变回字符串看格式。注意 JSON 输出里全是双引号——这正是它与 Python 字典打印结果的区别。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><ol><li>用字典统计一个字符串中每个字符出现的次数（只统计字母）。</li><li>给定两个列表（姓名、电话），改写成「姓名 → 电话」的字典，并查询指定姓名。</li><li>给定一个有重复元素的列表，输出去重后的结果与重复元素集合。</li><li>把 <code>{"a": 1, "b": 2}</code> 写成 JSON 字符串，再读回来并新增一个键。</li><li>读入 <code>csv_e04.csv</code>，用 <code>DictReader</code> 统计男性与女性各有多少人。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <code>counts = {}</code>，遍历 <code>s.lower()</code>，用 <code>ch.isalpha()</code> 过滤，再按「存在就 +1，否则建 1」更新。如果只统计字母，别忘 <code>lower()</code> 统一大小写。</p><p><b>2.</b> <code>d = {}</code>，<code>for i in range(len(names)): d[names[i]] = phones[i]</code>。本质是把两个平行列表合成一个映射；用 <code>zip</code> 更短（拓展），但下标写法最直白。</p><p><b>3.</b> <code>unique = set(L)</code>；重复元素需要计数才能判断，简单的做法是「出现次数大于 1 的元素」：<code>{x for x in L if L.count(x) &gt; 1}</code>（集合推导属拓展），或循环 + 字典计数后筛选。</p><p><b>4.</b> <code>s = json.dumps(d)</code>；<code>back = json.loads(s)</code>；<code>back["c"] = 3</code>。注意 <code>dumps</code> 的结果里是双引号，这是 JSON 规范。</p><p><b>5.</b> <code>counts = {"Male": 0, "Female": 0}</code>，遍历 <code>reader</code>，<code>counts[row["gender"]] += 1</code>。这里键只有两种，先建好 0 就不会 <code>KeyError</code>；若性别值不确定，仍要先 <code>if ... in</code>。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>字典的键值访问与 <code>KeyError</code>；<code>in</code> 判断键、<code>pop</code>、<code>len</code>；字典与列表查找方式的区别；集合的去重与四种运算；CSV 的 <code>DictReader</code>；JSON 的 <code>dumps</code> / <code>loads</code> 与「键必须是字符串、必须双引号」。</div><div class="callout warn"><b>易错 1　{} 与 set()</b>空字典 <code>{}</code>、空集合 <code>set()</code>，写反了「去重」就变成「往字典里塞东西」，报错信息还会让人一头雾水。</div><div class="callout warn"><b>易错 2　浅拷贝改到原数据</b><code>d.copy()</code> 只复制外层；值里有列表时改副本会同时改原字典。要独立就 <code>copy.deepcopy</code>。</div><div class="callout warn"><b>易错 3　集合无序还当下标用</b><code>s[0]</code> 抛 <code>TypeError</code>，直接 <code>print(s)</code> 每次顺序还可能不同。要顺序请 <code>sorted(s)</code>。</div><div class="callout tip"><b>进阶</b><code>d.get(k, default)</code> 避免 KeyError；<code>counts.items()</code> 同时取键值；<code>if __name__ == "__main__"</code> 让模块可导入；<code>collections.Counter</code> 一行完成计数（属后续课程）。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">操作清单</h2><h3 id="s20">选数据结构</h3><ol class="steps"><li>数据是「一串有序的值」→ 列表</li><li>数据是「按名字/编号查的值」→ 字典</li><li>数据要「去重」或「判断有没有」→ 集合</li><li>数据是「一条记录多个字段」→ 字典；多条记录 → 列表套字典</li><li>数据要跨程序保存、还要嵌套 → JSON 文件</li></ol><h3 id="s21">写完后的检查</h3><ul class="checklist"><li>访问字典前，键是否一定存在（必要时先 <code>in</code>）</li><li>统计计数时，新键是否先建了初值</li><li>复制含嵌套的字典用了 <code>deepcopy</code></li><li>打印集合前先 <code>sorted()</code></li><li>JSON 的键都是字符串、引号都是双引号</li><li>自己的模块被导入时，测试代码放在 <code>__main__</code> 判断里</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Chapter 10 - Part 1 - About data.pdf</td><td>p3–p5</td><td>数据分析的定义与四层结构、收集/处理/清洗/探索四阶段</td></tr><tr><td>Chapter 10 - Part 2 - Dictionaries.pdf</td><td>p2–p11</td><td>键值对定义、键必须不可变、创建与修改、遍历取键、字典 vs 列表、方法、记录列表、浅拷贝与 deepcopy</td></tr><tr><td>Chapter 10 - Part 3 - CSV.pdf</td><td>p2–p5</td><td>CSV 复习、<code>csv.DictReader</code> 按列名取值</td></tr><tr><td>Chapter 10 - Part 4 - JSON.pdf</td><td>p2–p6</td><td>JSON 的由来与用途、与字典的两条差别、<code>dumps</code>/<code>loads</code>、对象数组、<code>json.load</code> 读文件</td></tr><tr><td>Chapter 10 - Part 5 - Own modules.pdf</td><td>p2–p6</td><td>自建模块的四步、<code>import</code> 与 <code>from ... import</code>、<code>__pycache__</code>、<code>__main__</code> 判断</td></tr><tr><td>sets.pdf</td><td>p2–p9</td><td>集合定义、去重、无序、hashable、增删方法、六种集合运算与运算符、IEEE/TIOBE 练习</td></tr><tr><td>W10E01.py / W10E02.py</td><td>全文</td><td>字典查找与「列表 + 字典」记录</td></tr><tr><td>W10E03.py</td><td>全文</td><td>浅拷贝改到原字典的实证</td></tr><tr><td>W10E04.py / csv_e04.csv</td><td>全文</td><td><code>DictReader</code> 按列名读取</td></tr><tr><td>W10E05.py</td><td>全文</td><td><code>json.dumps</code> 与 <code>json.loads</code> 往返</td></tr><tr><td>W10E06.py / calculator.py</td><td>全文</td><td>自建模块的导入与调用</td></tr></table><p><b>跳过项：</b>Part 1 的 TED 演讲链接与配图、Part 3–4 的 Excel/JSON 截图只作背景；Moodle 第 10 章的作业与截止页属于行政信息，不进入本讲。另有「38_Project work」下的项目作业说明（汽车租赁系统）与概念回顾课件，其知识点（print / input / def / while / for / 文件 / 日期）已分别落在第 5–10 讲，作业要求本身属于考核材料，不单列讲次。</p><p><b>拓展项：</b><code>d.get</code>、<code>items()</code>、<code>zip</code>、<code>lambda</code> 排序键、集合推导，都是围绕原知识点的实用补充；考试以课件函数与方法清单为准。</p></section><div class="lnav"><a class="prev" href="ch11-errors.html">← ⑪ 错误、异常与调试</a><a class="next" href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>
