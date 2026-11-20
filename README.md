@@ -25,7 +25,7 @@
 
 ## 规模
 
-15 门课 · 56 章 · 124 讲。每讲固定 8 个板块：
+15 门课 · 57 章 · 124 讲。每讲固定 8 个板块：
 
 `overview`（本节定位与学习目标）→ `detail`（知识点主体）→ `keywords`（英文术语表）→ `examples`（例题与完整解法）→ `practice`（练习，答案折叠）→ `exam`（必考 / 易错 / 进阶）→ `checklist`（方法清单）→ `mapping`（与原始文件的对应）。
 
@@ -87,10 +87,15 @@ python build.py --check  # 检查每讲 8 个板块是否齐全
   `Food material`、`EXERCISE Computers / Phones` 这类「只有清单和外链」的素材页在 `mapping` 里标清。
 - **30361 / 32667 / 30565 / 33295 / 34583**：新增页面与已整合内容重复（练习说明、作业页、课前须知），未产生新讲。
 
-已知缺口：`lut-my.sharepoint.com` 在本网络不可达（TLS 握手后连接被重置，`curl (35)` / `ConnectionResetError 10054`，
-站点根路径同样失败；同期 `moodle.lut.fi` 返回 200）。因此 32632 的六份食物词汇册
-（蔬菜 33 / 谷物豆类坚果 33 / 水果浆果 45 / 动物制品及替代品 33 / 厨房用具 33 / 烹饪动词 24）与四个 Cambridge 外部测验
-只有标题与主题入库，图片与题面需有网时开原页；这一点已写进该讲 `mapping` 的缺口行。
+已知缺口：32632 的六份食物词汇册（蔬菜 33 / 谷物豆类坚果 33 / 水果浆果 45 / 动物制品及替代品 33 / 厨房用具 33 / 烹饪动词 24）
+与四个 Cambridge 外部测验。核查结论分两层：
+
+- **网络层**：`requests` / `curl` 对 `lut-my.sharepoint.com` 的 TLS 握手会被重置（`curl (35)`、`ConnectionResetError 10054`，
+  连站点根路径也一样），但真实浏览器能正常建连并拿到 `login.microsoftonline.com` 的登录页 —— 所以不是域名被封。
+- **认证层**：这六份 PDF 在教师个人 OneDrive 的 `:b:/g/personal/...` 分享里，匿名访问被重定向到 Microsoft 登录，
+  必须有 LUT 账号才能取；四个测验在 Cambridge 站点，同样要联网打开。
+
+因此本站只收标题与主题，图片与题面不打包；该讲 `mapping` 里已按「需登录后打开原页」标注，没有把缺口写成「无内容」。
 
 顺带修掉生成器的一个 Windows 控制台问题：`build.py` 的 `check()` 直接 `print` 讲义标题，标题里出现 `⑪` 时
 在 GBK 控制台下抛 `UnicodeEncodeError` 中断。现在启动时把 stdout/stderr 切到 UTF-8（`errors="replace"`），

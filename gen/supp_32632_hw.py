@@ -426,8 +426,10 @@ LEC = L(
             cal(
                 "warn",
                 "外部链接不在本站范围内",
-                "Food material 的六份词汇册是图片/PDF 形态，四个测验在 Cambridge 等外部站点，"
-                "这两个来源都不随本站离线打包。也就是说：清单与主题已收录，图片与题面要在有网时打开原页。"
+                "Food material 的六份词汇册是 PDF，托管在课程教师的 LUT OneDrive 个人分享里，链接形如 "
+                "lut-my.sharepoint.com/:b:/g/personal/...；打开需要登录 LUT 账号，匿名访问会被重定向到 "
+                "login.microsoftonline.com。四个测验在 Cambridge 等外部站点。这两类来源都不随本站离线打包："
+                "清单与主题已收录，图片与题面要在登录后打开原页。"
                 "这不影响复习——课上真正考的是你能不能用这些词说出一段话，而不是刷完几套外部测验。",
             ),
         ]
@@ -693,8 +695,9 @@ LEC = L(
                 ),
                 (
                     "—（缺口说明）",
-                    "Food material 的六份词汇册为图片/PDF，四个测验在 Cambridge 等外部站点",
-                    "离线站内不收图片与外部题面；清单与主题已收录，需要时按原页入口打开",
+                    "Food material 的六份词汇册为 PDF，在 lut-my.sharepoint.com 个人分享里，需 LUT 账号登录；"
+                    "四个测验在 Cambridge 等外部站点",
+                    "离线站内不收图片与外部题面；清单与主题已收录，需要时登录后按原页入口打开",
                 ),
             ),
             cal(
@@ -711,6 +714,10 @@ LEC = L(
 
 with io.open(PATH, encoding="utf-8") as fh:
     data = json.load(fh)
+
+# 章节归属：与 33295 的「作业与词汇补充」同例，单独开一章收作业地图与考核节点，
+# 避免把行政性内容塞进主题章（第 1–3 章）里。
+LEC["part"] = "第 4 章 作业、交付与考核"
 
 before = len(data["lectures"])
 old = [i for i, x in enumerate(data["lectures"]) if x["slug"] == LEC["slug"]]
