@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>Chapter 11 · 元组、集合、类型转换、包与 NumPy · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-11.html">第 11 章 元组、集合、包与 NumPy</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">11.1 元组：不可变的有序集合（tuples.pdf）</a><a class="toc-l3" href="#s3">11.2 集合：无序、去重、可哈希（sets.pdf）</a><a class="toc-l3" href="#s4">11.3 三种容器互转（type_conversions.pdf）</a><a class="toc-l3" href="#s5">11.4 模块、包与 PyPI（packages.pdf）</a><a class="toc-l3" href="#s6">11.5 安装 NumPy（installing_numpy.pdf）</a><a class="toc-l3" href="#s7">11.6 使用 NumPy（using_numpy.pdf）</a><a class="toc-l2" href="#s8">例题 1：去重并保序</a><a class="toc-l2" href="#s9">例题 2：元组做字典键</a><a class="toc-l2" href="#s10">例题 3：NumPy 求列平均</a><a class="toc-l2" href="#s11">练习</a><a class="toc-l2" href="#s12">考点与难点</a><a class="toc-l2" href="#s13">方法清单</a><a class="toc-l2" href="#s14">源文件对应</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a class="toc-l3" href="ch11-tuples-sets-packages-numpy.html">▸ Chapter 11 · 元组、集合、类型转换、包与 NumPy</a><a href="ch12-not-open.html">Chapter 12 · 未开放（源课程为空）</a><a href="ch13-not-open.html">Chapter 13 · 未开放（源课程为空）</a><a href="appendix-course-map.html">附录 A · 课程全景、评分与视频索引</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a><a href="supp-code-examples.html">补充 · 章节代码示例、项目说明与练习卷</a></div></aside><article><h1>Chapter 11 · 元组、集合、类型转换、包与 NumPy</h1><p class="lead">Tuples, Sets, Type Conversions, Packages and NumPy <span class="badge mute">30352</span> <span class="badge mute">第 13 / 18 讲</span></p><p class="chaptertag">所属章节：<a href="part-11.html">第 11 章 元组、集合、包与 NumPy</a></p><p class="src">原始文件：<code>tuples.pdf</code> <code>sets.pdf</code> <code>type_conversions.pdf</code> <code>packages.pdf</code> <code>installing_numpy.pdf</code> <code>using_numpy.pdf</code> <code>tuple.py</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>Chapter 11 是课程最后一周：把前面用过的容器补齐为「元组 / 集合 / 列表」三件套，再跨出标准库，用 pip 安装 NumPy 处理矩阵。它是期末考「容器选择 + 简单数据分析」的来源。</p><p>学完本章你应当能够：</p><ul class="checklist"><li>创建元组、索引与解包，说明为什么元组不可变</li><li>用元组从函数返回多个值，并解释与返回列表的差别</li><li>创建集合、去重、做交并差，说明元素为什么必须可哈希</li><li>在 list / tuple / set 之间转换，并预判转换后的顺序与去重</li><li>区分模块、包、PyPI 与 pip 的角色</li><li>安装 NumPy 并创建一维/二维数组、读取 shape、做基本运算</li></ul><p>与前后讲的衔接：第 6 章讲过列表与矩阵，本章把「不可变版本」和「无序版本」补上；NumPy 是第 6 章矩阵的工业版实现。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">11.1 元组：不可变的有序集合（tuples.pdf）</h3><p>元组（tuple）把一组元素按固定顺序放在一起，用圆括号和逗号创建。与列表唯一的本质差别是<b>不可变</b>：创建后不能增删改元素。</p><pre><code>point = (3, 5)
+rgb = (255, 128, 0)
+single = (42,)      # 一个元素也要留逗号
+empty = ()
+print(point[0], point[-1])   # 3 5
+print(len(rgb))              # 3</code></pre><p>正因为不可变，元组可以放进集合、可以当字典的键；列表不行。元组适合存「不该被改动」的数据：坐标、RGB 颜色、函数返回的多值。</p><table><tr><th>对比项</th><th>tuple</th><th>list</th></tr><tr><td>可变性</td><td>不可变</td><td>可变（append/remove/赋值）</td></tr><tr><td>括号</td><td>()</td><td>[]</td></tr><tr><td>能否作集合元素/字典键</td><td>可以（可哈希）</td><td>不可以</td></tr><tr><td>遍历与访问速度</td><td>通常更快、更省内存</td><td>因可变性略有开销</td></tr><tr><td>内置方法</td><td>只有 count()、index()</td><td>大量方法</td></tr></table><p>元组只有两个方法：<code>count(x)</code> 数出现次数，<code>index(x)</code> 返回第一次出现的下标。</p><pre><code>t = (1, 2, 2, 3)
+print(t.count(2))   # 2
+print(t.index(3))   # 3</code></pre><p>返回多个值：Python 函数表面只能返回一个对象，用元组就能「打包」多个值，调用处再解包。</p><pre><code>def min_max(nums):
+    return min(nums), max(nums)
+
+low, high = min_max([3, 1, 7])
+print(low, high)   # 1 7</code></pre><h3 id="s3">11.2 集合：无序、去重、可哈希（sets.pdf）</h3><p>集合（set）对应数学集合：用花括号写元素，或用 <code>set()</code> 从列表/元组构造。三个特征：<b>元素不重复</b>、<b>没有顺序与下标</b>、<b>本身可变但元素必须不可变</b>。</p><pre><code>a = {1, 2, 2, 3}
+print(a)              # {1, 2, 3}
+b = set([3, 3, 4])
+print(b)              # {3, 4}
+print(2 in a)         # True</code></pre><p>集合用哈希表实现：加入元素时先算哈希值，因此元素必须可哈希（整数、字符串、元组可以；列表、字典不行）。这也是集合查找为 O(1) 的原因。</p><table><tr><th>运算</th><th>写法</th><th>结果示例</th></tr><tr><td>并集</td><td>a | b 或 a.union(b)</td><td>{1,2,3} | {3,4} = {1,2,3,4}</td></tr><tr><td>交集</td><td>a & b 或 a.intersection(b)</td><td>{1,2,3} & {3,4} = {3}</td></tr><tr><td>差集</td><td>a - b 或 a.difference(b)</td><td>{1,2,3} - {3,4} = {1,2}</td></tr><tr><td>对称差</td><td>a ^ b</td><td>{1,2,3} ^ {3,4} = {1,2,4}</td></tr></table><div class="callout warn"><b>易错</b><code>{}</code> 是空字典不是空集合；空集合必须写 <code>set()</code>。另外集合没有下标，<code>s[0]</code> 会报 TypeError。</div><h3 id="s4">11.3 三种容器互转（type_conversions.pdf）</h3><table><tr><th>目标</th><th>函数</th><th>顺序</th><th>重复元素</th></tr><tr><td>list</td><td>list(t)</td><td>保持原顺序（set 转 list 顺序不定）</td><td>保留</td></tr><tr><td>tuple</td><td>tuple(l)</td><td>保持原顺序</td><td>保留</td></tr><tr><td>set</td><td>set(l)</td><td>无顺序</td><td>自动去重</td></tr></table><pre><code>l = [3, 1, 3, 2]
+print(list(set(l)))    # 顺序不定，长度 3
+print(tuple(l))        # (3, 1, 3, 2)
+print(set(tuple(l)))   # {1, 2, 3}</code></pre><p>用集合去重的经典写法是 <code>list(set(l))</code>，但要注意结果顺序不可依赖；需要「去重且保序」时，用循环 + 已见集合自己实现。</p><h3 id="s5">11.4 模块、包与 PyPI（packages.pdf）</h3><table><tr><th>概念</th><th>定义</th><th>例子</th></tr><tr><td>module 模块</td><td>一个 .py 文件，含函数/类/变量</td><td>math、random、自己写的 tools.py</td></tr><tr><td>package 包</td><td>一个目录，含一个或多个模块</td><td>numpy、pandas</td></tr><tr><td>standard library 标准库</td><td>随 Python 预装</td><td>math、random、datetime</td></tr><tr><td>PyPI</td><td>第三方包的索引站</td><td>pypi.org</td></tr><tr><td>pip</td><td>安装包的工具</td><td>pip install numpy</td></tr></table><p>导入方式：<code>import math</code>、<code>from math import sqrt</code>、<code>import numpy as np</code>。包要先安装才能 import，标准库不需要。</p><h3 id="s6">11.5 安装 NumPy（installing_numpy.pdf）</h3><ol class="steps"><li>打开终端（Terminal / PowerShell / cmd）</li><li>确认 pip：<code>pip --version</code></li><li>升级 pip：<code>pip install --upgrade pip</code></li><li>安装：<code>pip install numpy</code></li><li>验证：<code>python -c "import numpy; print(numpy.__version__)"</code></li></ol><div class="callout tip"><b>国内网络</b>下载慢时可换镜像源：<code>pip install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple</code>；装错版本用 <code>pip install numpy==1.26.4</code> 固定版本。</div><h3 id="s7">11.6 使用 NumPy（using_numpy.pdf）</h3><p>NumPy 的核心是 <code>ndarray</code>：同类型元素、连续内存、固定形状。它支持逐元素运算、广播、矩阵乘法与统计函数，比嵌套列表快一个数量级。</p><pre><code>import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])          # 一维
+m = np.array([[1, 2, 3], [4, 5, 6]])   # 二维
+print(m.shape)        # (2, 3)
+print(m[1, 2])        # 6
+print(a * 2)          # [2 4 6 8 10]
+print(m.sum(axis=0))  # 每列之和 [5 7 9]
+print(np.zeros((3, 3)))
+print(np.ones((2, 4)))</code></pre><table><tr><th>操作</th><th>写法</th><th>说明</th></tr><tr><td>创建</td><td>np.array(list)</td><td>从列表/嵌套列表构造</td></tr><tr><td>全零/全一</td><td>np.zeros(shape) / np.ones(shape)</td><td>参数是元组</td></tr><tr><td>形状</td><td>arr.shape</td><td>返回 (行, 列)</td></tr><tr><td>变形</td><td>arr.reshape(3, 2)</td><td>元素总数必须一致</td></tr><tr><td>矩阵乘</td><td>a @ b 或 np.dot(a, b)</td><td>不是逐元素乘</td></tr><tr><td>统计</td><td>arr.sum(axis=0/1)</td><td>按列/按行求和</td></tr></table><div class="callout warn"><b>易错</b><code>a * b</code> 是逐元素乘，矩阵乘要用 <code>a @ b</code>；<code>reshape</code> 不改变原数组，返回新数组。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>tuple</td><td>元组</td><td>point = (3, 5)</td></tr><tr><td>immutable</td><td>不可变</td><td>t[0] = 1 会报错</td></tr><tr><td>unpacking</td><td>解包</td><td>low, high = min_max(x)</td></tr><tr><td>set</td><td>集合</td><td>a = {1, 2, 3}</td></tr><tr><td>hashable</td><td>可哈希</td><td>元组可哈希，列表不可</td></tr><tr><td>duplicate</td><td>重复元素</td><td>集合自动去重</td></tr><tr><td>union / intersection</td><td>并集 / 交集</td><td>a | b, a & b</td></tr><tr><td>type conversion</td><td>类型转换</td><td>list()、tuple()、set()</td></tr><tr><td>package</td><td>包</td><td>numpy 是包，math 是模块</td></tr><tr><td>PyPI</td><td>Python 包索引</td><td>pypi.org</td></tr><tr><td>pip</td><td>包安装工具</td><td>pip install numpy</td></tr><tr><td>ndarray</td><td>NumPy 数组</td><td>np.array([1,2,3])</td></tr><tr><td>shape</td><td>形状</td><td>(2, 3) 表示 2 行 3 列</td></tr><tr><td>broadcasting</td><td>广播</td><td>不同形状按规则扩展</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><h2 id="s8">例题 1：去重并保序</h2><div class="qa"><div class="q">把 <code>[3, 1, 3, 2, 1]</code> 去重且保持首次出现顺序。</div><p>直接用 <code>list(set(l))</code> 会丢顺序。正确做法是用一个已见集合：</p><pre><code>seen = set()
+out = []
+for x in l:
+    if x not in seen:
+        seen.add(x)
+        out.append(x)</code></pre></div><h2 id="s9">例题 2：元组做字典键</h2><div class="qa"><div class="q">统计网格中每个坐标出现的次数，坐标用 (row, col) 表示。</div><p>元组可哈希，能直接做键：<code>counts[(r, c)] = counts.get((r, c), 0) + 1</code>。若用列表 <code>[r, c]</code> 会抛 TypeError: unhashable type。</p></div><h2 id="s10">例题 3：NumPy 求列平均</h2><div class="qa"><div class="q">给定 3×2 矩阵，求每列平均值。</div><p><code>m.mean(axis=0)</code> 返回长度 2 的数组；<code>axis=0</code> 表示沿行方向压缩，即按列统计。若写成 <code>axis=1</code> 得到每行平均。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><h2 id="s11">练习</h2><p>1. 写出把 <code>[1, 2, 2, 3]</code> 变成 <code>(1, 2, 2, 3)</code> 与 <code>{1, 2, 3}</code> 的代码。</p><details><summary>答案与思路</summary><div class="ans"><p><code>tuple(l)</code> 保序保重复；<code>set(l)</code> 去重且无序。</p></div></details><p>2. 为什么 <code>{[1,2]}</code> 会报错？怎么改？</p><details><summary>答案与思路</summary><div class="ans"><p>列表不可哈希，不能放进集合；改成元组 <code>{(1,2)}</code>。</p></div></details><p>3. 解释 <code>pip</code>、<code>PyPI</code>、<code>package</code> 三者的关系。</p><details><summary>答案与思路</summary><div class="ans"><p>PyPI 是索引站，pip 是从 PyPI 下载安装的工具，package 是被安装的包（如 numpy）。</p></div></details><p>4. 用 NumPy 创建 3×3 全零矩阵并把中心设为 1。</p><details><summary>答案与思路</summary><div class="ans"><p><code>m = np.zeros((3,3)); m[1,1] = 1</code>，下标从 0 开始。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s12">考点与难点</h2><div class="callout exam"><b>必考</b><ul><li>元组与列表的三点区别（可变性、括号、可否作键）</li><li>元组解包返回多值</li><li>集合去重与交并差运算</li><li>三种容器互转后的顺序与去重行为</li><li>模块/包/PyPI/pip 的概念区分</li><li>NumPy 数组创建、shape、axis 统计</li></ul></div><div class="callout warn"><b>易错</b><ul><li>空集合写成 {}（那是字典）</li><li>用 list(set(l)) 后依赖顺序</li><li>把元组当可变对象去赋值</li><li>矩阵乘用 * 而不是 @</li><li>reshape 以为原地修改</li></ul></div><div class="callout tip"><b>进阶</b><p>能解释「集合查找为什么是 O(1)」「NumPy 为什么比嵌套列表快」，把哈希表与连续内存两件事讲清楚，是本章的加分点。</p></div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">方法清单</h2><ol class="steps"><li>先问数据会不会变：会变用 list，不会变用 tuple</li><li>需要去重或集合运算时再转 set，别过早转换</li><li>要保序去重就用「已见集合 + 输出列表」</li><li>用元组做复合键前确认元素都可哈希</li><li>第三方包先 pip install，再 import，最后验证版本</li><li>NumPy 统计先确认 axis：0 按列，1 按行</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s14">源文件对应</h2><table><tr><th>源文件</th><th>页码</th><th>覆盖内容</th></tr><tr><td>tuples.pdf</td><td>p1–p7</td><td>11.1 元组定义、不可变、创建、场景、对比、方法、返回多值</td></tr><tr><td>sets.pdf</td><td>p1–p4</td><td>11.2 集合创建、去重、无序、哈希表、交并差</td></tr><tr><td>type_conversions.pdf</td><td>p1–p4</td><td>11.3 三种容器互转</td></tr><tr><td>packages.pdf</td><td>p1–p4</td><td>11.4 模块、包、PyPI、pip</td></tr><tr><td>installing_numpy.pdf</td><td>p1–p4</td><td>11.5 安装步骤与验证</td></tr><tr><td>using_numpy.pdf</td><td>p1–p6</td><td>11.6 ndarray、创建、shape、运算与统计</td></tr><tr><td>tuple.py</td><td>代码示例</td><td>11.1 返回多值的完整例子</td></tr></table><p><b>说明</b>：本章原属第 6、8、10 讲中的元组/集合/包内容，现按 Moodle Chapter 11 独立成章；原讲次保留作为前置复习，不重复计入本章。</p></section><div class="lnav"><a class="prev" href="ch12-dicts-sets-json.html">← ⑫ 字典、集合与 JSON</a><a class="next" href="ch12-not-open.html">Chapter 12 · 未开放（源课程为空） →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>补充 · 章节代码示例、项目说明与练习卷 · 30352</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-15.html">附录 B 环境、项目与代码示例</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">1. 字符串里的转义：example1.py</a><a class="toc-l3" href="#s3">2. 三引号与多行文本：example2.py</a><a class="toc-l3" href="#s4">3. 切片：example4.py 与 example5.py</a><a class="toc-l3" href="#s5">4. 拼接与类型：example3.py</a><a class="toc-l3" href="#s6">5. 缩进与代码块：Example6.py、Example9.py</a><a class="toc-l3" href="#s7">6. math 与 random：L8E2.py–L8E4.py</a><a class="toc-l3" href="#s8">7. datetime 与 timedelta：L8E5.py</a><a class="toc-l3" href="#s9">8. 追加写文件：append.py</a><a class="toc-l3" href="#s10">9. 项目说明与练习卷</a><a class="toc-l2" href="#s11">例题 1：读代码写输出</a><a class="toc-l2" href="#s12">例题 2：修 bug</a><a class="toc-l2" href="#s13">例题 3：缩进错误</a><a class="toc-l2" href="#s14">练习</a><a class="toc-l2" href="#s15">考点与难点</a><a class="toc-l2" href="#s16">方法清单</a><a class="toc-l2" href="#s17">源文件对应</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a href="ch06-functions.html">⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="ch11-tuples-sets-packages-numpy.html">Chapter 11 · 元组、集合、类型转换、包与 NumPy</a><a href="ch12-not-open.html">Chapter 12 · 未开放（源课程为空）</a><a href="ch13-not-open.html">Chapter 13 · 未开放（源课程为空）</a><a href="appendix-course-map.html">附录 A · 课程全景、评分与视频索引</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a><a class="toc-l3" href="supp-code-examples.html">▸ 补充 · 章节代码示例、项目说明与练习卷</a></div></aside><article><h1>补充 · 章节代码示例、项目说明与练习卷</h1><p class="lead">Chapter Code Examples, Project Brief and Practice Exam <span class="badge mute">30352</span> <span class="badge mute">第 18 / 18 讲</span></p><p class="chaptertag">所属章节：<a href="part-15.html">附录 B 环境、项目与代码示例</a></p><p class="src">原始文件：<code>example1.py</code> <code>example2.py</code> <code>example3.py</code> <code>example4.py</code> <code>example5.py</code> <code>example6.py</code> <code>Example6.py</code> <code>Example9.py</code> <code>L8E2.py</code> <code>L8E3.py</code> <code>L8E4.py</code> <code>L8E5.py</code> <code>append.py</code> <code>2_Project instructions Car rental management system.html</code> <code>practice_exam.png</code> <code>05_Tutorials/1_Tutorial instructors.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 1–12 讲按章讲语法，这一讲把 Moodle 各章「Code Examples」文件夹里散落的示例、项目说明页与练习卷集中起来：这些文件考试不直接考，但它们是作业与项目的最小可运行模板。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>正确写出含引号、换行、制表符与反斜杠的字符串，并读懂三引号多行文本</li><li>用切片完成取子串、步长、倒序与「中间改一个字符」</li><li>解释缩进错误为什么是 IndentationError，并统一用 4 个空格</li><li>用 math / random / datetime 三个模块解决圆周、随机与日期计算</li><li>用 open(..., "a") 追加写文件，并说明与 "w" 的区别</li><li>按项目说明拆出菜单循环、四个数据文件与日期解析三部分</li></ul><p>与前后的衔接：第 2 讲字符串、第 8 讲模块、第 9 讲文件、第 13 讲项目，在这里各取一个真实示例串起来。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">1. 字符串里的转义：example1.py</h3><p>双引号字符串里要出现双引号，必须写成 <code>\"</code>；单引号字符串里出现单引号写 <code>\'</code>。反斜杠本身要写两次 <code>\\</code>，换行是 <code>\n</code>，制表符是 <code>\t</code>。</p><pre><code>print("Sam says, \"Hello!\"")
+print('Timmy\'s balloon is red.')
+print("This string\nspans multiple\nlines.")
+print("Here is a backslash: \\")
+print("1.\tShark\n2.\tShrimp\n10.\tSquid")</code></pre><p>最后一行用 <code>\t</code> 对齐、<code>\n</code> 换行，输出就是一个两列清单。考试里常见的坑是把 <code>\n</code> 写成 <code>/n</code>（斜杠方向错），或忘记转义导致引号提前结束字符串。</p><div class="callout tip"><b>读法</b><code>\t</code> = tab（制表），<code>\n</code> = newline（换行），<code>\\</code> = 一个反斜杠。记忆：反斜杠是「转义开关」，要输出开关本身就得按两次。</div><h3 id="s3">2. 三引号与多行文本：example2.py</h3><p>三个引号（<code>'''</code> 或 <code>"""</code>）包住的字符串可以跨行，换行符会原样保留，常用于打印标题框、长段说明、SQL 语句。</p><pre><code>text = '''
+=======================================
+|                                     |
+|    Introduction to Programming      |
+|    for international programs       |
+|                                     |
+=======================================
+'''
+print(text)</code></pre><p>要点：三引号内的缩进也会成为字符串内容；想让边框对齐，等号与竖线的数量必须逐字符数清楚。</p><h3 id="s4">3. 切片：example4.py 与 example5.py</h3><p>切片语法 <code>s[start:stop:step]</code>：含 start、不含 stop，step 为负表示倒着取。</p><table><tr><th>表达式</th><th>结果</th><th>含义</th></tr><tr><td>ss[2:13]</td><td>ink your mil</td><td>从下标 2 到 12</td></tr><tr><td>ss[2:13:2]</td><td>ikyu ml</td><td>同区间，每隔一个取</td></tr><tr><td>ss[::]</td><td>Drink your milk!</td><td>整串副本</td></tr><tr><td>ss[::-1]</td><td>!klim ruoy knirD</td><td>倒序</td></tr><tr><td>ss[-1:-5]</td><td>(空串)</td><td>默认步长为正，起点在终点右侧 → 取不到</td></tr><tr><td>ss[-1:-5:-1]</td><td>!kli</td><td>步长为负才能从右往左取</td></tr><tr><td>1_Tutorial instructors.html</td><td>05_Tutorials</td><td>每周答疑教师与时段安排（行政页，了解即可）</td></tr></table><p>example5.py 用切片修一个拼错的单词：把 <code>progsamming</code> 拆成 <code>prog</code> + <code>amming</code>，中间补 <code>r</code>，得到 <code>programming</code>。</p><pre><code>word = "progsamming"
+begin = word[:4]      # prog
+end = word[5:]        # amming
+print(begin + "r" + end)   # programming</code></pre><div class="callout warn"><b>易错</b>切片不会报越界：<code>s[0:100]</code> 只取到末尾。真正会报错的是用下标访问，如 <code>s[100]</code> → IndexError。</div><h3 id="s5">4. 拼接与类型：example3.py</h3><p>字符串相加是「拼接」，不会自动加空格；字符串与数字相加会抛 TypeError，必须先 <code>str()</code>。</p><pre><code>word3 = "Hello" + "World"          # HelloWorld
+word3 = "Hello" + " " + "World"    # Hello World
+number = 5
+combination = str(number) + "Stars"  # 5Stars</code></pre><p>反过来把字符串变数字用 <code>int()</code> / <code>float()</code>，这也是 <code>input()</code> 之后必须做的转换。</p><h3 id="s6">5. 缩进与代码块：Example6.py、Example9.py</h3><p>Python 用缩进表示「哪些行属于同一个块」，同一块必须空格数一致。示例里第二行多缩进，运行会得到 <code>IndentationError: unexpected indent</code>。</p><pre><code>if 5 &gt; 2:
+    print("Five is greater than two!")
+    print("Five is greater than two!")</code></pre><p>Example9.py 是「正数 / 零 / 负数」三路分支的标准写法，注意 <code>elif</code> 的条件顺序与 <code>float(input(...))</code> 的转换：</p><pre><code>num = float(input("Enter a number: "))
+
+if num &gt; 0:
+    print("Positive number")
+elif num == 0:
+    print("Zero")
+else:
+    print("Negative number")</code></pre><div class="callout warn"><b>易错</b>不要混用 Tab 与空格；编辑器里看起来对齐，Python 仍可能报 TabError。统一 4 个空格最稳。</div><h3 id="s7">6. math 与 random：L8E2.py–L8E4.py</h3><p><code>math</code> 提供常量与标量函数：<code>math.pi</code>、<code>math.floor</code>、<code>math.ceil</code>、<code>math.exp</code>、<code>math.sqrt</code>。注意 <code>floor</code> 向下取整、<code>ceil</code> 向上取整，两者都不是四舍五入（四舍五入是 <code>round()</code>）。</p><pre><code>import math
+
+radius = 5
+print(2 * math.pi * radius)        # 31.4159...
+print(math.floor(5.9))             # 5
+print(math.ceil(5.1))              # 6
+print(1000 * math.exp(0.05 * 3))   # 连续复利终值</code></pre><p><code>random</code> 三个常用函数：<code>randrange(start, stop, step)</code> 取范围内按步长的整数，<code>randint(a, b)</code> 含两端，<code>choice(seq)</code> 从序列随机取一个。</p><pre><code>import random
+
+random.randrange(0, 11, 2)   # 0,2,4,6,8,10
+random.randint(1, 6)         # 1..6 含端点
+random.choice(["apple", "banana", "cherry"])</code></pre><p>L8E4.py 用 <code>random.seed(42)</code> 固定随机序列，便于复现实验结果；这在不允许使用外部库的作业里很实用。</p><h3 id="s8">7. datetime 与 timedelta：L8E5.py</h3><p><code>datetime.now()</code> 取当前时间；<code>replace(hour=9, minute=0)</code> 复制出一个改过时分的新对象（原对象不变）；<code>timedelta(days=30)</code> 表示时间间隔，可直接与 datetime 相加。</p><pre><code>from datetime import datetime, timedelta
+
+today = datetime.now()
+print(today.replace(hour=9, minute=0))
+print(today + timedelta(days=30))</code></pre><p>项目里从文本读日期用 <code>datetime.strptime(s, "%d.%m.%Y")</code>，写回文本用 <code>strftime("%d.%m.%Y")</code>；这是「文本 ↔ 日期」的唯一可靠通道。</p><h3 id="s9">8. 追加写文件：append.py</h3><p><code>open(path, "a")</code> 在文件末尾追加，不覆盖原内容；<code>"w"</code> 会清空重写。追加常用于日志，每次写一行并自己补 <code>\n</code>。</p><pre><code>file = open("test.txt", "a")
+file.write("This is the text to append.\n")
+file.close()</code></pre><p>更安全的写法是 <code>with open(...) as f:</code>，异常时也会自动关闭文件。</p><h3 id="s10">9. 项目说明与练习卷</h3><p>《2_Project instructions: Car rental management system》要求写一个菜单式租车管理系统，只用课程学过的语法：<code>print</code>、<code>input</code>、<code>def</code>、<code>while</code> 菜单、<code>for</code> 遍历列表、文件读写、<code>datetime</code>。系统依赖四个文本文件（车辆、客户、租赁记录等），每次操作后写回，直到用户选择退出。</p><ol class="steps"><li>先跑通 project_work_concepts.py（待办清单示例），确认菜单循环与文件读写能配合</li><li>确定四个文件的字段与分隔符，并写一个读入函数、一个写回函数</li><li>把每个菜单项写成一个函数，主循环只负责分发</li><li>金额用向上取整（math.ceil）避免少收，日期用 strptime/strftime 统一格式</li><li>提交前用一组手工数据走完整流程：新增 → 修改 → 删除 → 退出后重新读入</li></ol><p><code>practice_exam.png</code> 是练习卷截图（无文字层），只能作为题型参考：读代码写输出、补全函数、找错、文件读写小综合。不要把它当作正式考试范围。</p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>escape sequence</td><td>转义序列</td><td>\n, \t, \\, \"</td></tr><tr><td>triple-quoted string</td><td>三引号字符串</td><td>'''...''' 可跨行</td></tr><tr><td>slicing</td><td>切片</td><td>s[start:stop:step]</td></tr><tr><td>negative step</td><td>负步长</td><td>s[::-1] 倒序</td></tr><tr><td>concatenation</td><td>拼接</td><td>"a" + "b"</td></tr><tr><td>type conversion</td><td>类型转换</td><td>str(5), int("5")</td></tr><tr><td>indentation</td><td>缩进</td><td>同一代码块空格数一致</td></tr><tr><td>IndentationError</td><td>缩进错误</td><td>多缩进导致 unexpected indent</td></tr><tr><td>module</td><td>模块</td><td>import math</td></tr><tr><td>floor / ceil</td><td>向下/向上取整</td><td>floor(5.9)=5, ceil(5.1)=6</td></tr><tr><td>seed</td><td>随机种子</td><td>random.seed(42)</td></tr><tr><td>timedelta</td><td>时间间隔</td><td>today + timedelta(days=30)</td></tr><tr><td>append mode</td><td>追加模式</td><td>open(path, "a")</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><h2 id="s11">例题 1：读代码写输出</h2><div class="qa"><div class="q"><code>ss = "Drink your milk!"</code>，写出 <code>print(ss[2:13:2])</code> 与 <code>print(ss[::-1])</code> 的结果。</div><p>先标下标：s[0]=D, 1=r, 2=i … 12=空格? 逐字符写出来再切片，别心算。</p><p><code>ss[2:13]</code> = <code>ink your mil</code>（含 2 不含 13）；再每隔一个取 → <code>ikyu ml</code>。</p><p><code>ss[::-1]</code> 从末尾倒着取全部 → <code>!klim ruoy knirD</code>。</p><h2 id="s12">例题 2：修 bug</h2><div class="qa"><div class="q">下面代码为什么报错？<code>print("Total: " + 5)</code></div><p>字符串只能与字符串相加，5 是 int，Python 不做隐式转换，抛 TypeError。</p></div><p>改法一：<code>print("Total: " + str(5))</code>；改法二：<code>print("Total:", 5)</code>（print 的逗号会自动加空格）；改法三：f-string <code>print(f"Total: {5}")</code>。</p><h2 id="s13">例题 3：缩进错误</h2><div class="qa"><div class="q"><code>if x &gt; 0:</code> 下一行缩进 4 空格，再下一行缩进 8 空格，会发生什么？</div><p>第二行属于 if 块，第三行缩进更多却没有新的块语句（如 if/for/def），Python 报 <code>IndentationError: unexpected indent</code>。</p></div><p>修法：同一块统一 4 空格；需要嵌套就明确写出内层语句。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><h2 id="s14">练习</h2><p>1. 用一行代码把 <code>"2026-11-20"</code> 变成 <code>"20.11.2026"</code>（提示：切片 + 拼接）。</p><details><summary>答案与思路</summary><div class="ans"><p><code>s = "2026-11-20"; print(s[8:] + "." + s[5:7] + "." + s[:4])</code></p></div></details><p>2. 用 random 生成 10 个 1–100 的整数并求平均值（不允许用 statistics 模块）。</p><details><summary>答案与思路</summary><div class="ans"><p>循环 10 次 <code>random.randint(1,100)</code> 累加，再除以 10；注意不要用 randrange(1,100) 因为不含 100。</p></div></details><p>3. 读文件 <code>vehicles.txt</code>，把每行按 <code>;</code> 分割后打印第二个字段。</p><details><summary>答案与思路</summary><div class="ans"><p><code>with open("vehicles.txt") as f: for line in f: print(line.strip().split(";")[1])</code>；strip() 去掉行尾换行，否则最后一段会带 \n。</p></div></details><p>4. 解释 <code>open("log.txt","a")</code> 与 <code>open("log.txt","w")</code> 的区别，并说明为什么日志要用前者。</p><details><summary>答案与思路</summary><div class="ans"><p>"w" 打开即清空，之前内容全丢；"a" 指针在末尾，保留历史。日志需要累积，所以用 "a"。</p></div></details></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s15">考点与难点</h2><div class="callout exam"><b>必考</b><ul><li>转义字符与三引号字符串的输出结果</li><li>切片三要素（含/不含端点、负步长）</li><li>字符串与数字相加的类型错误及三种改法</li><li>缩进规则与 IndentationError 的成因</li><li>math / random / datetime 的基本调用</li></ul></div><div class="callout warn"><b>易错</b><ul><li>把 \n 写成 /n</li><li>ss[-1:-5] 以为能倒取（默认步长为正，结果空串）</li><li>floor/ceil 与 round 混用</li><li>randint 与 randrange 端点差异</li><li>"w" 当追加用，把数据清空</li></ul></div><div class="callout tip"><b>进阶</b><p>能说清 <code>datetime.replace()</code> 返回新对象而不是修改原对象，以及 <code>timedelta</code> 可跨月/跨年正确进位，说明你理解了「不可变对象 + 运算返回新值」这一 Python 设计。</p></div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s16">方法清单</h2><ol class="steps"><li>写字符串前先决定用单引号还是双引号，再决定哪些字符要转义</li><li>切片前把下标逐字符标出来，负步长单独验证一次</li><li>遇到 TypeError 先看两边类型，不要先怀疑语法</li><li>缩进统一 4 空格，粘贴代码后检查是否混入 Tab</li><li>用模块前先 import，函数名前带模块名（math.floor）</li><li>文件操作优先 with open，追加用 "a"，重写才用 "w"</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s17">源文件对应</h2><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>example1.py</td><td>08_Chapter 2/1_Chapter 2 Code Examples</td><td>第 1 节 转义、换行、制表符</td></tr><tr><td>example2.py</td><td>同上</td><td>第 2 节 三引号多行文本</td></tr><tr><td>example3.py</td><td>同上</td><td>第 4 节 拼接与 str() 转换</td></tr><tr><td>example4.py / example5.py</td><td>同上</td><td>第 3 节 切片、步长、倒序与改字</td></tr><tr><td>example6.py</td><td>同上</td><td>第 4 节 print 的 sep 参数</td></tr><tr><td>Example6.py</td><td>09_Chapter 3/1_Chapter 3 Code Examples</td><td>第 5 节 缩进错误</td></tr><tr><td>Example9.py</td><td>同上</td><td>第 5 节 三路分支</td></tr><tr><td>L8E2.py</td><td>14_Chapter 8/1_Chapter 8 Code Examples</td><td>第 6 节 math 常量与取整</td></tr><tr><td>L8E3.py / L8E4.py</td><td>同上</td><td>第 6 节 random 三函数与 seed</td></tr><tr><td>L8E5.py</td><td>同上</td><td>第 7 节 datetime 与 timedelta</td></tr><tr><td>append.py</td><td>13_Chapter 7/1_Chapter 7 Code Examples</td><td>第 8 节 追加写文件</td></tr><tr><td>2_Project instructions Car rental management system.html</td><td>38_Project work</td><td>第 9 节 项目要求与实现步骤</td></tr><tr><td>practice_exam.png</td><td>根目录</td><td>第 9 节 练习卷题型（图片无文字层）</td></tr></table><p><b>重复副本</b>：根目录的 example1–6.py、L8E2–L8E5.py、append.py、Example9.py 与章节目录同名文件内容一致，按 md5 去重。<b>拓展</b>：第 7 节的 strptime/strftime 与第 8 节的 with open 为补充写法，不改变课程原有考点。</p></section><div class="lnav"><a class="prev" href="supp-setup-and-project.html">← 补充 · 安装、AI 使用准则与汽车租赁项目</a><span></span></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-20 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>
