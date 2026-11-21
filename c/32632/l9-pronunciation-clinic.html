@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>第 9 讲 · 语音诊所：重音、语调、最小对立与录音交付 · 32632</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --radius:12px;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+    --callout-bg:#222a34; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
+  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
+  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
+  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
+  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
+  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
+  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
+  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
+  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
+  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
+  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
+  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
+  --callout-bg:#222a34; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
+  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+}
+code{background:var(--code-bg);color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg)}
+th{background:var(--th-bg);color:var(--th-fg)}
+tbody tr:nth-child(even){background:var(--even-bg)}
+.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
+section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
+.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
+details{background:var(--detail-bg);border-color:var(--line)}
+.topbar{background:var(--topbar-bg)}
+.qa{background:var(--qa-bg)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
+code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
+pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;color:var(--fg)}
+.crumb{color:var(--muted);font-size:13.5px}
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
+.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
+h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
+h3{font-size:17.5px;margin:1.3em 0 .4em}
+h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
+li{margin:.25em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
+section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:#eef1f5;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
+  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2f5f9;font-weight:600}
+tbody tr:nth-child(even){background:#fafbfd}
+.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:2px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.45em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
+.qa .q{font-weight:600}
+details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
+details[open] summary{margin-bottom:.4em}
+details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
+.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.lec .side{position:sticky;top:66px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
+.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.toc a{display:block;padding:3px 0;color:#3c4855}
+.toc a:hover{color:var(--accent)}
+.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
+@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
+.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.lnav a.next{text-align:right}
+.src{font-size:13.4px;color:var(--muted)}
+.src code{font-size:12.6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
+  padding:3px 12px;border-radius:99px}
+.navlink:hover{text-decoration:none;filter:brightness(.96)}
+.navlink.ext{color:var(--purple);background:var(--purple-soft)}
+.navlink.alt{color:var(--accent);background:var(--accent-soft)}
+.navlink.up{color:var(--ok);background:var(--ok-soft)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
+.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.snav:hover{text-decoration:none;filter:brightness(.94)}
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
+.extidea .callout{margin:.3em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px}
+@media(max-width:760px){.snavs{top:88px}}
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0}
+.howto summary{cursor:pointer;font-weight:600}
+.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 22px;margin:0 0 26px}
+.alltoc ol.steps{margin:.4em 0 0}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.allcourse h1{margin:.1em 0}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+/* Real-time Chapter Materials & Upload UI */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+@media print{
+  .mat-panel,.mat-modal{display:none}
+section[data-type],.card{break-inside:avoid}
+.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .lec{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<a class="navlink" href="../../review.html">期末考点清单</a>
+<a class="navlink ext" href="../../extend.html">知识拓展</a>
+<a class="navlink alt" href="../../all.html">全站合订本</a>
+<a class="navlink up" href="../../upload.html">上传资料</a>
+<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">KE00DA03 大学英语</a> / <a href="part-4.html">未分章</a></span>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div></header>
+<main class="wrap " data-site-prefix="../../">
+<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、Prosody：语言的「音乐」</a><a class="toc-l3" href="#s3">1.1 Pace 与 Pausing</a><a class="toc-l3" href="#s4">1.2 Stress 与 Rhythm</a><a class="toc-l3" href="#s5">1.3 重音规则表（读新词就靠它）</a><a class="toc-l3" href="#s6">1.4 同形异读（Homographs）与缩略语</a><a class="toc-l3" href="#s7">1.5 Emphasis：重音移位改变句义</a><a class="toc-l3" href="#s8">1.6 Pitch 与 Intonation</a><a class="toc-l2" href="#s9">二、Minimal Pairs：一个音换掉，意思全变</a><a class="toc-l3" href="#s10">2.1 课程累计「你的词」（Your Words）</a><a class="toc-l3" href="#s11">2.2 绕口令十条（Tongue Twisters）</a><a class="toc-l2" href="#s12">三、录音交付工作流（Recording instructions，2026-11-20）</a><a class="toc-l2" href="#s13">录音交付五步（任何工具通用）</a><a class="toc-l2" href="#s14">发音自测四步（考前 10 分钟）</a><a class="toc-l2" href="#s15">源文件对应</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l1-launch-self-intro.html">第 1 讲 · 开课、自我介绍与学习资源</a><a href="l2-reading-chunking.html">第 2 讲 · 朗读、分块与技术文本阅读</a><a href="l3-vocabulary-grammar-clinic.html">第 3 讲 · 词汇与语法诊所</a><a href="l4-elevator-pitch.html">第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a href="l5-presentation-data.html">第 5 讲 · 工程演讲与图表描述</a><a href="l7-word-order-questions.html">第 6 讲 · Unit 1 语法专题：语序、问句与附加疑问句</a><a href="l6-meetings-negotiation.html">第 7 讲 · 会议沟通、协商与专业简报</a><a class="toc-l3" href="l9-pronunciation-clinic.html">▸ 第 9 讲 · 语音诊所：重音、语调、最小对立与录音交付</a><a href="supp-homework-map.html">补遗 · 十三次课的作业地图、交付通道与考核节点</a><a href="l8-assignments-listening.html">第 8 讲 · 四项作业、口语测试与课堂听说材料</a></div></aside><article><h1>第 9 讲 · 语音诊所：重音、语调、最小对立与录音交付</h1><p class="lead">Pronunciation Clinic: Stress, Intonation, Minimal Pairs and Recording Workflow <span class="badge mute">32632</span> <span class="badge mute">第 8 / 10 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">未分章</a></p><p class="src">原始文件：<code>pronunciation_recap_3015.pdf</code> <code>Recording_instructions.pdf</code> <code>Meeting9_EHUT_3015.pdf</code> <code>ASSIGNMENT 2 Pronunciation Test - page.txt</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>本讲把 2026-11-21 归档的三份语音材料（<i>pronunciation_recap_3015.pdf</i>、<i>Recording_instructions.pdf</i>、Meeting 9 幻灯片的语音部分）整合成一节。它直接服务 11 月 18 日的 ASSIGNMENT 2 发音测试与 Assignment 3 的口语交付。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用重音规则读出生词的重音位置（-ic / -tion / -graphy / 双音节动词）</li><li>听辨并自主纠正 8 组最小对立（minimal pairs）</li><li>用重音移动与语调改变同一句话的意思</li><li>按 prosody（内容词重读、功能词弱化）读出自然节奏</li><li>用 Camera / Teams / Zoom / Vocaroo 录制并交付链接</li></ul><p>前置：第 2 讲的朗读停顿、第 8 讲的作业通道。后续：Assignment 3 演讲的口语呈现。</p></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、Prosody：语言的「音乐」</h2><p>说话时并非每个词都一样清楚：<b>content words（内容词）</b>被强调——音高抬高、时长拉长；<b>function words（功能词）</b>被弱化——重音降低、语速加快，英语词之间还会连读（linked），个别词甚至听不见。中文母语者的通病是每个音节等长等重，听起来「平」。</p><h3 id="s3">1.1 Pace 与 Pausing</h3><ul><li>Pace = 语速：慢下来表示冷静、强调；加快表示激动、进攻或想让内容一带而过。</li><li>Pausing = 停顿：为效果（"wait for it"）、给听众思考时间、犹豫。</li></ul><h3 id="s4">1.2 Stress 与 Rhythm</h3><p>句层：内容词重读（更响/更长/变音高），功能词弱读。同一句两种读法意思不同：<i>We are going to have to act if we want to live in a different world.</i>——重读 <b>act</b> 是「必须行动」，重读 <b>different</b> 是「世界必须不同」。</p><h3 id="s5">1.3 重音规则表（读新词就靠它）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>双音节名词/形容词</td><td>第一音节</td><td>engine /ˈen.dʒɪn/ · motor · coated · narrow</td></tr><tr><td>词尾 -ic</td><td>倒数第二音节</td><td>elastic · automatic /ˌɑː.t̬əˈmæt̬.ɪk/</td></tr><tr><td>词尾 -sion / -tion</td><td>倒数第二音节</td><td>extension /ɪkˈsten.ʃən/ · institution</td></tr><tr><td>词尾 -graphy / -logy / -nomy</td><td>倒数第三音节</td><td>geography · technology /tekˈnɑː.lə.dʒi/ · economy</td></tr><tr><td>词尾 -cy / -ty / -al</td><td>倒数第三音节</td><td>democracy · electricity · critical /ˈkrɪt̬.ɪ.kəl/</td></tr><tr><td>双音节动词</td><td>最后音节</td><td>require /rɪˈkwaɪr/ · decide /dɪˈsaɪd/</td></tr><tr><td>带前缀的词</td><td>主干词首音节</td><td>inaccurate /ɪnˈæk.jɚ.ət/ · recharge · unload</td></tr></table><div class="callout tip"><b>IPA 提示</b>IPA 里重音符号 <code>ˈ</code> 标在重读音节<b>前</b>，二级重音是 <code>ˌ</code>。</div><h3 id="s6">1.4 同形异读（Homographs）与缩略语</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>present（n. 礼物 / v. 呈现）</td><td>/ˈprez.ənt/ vs /prɪˈzent/</td><td>重音位置决定词性：名词读前，动词读后</td></tr><tr><td>record（n. 记录 / v. 录制）</td><td>/ˈrek.ɚd/ vs /rɪˈkɔːrd/</td><td>录音测试里 record 多作动词，读后重音</td></tr></table><p>缩略语有的逐字母读、有的当单词读：</p><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>LED</td><td>/ˌel.iːˈdiː/ 逐字母</td><td></td></tr><tr><td>CPU</td><td>/ˌsiː.piːˈjuː/ 逐字母</td><td></td></tr><tr><td>USB</td><td>/ˌjuː.esˈbiː/ 逐字母</td><td></td></tr><tr><td>CAD</td><td>/kæd/ 当单词读</td><td></td></tr></table><div class="callout warn"><b>易错</b>CAD 不读 C-A-D，读 /kæd/——芬兰课堂材料专门点了这个词。</div><h3 id="s7">1.5 Emphasis：重音移位改变句义</h3><p>同一句 <i>I don't like the new operating system.</i> 重读不同词，句义不同：重读 <b>I</b> = 「（别人喜欢）我不喜欢」；重读 <b>don't</b> = 强烈否认；重读 <b>like</b> = 「不喜欢但也不是讨厌」；重读 <b>new</b> = 「旧的还行，新的不行」；重读 <b>operating system</b> = 「不是硬件问题」。</p><h3 id="s8">1.6 Pitch 与 Intonation</h3><ul><li>降调 falling：陈述、确定。</li><li>升调 rising：疑问、迟疑。</li><li>升+降 rise-fall：强烈情感。</li><li>平调 flat：未说完、保留意见。</li><li>示例：You like broccoli 四种语调 = 陈述 / 疑问 / 惊讶 / 试探。</li></ul><h2 id="s9">二、Minimal Pairs：一个音换掉，意思全变</h2><p>最小对立对是发音自测的最小单元——只改一个音，意思就变。</p><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>/æ/ – /e/</td><td>man – men /'mæn/ – /'men/</td><td>had – head；sad – said</td><td>I saw three men. One man had a hat on his head. He said he was sad.</td></tr><tr><td>/ɪ/ – /iː/</td><td>ship – sheep /'ʃɪp/ – /'ʃiːp/</td><td>sit – seat；live – leave</td><td>They ship the sheep from Wales. Take a seat and sit down.</td></tr><tr><td>/t/ – /θ/</td><td>tree – three /'triː/ – /'θriː/</td><td>tank – thank；mat – math</td><td>The tree has three apples.</td></tr><tr><td>/v/ – /w/</td><td>vet – wet /'vet/ – /'wet/</td><td>vile – while；vary – wary</td><td>The vet didn't like the wet dog.</td></tr><tr><td>/r/ – /w/</td><td>run – one /'rʌn/ – /'wʌn/</td><td>rate – wait；rich – witch</td><td>If you wait, I will rate your work.</td></tr><tr><td>/r/ – /l/</td><td>feel – fear</td><td>full – four；fewer – fuel</td><td>He had fewer fuel canisters than us.</td></tr><tr><td>/ŋk/ – /ŋ/</td><td>sink – sing /'sɪŋk/ – /'sɪŋ/</td><td>wink – wing；rink – ring</td><td>Just wink if you want another wing.</td></tr><tr><td>/n/ – /ŋ/</td><td>win – wing /'wɪn/ – /'wɪŋ/</td><td></td><td></td></tr></table><h3 id="s10">2.1 课程累计「你的词」（Your Words）</h3><p>易混对（minimal-ish）：</p><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>place – palace</td><td>/'pleɪs/ – /'pælɪs/</td><td></td></tr><tr><td>uncle – ankle</td><td>/'ʌŋkəl/ – /'æŋkəl/</td><td></td></tr><tr><td>wheel – while</td><td>/'wiːl/ – /'waɪl/</td><td></td></tr><tr><td>screen – scream</td><td>/'skriːn/ – /'skriːm/</td><td></td></tr><tr><td>word – ward – world</td><td>/'wɜːd/ – /'wɔːd/ – /'wɜːld/</td><td></td></tr><tr><td>flower – flow – flour</td><td>/'flaʊər/ – /'fləʊ/ – /'flaʊər/</td><td></td></tr><tr><td>one – own – won</td><td>/'wʌn/ – /'əʊn/ – /'wʌn/</td><td></td></tr><tr><td>quiet – quite</td><td>/'kwaɪət/ – /'kwaɪt/</td><td></td></tr></table><p>同音词（homophones）：</p><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>buy – by – bye</td><td>/'baɪ/</td><td></td></tr><tr><td>see – sea – C</td><td>/'siː/</td><td></td></tr><tr><td>two – too – to</td><td>/'tuː/</td><td></td></tr><tr><td>board – bored</td><td>/'bɔːd/</td><td></td></tr><tr><td>there – their – they're</td><td>/'ðeər/</td><td></td></tr><tr><td>break – brake</td><td>/'breɪk/</td><td></td></tr><tr><td>dear – deer</td><td>/'dɪər/</td><td></td></tr><tr><td>no – know</td><td>/'nəʊ/</td><td></td></tr></table><p>其他易错：change /'tʃeɪndʒ/ vs chance /'tʃæns/；nature → natural 的重音位移；thorough /'θʌrəʊ/；dairy /'deəri/（勿读成 diary）。</p><h3 id="s11">2.2 绕口令十条（Tongue Twisters）</h3><ul><li>Shake rattle and roll</li><li>All aluminum alloy</li><li>Mouse mouth month</li><li>Buried berry barrier</li><li>Bad Bed Bug</li><li>World work week</li><li>Thumb through thunderstruck</li><li>Simultaneously similar</li><li>Black blood blade</li><li>Specific squirrel salary</li></ul><h2 id="s12">三、录音交付工作流（Recording instructions，2026-11-20）</h2><p>视频作业三选一：<b>Windows Camera</b>（只录摄像头，不录屏）；<b>Teams</b>（Calendar → Meet now → Start recording，录完在 Chat 里拿链接下载）；<b>Zoom</b>（桌面端，Share screen + Record，退出会议后自动转码存 Documents/Zoom 为 .mp4）。纯音频用 <b>Vocaroo</b>（网页版可直链分享）或 Windows Voice Recorder。最终交付 = 上传云盘 → 分享<b>链接</b>给老师。</p><div class="callout warn"><b>11-18 发音测试</b>ASSIGNMENT 2 在 11 月 18 日当天 10:00–22:00 开窗（见第 8 讲与补遗）。考前用本讲 2.1–2.2 的 pairs 与 rules 过一遍「你的词」清单。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>prosody</td><td>韵律</td><td>The music of language: stress, pace, pitch, rhythm.</td></tr><tr><td>content word</td><td>内容词</td><td>Carries meaning; gets stressed. Nouns, verbs, adjectives.</td></tr><tr><td>function word</td><td>功能词</td><td>Grammar glue; gets reduced. of, the, to, a.</td></tr><tr><td>syllable stress</td><td>音节重音</td><td>Which syllable is loudest: tech-NO-lo-gy.</td></tr><tr><td>minimal pair</td><td>最小对立对</td><td>Two words differing in one sound: ship/sheep.</td></tr><tr><td>homophone</td><td>同音词</td><td>Same sound, different spelling: buy/by/bye.</td></tr><tr><td>homograph</td><td>同形异音词</td><td>Same spelling, different sound & meaning: record.</td></tr><tr><td>intonation</td><td>语调</td><td>The melody of a sentence: rising for questions.</td></tr><tr><td>pitch</td><td>音高</td><td>How high or low the voice is.</td></tr><tr><td>tongue twister</td><td>绕口令</td><td>She sells sea shells — articulation drill.</td></tr><tr><td>IPA</td><td>国际音标</td><td>ˈ marks the stressed syllable: /tekˈnɑː.lə.dʒi/.</td></tr><tr><td>Vocaroo</td><td>网页录音工具</td><td>Records audio and gives a shareable link.</td></tr></table></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1 · 判断新词重音（三步法）</div><p>读出 <i>technology</i> 的重音位置。</p><p><b>解：</b>① 认词尾：<code>-logy</code> → 规则「-graphy/-logy/-nomy 倒数第三」。② 数音节：tech-no-lo-gy 共 4 个 → 重读第 2 个。③ 验证 IPA：/tekˈnɑː.lə.dʒi/，ˈ 在 no 前。答：tech-NO-lo-gy。</p></div><div class="qa"><div class="q">例 2 · 用 minimal pair 纠音</div><p>总是把 sheep 读成 ship，怎么自测？</p><p><b>解：</b>① 定位对立音：/ɪ/（短）vs /iː/（长）。② 口型：/ɪ/ 松、嘴角不拉；/iː/ 紧、嘴角向两侧拉长。③ 最小对立句练习：<i>They ship the sheep from Wales.</i>（一句含两词，交替读）。④ 录音回听：ship 的元音是否更短更松。</p></div><div class="qa"><div class="q">例 3 · 语调改义</div><p>把 <i>You like broccoli</i> 分别读成陈述与疑问。</p><p><b>解：</b>陈述 = 全句降调（broccoli 上降到低点）；疑问 = broccoli 后升调。升级版：rise-fall（升后骤降）= 「居然喜欢？」的惊讶。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><div class="qa"><div class="q">练 1 · 重音规则应用</div><p>标出重音：analysis, circumference, construction, diagonal, diameter, direction, efficient, equipment, accelerate, accurate, reinforce, terminology。</p><details><summary>参考答案</summary><div class="ans"><p>-ic / -tion / -ity 系：construc-TION, direc-TION, effi-CIENT, accelE-rate（动词末音节）, accu-RATE（形容词第一音节——与 accelerate 对照！）。-graphy/-logy：termi-NO-lo-gy, geo-LO-gy。analysis /əˈnæl.ə.sɪs/ 重音在第二音节。equipment 重音在首音节。reinforce 重音在第二音节。——前后缀只决定重音「落点区」，最终以 IPA 校验。</p></div></details></div><div class="qa"><div class="q">练 2 · 对立句朗读</div><p>每组读三遍：I saw three men / The tree has three apples / Just wink if you want another wing。</p><details><summary>要点</summary><div class="ans"><p>三组分别是 /θ–t/、/θ–t/、/ŋ–ŋk/。读 wink/wing 时体会舌根是否抵住软腭（ŋk 有爆破收尾）。</p></div></details></div><div class="qa"><div class="q">练 3 · Frost 诗朗读（Meeting 9 课堂材料）</div><p>Whose woods these are I think I know. / His house is in the village though; / He will not see me stopping here / To watch his woods fill up with snow.</p><details><summary>步骤</summary><div class="ans"><ol class="steps"><li>先默读定意：哪几个词承载你要的意思（know? snow? stopping?）</li><li>标记强调词与弱读词</li><li>按意群朗读，注意 pace 与 pausing</li><li>换一种理解再读一遍（如「犹豫」版：慢速+平调）</li></ol></div></details></div><div class="qa"><div class="q">练 4 · 绕口令分级</div><p>从 10 条里选 3 条，慢-中-快三档各读一遍，录音对比。</p><details><summary>目标</summary><div class="ans"><p>快档不塌音：每个 target sound（如 aluminum 的 /l/、berry 的 /e–æ/）仍然可辨。</p></div></details></div><div class="qa"><div class="q">练 5 · 三语气电梯演讲</div><p>Meeting 9 布置：把 elevator pitch 按三种语气交付（见第 4 讲练 2），本讲补一个「Unsure」版本要点。</p><details><summary>要点</summary><div class="ans"><p>Unsure = 句尾升调频繁 + 语速偏慢 + 填充词（um, kind of）增多。对比 Confident 版本（降调收尾、零填充）录在同一段音频里，听辨差异。</p></div></details></div></section>
+<section id="sec-exam" class="card" data-type="exam"><p><span class="badge bad">必考</span> 重音规则三大家族（-ic/-tion、-graphy/-logy/-nomy、双音节动词）——发音测试的高频题源。</p><p><span class="badge bad">必考</span> 最小对立 /ɪ–iː/ 与 /æ–e/：中文母语者最大的两个坑，测试必查。</p><p><span class="badge warn">易错</span> homograph 动名异读（present / record）——读错意思就答错。</p><p><span class="badge warn">易错</span> /v–w/ 与 /r–l/：vet–wet、feel–fear，需要口型与舌位刻意区分。</p><p><span class="badge warn">易错</span> 缩略语 CAD 当词读 /kæd/，LED/CPU/USB 逐字母——不能混。</p><p><span class="badge mute">进阶</span> prosody 自然度：内容词重读 + 功能词弱化 + 连读，是把「正确」读到「地道」的一层。</p></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">录音交付五步（任何工具通用）</h2><ol class="steps"><li>选工具：视频 → Camera / Teams / Zoom；纯音频 → Vocaroo / Voice Recorder</li><li>录制：Zoom 记得桌面端 + Share screen；Teams 用 More actions 里的 Start recording</li><li>落盘：Zoom 退出会议后存 Documents/Zoom（.mp4）；Teams 从 Chat 链接下载</li><li>上传：传到云盘（SharePoint 等）</li><li>分享：把链接（不是文件）发给老师</li></ol><h2 id="s14">发音自测四步（考前 10 分钟）</h2><ul class="checklist"><li>过一遍「你的词」三张清单（易混对 / 同音词 / 其他）</li><li>每对用最小对立句读两遍</li><li>抽查 5 个 -tion/-logy 词的重音</li><li>录 30 秒回听：content words 是否真的重读了</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s15">源文件对应</h2><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>pronunciation_recap_3015.pdf</td><td>moodle-updates/2026-11-21/linked/32632/link-09-…（moodle-updates/2026-11-21/text/32632/同名 .txt）</td><td>Minimal pairs 全部 8 组、Your Words 三清单、绕口令十条</td></tr><tr><td>Meeting9_EHUT_3015.pdf</td><td>moodle-updates/2026-11-21/linked/32632/（slides 33-37 即此文件）</td><td>Prosody / pace / stress rules / homographs / 缩略语 / emphasis / pitch & intonation / Frost 诗 / 三语气 pitch</td></tr><tr><td>Recording_instructions.pdf</td><td>moodle-updates/2026-11-21/linked/32632/link-12-…</td><td>Camera / Teams / Zoom / Vocaroo 录音流程与交付方式</td></tr><tr><td>ASSIGNMENT 2 Pronunciation Test - page.txt</td><td>moodle-updates/2026-11-21/text/32632/</td><td>发音测试的提交窗口与要求（11-18）</td></tr><tr><td>补充拓展</td><td>—</td><td>重音规则表为幻灯片原内容的整理；语调四种类型为 recap + Meeting 9 合并表述</td></tr></table></section><div class="lnav"><a class="prev" href="l6-meetings-negotiation.html">← 第 7 讲 · 会议沟通、协商与专业简报</a><a class="next" href="supp-homework-map.html">补遗 · 十三次课的作业地图、交付通道与考核节点 →</a></div></article></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>
