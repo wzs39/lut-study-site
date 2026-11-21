@@ -8,204 +8,362 @@
 <title>补充 · 项目文档模板、Honor Code 与案例讨论 · 30361</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,33 +464,209 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-4.html">第 4 章 实践、案例与课程项目</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、两份模板：章节结构与每节要回答的问题</a><a class="toc-l3" href="#s3">1.1 Proposal：四节，一节一个问题组</a><a class="toc-l3" href="#s4">1.2 Status Report：七节加一个附录</a><a class="toc-l3" href="#s5">1.3 模板与 Final Report 的关系</a><a class="toc-l2" href="#s6">二、Ventura 范例：值得学的地方与被扣分的地方</a><a class="toc-l3" href="#s7">2.1 提案做对了什么</a><a class="toc-l3" href="#s8">2.2 提案自身的问题</a><a class="toc-l3" href="#s9">2.3 状态报告做对了什么</a><a class="toc-l3" href="#s10">2.4 状态报告的问题</a><a class="toc-l3" href="#s11">2.5 从反馈反推评分关注点</a><a class="toc-l2" href="#s12">三、Honor Code：五条落地要求、七类违规、两条后果</a><a class="toc-l2" href="#s13">四、习题课与案例讨论：时间、方法与题目</a><a class="toc-l3" href="#s14">4.1 三种周次形态</a><a class="toc-l3" href="#s15">4.2 案例法三步</a><a class="toc-l3" href="#s16">4.3 六个案例与讨论题的主题</a><a class="toc-l3" href="#s17">4.4 一份能拿分的讨论发言长什么样</a><a class="toc-l2" href="#s18">五、Feedback comments：五类常见反馈与改法</a><a class="toc-l2" href="#s19">六、重复副本与行政页</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a class="toc-l3" href="supp-project-docs.html">▸ 补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>补充 · 项目文档模板、Honor Code 与案例讨论</h1><p class="lead">Project Templates, the Honor Code, and the Case Discussion Questions <span class="badge mute">30361</span> <span class="badge mute">第 14 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 实践、案例与课程项目</a></p><p class="src">原始文件：<code>Project Proposal Template.docx</code> <code>Project Status Report Template.docx</code> <code>Project Proposal Ventura.pdf</code> <code>Ventura status report.pdf</code> <code>Honor code.html</code> <code>Feedback comments.html</code> <code>Online text.html</code> <code>Week 1 Exercise Sessions.html</code> <code>Week 3 Exercise Sessions.html</code> <code>Week 4 Exercise Sessions.html</code> <code>Week 5 Exercise Sessions.html</code> <code>Week 10 Case Study.html</code> <code>Week 11 Case Study.html</code> <code>Week 12 Case Study.html</code> <code>2_Exercise Sessions.html</code> <code>3_Honor code.html</code> <code>2_Case Study.html</code> <code>3_Case Study.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A4050 软件工程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-4.html">第 4 章 实践、案例与课程项目</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">补充 · 项目文档模板、Honor Code 与案例讨论</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">补充 · 项目文档模板、Honor Code 与案例讨论 · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">一、两份模板：章节结构与每节要回答的问题</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-4" aria-expanded="true" data-start-open="false" aria-label="展开或收起：一、两份模板：章节结构与每节要回答的问题"><span aria-hidden="true">›</span></button></div><div id="directory-branch-4"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">1.1 Proposal：四节，一节一个问题组</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">1.2 Status Report：七节加一个附录</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">1.3 模板与 Final Report 的关系</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">二、Ventura 范例：值得学的地方与被扣分的地方</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-8" aria-expanded="true" data-start-open="false" aria-label="展开或收起：二、Ventura 范例：值得学的地方与被扣分的地方"><span aria-hidden="true">›</span></button></div><div id="directory-branch-8"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.1 提案做对了什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">2.2 提案自身的问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">2.3 状态报告做对了什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">2.4 状态报告的问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">2.5 从反馈反推评分关注点</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">三、Honor Code：五条落地要求、七类违规、两条后果</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">四、习题课与案例讨论：时间、方法与题目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-15" aria-expanded="true" data-start-open="false" aria-label="展开或收起：四、习题课与案例讨论：时间、方法与题目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-15"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">4.1 三种周次形态</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">4.2 案例法三步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">4.3 六个案例与讨论题的主题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">4.4 一份能拿分的讨论发言长什么样</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">五、Feedback comments：五类常见反馈与改法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">六、重复副本与行政页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-28" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-28"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l04-requirements-engineering.html"><span class="directory-label">第 4 讲 · 需求工程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-37" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-37"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l09-project-management-and-planning.html"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l10-quality-and-configuration-management.html"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-42" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-42"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l12-case-studies.html"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="supp-project-docs.html" aria-current="page"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span><span class="directory-current">当前页</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/supp-project-docs"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 14 / 14 讲</p><h1 id="lecture-title">补充 · 项目文档模板、Honor Code 与案例讨论</h1><p class="lecture-subtitle">Project Templates, the Honor Code, and the Case Discussion Questions</p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 实践、案例与课程项目</a></p><details class="lecture-sources"><summary>资料来源 · 18 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>ffcba1caef1b</code>（用于识别内容变更）</dd></dl><ul><li><code>Project Proposal Template.docx</code> <span class="sub">未附原文件</span></li><li><code>Project Status Report Template.docx</code> <span class="sub">未附原文件</span></li><li><code>Project Proposal Ventura.pdf</code> <span class="sub">未附原文件</span></li><li><code>Ventura status report.pdf</code> <span class="sub">未附原文件</span></li><li><code>Honor code.html</code> <span class="sub">未附原文件</span></li><li><code>Feedback comments.html</code> <span class="sub">未附原文件</span></li><li><code>Online text.html</code> <span class="sub">未附原文件</span></li><li><code>Week 1 Exercise Sessions.html</code> <span class="sub">未附原文件</span></li><li><code>Week 3 Exercise Sessions.html</code> <span class="sub">未附原文件</span></li><li><code>Week 4 Exercise Sessions.html</code> <span class="sub">未附原文件</span></li><li><code>Week 5 Exercise Sessions.html</code> <span class="sub">未附原文件</span></li><li><code>Week 10 Case Study.html</code> <span class="sub">未附原文件</span></li><li><code>Week 11 Case Study.html</code> <span class="sub">未附原文件</span></li><li><code>Week 12 Case Study.html</code> <span class="sub">未附原文件</span></li><li><code>2_Exercise Sessions.html</code> <span class="sub">未附原文件</span></li><li><code>3_Honor code.html</code> <span class="sub">未附原文件</span></li><li><code>2_Case Study.html</code> <span class="sub">未附原文件</span></li><li><code>3_Case Study.html</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2>
 <p>前 13 讲把 SDLC 模型、过程、需求、建模、架构、测试、演化、项目管理、质量与配置管理都讲完了，也讲过案例研究（IBM、Sasken、EXCEED、Catalise）。但课程项目这条线一直缺三块：<b>文档模板</b>（提案与状态报告的章节结构与每节要回答的问题）、<b>两份真实范例</b>（Ventura 的提案与状态报告，以及助教给它的反馈）、<b>规则层</b>（Honor Code 与各周习题课的案例讨论安排）。</p>
 <p>这三块决定的是「分数怎么拿」而不是「概念懂不懂」：同样的知识，写进模板的对应小节、按 Honor Code 的口径独立完成、在案例讨论里讲出有证据的立场，分数才会到位。本讲把它们逐条拆开，并把范例的优点与问题都点出来——范例是用来学的，不是用来抄的。</p>
 <p>学完本讲你能够：</p>
@@ -349,7 +681,7 @@ section[data-type],.card{break-inside:avoid}
 <p>目录：1 Introduction、2 Project Goals、3 Stakeholders、4 User Groups、5 Application Description、6 Team、7 References，外加 Appendix 1 Reflection。相比提案，多了 Project Goals、User Groups、Application Description 三节，并要求把 Goals、Stakeholders、User Groups 写成<b>表格</b>。</p>
 <ul><li><b>1 Introduction</b> 分两块：Overview（与提案同样的四个问题，外加「描述客户期望的整体体验」）与 Project Status（这一迭代原计划做什么、实际完成了什么、相对提案有哪些重大变更——每条变更要给出<b>日期、动机、描述、影响</b>）；</li><li><b>2 Project Goals</b>：商业目标与其他目标列进表，可加一段引言；要求「像真实项目那样评估目标」；</li><li><b>3 Stakeholders</b>：写明有哪些利益相关者、各自角色（客户、用户、客户方的技术人员的等），要求识别 <b>5–10 个</b>；</li><li><b>4 User Groups</b>：识别不同用户组并描述它们对应用的需求与要求，同样 <b>5–10 个</b>；</li><li><b>5 Application Description</b>：介绍应用与主要挑战、概括设计理由、简述系统的外部交互；</li><li><b>6 Team</b>：背景（含「团队里有人做过类似的东西吗」）、角色（本迭代各人担任什么、各自贡献了什么）；</li><li><b>7 References</b>：参考文献；</li><li><b>Appendix 1 Reflection</b>：什么做得好？什么不好？没达成的目标卡在哪？怎么克服？下一迭代打算改什么？</li></ul>
 <p>模板还给三张表的表头与示例行，照抄表头就不会漏字段：</p>
-<table><tr><th>表</th><th>列</th><th>模板示例行</th></tr><tr><td>Goals</td><td>ID ｜ Date ｜ Goal ｜ Description of the goal ｜ Notes</td><td>Example 01 ｜ 1.10.2021 ｜ Profits ｜ 靠高级会员付费与应用内广告带来利润 ｜ 第一年利润目标 40000€</td></tr><tr><td>Stakeholders</td><td>ID ｜ Date ｜ Stakeholder ｜ Description and role of the stakeholder ｜ Notes</td><td>E 01 ｜ 1.11.2021 ｜ 应用的使用者 ｜ 日常生活中使用这个应用 ｜ 重要群体</td></tr><tr><td>User Groups</td><td>ID ｜ Date ｜ User group ｜ Description and role ｜ Notes</td><td>E 01 ｜ 1.11.2021 ｜ 高级用户 ｜ 付费后获得额外权益 ｜ 3,99 €/月；E 02 ｜ 学生 ｜ 用于与同伴沟通</td></tr></table>
+<div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>表</th><th>列</th><th>模板示例行</th></tr><tr><td>Goals</td><td>ID ｜ Date ｜ Goal ｜ Description of the goal ｜ Notes</td><td>Example 01 ｜ 1.10.2021 ｜ Profits ｜ 靠高级会员付费与应用内广告带来利润 ｜ 第一年利润目标 40000€</td></tr><tr><td>Stakeholders</td><td>ID ｜ Date ｜ Stakeholder ｜ Description and role of the stakeholder ｜ Notes</td><td>E 01 ｜ 1.11.2021 ｜ 应用的使用者 ｜ 日常生活中使用这个应用 ｜ 重要群体</td></tr><tr><td>User Groups</td><td>ID ｜ Date ｜ User group ｜ Description and role ｜ Notes</td><td>E 01 ｜ 1.11.2021 ｜ 高级用户 ｜ 付费后获得额外权益 ｜ 3,99 €/月；E 02 ｜ 学生 ｜ 用于与同伴沟通</td></tr></table></div>
 <div class="callout tip"><b>模板里的两个提示很关键</b>① Goals 表要求「evaluate your goals, as you would do in a real project」——写目标时要带可检验的判据（时间、数值），不是写成口号；② Stakeholders 与 User Groups 都用「E 01」式编号，说明这两张表是<b>平行</b>的两套清单，不是同一批人写两遍。</div>
 <h3 id="s5">1.3 模板与 Final Report 的关系</h3>
 <p><code>Project Final Report</code> 目录下放的仍是 Proposal 与 Status Report 两份模板（同一文件），外加一份 Final Report Template；前者已在前 13 讲引用，本讲只补尚未引用的 Proposal 与 Status Report 两份。这说明三份文档共用同一套封面与引用节，写作时可以把 Proposal 的 Introduction、Team、References 直接延续下来，只需要把状态更新到最新迭代。</p>
@@ -365,7 +697,7 @@ section[data-type],.card{break-inside:avoid}
 <ul><li><b>机器翻译痕迹导致语义不通</b>：Application Description 里出现「The Russian news is to reduce screening friction」、「our minpages」、「ammunition the experience」这类句子，母语读者读不出原意。这是最容易被判「表达不清」的一类问题，且与内容质量无关，纯属交付前没过一遍语言。</li><li><b>Goals 四行的 Date 全是 14.11.2026</b>，而 14.11.2026 正是状态报告的提交日期。反馈直接点了这一点：表里的日期应当是<b>未来的目标截止日</b>，不是报告写完的那一天。</li><li><b>Stakeholders 与 User Groups 的内容被复用</b>：反馈原文「User groups and stakeholders are also actually different, watch out on that detail in the final project. They've been reused which is not accurate.」，并因此只给了 0.5/1。</li><li><b>目录把作者名写进标题</b>（1 INTRODUCTION (Rucha) 等），属于内部协作痕迹没有清掉；另有 Develope、Spesifying 这类拼写错误。</li><li><b>Reflection 泛泛且自相矛盾</b>：第一问答「我们团队合作得很好、彼此沟通」，第三问却把未达成的目标归因于「misunderstandings and poor communication」。反馈的评语是「answers to Appendix 1 are generic, and contradicting」，给了 0.75/1.5。</li></ul>
 <h3 id="s11">2.5 从反馈反推评分关注点</h3>
 <p><code>Feedback comments.html</code> 只有五段，但每一段都能反推出一条评分关注点：</p>
-<table><tr><th>反馈原文要点</th><th>扣分</th><th>说明什么</th></tr><tr><td>与竞争者比较不足</td><td>0.5/1</td><td>「新在哪里」必须对着竞品说，不能只描述自己</td></tr><tr><td>用户组与利益相关者被复用、区分不清</td><td>0.5/1</td><td>两张表是两套人：谁受影响 vs 谁使用</td></tr><tr><td>Reflection 泛泛且自相矛盾</td><td>0.75/1.5</td><td>反思要具体到事件，且前后不能互相打脸</td></tr><tr><td>Goals 表的日期用了提交日期</td><td>—（提示）</td><td>日期是目标截止日，不是写作日</td></tr><tr><td>Application Description 与真实原型做得好</td><td>表扬</td><td>有可运行原型会显著加分</td></tr><tr><td>References 太少</td><td>—（提示）</td><td>最终报告要补文献</td></tr></table>
+<div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>反馈原文要点</th><th>扣分</th><th>说明什么</th></tr><tr><td>与竞争者比较不足</td><td>0.5/1</td><td>「新在哪里」必须对着竞品说，不能只描述自己</td></tr><tr><td>用户组与利益相关者被复用、区分不清</td><td>0.5/1</td><td>两张表是两套人：谁受影响 vs 谁使用</td></tr><tr><td>Reflection 泛泛且自相矛盾</td><td>0.75/1.5</td><td>反思要具体到事件，且前后不能互相打脸</td></tr><tr><td>Goals 表的日期用了提交日期</td><td>—（提示）</td><td>日期是目标截止日，不是写作日</td></tr><tr><td>Application Description 与真实原型做得好</td><td>表扬</td><td>有可运行原型会显著加分</td></tr><tr><td>References 太少</td><td>—（提示）</td><td>最终报告要补文献</td></tr></table></div>
 <p>要注意反馈末尾那句括注：<b>「8.25/10 - this score is just for visual purposes and is not a part of grading」</b>。也就是说这个分数只是给学生看的参考，不计入正式评分；正式评分由助教按功能清单另行给出。读反馈时应该把注意力放在「哪一项为什么只给了一半分」，而不是那个总分。</p>
 <h2 id="s12">三、Honor Code：五条落地要求、七类违规、两条后果</h2>
 <p><code>Honor code.html</code> 是课程要求所有人接受的学术诚信承诺，原文说明它是改编自斯坦福大学的版本。承诺本身只有两句，但落地条款才是可执行的规则。</p>
@@ -384,19 +716,19 @@ section[data-type],.card{break-inside:avoid}
 <ol class="steps"><li>案例阅读与准备（Case reading and preparation）：案例是对某位组织领导者所面对真实情境的详细描述，除背景信息外还含一个必须做出的关键决策；材料<b>故意不完整</b>，任务是分析信息并决定「你会怎么做」；</li><li>小组案例讨论（Group case discussion）：课上把想法带到一个背景各异的小组里讨论，从别人的视角补自己的盲区；</li><li>全班理解性讨论（Comprehension case discussion）：在小组之后与全班讨论最佳行动方案，要求积极倾听、站在案例主角的位置上说明理由。</li></ol>
 <p>阅读指南八条（原文 Case reading guidelines），可压成四步执行：先读首尾两节锁定核心情境；快速扫其余小节与图表，知道信息在哪而不必记住每个细节；先看讨论题再带着问题做笔记；最后形成「有证据支撑的立场」——原文特意强调「there is usually no objectively correct answer to a case, and the best solution is the one with the strongest evidence to back it up」。</p>
 <h3 id="s16">4.3 六个案例与讨论题的主题</h3>
-<table><tr><th>周</th><th>案例</th><th>讨论题在问什么</th></tr><tr><td>第 3 周</td><td>IBM：迭代式软件开发方法</td><td>关键需求在产品周期很晚才提出——团队能不能满足？该不该做？做了能不能不延期？</td></tr><tr><td>第 4 周</td><td>Telerik：Scrums, Sprints, Spikes and Poker</td><td>组织文化的关键因素？敏捷是软件设计工具还是组织设计工具？员工需要什么技能？能否随规模持续？增长会带来什么挑战？</td></tr><tr><td>第 5 周</td><td>Pearson SuccessMaker</td><td>五年路线图的挑战？开发方法如何影响对市场的响应？从瀑布转敏捷的收益与代价？什么情形适合哪种？该不该从 Scrum 转 Kanban？用什么度量？</td></tr><tr><td>第 10 周</td><td>EXCEED：提升交付的生产率与可靠性</td><td>客户投诉的性质？先解决哪些问题？系统测试过程是否如所称受控？网络延迟是不是欠产的主因？</td></tr><tr><td>第 11 周</td><td>Catalise：Move Fast, but without Bias</td><td>主角想坚持什么价值立场？各方各冒什么风险？利益相关者之间如何对齐？为修正算法偏见而推迟发布要付什么代价？</td></tr><tr><td>第 12 周</td><td>Sasken：为先进移动市场开发产品</td><td>如何为海外市场做出功能完整的产品？如何在时间与质量间维持过程纪律？如何管理变化且不清晰的需求？如何满足挑剔客户的质量标准？分布式团队怎么沟通协调？</td></tr></table>
+<div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>周</th><th>案例</th><th>讨论题在问什么</th></tr><tr><td>第 3 周</td><td>IBM：迭代式软件开发方法</td><td>关键需求在产品周期很晚才提出——团队能不能满足？该不该做？做了能不能不延期？</td></tr><tr><td>第 4 周</td><td>Telerik：Scrums, Sprints, Spikes and Poker</td><td>组织文化的关键因素？敏捷是软件设计工具还是组织设计工具？员工需要什么技能？能否随规模持续？增长会带来什么挑战？</td></tr><tr><td>第 5 周</td><td>Pearson SuccessMaker</td><td>五年路线图的挑战？开发方法如何影响对市场的响应？从瀑布转敏捷的收益与代价？什么情形适合哪种？该不该从 Scrum 转 Kanban？用什么度量？</td></tr><tr><td>第 10 周</td><td>EXCEED：提升交付的生产率与可靠性</td><td>客户投诉的性质？先解决哪些问题？系统测试过程是否如所称受控？网络延迟是不是欠产的主因？</td></tr><tr><td>第 11 周</td><td>Catalise：Move Fast, but without Bias</td><td>主角想坚持什么价值立场？各方各冒什么风险？利益相关者之间如何对齐？为修正算法偏见而推迟发布要付什么代价？</td></tr><tr><td>第 12 周</td><td>Sasken：为先进移动市场开发产品</td><td>如何为海外市场做出功能完整的产品？如何在时间与质量间维持过程纪律？如何管理变化且不清晰的需求？如何满足挑剔客户的质量标准？分布式团队怎么沟通协调？</td></tr></table></div>
 <p>把这 18 个问题归一下类，会发现只有五种问法，考试与讨论都能套：</p>
 <ol><li><b>过程模型选择</b>（瀑布 / 迭代 / 敏捷 / Scrum vs Kanban）：什么情形用哪种，切换的代价是什么；</li><li><b>质量与生产率诊断</b>（EXCEED）：投诉 → 数据 → 用质量工具（因果图、帕累托、控制图）找主因，而不是接受第一个解释；</li><li><b>分布式与跨文化协作</b>（Sasken）：时区、语言、需求在远方演化时的沟通机制；</li><li><b>伦理与偏见</b>（Catalise）：算法对群体不公平时，发布速度与责任怎么权衡；</li><li><b>需求与客户对齐</b>（IBM、Pearson）：交付的东西与客户想要的之间的落差怎么在过程中被发现。</li></ol>
 <h3 id="s17">4.4 一份能拿分的讨论发言长什么样</h3>
 <p>按上面的三步与八条指南，发言的结构应当固定：先用一句话给出立场（「我会推迟两周而不是按期发布」），再用案例里的具体事实支撑（哪一页的哪个数据、哪个人物说过什么），然后主动说出反方最强的理由并回应它，最后给出可执行的下一步与判断成败的指标。只说立场不说证据，是这类讨论里最常见的低分回答；只说事实不给立场，同样拿不到分。</p>
 <h2 id="s18">五、Feedback comments：五类常见反馈与改法</h2>
 <p>把 <code>Feedback comments.html</code> 的五段话拆成「反馈类型」，就是一份可自查的清单：</p>
-<table><tr><th>反馈类型</th><th>典型评语</th><th>改法</th></tr><tr><td>对比不足</td><td>Compare the application to competitors (0.5/1)</td><td>在「新在哪里」里逐条对着竞品写差异，并注明竞品名与来源</td></tr><tr><td>角色混淆</td><td>User groups and stakeholders ... have been reused (0.5/1)</td><td>利益相关者写「谁受影响、谁出钱、谁维护」；用户组写「谁每天用它、用它做什么」；两表人不同、描述不同</td></tr><tr><td>反思泛化或自相矛盾</td><td>answers to Appendix 1 are generic, and contradicting (0.75/1.5)</td><td>每条反思绑一个具体事件（某次会议、某次延期），并检查前后归因是否冲突</td></tr><tr><td>日期口径错</td><td>make sure the dates in the table reflect actual future target deadlines</td><td>Goals 表的日期写目标截止日；报告日期写在封面</td></tr><tr><td>引用太少</td><td>don't forget to include more references</td><td>每个外部论断配一条来源，教材也算</td></tr></table>
+<div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>反馈类型</th><th>典型评语</th><th>改法</th></tr><tr><td>对比不足</td><td>Compare the application to competitors (0.5/1)</td><td>在「新在哪里」里逐条对着竞品写差异，并注明竞品名与来源</td></tr><tr><td>角色混淆</td><td>User groups and stakeholders ... have been reused (0.5/1)</td><td>利益相关者写「谁受影响、谁出钱、谁维护」；用户组写「谁每天用它、用它做什么」；两表人不同、描述不同</td></tr><tr><td>反思泛化或自相矛盾</td><td>answers to Appendix 1 are generic, and contradicting (0.75/1.5)</td><td>每条反思绑一个具体事件（某次会议、某次延期），并检查前后归因是否冲突</td></tr><tr><td>日期口径错</td><td>make sure the dates in the table reflect actual future target deadlines</td><td>Goals 表的日期写目标截止日；报告日期写在封面</td></tr><tr><td>引用太少</td><td>don't forget to include more references</td><td>每个外部论断配一条来源，教材也算</td></tr></table></div>
 <p>这张表的价值在于：它把「写得好不好」翻译成了「哪一项拿了几分、为什么」。写完文档后拿它逐行对照一遍，比再读一遍模板更有效。</p>
 <h2 id="s19">六、重复副本与行政页</h2>
 <p>这一批文件里有三类需要标注清楚，不然会误以为漏读了内容：</p>
 <ul><li><b>模板的重复副本</b>：<code>Project Proposal Template.docx</code> 在三个目录各有一份（Proposal、Status Report、Final Report 的 intro/files 下），内容完全一致，只是首行的路径标记不同；<code>Project Status Report Template.docx</code> 有两份（Status Report 与 Final Report 目录）。所以去重后只有 2 份模板。</li><li><b>行政页</b>：第 1 周的 <code>Exercise Sessions</code> 页面只有时间与主题，是排课信息；<code>Online text.html</code> 是小组提交视频的留言页（一句问候加一个视频链接），既不含评分信息也不含知识点。</li><li><b>「不考」标注</b>：本课源文件里没有出现「not in exam」这类字样；唯一与「不计分」有关的是反馈里「this score is just for visual purposes and is not a part of grading」，指的是那个 8.25/10 的展示分，不是指某份材料不考。</li></ul><div class="callout idea" data-ext="supp-project-docs-0"><b>背景</b><p>模板不是格式装饰，而是评分骨架：评审按节找答案，缺一节等于缺一块分。提案只有四节，却在客户需求下把 Stakeholders 与 Needs 拆成两个小标题——前者问谁在乎，后者问解决什么、给谁好处、怎么验证收益；把两者混写正是常见扣分点。状态报告多了项目目标、用户群、应用描述三节，并要求目标、干系人、用户群写成表格，照抄表头就不会漏字段。项目状态要列每条重大变更的日期、动机、描述与影响；反思附录则要写清什么没达成、卡在哪、下轮怎么改。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>project proposal</td><td>项目提案</td><td>Four sections: Introduction, Customer Needs, Team, References.</td></tr><tr><td>status report</td><td>状态报告</td><td>Seven sections plus Appendix 1 Reflection.</td></tr><tr><td>stakeholder</td><td>利益相关者</td><td>Who is affected, who pays, who maintains; 5-10 of them.</td></tr><tr><td>user group</td><td>用户组</td><td>Who uses the application and what they need; 5-10 of them.</td></tr><tr><td>primary customer</td><td>主要客户</td><td>The customer outside the team.</td></tr><tr><td>reflection</td><td>反思</td><td>What went well, what did not, and what you will change next iteration.</td></tr><tr><td>iteration</td><td>迭代</td><td>The status report covers one iteration of the project.</td></tr><tr><td>goal evaluation</td><td>目标评估</td><td>Goals carry dates and numbers, as in a real project.</td></tr><tr><td>honor code</td><td>荣誉守则</td><td>An adaptation of the Stanford honor code.</td></tr><tr><td>plagiarism</td><td>抄袭</td><td>Using another person's work without proper credit.</td></tr><tr><td>academic integrity</td><td>学术诚信</td><td>Violations fail the course and lose all points awarded so far.</td></tr><tr><td>case study method</td><td>案例教学法</td><td>Read and prepare, discuss in groups, then discuss with the whole class.</td></tr><tr><td>waterfall to agile</td><td>从瀑布转敏捷</td><td>Compare benefits, downsides and suitable market conditions.</td></tr><tr><td>Kanban</td><td>看板方法</td><td>The decision in the Pearson case: stay with Scrum or move to Kanban.</td></tr><tr><td>evidence-based position</td><td>有证据的立场</td><td>There is usually no single correct answer; the best one has the strongest evidence.</td></tr></table></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>project proposal</td><td>项目提案</td><td>Four sections: Introduction, Customer Needs, Team, References.</td></tr><tr><td>status report</td><td>状态报告</td><td>Seven sections plus Appendix 1 Reflection.</td></tr><tr><td>stakeholder</td><td>利益相关者</td><td>Who is affected, who pays, who maintains; 5-10 of them.</td></tr><tr><td>user group</td><td>用户组</td><td>Who uses the application and what they need; 5-10 of them.</td></tr><tr><td>primary customer</td><td>主要客户</td><td>The customer outside the team.</td></tr><tr><td>reflection</td><td>反思</td><td>What went well, what did not, and what you will change next iteration.</td></tr><tr><td>iteration</td><td>迭代</td><td>The status report covers one iteration of the project.</td></tr><tr><td>goal evaluation</td><td>目标评估</td><td>Goals carry dates and numbers, as in a real project.</td></tr><tr><td>honor code</td><td>荣誉守则</td><td>An adaptation of the Stanford honor code.</td></tr><tr><td>plagiarism</td><td>抄袭</td><td>Using another person's work without proper credit.</td></tr><tr><td>academic integrity</td><td>学术诚信</td><td>Violations fail the course and lose all points awarded so far.</td></tr><tr><td>case study method</td><td>案例教学法</td><td>Read and prepare, discuss in groups, then discuss with the whole class.</td></tr><tr><td>waterfall to agile</td><td>从瀑布转敏捷</td><td>Compare benefits, downsides and suitable market conditions.</td></tr><tr><td>Kanban</td><td>看板方法</td><td>The decision in the Pearson case: stay with Scrum or move to Kanban.</td></tr><tr><td>evidence-based position</td><td>有证据的立场</td><td>There is usually no single correct answer; the best one has the strongest evidence.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1 · 把 Proposal 的「Customer Needs」写成合格答案</div><p>情形：模板在 Customer Needs 下印了六个问题（主要客户、次级利益相关者、他们想要什么与为什么、选哪个客户问题、给什么用户收益、如何支撑期望体验、怎么知道客户得到了收益）。怎样组织成一段能得分的文字？</p>
 <p><b>解：</b>先按模板的两个小标题分层，每层用「名单 + 逐条理由」的结构，最后单独收一句验证方式。</p>
 <p><b>Stakeholders 层</b>：先点明团队之外的主要客户是谁（一句话，具体到角色，不要写「所有用户」），再列次级利益相关者 3–6 类，每类后面跟一句「他们想要什么、为什么」——理由要落回他们的工作场景，例如「导师想知道项目当前卡在哪，否则给不出针对性建议」。</p>
@@ -439,11 +771,170 @@ section[data-type],.card{break-inside:avoid}
 <ol class="steps"><li>封面：课程编号与学期在两份文档里一致（Ventura 的 4002/4050 不一致就是反例）；</li><li>日期：封面写提交日，Goals 表写目标截止日，全篇统一 DD/MM/YYYY 或 MM/DD/YYYY 一种；</li><li>章节：Proposal 四节／Status Report 七节 + 附录，名字与顺序不改；</li><li>Stakeholders 与 User Groups：各 5–10 条，逐行比对，确保没有逐字相同的描述；</li><li>Goals 表：每条带可检验的判据（时间、数值），不只写目标名；</li><li>变更记录：每条都有日期、动机、描述、影响四格；</li><li>Application Description：应用是什么、主要挑战、设计理由、外部交互四点齐；</li><li>Reflection：五问逐条答，每条绑一个具体事件，前后不自相矛盾；</li><li>References：每个外部论断有来源，教材也算；</li><li>语言与痕迹：过一遍机器翻译痕迹、拼写（Develope/Spesifying 这类）、目录里的作者名；</li><li>合规：所有协作者与 AI 使用都按 Honor Code 申报。</li></ol>
 <div class="callout tip"><b>交付前 10 分钟的自查</b>只看三处：两张表有没有重复描述、Goals 表的日期是不是未来、Reflection 前后有没有打架。助教反馈里扣分的三项，恰好就是这三处。</div></section>
 <section id="sec-mapping" class="card" data-type="mapping"><p>下表把这 14 组文件（实体副本 17 份，其中模板的 5 份副本是同一内容）逐一对到章节与覆盖内容，并标注重复副本与行政页。</p>
-<table><tr><th>文件</th><th>章节 / 页</th><th>覆盖内容与备注</th></tr><tr><td>Project Proposal Template.docx</td><td>封面 + 四节（1 Introduction / 2 Customer Needs / 3 Team / 4 References）</td><td>提案的章节结构与每节必答问题；Customer Needs 分 Stakeholders 与 Needs 两层</td></tr><tr><td>Project Status Report Template.docx</td><td>封面 + 七节 + Appendix 1（docx，无页码）</td><td>状态报告结构；Goals / Stakeholders / User Groups 三张表的表头与示例行；Reflection 五问</td></tr><tr><td>Project Proposal Ventura.pdf</td><td>p1–p8</td><td>真实提案范例：四节齐全；novelty 四条、利益相关者五类、团队分工到人；问题见 2.2（课程号 4002、10/13/2026、引用仅一条）</td></tr><tr><td>Ventura status report.pdf</td><td>p1–p12</td><td>真实状态报告范例：变更表四要素齐全、Goals 四行带利润目标、S09/E06 两表齐；问题见 2.4（机翻痕迹、日期全为 14.11.2026、两表复用、目录带作者名）</td></tr><tr><td>Feedback comments.html</td><td>整页（反馈）</td><td>五段反馈：对比 0.5/1、角色混淆 0.5/1、Reflection 0.75/1.5、Goals 日期提示、引用提示；8.25/10 不计入评分</td></tr><tr><td>Week 1 Exercise Sessions.html</td><td>整页（行政页）</td><td>四个答疑时段与两项主题（项目启动、示例项目）；「周三 10:00–26:00」为原文笔误</td></tr><tr><td>Week 3 Exercise Sessions.html</td><td>整页</td><td>案例法三步与八条阅读指南；IBM 迭代开发案例与三个讨论题</td></tr><tr><td>Week 4 Exercise Sessions.html</td><td>整页</td><td>Telerik 敏捷转型案例与五个讨论题（文化、敏捷是设计还是组织工具、技能、可持续性、增长挑战）</td></tr><tr><td>Week 5 Exercise Sessions.html</td><td>整页</td><td>Pearson SuccessMaker 案例与七个讨论题（路线图、方法对市场响应、收益与代价、Scrum 转 Kanban、度量）</td></tr><tr><td>Week 10 Case Study.html</td><td>整页</td><td>EXCEED 案例与四个讨论题（投诉性质、优先级、测试是否受控、网络延迟）</td></tr><tr><td>Week 11 Case Study.html</td><td>整页</td><td>Catalise（Catalisten 抑郁筛查工具）与四个伦理讨论题（价值立场、风险、对齐、延迟代价）</td></tr><tr><td>Week 12 Case Study.html</td><td>整页</td><td>Sasken 离岸开发案例与五个讨论题（海外功能、过程纪律、需求变化、质量标准、分布式沟通）</td></tr><tr><td>Online text.html</td><td>整页（行政页）</td><td>小组提交视频的留言页，一句问候加一个视频链接，无评分与知识点内容</td></tr><tr><td>Project Proposal / Status Report Template 的重复副本</td><td>—</td><td>Proposal 模板在 Proposal、Status Report、Final Report 三个目录各一份（共 3 份，内容一致）；Status Report 模板在 Status Report 与 Final Report 目录各一份（共 2 份）</td></tr><tr><td>—（本课对照）</td><td>—</td><td>本课源文件无「不考」字样；唯一与「不计分」相关的是反馈中 8.25/10「just for visual purposes and is not a part of grading」，指展示分而非材料</td></tr></table>
-<div class="callout tip"><b>怎么用这张表</b>写提案看第 1、3 行（模板 + 真实提案）；写状态报告看第 2、4 行；交前自查看第 5 行（反馈）；案例讨论前一晚看第 8–13 行（当周的案例与讨论题），把每个问题各写一句立场加一条证据。</div></section><div class="lnav"><a class="prev" href="l13-course-project-and-report-writing.html">← 第 13 讲 · 课程项目与状态报告写作</a><span></span></div></article></div>
+<div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>文件</th><th>章节 / 页</th><th>覆盖内容与备注</th></tr><tr><td>Project Proposal Template.docx</td><td>封面 + 四节（1 Introduction / 2 Customer Needs / 3 Team / 4 References）</td><td>提案的章节结构与每节必答问题；Customer Needs 分 Stakeholders 与 Needs 两层</td></tr><tr><td>Project Status Report Template.docx</td><td>封面 + 七节 + Appendix 1（docx，无页码）</td><td>状态报告结构；Goals / Stakeholders / User Groups 三张表的表头与示例行；Reflection 五问</td></tr><tr><td>Project Proposal Ventura.pdf</td><td>p1–p8</td><td>真实提案范例：四节齐全；novelty 四条、利益相关者五类、团队分工到人；问题见 2.2（课程号 4002、10/13/2026、引用仅一条）</td></tr><tr><td>Ventura status report.pdf</td><td>p1–p12</td><td>真实状态报告范例：变更表四要素齐全、Goals 四行带利润目标、S09/E06 两表齐；问题见 2.4（机翻痕迹、日期全为 14.11.2026、两表复用、目录带作者名）</td></tr><tr><td>Feedback comments.html</td><td>整页（反馈）</td><td>五段反馈：对比 0.5/1、角色混淆 0.5/1、Reflection 0.75/1.5、Goals 日期提示、引用提示；8.25/10 不计入评分</td></tr><tr><td>Week 1 Exercise Sessions.html</td><td>整页（行政页）</td><td>四个答疑时段与两项主题（项目启动、示例项目）；「周三 10:00–26:00」为原文笔误</td></tr><tr><td>Week 3 Exercise Sessions.html</td><td>整页</td><td>案例法三步与八条阅读指南；IBM 迭代开发案例与三个讨论题</td></tr><tr><td>Week 4 Exercise Sessions.html</td><td>整页</td><td>Telerik 敏捷转型案例与五个讨论题（文化、敏捷是设计还是组织工具、技能、可持续性、增长挑战）</td></tr><tr><td>Week 5 Exercise Sessions.html</td><td>整页</td><td>Pearson SuccessMaker 案例与七个讨论题（路线图、方法对市场响应、收益与代价、Scrum 转 Kanban、度量）</td></tr><tr><td>Week 10 Case Study.html</td><td>整页</td><td>EXCEED 案例与四个讨论题（投诉性质、优先级、测试是否受控、网络延迟）</td></tr><tr><td>Week 11 Case Study.html</td><td>整页</td><td>Catalise（Catalisten 抑郁筛查工具）与四个伦理讨论题（价值立场、风险、对齐、延迟代价）</td></tr><tr><td>Week 12 Case Study.html</td><td>整页</td><td>Sasken 离岸开发案例与五个讨论题（海外功能、过程纪律、需求变化、质量标准、分布式沟通）</td></tr><tr><td>Online text.html</td><td>整页（行政页）</td><td>小组提交视频的留言页，一句问候加一个视频链接，无评分与知识点内容</td></tr><tr><td>Project Proposal / Status Report Template 的重复副本</td><td>—</td><td>Proposal 模板在 Proposal、Status Report、Final Report 三个目录各一份（共 3 份，内容一致）；Status Report 模板在 Status Report 与 Final Report 目录各一份（共 2 份）</td></tr><tr><td>—（本课对照）</td><td>—</td><td>本课源文件无「不考」字样；唯一与「不计分」相关的是反馈中 8.25/10「just for visual purposes and is not a part of grading」，指展示分而非材料</td></tr></table></div>
+<div class="callout tip"><b>怎么用这张表</b>写提案看第 1、3 行（模板 + 真实提案）；写状态报告看第 2、4 行；交前自查看第 5 行（反馈）；案例讨论前一晚看第 8–13 行（当周的案例与讨论题），把每个问题各写一句立场加一条证据。</div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l13-course-project-and-report-writing.html"><span>上一讲</span><strong>第 13 讲 · 课程项目与状态报告写作</strong></a><a data-sequence="parent" href="part-4.html"><span>返回目录</span><strong>第 4 章 实践、案例与课程项目</strong></a><span class="sequence-disabled" data-sequence="next" aria-disabled="true"><span>下一讲</span><strong>已到末尾</strong></span></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

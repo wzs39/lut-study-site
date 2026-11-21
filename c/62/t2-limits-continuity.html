@@ -8,204 +8,362 @@
 <title>第 1 章 · 极限与连续性 · 62</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD4010 工程数学 I</a> / <a href="part-1.html">第 1 章 函数、极限与连续性</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">2.1 微积分的两个基本运算都来自极限</a><a class="toc-l3" href="#s3">2.2 从平均速度到瞬时速度</a><a class="toc-l3" href="#s4">2.3 圆面积：多边形逼近</a><a class="toc-l3" href="#s5">2.4 极限的 ε-δ 定义</a><a class="toc-l3" href="#s6">2.5 极限与函数在该点的值无关</a><a class="toc-l3" href="#s7">2.6 单侧极限与双侧极限的存在性</a><a class="toc-l3" href="#s8">2.7 极限运算法则</a><a class="toc-l3" href="#s9">2.8 多项式与有理函数的极限</a><a class="toc-l3" href="#s10">2.9 夹逼定理</a><a class="toc-l3" href="#s11">2.10 极限不存在的两种典型</a><a class="toc-l3" href="#s12">2.11 无穷极限与竖直渐近线</a><a class="toc-l3" href="#s13">2.12 无穷远处的极限与水平渐近线</a><a class="toc-l3" href="#s14">2.13 有理化技巧：√(x² − x) − x</a><a class="toc-l3" href="#s15">2.14 多项式在无穷远处：最高次项主导</a><a class="toc-l3" href="#s16">2.15 有理函数在无穷远处与三条渐近线判据</a><a class="toc-l3" href="#s17">2.16 连续性的三条件与间断点分类</a><a class="toc-l3" href="#s18">2.17 区间上的连续性与两个存在性定理</a><a class="toc-l2" href="#s19">方法与清单</a><a class="toc-l3" href="#s20">求极限四步</a><a class="toc-l3" href="#s21">求全部渐近线（三步）</a><a class="toc-l3" href="#s22">判断连续性并分类（三步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-preliminaries-functions.html">第 1 章 · 预备知识、直线与函数</a><a class="toc-l3" href="t2-limits-continuity.html">▸ 第 1 章 · 极限与连续性</a><a href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则</a><a href="t4-higher-order-extrema-implicit.html">第 2 章 · 高阶导数、中值定理、极值与隐函数</a><a href="t5-inverse-exp-log.html">第 3 章 · 反函数、指数与对数</a><a href="t6-inverse-trig-lhopital-riemann.html">第 3 章 · 反三角、双曲函数、洛必达与定积分</a><a href="t7-integration-techniques.html">第 4 章 · 微积分基本定理与积分方法</a><a href="mock-exam-and-question-types.html">第 5 章 · 模拟卷与题型</a></div></aside><article><h1>第 1 章 · 极限与连续性</h1><p class="lead">Limits of Functions and Continuity <span class="badge mute">62</span> <span class="badge mute">第 2 / 8 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 函数、极限与连续性</a></p><p class="src">原始文件：<code>Topic 2/EMI_Week2_Lecture1.pdf</code> <code>Topic 2/EMI_Week2_Lecture2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲把函数画在坐标系里，这一讲开始追问：当自变量越来越靠近某点时，函数值往哪里跑？这个「往哪里跑」就是极限（limit）。整门课的两大运算都建在它上面——微分是差商的极限，积分是和式的极限，所以极限没学透，后面所有计算都会退化成「先代入再说」的错误套路。</p><p>本讲按两条线推进：第一条从具体问题（自由落体的瞬时速度、圆面积的多边形逼近）引出极限的 ε-δ 定义与运算法则；第二条把「靠近一个点」扩展为「靠近无穷」与「函数值无界」，得到渐近线的完整判据，最后用极限的语言重新定义连续性，并给出闭区间上连续函数的两个存在性定理。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用 ε-δ 定义证明一个具体的一次函数极限</li><li>识别 0/0 型并通过对消、有理化把它化简后再求极限</li><li>用夹逼定理处理振荡因子（sin、cos）与无穷远问题</li><li>求有理函数在无穷远处的极限，并写出水平、竖直与斜渐近线</li><li>按三条件判断一点处的连续性，并给间断点分类</li><li>用介值定理证明方程在给定区间内有根</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 微积分的两个基本运算都来自极限</h3><p>微积分描述量如何变化，靠两个基本运算：<b>微分</b>（differentiation）求函数的瞬时变化率，例如即时速度；<b>积分</b>（integration）由变化率反求函数，例如由速度求位移。两者都建立在同一个概念上：<b>函数的极限</b>。极限是代数与微积分之间的桥梁。</p><p>两个现实原型：手机电池的电量与充电功率（功率是电量对时间的变化率，电量是功率的累积）；汽车的速度表与里程表（速度表读瞬时速度，里程表读位移累积）。这两对关系正好对应微分与积分，而第 7 讲的微积分基本定理会把它们严格地连起来。</p><h3 id="s3">2.2 从平均速度到瞬时速度</h3><p>实验表明，石块从静止自由下落，前 t 秒下落距离为 <code>s(t) = 4.9t²</code>（米）。在时间段 <code>[t₁, t₂]</code> 上的<b>平均速度</b>是位移增量除以时间增量：</p><p><code>v̄ = Δs/Δt = (s(t₂) − s(t₁))/(t₂ − t₁)</code>。</p><p>(a) 前 2 秒的平均速度：<code>(s(2) − s(0))/2 = 19.6/2 = 9.8</code> m/s。(b) 从 <code>t = 1</code> 到 <code>t = 2</code>：<code>(19.6 − 4.9)/1 = 14.7</code> m/s。可见「平均」强烈依赖于所取的时间段。</p><p>要得到 <code>t = 1</code> 时刻的<b>瞬时速度</b>，取从 1 开始、长度 h 的时间段 <code>[1, 1+h]</code>：</p><p><code>Δs/Δh = (4.9(1+h)² − 4.9·1²)/h = 9.8 + 4.9h</code>。</p><table><tr><th>h</th><th>1</th><th>0.1</th><th>0.01</th><th>0.001</th><th>0.0001</th></tr><tr><td><code>Δs/Δh</code></td><td>14.7</td><td>10.29</td><td>9.849</td><td>9.8049</td><td>9.80049</td></tr></table><p>表格清楚地显示：h 越小，比值越靠近 9.8。于是把瞬时速度定义为平均速度当 <code>h → 0</code> 时的极限：</p><p><code>v(t) = lim_{h→0} (4.9(t+h)² − 4.9t²)/h = lim_{h→0} (9.8t + 4.9h) = 9.8t</code>（m/s）。代入 <code>t = 1</code> 得 9.8 m/s，与表格一致。</p><div class="callout tip"><b>这一步是整门课的模板</b>先写差商 → 展开化简，把分母的 h 约掉 → 再令 h → 0。注意：<b>不能一上来就把 h = 0 代入</b>，那会得到 0/0 这个没有意义的式子。约分之后才允许代入，这个顺序在第 3 讲求导数时会一字不改地重复。</div><h3 id="s4">2.3 圆面积：多边形逼近</h3><p>半径为 r 的圆内接正 n 边形，其周长 <code>pₙ</code> 与面积 <code>Aₙ</code> 都小于圆的周长 C 与面积 A，但随 n 增大不断逼近。圆心角 <code>∠POQ = 2π/n</code>，于是弦长 <code>PQ = 2r sin(π/n)</code>，O 到 PQ 的距离为 <code>r cos(π/n)</code>。</p><p>单个三角形面积 <code>= (1/2)(2r sin(π/n))(r cos(π/n)) = r² sin(π/n) cos(π/n)</code>，故</p><p><code>pₙ = 2rn sin(π/n)</code>，<code>Aₙ = n r² sin(π/n) cos(π/n) = (n/2) r² sin(2π/n)</code>。</p><p>令 <code>n → ∞</code>，利用 <code>lim_{θ→0} sin θ/θ = 1</code> 与 <code>cos(π/n) → 1</code>：</p><p><code>lim pₙ = 2πr · lim [sin(π/n)/(π/n)] = 2πr = C</code>，<code>lim Aₙ = πr² · lim [sin(2π/n)/(2π/n)] · cos(π/n) = πr² = A</code>。</p><p>这个例子说明：曲线围成的量可以被「越来越细的直线图形」逼近，逼近的精确含义就是极限。第 6 讲与第 7 讲把同一思想用在任意函数上，就得到定积分。</p><h3 id="s5">2.4 极限的 ε-δ 定义</h3><p>称函数 f 在 x 趋于 a 时以 L 为极限，记 <code>lim_{x→a} f(x) = L</code>，如果：对每个 <code>ε &gt; 0</code>，都存在 <code>δ &gt; 0</code>，使得</p><p><b><code>0 &lt; |x − a| &lt; δ ⟹ |f(x) − L| &lt; ε</code></b>。</p><p>逐字读这句话：不管你把允许误差 ε 设得多小，我都能找到一个「挖去 a 点的小区间」，只要 x 落在这个区间里（且不等于 a），函数值就与 L 相差不到 ε。也就是说，f(x) 可以通过让 x 足够靠近 a 而<b>任意接近</b> L。</p><p>三个细节必须记牢：① <code>0 &lt; |x − a|</code> 表示<b>不考虑 x = a 本身</b>，所以极限是否存在与 f(a) 是否有定义、取值多少完全无关；② δ 依赖于 ε（通常写成 δ = δ(ε)），不是固定常数；③ 定义只要求「存在这样的 δ」，不要求最大的 δ。</p><p>源文件例 1：证明 <code>lim_{x→4} (3x − 1) = 11</code>。取 <code>f(x) = 3x − 1</code>、<code>a = 4</code>、<code>L = 11</code>。对任意 <code>ε &gt; 0</code>，需要找 δ 使 <code>0 &lt; |x − 4| &lt; δ ⟹ |3x − 12| &lt; ε</code>。而 <code>|3x − 12| = 3|x − 4|</code>，所以只要 <code>|x − 4| &lt; ε/3</code> 即可。于是取 <b><code>δ = ε/3</code></b>，条件即成立。</p><div class="callout warn"><b>证明的书写格式决定得分</b>ε-δ 证明必须写成「任给 ε &gt; 0，取 δ = …，则当 0 &lt; |x−a| &lt; δ 时，有 … &lt; ε」这条链。只写「显然 δ = ε/3 可以」不给分；把 δ 写成常数（如 δ = 0.1）也不给分，因为它不能对所有 ε 成立。</div><h3 id="s6">2.5 极限与函数在该点的值无关</h3><p>源文件例 2：考察 <code>f(x) = (x² − 1)/(x − 1)</code> 在 <code>x = 1</code> 附近的行为。f 在 <code>x = 1</code> 无定义，但对 <code>x ≠ 1</code> 有</p><p><code>f(x) = (x−1)(x+1)/(x−1) = x + 1</code>，故 <code>lim_{x→1} f(x) = lim_{x→1}(x+1) = 2</code>。</p><p>虽然 <code>f(1)</code> 不存在，极限却存在，并且等于 2。这个「洞」正是第 2.16 节「可去间断」的原型：只要补充定义 <code>f(1) = 2</code>，函数就在 1 处连续了。</p><h3 id="s7">2.6 单侧极限与双侧极限的存在性</h3><p><b>左极限</b>：<code>lim_{x→a⁻} f(x)</code>，只考虑 <code>x &lt; a</code>；<b>右极限</b>：<code>lim_{x→a⁺} f(x)</code>，只考虑 <code>x &gt; a</code>。核心结论：</p><p><b><code>lim_{x→a} f(x) = L ⟺ lim_{x→a⁻} f(x) = lim_{x→a⁺} f(x) = L</code></b>。</p><p>源文件例子：<code>sgn(x)</code> 在 0 处，左极限 <code>−1</code>、右极限 <code>1</code>，两者不等，所以 <code>lim_{x→0} sgn(x)</code> 不存在。同理 <code>|x|/x</code> 在 0 处左右极限分别为 <code>−1</code> 与 <code>1</code>，极限不存在。</p><div class="callout tip"><b>什么时候必须分左右</b>出现以下三种情形时先算单侧：① 分段函数在分段点；② 含 <code>|·|</code> 的表达式在零点；③ 含 <code>√(x − a)</code> 或 <code>ln(x − a)</code> 的表达式在端点（一侧根本没定义）。</div><h3 id="s8">2.7 极限运算法则</h3><p>设 <code>lim_{x→a} f(x) = A</code>、<code>lim_{x→a} g(x) = B</code>，c 为常数，则：</p><ul><li>和差：<code>lim (f ± g) = A ± B</code></li><li>乘积：<code>lim (fg) = AB</code></li><li>常数倍：<code>lim (cf) = cA</code></li><li>商：<code>lim (f/g) = A/B</code>，要求 <code>B ≠ 0</code></li><li>幂：<code>lim f(x)^{m/n} = A^{m/n}</code>，要求 n 为偶数时 <code>A &gt; 0</code>，且 <code>m/n &lt; 0</code> 时 <code>A ≠ 0</code></li></ul><p>这些法则对左极限、右极限同样成立。和法则的证明只需把定义套一遍：把 <code>|(f+g) − (A+B)|</code> 拆成 <code>|f−A| + |g−B|</code>，再用三角不等式，取两个 ε/2 对应的 δ 的较小者。</p><div class="callout warn"><b>法则的前提不能省</b>商的法则要求分母极限非零；<code>B = 0</code> 时法则失效，必须回到 0/0 型的化简流程。幂法则在「偶次根 + 负底数」时会失效，例如 <code>lim_{x→0} √(x²)</code> 不能直接套用 <code>√(A)</code> 的形式，要小心符号。</div><h3 id="s9">2.8 多项式与有理函数的极限</h3><p>多项式在任意实数处都可以「直接代入」：<code>lim_{x→a} P(x) = P(a)</code>。例如 <code>lim_{x→3}(2x² − 5x + 1) = 2·9 − 5·3 + 1 = 4</code>——源文件此处把结果印成 10，按公式复算应为 4，属课件笔误。</p><p>有理函数在分母不为零处也直接代入：<code>lim_{x→a} P(x)/Q(x) = P(a)/Q(a)</code>（<code>Q(a) ≠ 0</code>）。唯一例外是 <code>P(a) = Q(a) = 0</code>，此时必须先化简表达式再取极限。</p><p><b>0/0 型的两条化简路径。</b>① 因式分解后约去公因子；② 含根号时分子分母同乘共轭因式。源文件两个例子：</p><p><code>lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)</code>：两者在 −2 处都为 0。<code>x²+x−2 = (x+2)(x−1)</code>，<code>x²+5x+6 = (x+2)(x+3)</code>，约去 <code>x+2</code> 后得 <code>lim (x−1)/(x+3) = (−3)/1 = −3</code>。</p><p><code>lim_{x→4} (√x − 2)/(x² − 16)</code>：同乘共轭 <code>(√x + 2)</code>，分子变成 <code>x − 4</code>，与分母的 <code>x − 4</code> 约去，得 <code>lim 1/((x+4)(√x+2)) = 1/(8·4) = 1/32</code>。</p><div class="callout warn"><b>0/0 是「未定式」不是「答案」</b>算出 0/0 说明这条路径暂时失效，要继续变形；算出 <code>k/0</code>（k ≠ 0）才是「不存在（趋于 ±∞）」。把 0/0 直接当作 0 或 1 是最常见的失分。</div><h3 id="s10">2.9 夹逼定理</h3><p>若在 a 的某个去心邻域内 <code>g(x) ≤ f(x) ≤ h(x)</code>，且 <code>lim_{x→a} g(x) = lim_{x→a} h(x) = L</code>，则 <code>lim_{x→a} f(x) = L</code>。直观上：f 被两条都往 L 收拢的曲线夹住，只能跟着去 L。</p><p>源文件例 3：<code>f(x) = sin x / x</code>（<code>x ≠ 0</code>），求 <code>lim_{x→∞} f(x)</code>。因为 <code>−1 ≤ sin x ≤ 1</code>，当 <code>x &gt; 0</code> 时三边除以 x 得 <code>−1/x ≤ sin x/x ≤ 1/x</code>；两端极限都是 0，故 <b><code>lim_{x→∞} sin x/x = 0</code></b>。</p><p>源文件例：<code>f(x) = x² sin(1/x)</code>（<code>x ≠ 0</code>）。因为 <code>−1 ≤ sin(1/x) ≤ 1</code>，两边乘 <code>x² ≥ 0</code> 得 <code>−x² ≤ x² sin(1/x) ≤ x²</code>；两端都趋于 0，故 <b><code>lim_{x→0} x² sin(1/x) = 0</code></b>。注意这里不能用乘积法则，因为 <code>lim sin(1/x)</code> 不存在。</p><div class="callout tip"><b>看到振荡就找夹逼</b>只要表达式里出现有界振荡因子（<code>sin</code>、<code>cos</code> 的变体），先去估计它的界，再用「有界 × 趋于 0」夹逼。这是 <code>sin θ/θ → 1</code> 证明的技术基础（第 3 讲）。</div><h3 id="s11">2.10 极限不存在的两种典型</h3><ul><li><b>左右极限不等</b>：<code>sgn(x)</code> 在 0 处（左 −1、右 1），<code>|x|/x</code> 在 0 处</li><li><b>无限振荡</b>：<code>sin(1/x)</code> 在 0 处，函数值在 −1 与 1 之间来回跳，不趋向任何单个 L</li></ul><p>第三种情形是「趋于无穷」，严格说来极限也不存在（因为 ∞ 不是数），但为了描述方便，我们仍写成 <code>lim = ∞</code>，下一节专门处理。</p><h3 id="s12">2.11 无穷极限与竖直渐近线</h3><p>若函数值可以任意大地变正（或变负），称它有<b>无穷极限</b>。<code>lim_{x→0} 1/x² = ∞</code>：从两侧靠近 0 时函数值都是正且无界增大，所以严格意义上极限不存在，但写成 ∞ 记录了「往哪个方向无界」这一信息。</p><p>相比之下 <code>1/x</code> 的两侧方向不同：<code>lim_{x→0⁺} 1/x = ∞</code>，<code>lim_{x→0⁻} 1/x = −∞</code>，所以 <code>lim_{x→0} 1/x</code> 既不是 ∞ 也不是 −∞，彻底不存在。</p><p><b>竖直渐近线</b>：直线 <code>x = a</code> 是 <code>y = f(x)</code> 的竖直渐近线（vertical asymptote），只要下列之一成立：<code>lim_{x→a⁻} f(x) = ±∞</code> 或 <code>lim_{x→a⁺} f(x) = ±∞</code>。注意「至少一侧」即可，不要求两侧同号。</p><h3 id="s13">2.12 无穷远处的极限与水平渐近线</h3><p><code>lim_{x→∞} f(x) = L</code> 表示 x 无限增大时 f(x) 任意接近 L；<code>x → −∞</code> 同理。此时直线 <code>y = L</code> 是<b>水平渐近线</b>（horizontal asymptote）。关键细节：<b>左右两侧可以有不同的水平渐近线</b>。</p><p>源文件例子：<code>f(x) = x/√(x² + 1)</code>。把分子分母同除以 <code>|x|</code>（注意 <code>√(x²) = |x|</code>，不是 x）：</p><p>当 <code>x &gt; 0</code>：<code>f(x) = 1/√(1 + 1/x²) → 1</code>；当 <code>x &lt; 0</code>：<code>f(x) = −1/√(1 + 1/x²) → −1</code>。</p><p>所以 <code>lim_{x→∞} f = 1</code>、<code>lim_{x→−∞} f = −1</code>，右侧水平渐近线 <code>y = 1</code>，左侧 <code>y = −1</code>。</p><div class="callout warn"><b>√(x²) = |x| 而不是 x</b>这是无穷远问题里最高频的错误。当 <code>x → −∞</code> 时，把 <code>√(x²)</code> 写成 x 会让整个符号翻转，导致把 −1 算成 +1。正确做法是先写成 |x|，再按 x 的正负拆绝对值。</div><h3 id="s14">2.13 有理化技巧：√(x² − x) − x</h3><p>求 <code>lim_{x→∞} (√(x² − x) − x)</code>。直接看是 <code>∞ − ∞</code> 型，同乘共轭 <code>(√(x²−x) + x)</code>：</p><p><code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除以 x（此时 x &gt; 0，<code>√(x²−x)/x = √(1 − 1/x)</code>）：</p><p><code>= −1/(√(1 − 1/x) + 1) → −1/2</code>。</p><p>结论 <code>−1/2</code> 与源文件答案一致。这一步说明：<code>∞ − ∞</code> 型不一定发散，同乘共轭后可能得到有限值。</p><h3 id="s15">2.14 多项式在无穷远处：最高次项主导</h3><p>设 <code>P(x) = aₙxⁿ + ⋯ + a₀</code>（<code>aₙ ≠ 0</code>），把最高次项提出来：<code>P(x) = aₙxⁿ(1 + aₙ₋₁/(aₙx) + ⋯ + a₀/(aₙxⁿ))</code>。当 <code>x → ±∞</code> 时括号里趋于 1，所以</p><p><code>lim_{x→±∞} P(x) = lim aₙxⁿ</code>，符号由 <code>aₙ</code> 与 <code>xⁿ</code> 共同决定。</p><p>源文件例子：<code>lim_{x→∞}(x³ − 5x² + 2) = ∞</code>，<code>lim_{x→−∞}(x³ − 5x² + 2) = −∞</code>（首项 <code>x³</code> 在负无穷处为负）；<code>lim_{x→±∞}(−3x⁴ − x³ + x) = −∞</code>（偶次首项且系数为负，两侧都是 −∞）。</p><h3 id="s16">2.15 有理函数在无穷远处与三条渐近线判据</h3><p>设 <code>f(x) = Pₘ(x)/Qₙ(x)</code>，分子次数 m、分母次数 n，比较两者首项系数 <code>aₘ</code>、<code>bₙ</code>：</p><table><tr><th>次数关系</th><th>极限</th><th>渐近线</th></tr><tr><td><code>m &lt; n</code></td><td><code>lim_{x→±∞} f = 0</code></td><td>双侧水平渐近线 <code>y = 0</code></td></tr><tr><td><code>m = n</code></td><td><code>lim f = aₘ/bₙ</code></td><td>双侧水平渐近线 <code>y = aₘ/bₙ</code></td></tr><tr><td><code>m &gt; n</code></td><td><code>lim f = ±∞</code></td><td>无水平渐近线</td></tr><tr><td><code>m = n + 1</code></td><td><code>lim f = ±∞</code></td><td>双侧斜渐近线 <code>y = ax + b</code></td></tr><tr><td><code>m &gt; n + 1</code></td><td><code>lim f = ±∞</code></td><td>无渐近线（趋于更高次曲线）</td></tr></table><p>斜渐近线的求法：做多项式除法 <code>P/Q = (ax + b) + R/Q</code>，其中 <code>deg R &lt; n</code>，于是 <code>f(x) − (ax + b) = R/Q → 0</code>，直线 <code>y = ax + b</code> 就是斜渐近线。</p><p>源文件三个例子：(a) <code>lim_{x→±∞} (2x² + x)/(3x² − 7) = 2/3</code>，水平渐近线 <code>y = 2/3</code>；(b) <code>lim_{x→±∞} (5x − 9)/(2x³ + 3) = 0</code>，水平渐近线 <code>y = 0</code>；(c) <code>lim_{x→±∞} (x³ − x²)/(x² + 1)</code>：除法得 <code>= x − 1 + (1 − x)/(x² + 1)</code>，故 <code>x → ∞</code> 时趋于 ∞、<code>x → −∞</code> 时趋于 −∞，斜渐近线 <code>y = x − 1</code>。</p><p>竖直渐近线：先把分子分母的<b>公因子约掉</b>，剩下的分母零点处就是竖直渐近线。例如 <code>(2x² − 7x + 3)/(x² − 9) = (2x−1)(x−3)/((x−3)(x+3)) = (2x−1)/(x+3)</code>（<code>x ≠ 3</code>），只有 <code>x = −3</code> 是竖直渐近线，<code>x = 3</code> 是「洞」；水平渐近线 <code>y = 2</code>；在 <code>x → −3⁺</code> 时分子 <code>2x−1 → −7</code>、分母 <code>→ 0⁺</code>，故极限为 <code>−∞</code>，而 <code>x → −3⁻</code> 时为 <code>+∞</code>。</p><h3 id="s17">2.16 连续性的三条件与间断点分类</h3><p>函数 f 在 <code>x = c</code> 处连续（continuous），当且仅当以下三条同时成立：① <code>f(c)</code> 有定义；② <code>lim_{x→c} f(x)</code> 存在；③ <code>lim_{x→c} f(x) = f(c)</code>。任一条不成立就叫在 c 处间断（discontinuous）。</p><p>源文件的四个图形正好对应四种失败方式：(a) f(c) 无定义；(b) 极限存在但不等于 f(c)（洞）；(c) 极限不存在（左右不等）；(d) 极限不存在且 f(c) 也无定义。</p><p><b>保连续运算</b>：若 f、g 在 c 连续，则 <code>f ± g</code>、<code>fg</code>、<code>kf</code>、<code>f/g</code>（<code>g(c) ≠ 0</code>）、<code>f^{m/n}</code>（n 为偶数时要求 <code>f(c) &gt; 0</code>）都在 c 连续。</p><p><b>复合的连续性</b>：若 g 在 c 连续、f 在 <code>g(c)</code> 连续，则 <code>f ∘ g</code> 在 c 连续，且 <code>lim_{x→c} f(g(x)) = f(lim_{x→c} g(x))</code>。源文件例子：<code>g(x) = x² + 1</code> 在 −1 连续，<code>f(u) = √u</code> 在 <code>g(−1) = 2</code> 连续，故 <code>√(x²+1)</code> 在 −1 连续。</p><p><b>单侧连续</b>：右连续指 <code>lim_{x→c⁺} f(x) = f(c)</code>，左连续指 <code>lim_{x→c⁻} f(x) = f(c)</code>；f 在 c 连续 ⟺ 既左连续又右连续。</p><p>源文件例子：Heaviside 函数 <code>H(x) = 1</code>（<code>x ≥ 0</code>）、<code>0</code>（<code>x &lt; 0</code>）。<code>lim_{x→0⁺} H = 1 = H(0)</code>，故右连续；<code>lim_{x→0⁻} H = 0 ≠ H(0)</code>，故左不连续，因此 H 在 0 处不连续。</p><p>源文件分段例子：<code>f(x) = x²</code>（<code>x ≤ 1</code>）、<code>2x − 1</code>（<code>x &gt; 1</code>），检查 <code>x = 1</code>：左极限 <code>lim x² = 1</code>，右极限 <code>lim (2x−1) = 1</code>，且 <code>f(1) = 1</code>，三者相等，故在 1 处连续。</p><p><b>间断点四分类</b>（第一类：两个单侧极限都存在；第二类：至少一侧不存在）：</p><table><tr><th>类型</th><th>特征</th><th>典型例子</th></tr><tr><td>可去 removable</td><td>左右极限存在且相等，但 f(c) 无定义或不等</td><td><code>(x²−1)/(x−1)</code> 在 <code>x = 1</code></td></tr><tr><td>跳跃 jump</td><td>左右极限都存在但不相等</td><td><code>sgn(x)</code> 在 <code>x = 0</code></td></tr><tr><td>无穷 infinite</td><td>至少一侧极限为 ±∞（竖直渐近线）</td><td><code>1/x</code> 在 <code>x = 0</code></td></tr><tr><td>振荡 oscillating</td><td>极限不存在且不为无穷</td><td><code>sin(1/x)</code> 在 <code>x = 0</code></td></tr></table><h3 id="s18">2.17 区间上的连续性与两个存在性定理</h3><p>函数在区间上连续指在区间内每点连续；对闭区间 <code>[a, b]</code>，还要求在左端点<b>右连续</b>、在右端点<b>左连续</b>。例如 <code>√x</code> 在 <code>[0, ∞)</code> 连续：在 0 处 <code>lim_{x→0⁺} √x = 0 = √0</code>（右连续），在每点 <code>x₀ &gt; 0</code> 处 <code>lim √x = √x₀</code>。</p><p><b>常见连续函数</b>：多项式（处处连续）；有理函数（在其定义域上连续）；有理幂 <code>x^{m/n}</code>（在定义域上）；六个三角函数（在定义域上，间断点只出现在分母为零处）；绝对值函数（处处连续）。</p><p><b>最值定理</b>（Extreme Value Theorem，也叫 Max-Min Theorem）：若 f 在闭区间 <code>[a, b]</code> 上连续，则 f 在该区间上取到最大值 M 与最小值 m。三个条件缺一不可，源文件给了三个反例：</p><ul><li>开区间 <code>f(x) = x</code> 在 <code>(0, 1)</code>：连续但无最大也无最小（端点被挖掉）</li><li>不连续 <code>f(x) = x</code>（<code>0 ≤ x &lt; 1</code>）、<code>f(x) = 0</code>（<code>x = 1</code>）：在 <code>[0, 1]</code> 上无最大值</li><li>无界区间 <code>f(x) = 1/x</code> 在 <code>(0, 1]</code>：连续但无最大值</li></ul><p><b>介值定理</b>（Intermediate Value Theorem）：若 f 在 <code>[a, b]</code> 上连续，k 介于 <code>f(a)</code> 与 <code>f(b)</code> 之间，则存在 <code>c ∈ (a, b)</code> 使 <code>f(c) = k</code>。几何上：连续曲线要从一个高度走到另一个高度，必须经过中间每个高度。</p><p>源文件应用：证明 <code>x³ − x − 1 = 0</code> 在 <code>[1, 2]</code> 内有解。令 <code>f(x) = x³ − x − 1</code>；<code>f(1) = −1 &lt; 0</code>，<code>f(2) = 5 &gt; 0</code>；f 处处连续，故在 <code>[1, 2]</code> 连续；由介值定理（取 <code>k = 0</code>），存在 <code>c ∈ (1, 2)</code> 使 <code>f(c) = 0</code>。</p></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>limit of a function</td><td>函数极限</td><td>lim_{x→a} f(x) = L if f(x) can be made arbitrarily close to L.</td></tr><tr><td>epsilon-delta definition</td><td>ε-δ 定义</td><td>For every ε > 0 there is δ > 0 such that 0 < |x−a| < δ forces |f(x)−L| < ε.</td></tr><tr><td>difference quotient</td><td>差商</td><td>The average rate of change (f(x+h) − f(x))/h.</td></tr><tr><td>instantaneous velocity</td><td>瞬时速度</td><td>The limit of average velocity as the time interval shrinks to zero.</td></tr><tr><td>one-sided limit</td><td>单侧极限</td><td>Left and right limits; the two-sided limit exists iff they agree.</td></tr><tr><td>indeterminate form 0/0</td><td>0/0 未定式</td><td>Substitution gives 0/0; simplify by factoring or rationalizing first.</td></tr><tr><td>rationalizing</td><td>有理化</td><td>Multiply by the conjugate to remove a square-root difference.</td></tr><tr><td>squeeze theorem</td><td>夹逼定理</td><td>If g ≤ f ≤ h and both bounds tend to L, then f tends to L.</td></tr><tr><td>infinite limit</td><td>无穷极限</td><td>Values grow without bound; ∞ is a description, not a number.</td></tr><tr><td>vertical asymptote</td><td>竖直渐近线</td><td>x = a where a one-sided limit is ±∞.</td></tr><tr><td>horizontal asymptote</td><td>水平渐近线</td><td>y = L where f(x) → L as x → ±∞.</td></tr><tr><td>oblique asymptote</td><td>斜渐近线</td><td>y = ax + b appearing when deg P = deg Q + 1.</td></tr><tr><td>continuity at a point</td><td>点连续</td><td>f(c) defined, the limit exists, and the two are equal.</td></tr><tr><td>removable discontinuity</td><td>可去间断</td><td>One-sided limits agree but f(c) is missing or mismatched.</td></tr><tr><td>intermediate value theorem</td><td>介值定理</td><td>A continuous function on [a, b] takes every value between f(a) and f(b).</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">HDD4010 工程数学 I</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-1.html">第 1 章 函数、极限与连续性</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 1 章 · 极限与连续性</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 1 章 · 极限与连续性 · 62</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">2.1 微积分的两个基本运算都来自极限</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">2.2 从平均速度到瞬时速度</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">2.3 圆面积：多边形逼近</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">2.4 极限的 ε-δ 定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.5 极限与函数在该点的值无关</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.6 单侧极限与双侧极限的存在性</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">2.7 极限运算法则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">2.8 多项式与有理函数的极限</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">2.9 夹逼定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">2.10 极限不存在的两种典型</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">2.11 无穷极限与竖直渐近线</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">2.12 无穷远处的极限与水平渐近线</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">2.13 有理化技巧：√(x² − x) − x</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">2.14 多项式在无穷远处：最高次项主导</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">2.15 有理函数在无穷远处与三条渐近线判据</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">2.16 连续性的三条件与间断点分类</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">2.17 区间上的连续性与两个存在性定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">方法与清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法与清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s21"><span class="directory-label">求极限四步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s22"><span class="directory-label">求全部渐近线（三步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s23"><span class="directory-label">判断连续性并分类（三步）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD4010 工程数学 I</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-32" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD4010 工程数学 I"><span aria-hidden="true">›</span></button></div><div id="directory-branch-32"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="part-1.html"><span class="directory-label">第 1 章 函数、极限与连续性</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 1 章 函数、极限与连续性"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t1-preliminaries-functions.html"><span class="directory-label">第 1 章 · 预备知识、直线与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="t2-limits-continuity.html" aria-current="page"><span class="directory-label">第 1 章 · 极限与连续性</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 导数与微分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 导数与微分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t3-derivatives-rules.html"><span class="directory-label">第 2 章 · 导数定义与求导法则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t4-higher-order-extrema-implicit.html"><span class="directory-label">第 2 章 · 高阶导数、中值定理、极值与隐函数</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 超越函数与极限技巧</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 超越函数与极限技巧"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t5-inverse-exp-log.html"><span class="directory-label">第 3 章 · 反函数、指数与对数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t6-inverse-trig-lhopital-riemann.html"><span class="directory-label">第 3 章 · 反三角、双曲函数、洛必达与定积分</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 积分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-42" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 积分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-42"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t7-integration-techniques.html"><span class="directory-label">第 4 章 · 微积分基本定理与积分方法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 模拟卷与题型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-44" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 模拟卷与题型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-44"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="mock-exam-and-question-types.html"><span class="directory-label">第 5 章 · 模拟卷与题型</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="62/t2-limits-continuity"><header class="lecture-head"><p class="lecture-kicker">HDD4010 工程数学 I · 第 02 / 08 讲</p><h1 id="lecture-title">第 1 章 · 极限与连续性</h1><p class="lecture-subtitle">Limits of Functions and Continuity</p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 函数、极限与连续性</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>a7d7e381204a</code>（用于识别内容变更）</dd></dl><ul><li><code>Topic 2/EMI_Week2_Lecture1.pdf</code> <span class="sub">未附原文件</span></li><li><code>Topic 2/EMI_Week2_Lecture2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲把函数画在坐标系里，这一讲开始追问：当自变量越来越靠近某点时，函数值往哪里跑？这个「往哪里跑」就是极限（limit）。整门课的两大运算都建在它上面——微分是差商的极限，积分是和式的极限，所以极限没学透，后面所有计算都会退化成「先代入再说」的错误套路。</p><p>本讲按两条线推进：第一条从具体问题（自由落体的瞬时速度、圆面积的多边形逼近）引出极限的 ε-δ 定义与运算法则；第二条把「靠近一个点」扩展为「靠近无穷」与「函数值无界」，得到渐近线的完整判据，最后用极限的语言重新定义连续性，并给出闭区间上连续函数的两个存在性定理。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用 ε-δ 定义证明一个具体的一次函数极限</li><li>识别 0/0 型并通过对消、有理化把它化简后再求极限</li><li>用夹逼定理处理振荡因子（sin、cos）与无穷远问题</li><li>求有理函数在无穷远处的极限，并写出水平、竖直与斜渐近线</li><li>按三条件判断一点处的连续性，并给间断点分类</li><li>用介值定理证明方程在给定区间内有根</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 微积分的两个基本运算都来自极限</h3><p>微积分描述量如何变化，靠两个基本运算：<b>微分</b>（differentiation）求函数的瞬时变化率，例如即时速度；<b>积分</b>（integration）由变化率反求函数，例如由速度求位移。两者都建立在同一个概念上：<b>函数的极限</b>。极限是代数与微积分之间的桥梁。</p><p>两个现实原型：手机电池的电量与充电功率（功率是电量对时间的变化率，电量是功率的累积）；汽车的速度表与里程表（速度表读瞬时速度，里程表读位移累积）。这两对关系正好对应微分与积分，而第 7 讲的微积分基本定理会把它们严格地连起来。</p><h3 id="s3">2.2 从平均速度到瞬时速度</h3><p>实验表明，石块从静止自由下落，前 t 秒下落距离为 <code>s(t) = 4.9t²</code>（米）。在时间段 <code>[t₁, t₂]</code> 上的<b>平均速度</b>是位移增量除以时间增量：</p><p><code>v̄ = Δs/Δt = (s(t₂) − s(t₁))/(t₂ − t₁)</code>。</p><p>(a) 前 2 秒的平均速度：<code>(s(2) − s(0))/2 = 19.6/2 = 9.8</code> m/s。(b) 从 <code>t = 1</code> 到 <code>t = 2</code>：<code>(19.6 − 4.9)/1 = 14.7</code> m/s。可见「平均」强烈依赖于所取的时间段。</p><p>要得到 <code>t = 1</code> 时刻的<b>瞬时速度</b>，取从 1 开始、长度 h 的时间段 <code>[1, 1+h]</code>：</p><p><code>Δs/Δh = (4.9(1+h)² − 4.9·1²)/h = 9.8 + 4.9h</code>。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>h</th><th>1</th><th>0.1</th><th>0.01</th><th>0.001</th><th>0.0001</th></tr><tr><td><code>Δs/Δh</code></td><td>14.7</td><td>10.29</td><td>9.849</td><td>9.8049</td><td>9.80049</td></tr></table></div><p>表格清楚地显示：h 越小，比值越靠近 9.8。于是把瞬时速度定义为平均速度当 <code>h → 0</code> 时的极限：</p><p><code>v(t) = lim_{h→0} (4.9(t+h)² − 4.9t²)/h = lim_{h→0} (9.8t + 4.9h) = 9.8t</code>（m/s）。代入 <code>t = 1</code> 得 9.8 m/s，与表格一致。</p><div class="callout tip"><b>这一步是整门课的模板</b>先写差商 → 展开化简，把分母的 h 约掉 → 再令 h → 0。注意：<b>不能一上来就把 h = 0 代入</b>，那会得到 0/0 这个没有意义的式子。约分之后才允许代入，这个顺序在第 3 讲求导数时会一字不改地重复。</div><h3 id="s4">2.3 圆面积：多边形逼近</h3><p>半径为 r 的圆内接正 n 边形，其周长 <code>pₙ</code> 与面积 <code>Aₙ</code> 都小于圆的周长 C 与面积 A，但随 n 增大不断逼近。圆心角 <code>∠POQ = 2π/n</code>，于是弦长 <code>PQ = 2r sin(π/n)</code>，O 到 PQ 的距离为 <code>r cos(π/n)</code>。</p><p>单个三角形面积 <code>= (1/2)(2r sin(π/n))(r cos(π/n)) = r² sin(π/n) cos(π/n)</code>，故</p><p><code>pₙ = 2rn sin(π/n)</code>，<code>Aₙ = n r² sin(π/n) cos(π/n) = (n/2) r² sin(2π/n)</code>。</p><p>令 <code>n → ∞</code>，利用 <code>lim_{θ→0} sin θ/θ = 1</code> 与 <code>cos(π/n) → 1</code>：</p><p><code>lim pₙ = 2πr · lim [sin(π/n)/(π/n)] = 2πr = C</code>，<code>lim Aₙ = πr² · lim [sin(2π/n)/(2π/n)] · cos(π/n) = πr² = A</code>。</p><p>这个例子说明：曲线围成的量可以被「越来越细的直线图形」逼近，逼近的精确含义就是极限。第 6 讲与第 7 讲把同一思想用在任意函数上，就得到定积分。</p><h3 id="s5">2.4 极限的 ε-δ 定义</h3><p>称函数 f 在 x 趋于 a 时以 L 为极限，记 <code>lim_{x→a} f(x) = L</code>，如果：对每个 <code>ε &gt; 0</code>，都存在 <code>δ &gt; 0</code>，使得</p><p><b><code>0 &lt; |x − a| &lt; δ ⟹ |f(x) − L| &lt; ε</code></b>。</p><p>逐字读这句话：不管你把允许误差 ε 设得多小，我都能找到一个「挖去 a 点的小区间」，只要 x 落在这个区间里（且不等于 a），函数值就与 L 相差不到 ε。也就是说，f(x) 可以通过让 x 足够靠近 a 而<b>任意接近</b> L。</p><p>三个细节必须记牢：① <code>0 &lt; |x − a|</code> 表示<b>不考虑 x = a 本身</b>，所以极限是否存在与 f(a) 是否有定义、取值多少完全无关；② δ 依赖于 ε（通常写成 δ = δ(ε)），不是固定常数；③ 定义只要求「存在这样的 δ」，不要求最大的 δ。</p><p>源文件例 1：证明 <code>lim_{x→4} (3x − 1) = 11</code>。取 <code>f(x) = 3x − 1</code>、<code>a = 4</code>、<code>L = 11</code>。对任意 <code>ε &gt; 0</code>，需要找 δ 使 <code>0 &lt; |x − 4| &lt; δ ⟹ |3x − 12| &lt; ε</code>。而 <code>|3x − 12| = 3|x − 4|</code>，所以只要 <code>|x − 4| &lt; ε/3</code> 即可。于是取 <b><code>δ = ε/3</code></b>，条件即成立。</p><div class="callout warn"><b>证明的书写格式决定得分</b>ε-δ 证明必须写成「任给 ε &gt; 0，取 δ = …，则当 0 &lt; |x−a| &lt; δ 时，有 … &lt; ε」这条链。只写「显然 δ = ε/3 可以」不给分；把 δ 写成常数（如 δ = 0.1）也不给分，因为它不能对所有 ε 成立。</div><h3 id="s6">2.5 极限与函数在该点的值无关</h3><p>源文件例 2：考察 <code>f(x) = (x² − 1)/(x − 1)</code> 在 <code>x = 1</code> 附近的行为。f 在 <code>x = 1</code> 无定义，但对 <code>x ≠ 1</code> 有</p><p><code>f(x) = (x−1)(x+1)/(x−1) = x + 1</code>，故 <code>lim_{x→1} f(x) = lim_{x→1}(x+1) = 2</code>。</p><p>虽然 <code>f(1)</code> 不存在，极限却存在，并且等于 2。这个「洞」正是第 2.16 节「可去间断」的原型：只要补充定义 <code>f(1) = 2</code>，函数就在 1 处连续了。</p><h3 id="s7">2.6 单侧极限与双侧极限的存在性</h3><p><b>左极限</b>：<code>lim_{x→a⁻} f(x)</code>，只考虑 <code>x &lt; a</code>；<b>右极限</b>：<code>lim_{x→a⁺} f(x)</code>，只考虑 <code>x &gt; a</code>。核心结论：</p><p><b><code>lim_{x→a} f(x) = L ⟺ lim_{x→a⁻} f(x) = lim_{x→a⁺} f(x) = L</code></b>。</p><p>源文件例子：<code>sgn(x)</code> 在 0 处，左极限 <code>−1</code>、右极限 <code>1</code>，两者不等，所以 <code>lim_{x→0} sgn(x)</code> 不存在。同理 <code>|x|/x</code> 在 0 处左右极限分别为 <code>−1</code> 与 <code>1</code>，极限不存在。</p><div class="callout tip"><b>什么时候必须分左右</b>出现以下三种情形时先算单侧：① 分段函数在分段点；② 含 <code>|·|</code> 的表达式在零点；③ 含 <code>√(x − a)</code> 或 <code>ln(x − a)</code> 的表达式在端点（一侧根本没定义）。</div><h3 id="s8">2.7 极限运算法则</h3><p>设 <code>lim_{x→a} f(x) = A</code>、<code>lim_{x→a} g(x) = B</code>，c 为常数，则：</p><ul><li>和差：<code>lim (f ± g) = A ± B</code></li><li>乘积：<code>lim (fg) = AB</code></li><li>常数倍：<code>lim (cf) = cA</code></li><li>商：<code>lim (f/g) = A/B</code>，要求 <code>B ≠ 0</code></li><li>幂：<code>lim f(x)^{m/n} = A^{m/n}</code>，要求 n 为偶数时 <code>A &gt; 0</code>，且 <code>m/n &lt; 0</code> 时 <code>A ≠ 0</code></li></ul><p>这些法则对左极限、右极限同样成立。和法则的证明只需把定义套一遍：把 <code>|(f+g) − (A+B)|</code> 拆成 <code>|f−A| + |g−B|</code>，再用三角不等式，取两个 ε/2 对应的 δ 的较小者。</p><div class="callout warn"><b>法则的前提不能省</b>商的法则要求分母极限非零；<code>B = 0</code> 时法则失效，必须回到 0/0 型的化简流程。幂法则在「偶次根 + 负底数」时会失效，例如 <code>lim_{x→0} √(x²)</code> 不能直接套用 <code>√(A)</code> 的形式，要小心符号。</div><h3 id="s9">2.8 多项式与有理函数的极限</h3><p>多项式在任意实数处都可以「直接代入」：<code>lim_{x→a} P(x) = P(a)</code>。例如 <code>lim_{x→3}(2x² − 5x + 1) = 2·9 − 5·3 + 1 = 4</code>——源文件此处把结果印成 10，按公式复算应为 4，属课件笔误。</p><p>有理函数在分母不为零处也直接代入：<code>lim_{x→a} P(x)/Q(x) = P(a)/Q(a)</code>（<code>Q(a) ≠ 0</code>）。唯一例外是 <code>P(a) = Q(a) = 0</code>，此时必须先化简表达式再取极限。</p><p><b>0/0 型的两条化简路径。</b>① 因式分解后约去公因子；② 含根号时分子分母同乘共轭因式。源文件两个例子：</p><p><code>lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)</code>：两者在 −2 处都为 0。<code>x²+x−2 = (x+2)(x−1)</code>，<code>x²+5x+6 = (x+2)(x+3)</code>，约去 <code>x+2</code> 后得 <code>lim (x−1)/(x+3) = (−3)/1 = −3</code>。</p><p><code>lim_{x→4} (√x − 2)/(x² − 16)</code>：同乘共轭 <code>(√x + 2)</code>，分子变成 <code>x − 4</code>，与分母的 <code>x − 4</code> 约去，得 <code>lim 1/((x+4)(√x+2)) = 1/(8·4) = 1/32</code>。</p><div class="callout warn"><b>0/0 是「未定式」不是「答案」</b>算出 0/0 说明这条路径暂时失效，要继续变形；算出 <code>k/0</code>（k ≠ 0）才是「不存在（趋于 ±∞）」。把 0/0 直接当作 0 或 1 是最常见的失分。</div><h3 id="s10">2.9 夹逼定理</h3><p>若在 a 的某个去心邻域内 <code>g(x) ≤ f(x) ≤ h(x)</code>，且 <code>lim_{x→a} g(x) = lim_{x→a} h(x) = L</code>，则 <code>lim_{x→a} f(x) = L</code>。直观上：f 被两条都往 L 收拢的曲线夹住，只能跟着去 L。</p><p>源文件例 3：<code>f(x) = sin x / x</code>（<code>x ≠ 0</code>），求 <code>lim_{x→∞} f(x)</code>。因为 <code>−1 ≤ sin x ≤ 1</code>，当 <code>x &gt; 0</code> 时三边除以 x 得 <code>−1/x ≤ sin x/x ≤ 1/x</code>；两端极限都是 0，故 <b><code>lim_{x→∞} sin x/x = 0</code></b>。</p><p>源文件例：<code>f(x) = x² sin(1/x)</code>（<code>x ≠ 0</code>）。因为 <code>−1 ≤ sin(1/x) ≤ 1</code>，两边乘 <code>x² ≥ 0</code> 得 <code>−x² ≤ x² sin(1/x) ≤ x²</code>；两端都趋于 0，故 <b><code>lim_{x→0} x² sin(1/x) = 0</code></b>。注意这里不能用乘积法则，因为 <code>lim sin(1/x)</code> 不存在。</p><div class="callout tip"><b>看到振荡就找夹逼</b>只要表达式里出现有界振荡因子（<code>sin</code>、<code>cos</code> 的变体），先去估计它的界，再用「有界 × 趋于 0」夹逼。这是 <code>sin θ/θ → 1</code> 证明的技术基础（第 3 讲）。</div><h3 id="s11">2.10 极限不存在的两种典型</h3><ul><li><b>左右极限不等</b>：<code>sgn(x)</code> 在 0 处（左 −1、右 1），<code>|x|/x</code> 在 0 处</li><li><b>无限振荡</b>：<code>sin(1/x)</code> 在 0 处，函数值在 −1 与 1 之间来回跳，不趋向任何单个 L</li></ul><p>第三种情形是「趋于无穷」，严格说来极限也不存在（因为 ∞ 不是数），但为了描述方便，我们仍写成 <code>lim = ∞</code>，下一节专门处理。</p><h3 id="s12">2.11 无穷极限与竖直渐近线</h3><p>若函数值可以任意大地变正（或变负），称它有<b>无穷极限</b>。<code>lim_{x→0} 1/x² = ∞</code>：从两侧靠近 0 时函数值都是正且无界增大，所以严格意义上极限不存在，但写成 ∞ 记录了「往哪个方向无界」这一信息。</p><p>相比之下 <code>1/x</code> 的两侧方向不同：<code>lim_{x→0⁺} 1/x = ∞</code>，<code>lim_{x→0⁻} 1/x = −∞</code>，所以 <code>lim_{x→0} 1/x</code> 既不是 ∞ 也不是 −∞，彻底不存在。</p><p><b>竖直渐近线</b>：直线 <code>x = a</code> 是 <code>y = f(x)</code> 的竖直渐近线（vertical asymptote），只要下列之一成立：<code>lim_{x→a⁻} f(x) = ±∞</code> 或 <code>lim_{x→a⁺} f(x) = ±∞</code>。注意「至少一侧」即可，不要求两侧同号。</p><h3 id="s13">2.12 无穷远处的极限与水平渐近线</h3><p><code>lim_{x→∞} f(x) = L</code> 表示 x 无限增大时 f(x) 任意接近 L；<code>x → −∞</code> 同理。此时直线 <code>y = L</code> 是<b>水平渐近线</b>（horizontal asymptote）。关键细节：<b>左右两侧可以有不同的水平渐近线</b>。</p><p>源文件例子：<code>f(x) = x/√(x² + 1)</code>。把分子分母同除以 <code>|x|</code>（注意 <code>√(x²) = |x|</code>，不是 x）：</p><p>当 <code>x &gt; 0</code>：<code>f(x) = 1/√(1 + 1/x²) → 1</code>；当 <code>x &lt; 0</code>：<code>f(x) = −1/√(1 + 1/x²) → −1</code>。</p><p>所以 <code>lim_{x→∞} f = 1</code>、<code>lim_{x→−∞} f = −1</code>，右侧水平渐近线 <code>y = 1</code>，左侧 <code>y = −1</code>。</p><div class="callout warn"><b>√(x²) = |x| 而不是 x</b>这是无穷远问题里最高频的错误。当 <code>x → −∞</code> 时，把 <code>√(x²)</code> 写成 x 会让整个符号翻转，导致把 −1 算成 +1。正确做法是先写成 |x|，再按 x 的正负拆绝对值。</div><h3 id="s14">2.13 有理化技巧：√(x² − x) − x</h3><p>求 <code>lim_{x→∞} (√(x² − x) − x)</code>。直接看是 <code>∞ − ∞</code> 型，同乘共轭 <code>(√(x²−x) + x)</code>：</p><p><code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除以 x（此时 x &gt; 0，<code>√(x²−x)/x = √(1 − 1/x)</code>）：</p><p><code>= −1/(√(1 − 1/x) + 1) → −1/2</code>。</p><p>结论 <code>−1/2</code> 与源文件答案一致。这一步说明：<code>∞ − ∞</code> 型不一定发散，同乘共轭后可能得到有限值。</p><h3 id="s15">2.14 多项式在无穷远处：最高次项主导</h3><p>设 <code>P(x) = aₙxⁿ + ⋯ + a₀</code>（<code>aₙ ≠ 0</code>），把最高次项提出来：<code>P(x) = aₙxⁿ(1 + aₙ₋₁/(aₙx) + ⋯ + a₀/(aₙxⁿ))</code>。当 <code>x → ±∞</code> 时括号里趋于 1，所以</p><p><code>lim_{x→±∞} P(x) = lim aₙxⁿ</code>，符号由 <code>aₙ</code> 与 <code>xⁿ</code> 共同决定。</p><p>源文件例子：<code>lim_{x→∞}(x³ − 5x² + 2) = ∞</code>，<code>lim_{x→−∞}(x³ − 5x² + 2) = −∞</code>（首项 <code>x³</code> 在负无穷处为负）；<code>lim_{x→±∞}(−3x⁴ − x³ + x) = −∞</code>（偶次首项且系数为负，两侧都是 −∞）。</p><h3 id="s16">2.15 有理函数在无穷远处与三条渐近线判据</h3><p>设 <code>f(x) = Pₘ(x)/Qₙ(x)</code>，分子次数 m、分母次数 n，比较两者首项系数 <code>aₘ</code>、<code>bₙ</code>：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>次数关系</th><th>极限</th><th>渐近线</th></tr><tr><td><code>m &lt; n</code></td><td><code>lim_{x→±∞} f = 0</code></td><td>双侧水平渐近线 <code>y = 0</code></td></tr><tr><td><code>m = n</code></td><td><code>lim f = aₘ/bₙ</code></td><td>双侧水平渐近线 <code>y = aₘ/bₙ</code></td></tr><tr><td><code>m &gt; n</code></td><td><code>lim f = ±∞</code></td><td>无水平渐近线</td></tr><tr><td><code>m = n + 1</code></td><td><code>lim f = ±∞</code></td><td>双侧斜渐近线 <code>y = ax + b</code></td></tr><tr><td><code>m &gt; n + 1</code></td><td><code>lim f = ±∞</code></td><td>无渐近线（趋于更高次曲线）</td></tr></table></div><p>斜渐近线的求法：做多项式除法 <code>P/Q = (ax + b) + R/Q</code>，其中 <code>deg R &lt; n</code>，于是 <code>f(x) − (ax + b) = R/Q → 0</code>，直线 <code>y = ax + b</code> 就是斜渐近线。</p><p>源文件三个例子：(a) <code>lim_{x→±∞} (2x² + x)/(3x² − 7) = 2/3</code>，水平渐近线 <code>y = 2/3</code>；(b) <code>lim_{x→±∞} (5x − 9)/(2x³ + 3) = 0</code>，水平渐近线 <code>y = 0</code>；(c) <code>lim_{x→±∞} (x³ − x²)/(x² + 1)</code>：除法得 <code>= x − 1 + (1 − x)/(x² + 1)</code>，故 <code>x → ∞</code> 时趋于 ∞、<code>x → −∞</code> 时趋于 −∞，斜渐近线 <code>y = x − 1</code>。</p><p>竖直渐近线：先把分子分母的<b>公因子约掉</b>，剩下的分母零点处就是竖直渐近线。例如 <code>(2x² − 7x + 3)/(x² − 9) = (2x−1)(x−3)/((x−3)(x+3)) = (2x−1)/(x+3)</code>（<code>x ≠ 3</code>），只有 <code>x = −3</code> 是竖直渐近线，<code>x = 3</code> 是「洞」；水平渐近线 <code>y = 2</code>；在 <code>x → −3⁺</code> 时分子 <code>2x−1 → −7</code>、分母 <code>→ 0⁺</code>，故极限为 <code>−∞</code>，而 <code>x → −3⁻</code> 时为 <code>+∞</code>。</p><h3 id="s17">2.16 连续性的三条件与间断点分类</h3><p>函数 f 在 <code>x = c</code> 处连续（continuous），当且仅当以下三条同时成立：① <code>f(c)</code> 有定义；② <code>lim_{x→c} f(x)</code> 存在；③ <code>lim_{x→c} f(x) = f(c)</code>。任一条不成立就叫在 c 处间断（discontinuous）。</p><p>源文件的四个图形正好对应四种失败方式：(a) f(c) 无定义；(b) 极限存在但不等于 f(c)（洞）；(c) 极限不存在（左右不等）；(d) 极限不存在且 f(c) 也无定义。</p><p><b>保连续运算</b>：若 f、g 在 c 连续，则 <code>f ± g</code>、<code>fg</code>、<code>kf</code>、<code>f/g</code>（<code>g(c) ≠ 0</code>）、<code>f^{m/n}</code>（n 为偶数时要求 <code>f(c) &gt; 0</code>）都在 c 连续。</p><p><b>复合的连续性</b>：若 g 在 c 连续、f 在 <code>g(c)</code> 连续，则 <code>f ∘ g</code> 在 c 连续，且 <code>lim_{x→c} f(g(x)) = f(lim_{x→c} g(x))</code>。源文件例子：<code>g(x) = x² + 1</code> 在 −1 连续，<code>f(u) = √u</code> 在 <code>g(−1) = 2</code> 连续，故 <code>√(x²+1)</code> 在 −1 连续。</p><p><b>单侧连续</b>：右连续指 <code>lim_{x→c⁺} f(x) = f(c)</code>，左连续指 <code>lim_{x→c⁻} f(x) = f(c)</code>；f 在 c 连续 ⟺ 既左连续又右连续。</p><p>源文件例子：Heaviside 函数 <code>H(x) = 1</code>（<code>x ≥ 0</code>）、<code>0</code>（<code>x &lt; 0</code>）。<code>lim_{x→0⁺} H = 1 = H(0)</code>，故右连续；<code>lim_{x→0⁻} H = 0 ≠ H(0)</code>，故左不连续，因此 H 在 0 处不连续。</p><p>源文件分段例子：<code>f(x) = x²</code>（<code>x ≤ 1</code>）、<code>2x − 1</code>（<code>x &gt; 1</code>），检查 <code>x = 1</code>：左极限 <code>lim x² = 1</code>，右极限 <code>lim (2x−1) = 1</code>，且 <code>f(1) = 1</code>，三者相等，故在 1 处连续。</p><p><b>间断点四分类</b>（第一类：两个单侧极限都存在；第二类：至少一侧不存在）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>类型</th><th>特征</th><th>典型例子</th></tr><tr><td>可去 removable</td><td>左右极限存在且相等，但 f(c) 无定义或不等</td><td><code>(x²−1)/(x−1)</code> 在 <code>x = 1</code></td></tr><tr><td>跳跃 jump</td><td>左右极限都存在但不相等</td><td><code>sgn(x)</code> 在 <code>x = 0</code></td></tr><tr><td>无穷 infinite</td><td>至少一侧极限为 ±∞（竖直渐近线）</td><td><code>1/x</code> 在 <code>x = 0</code></td></tr><tr><td>振荡 oscillating</td><td>极限不存在且不为无穷</td><td><code>sin(1/x)</code> 在 <code>x = 0</code></td></tr></table></div><h3 id="s18">2.17 区间上的连续性与两个存在性定理</h3><p>函数在区间上连续指在区间内每点连续；对闭区间 <code>[a, b]</code>，还要求在左端点<b>右连续</b>、在右端点<b>左连续</b>。例如 <code>√x</code> 在 <code>[0, ∞)</code> 连续：在 0 处 <code>lim_{x→0⁺} √x = 0 = √0</code>（右连续），在每点 <code>x₀ &gt; 0</code> 处 <code>lim √x = √x₀</code>。</p><p><b>常见连续函数</b>：多项式（处处连续）；有理函数（在其定义域上连续）；有理幂 <code>x^{m/n}</code>（在定义域上）；六个三角函数（在定义域上，间断点只出现在分母为零处）；绝对值函数（处处连续）。</p><p><b>最值定理</b>（Extreme Value Theorem，也叫 Max-Min Theorem）：若 f 在闭区间 <code>[a, b]</code> 上连续，则 f 在该区间上取到最大值 M 与最小值 m。三个条件缺一不可，源文件给了三个反例：</p><ul><li>开区间 <code>f(x) = x</code> 在 <code>(0, 1)</code>：连续但无最大也无最小（端点被挖掉）</li><li>不连续 <code>f(x) = x</code>（<code>0 ≤ x &lt; 1</code>）、<code>f(x) = 0</code>（<code>x = 1</code>）：在 <code>[0, 1]</code> 上无最大值</li><li>无界区间 <code>f(x) = 1/x</code> 在 <code>(0, 1]</code>：连续但无最大值</li></ul><p><b>介值定理</b>（Intermediate Value Theorem）：若 f 在 <code>[a, b]</code> 上连续，k 介于 <code>f(a)</code> 与 <code>f(b)</code> 之间，则存在 <code>c ∈ (a, b)</code> 使 <code>f(c) = k</code>。几何上：连续曲线要从一个高度走到另一个高度，必须经过中间每个高度。</p><p>源文件应用：证明 <code>x³ − x − 1 = 0</code> 在 <code>[1, 2]</code> 内有解。令 <code>f(x) = x³ − x − 1</code>；<code>f(1) = −1 &lt; 0</code>，<code>f(2) = 5 &gt; 0</code>；f 处处连续，故在 <code>[1, 2]</code> 连续；由介值定理（取 <code>k = 0</code>），存在 <code>c ∈ (1, 2)</code> 使 <code>f(c) = 0</code>。</p><h3 id="s19">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/100e3a10c502bb6be932.webp" loading="lazy" alt="EMI_Week2_Lecture1 p27" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week2_Lecture1-p27.jpg"><figcaption>EMI_Week2_Lecture1 · 第 27 页</figcaption></figure><figure><img src="../../assets/optimized/cbba6fd447a986b5548a.webp" loading="lazy" alt="EMI_Week2_Lecture1 p1" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week2_Lecture1-p01.jpg"><figcaption>EMI_Week2_Lecture1 · 第 1 页</figcaption></figure><figure><img src="../../assets/optimized/ee5c7d32a428198f48c3.webp" loading="lazy" alt="EMI_Week2_Lecture2 p1" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week2_Lecture2-p01.jpg"><figcaption>EMI_Week2_Lecture2 · 第 1 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>limit of a function</td><td>函数极限</td><td>lim_{x→a} f(x) = L if f(x) can be made arbitrarily close to L.</td></tr><tr><td>epsilon-delta definition</td><td>ε-δ 定义</td><td>For every ε > 0 there is δ > 0 such that 0 < |x−a| < δ forces |f(x)−L| < ε.</td></tr><tr><td>difference quotient</td><td>差商</td><td>The average rate of change (f(x+h) − f(x))/h.</td></tr><tr><td>instantaneous velocity</td><td>瞬时速度</td><td>The limit of average velocity as the time interval shrinks to zero.</td></tr><tr><td>one-sided limit</td><td>单侧极限</td><td>Left and right limits; the two-sided limit exists iff they agree.</td></tr><tr><td>indeterminate form 0/0</td><td>0/0 未定式</td><td>Substitution gives 0/0; simplify by factoring or rationalizing first.</td></tr><tr><td>rationalizing</td><td>有理化</td><td>Multiply by the conjugate to remove a square-root difference.</td></tr><tr><td>squeeze theorem</td><td>夹逼定理</td><td>If g ≤ f ≤ h and both bounds tend to L, then f tends to L.</td></tr><tr><td>infinite limit</td><td>无穷极限</td><td>Values grow without bound; ∞ is a description, not a number.</td></tr><tr><td>vertical asymptote</td><td>竖直渐近线</td><td>x = a where a one-sided limit is ±∞.</td></tr><tr><td>horizontal asymptote</td><td>水平渐近线</td><td>y = L where f(x) → L as x → ±∞.</td></tr><tr><td>oblique asymptote</td><td>斜渐近线</td><td>y = ax + b appearing when deg P = deg Q + 1.</td></tr><tr><td>continuity at a point</td><td>点连续</td><td>f(c) defined, the limit exists, and the two are equal.</td></tr><tr><td>removable discontinuity</td><td>可去间断</td><td>One-sided limits agree but f(c) is missing or mismatched.</td></tr><tr><td>intermediate value theorem</td><td>介值定理</td><td>A continuous function on [a, b] takes every value between f(a) and f(b).</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p3–p7）　石块自由下落 s(t) = 4.9t²，求 (a) 前 2 秒的平均速度；(b) 1 到 2 秒的平均速度；(c) t = 1 秒的瞬时速度。</div><p>(a) <code>(s(2) − s(0))/(2 − 0) = (19.6 − 0)/2 = 9.8</code> m/s。</p><p>(b) <code>(s(2) − s(1))/(2 − 1) = (19.6 − 4.9)/1 = 14.7</code> m/s。两者不同，说明「平均」不能代表「瞬时」。</p><p>(c) 取区间 <code>[1, 1+h]</code>：<code>Δs/Δh = (4.9(1+h)² − 4.9)/h = (9.8h + 4.9h²)/h = 9.8 + 4.9h</code>。</p><p>表中 h = 1, 0.1, 0.01, 0.001, 0.0001 时比值依次为 14.7、10.29、9.849、9.8049、9.80049，趋于 9.8。</p><p>令 <code>h → 0</code>：<code>lim (9.8 + 4.9h) = 9.8</code> m/s。一般地，<code>v(t) = lim (4.9(t+h)² − 4.9t²)/h = 9.8t</code>，即 <code>v = gt</code>（<code>g = 9.8</code>），与物理结论一致。</p></div><div class="qa"><div class="q">例 2（源文件 p12）　用 ε-δ 定义证明 lim_{x→4} (3x − 1) = 11。</div><p><b>分析：</b>要证对每个 <code>ε &gt; 0</code> 存在 <code>δ &gt; 0</code>，使 <code>0 &lt; |x − 4| &lt; δ ⟹ |(3x−1) − 11| &lt; ε</code>。</p><p><b>化简目标不等式：</b><code>|3x − 12| = 3|x − 4| &lt; ε ⟺ |x − 4| &lt; ε/3</code>，可见 δ 应取 ε/3。</p><p><b>正式书写：</b>任给 <code>ε &gt; 0</code>，取 <code>δ = ε/3</code>。则当 <code>0 &lt; |x − 4| &lt; δ</code> 时，有 <code>|(3x−1) − 11| = 3|x − 4| &lt; 3δ = ε</code>。由定义，<code>lim_{x→4}(3x−1) = 11</code>。</p><p><b>方法迁移：</b>线性函数 <code>f(x) = mx + b</code> 的证明永远形如 <code>|f(x) − L| = |m||x − a|</code>，取 <code>δ = ε/|m|</code>。非线性情形需要先限制 δ ≤ 1 把 |x − a| 的因子估成常数，这属于后续课程内容。</p></div><div class="qa"><div class="q">例 3（源文件 p20–p21）　求下列极限：(a) lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)；(b) lim_{x→4} (√x − 2)/(x² − 16)。</div><p>(a) 代入 <code>x = −2</code>：分子 <code>4 − 2 − 2 = 0</code>，分母 <code>4 − 10 + 6 = 0</code>，是 0/0。分解：分子 <code>(x+2)(x−1)</code>，分母 <code>(x+2)(x+3)</code>。约去 <code>x+2</code>（<code>x ≠ −2</code> 时合法）：</p><p><code>lim (x−1)/(x+3) = (−2−1)/(−2+3) = −3</code>。</p><p>(b) 代入 <code>x = 4</code>：<code>√4 − 2 = 0</code>、<code>16 − 16 = 0</code>，是 0/0。同乘共轭 <code>(√x + 2)</code>：</p><p><code>(√x − 2)(√x + 2)/((x−4)(x+4)(√x + 2)) = (x − 4)/((x−4)(x+4)(√x+2)) = 1/((x+4)(√x+2))</code>。</p><p>代入 <code>x = 4</code>：<code>1/(8 · 4) = 1/32</code>。</p><p><b>分辨技巧：</b>多项式型 0/0 先分解；含根号型 0/0 先乘共轭；两者都含根号且含多项式时，先有理化再分解。</p></div><div class="qa"><div class="q">例 4（源文件 p11–p17）　求 (a) lim_{x→∞} (√(x² − x) − x)；(b) 求 f(x) = (x³ − x²)/(x² + 1) 在无穷处的极限与斜渐近线。</div><p>(a) 是 <code>∞ − ∞</code> 型。同乘共轭：<code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除 x（x &gt; 0）：<code>−1/(√(1 − 1/x) + 1) → −1/2</code>。</p><p>(b) 次数 m = 3、n = 2，<code>m = n + 1</code>，故有斜渐近线。做除法：<code>x³ − x² = (x − 1)(x² + 1) + (1 − x)</code>，即 <code>f(x) = x − 1 + (1 − x)/(x² + 1)</code>。</p><p>因为 <code>(1−x)/(x²+1) → 0</code>，斜渐近线是 <code>y = x − 1</code>；且 <code>lim_{x→∞} f = ∞</code>、<code>lim_{x→−∞} f = −∞</code>。同时 <code>x² + 1 &gt; 0</code> 无实零点，故没有竖直渐近线。</p><p><b>验算：</b>取 <code>x = 10</code>，<code>f(10) = 900/101 ≈ 8.91</code>，而 <code>x − 1 = 9</code>，差 <code>≈ 0.09</code>，随 x 增大而趋于 0，符合斜渐近线的定义。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>求 <code>lim_{x→3}(2x² − 5x + 1)</code>。</li><li>求 <code>lim_{x→−2}(x² + 4x + 4)/(x + 2)</code>。</li><li>求 <code>lim_{x→2}(1/(x + 2) + 1/(x² − 4))</code>，并说明理由。</li><li>求 <code>y = (2x² − 7x + 3)/(x² − 9)</code> 的全部渐近线，并写出 <code>x → −3⁺</code> 时的极限。</li><li>判断 <code>f(x) = (x² − 4)/(x − 2)</code>（<code>x ≠ 2</code>）、<code>f(2) = 3</code> 在 <code>x = 2</code> 处是否连续；若不连续，指出类型并给出修补方式。</li><li>证明方程 <code>x³ + x − 3 = 0</code> 在 <code>[1, 2]</code> 内至少有一个根。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 多项式直接代入：<code>2·9 − 15 + 1 = 4</code>。</p><p><b>2.</b> 代入得 0/0。分子 <code>(x+2)²</code>，约去一个 <code>x+2</code> 后为 <code>x+2</code>，代入 −2 得 <b>0</b>。</p><p><b>3.</b> <code>x → 2</code> 时第一项 <code>→ 1/4</code>；第二项 <code>1/(x²−4) = 1/((x−2)(x+2))</code>，分母趋于 0 而分子为 1，故趋于 <code>±∞</code>（右侧 +∞、左侧 −∞）。两项之和无界，故 <b>极限不存在</b>（属于无穷型间断）。</p><p><b>4.</b> 分解：<code>(2x−1)(x−3)/((x−3)(x+3)) = (2x−1)/(x+3)</code>，<code>x ≠ 3</code>。水平渐近线 <code>y = 2</code>（次数相等，首项系数比 2/1）；竖直渐近线 <code>x = −3</code>（<code>x = 3</code> 是可去的洞）；无斜渐近线。<code>x → −3⁺</code>：分子 <code>→ −7</code>，分母 <code>→ 0⁺</code>，故极限 <code>−∞</code>。</p><p><b>5.</b> <code>lim_{x→2}(x²−4)/(x−2) = lim (x+2) = 4</code>，但 <code>f(2) = 3 ≠ 4</code>，故不连续；属于<b>可去间断</b>。修补方式：把 <code>f(2)</code> 重新定义为 4。</p><p><b>6.</b> 令 <code>f(x) = x³ + x − 3</code>，多项式故在 <code>[1, 2]</code> 连续；<code>f(1) = −1 &lt; 0</code>，<code>f(2) = 7 &gt; 0</code>；由介值定理存在 <code>c ∈ (1, 2)</code> 使 <code>f(c) = 0</code>。要点：必须写出「连续」「端点异号」「介值定理」三句话。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>①0/0 型的因式分解与有理化（每年必考两小题）；②无穷远处的有理函数极限与三条渐近线；③用三条件判断连续性并给间断点分类（可去/跳跃/无穷/振荡）；④介值定理证根存在（三步书写：连续、端点异号、结论）。</div><div class="callout warn"><b>易错 1</b><b>∞ − ∞ 与 0 · ∞ 要变形</b>。看到 <code>∞ − ∞</code> 就同乘共轭或通分，看到 <code>0 · ∞</code> 就改写成分式；原样代入只会得到无意义的符号。</div><div class="callout warn"><b>易错 2</b><b>√(x²) = |x|</b>。在 <code>x → −∞</code> 时符号必须翻转，否则 <code>x/√(x²+1)</code> 的左极限会被错算成 +1。</div><div class="callout warn"><b>易错 3</b><b>约分后忘记原定义域</b>。约去公因子只对 <code>x ≠ a</code> 成立；该点要么是「洞」（可去间断），要么还要保留竖直渐近线，判断渐近线时必须先约分再找分母零点。</div><div class="callout tip"><b>进阶</b>把「求极限」当成一次诊断：先代入看是否 0/0 或 ∞/∞，再看表达式结构（多项式 / 根式 / 振荡 / 无穷远），最后选工具（分解、共轭、夹逼、最高次项）。诊断顺序固定下来，速度会快一倍。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">方法与清单</h2><h3 id="s20">求极限四步</h3><ol class="steps"><li>直接代入：能算出有限值就结束（多项式、分母非零的有理函数）</li><li>判断类型：0/0 则分解或有理化；∞/∞ 则比较次数；∞−∞ 则共轭或通分；0·∞ 则改写成分式</li><li>含振荡因子（sin、cos）时改用夹逼定理，先写出界</li><li>分段点、含绝对值或根号端点处，分左右极限各自计算，再比较是否相等</li></ol><h3 id="s21">求全部渐近线（三步）</h3><ol class="steps"><li>先约去分子分母的公因子，剩下的分母零点给出竖直渐近线</li><li>比较分子分母次数：m &lt; n 或 m = n 给水平渐近线；m = n + 1 做除法得斜渐近线</li><li>分别对 x → ±∞ 检查，两侧可以有不同的水平（或斜）渐近线</li></ol><h3 id="s22">判断连续性并分类（三步）</h3><ol class="steps"><li>算 <code>f(c)</code>：无定义则已可判定不连续（再看极限判断是可去、无穷还是振荡）</li><li>算左右极限：都存在但不相等 → 跳跃；至少一侧为 ±∞ → 无穷；不存在且非无穷 → 振荡</li><li>左右极限相等但不等于 <code>f(c)</code> → 可去，说明如何重新定义 <code>f(c)</code> 即可修补</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p2</td><td>微分与积分的定义、极限作为共同基础</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p3–p7</td><td>平均速度、瞬时速度、差商与表格逼近、v = 9.8t 的推导</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p8–p10</td><td>内接正多边形逼近圆周长与圆面积</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p11–p14</td><td>ε-δ 定义、lim(3x−1)=11 的证明、(x²−1)/(x−1) 的极限</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p15–p16</td><td>单侧极限、双侧极限存在性、sgn 在 0 处的极限</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p17–p21</td><td>极限四则与幂法则、多项式与有理函数、0/0 型的分解与有理化</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p22–p25</td><td>夹逼定理、sin x/x 在无穷处、x² sin(1/x) 在 0 处</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p26–p27</td><td>极限不存在的两类典型（单侧不等、无限振荡）</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p2–p6</td><td>无穷极限、竖直渐近线、1/x² 与 1/x 的单双侧行为</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p7–p10</td><td>无穷远极限、水平渐近线、x/√(x²+1)、√(x²−x)−x 的有理化</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p11–p17</td><td>多项式最高次项主导、有理函数三类次数关系与斜渐近线</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p18–p19</td><td>渐近线总判据、(2x²−7x+3)/(x²−9) 的完整分析</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p20–p29</td><td>连续三条件、四个反例图、保连续运算、复合与单侧连续、分段检查、间断点分类、区间连续</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p30–p33</td><td>常见连续函数、最值定理三个反例、介值定理与 x³−x−1 的根</td></tr><tr><td>（跳过）Topic 2/Lecture One.html、Lecture Two.html 与 _info/*.html</td><td>—</td><td>均为 Moodle 登录页快照，无可读正文</td></tr><tr><td>（拓展）</td><td>—</td><td>把 0·∞ 与 ∞−∞ 的改写规则系统化、斜渐近线的除法判定为衔接性补充，源文件以例题形式出现</td></tr></table></section><div class="lnav"><a class="prev" href="t1-preliminaries-functions.html">← 第 1 章 · 预备知识、直线与函数</a><a class="next" href="t3-derivatives-rules.html">第 2 章 · 导数定义与求导法则 →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">方法与清单</h2><h3 id="s21">求极限四步</h3><ol class="steps"><li>直接代入：能算出有限值就结束（多项式、分母非零的有理函数）</li><li>判断类型：0/0 则分解或有理化；∞/∞ 则比较次数；∞−∞ 则共轭或通分；0·∞ 则改写成分式</li><li>含振荡因子（sin、cos）时改用夹逼定理，先写出界</li><li>分段点、含绝对值或根号端点处，分左右极限各自计算，再比较是否相等</li></ol><h3 id="s22">求全部渐近线（三步）</h3><ol class="steps"><li>先约去分子分母的公因子，剩下的分母零点给出竖直渐近线</li><li>比较分子分母次数：m &lt; n 或 m = n 给水平渐近线；m = n + 1 做除法得斜渐近线</li><li>分别对 x → ±∞ 检查，两侧可以有不同的水平（或斜）渐近线</li></ol><h3 id="s23">判断连续性并分类（三步）</h3><ol class="steps"><li>算 <code>f(c)</code>：无定义则已可判定不连续（再看极限判断是可去、无穷还是振荡）</li><li>算左右极限：都存在但不相等 → 跳跃；至少一侧为 ±∞ → 无穷；不存在且非无穷 → 振荡</li><li>左右极限相等但不等于 <code>f(c)</code> → 可去，说明如何重新定义 <code>f(c)</code> 即可修补</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p2</td><td>微分与积分的定义、极限作为共同基础</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p3–p7</td><td>平均速度、瞬时速度、差商与表格逼近、v = 9.8t 的推导</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p8–p10</td><td>内接正多边形逼近圆周长与圆面积</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p11–p14</td><td>ε-δ 定义、lim(3x−1)=11 的证明、(x²−1)/(x−1) 的极限</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p15–p16</td><td>单侧极限、双侧极限存在性、sgn 在 0 处的极限</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p17–p21</td><td>极限四则与幂法则、多项式与有理函数、0/0 型的分解与有理化</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p22–p25</td><td>夹逼定理、sin x/x 在无穷处、x² sin(1/x) 在 0 处</td></tr><tr><td>Topic 2/EMI_Week2_Lecture1.pdf</td><td>p26–p27</td><td>极限不存在的两类典型（单侧不等、无限振荡）</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p2–p6</td><td>无穷极限、竖直渐近线、1/x² 与 1/x 的单双侧行为</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p7–p10</td><td>无穷远极限、水平渐近线、x/√(x²+1)、√(x²−x)−x 的有理化</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p11–p17</td><td>多项式最高次项主导、有理函数三类次数关系与斜渐近线</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p18–p19</td><td>渐近线总判据、(2x²−7x+3)/(x²−9) 的完整分析</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p20–p29</td><td>连续三条件、四个反例图、保连续运算、复合与单侧连续、分段检查、间断点分类、区间连续</td></tr><tr><td>Topic 2/EMI_Week2_Lecture2.pdf</td><td>p30–p33</td><td>常见连续函数、最值定理三个反例、介值定理与 x³−x−1 的根</td></tr><tr><td>（跳过）Topic 2/Lecture One.html、Lecture Two.html 与 _info/*.html</td><td>—</td><td>均为 Moodle 登录页快照，无可读正文</td></tr><tr><td>（拓展）</td><td>—</td><td>把 0·∞ 与 ∞−∞ 的改写规则系统化、斜渐近线的除法判定为衔接性补充，源文件以例题形式出现</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="t1-preliminaries-functions.html"><span>上一讲</span><strong>第 1 章 · 预备知识、直线与函数</strong></a><a data-sequence="parent" href="part-1.html"><span>返回目录</span><strong>第 1 章 函数、极限与连续性</strong></a><a data-sequence="next" href="t3-derivatives-rules.html"><span>下一讲</span><strong>第 2 章 · 导数定义与求导法则</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

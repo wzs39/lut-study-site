@@ -8,204 +8,362 @@
 <title>第 4 讲 · 需求工程 · 30361</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-2.html">第 2 章 需求、建模与架构</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">4.1 需求工程是什么</a><a class="toc-l3" href="#s3">4.2 一条需求可以有多抽象</a><a class="toc-l3" href="#s4">4.3 用户需求与系统需求</a><a class="toc-l3" href="#s5">4.4 干系人</a><a class="toc-l3" href="#s6">4.5 敏捷与需求</a><a class="toc-l3" href="#s7">4.6 功能需求、非功能需求、领域需求</a><a class="toc-l3" href="#s8">4.7 完整性与一致性：原则上要求，实践中做不到</a><a class="toc-l3" href="#s9">4.8 非功能需求为什么更关键</a><a class="toc-l3" href="#s10">4.9 目标与可验证需求</a><a class="toc-l3" href="#s11">4.10 需求工程的四个通用活动</a><a class="toc-l3" href="#s12">4.11 需求获取与分析</a><a class="toc-l3" href="#s13">4.12 获取技术：访谈、民族志、场景</a><a class="toc-l3" href="#s14">4.13 需求规格：怎么写</a><a class="toc-l3" href="#s15">4.14 用例（use cases）</a><a class="toc-l3" href="#s16">4.15 软件需求文档</a><a class="toc-l3" href="#s17">4.16 需求验证</a><a class="toc-l3" href="#s18">4.17 需求变更与需求管理</a><a class="toc-l2" href="#s19">写与查需求的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a class="toc-l3" href="l04-requirements-engineering.html">▸ 第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 4 讲 · 需求工程</h1><p class="lead">Requirements Engineering <span class="badge mute">30361</span> <span class="badge mute">第 4 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 需求、建模与架构</a></p><p class="src">原始文件：<code>11_Week 5/1_SE - Lecture 4 - 2026.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>需求工程是整门课最「贵」的一讲：课件给出一个量化结论——交付后再修一个需求错误的成本，可能是修一个实现错误的 <b>100 倍</b>。因此这一讲不只是概念，而是一套「把错误挡在编码之前」的方法：如何找对人、如何问出真需求、如何写得可验证、如何验证写对了、如何管理后续变更。</p><p>与前后的衔接：第 3 讲把「规格」列为四项活动之一，本讲把它展开；第 5 讲的建模（用例图、顺序图）是需求表达的工具；第 13 讲的课程项目正是产出一份需求规格说明书，本讲与第 12 讲的写作规范直接服务于它。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>区分用户需求与系统需求，并说明两类文档的读者差异</li><li>把一条需求正确归类为功能需求、非功能需求或领域需求</li><li>把一个模糊的「目标（goal）」改写成可验证的非功能需求</li><li>为给定项目设计访谈与观察（民族志）方案，并指出访谈的三个典型问题</li><li>对一份需求规格做五维检查（validity, consistency, completeness, realism, verifiability）</li><li>描述需求变更管理的三个阶段，并说明可追溯性在其中的作用</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 需求工程是什么</h3><p>课件定义：“The process of establishing the services that a customer requires from a system and the constraints under which the system operates and developed.”（确立客户需要系统提供哪些服务，以及系统运行与开发所受约束的过程。）而在该过程中产生的「系统服务的描述与约束」，就是<b>系统需求</b>（system requirements）。</p><p>课件另给一个更工程化的定义：需求工程是在系统设计的每个阶段对需求进行<b>形式化与定义</b>的过程，包括客户需求、设计需求与测试需求；它是对软件系统需求进行定义、创建与验证的<b>系统而严格</b>的方法，目的是确保软件满足用户需要，并按时、按预算、按质量交付。</p><h3 id="s3">4.2 一条需求可以有多抽象</h3><p>课件指出：需求可以是「高层抽象的服务陈述或系统约束」，也可以是「详细的数学化功能规格」。这不是失误，而是因为需求有<b>双重功能</b>：</p><ul><li>它可能是<b>投标</b>的基础——因此必须开放给不同承包商作不同解释；</li><li>它可能是<b>合同本身</b>的基础——因此必须被详细定义；</li><li>这两种陈述都叫「需求」。</li></ul><p>Davis 的经典表述把这件事说透了：</p><p>“If a company wishes to let a contract for a large software development project, it must define its needs in a sufficiently abstract way that a solution is not pre-defined … Once a contract has been awarded, the contractor must write a system definition for the client in more detail so that the client understands and can validate what the software will do. Both of these documents may be called the requirements document for the system.”（若公司要为大型项目招标，必须以足够抽象的方式定义需求，使方案不被预先锁定……中标后，承包方必须为客户写出更详细的系统定义，使客户理解并能验证软件将做什么。这两份文件都可以称为该系统的需求文档。）</p><p>这段话解释了为什么同一项目会有「招标用需求」与「合同用需求」两套文本，也解释了为什么第 13 讲的项目模板要求「需求要可验收」——课程项目模拟的是合同后的详细规格。</p><h3 id="s4">4.3 用户需求与系统需求</h3><table><tr><th>类型</th><th>英文定义</th><th>读者</th><th>形式</th></tr><tr><td>用户需求 user requirements</td><td>Statements in natural language plus diagrams of the services the system provides and its operational constraints. Written for customers.</td><td>客户、最终用户、业务方</td><td>自然语言 + 图，避免技术细节</td></tr><tr><td>系统需求 system requirements</td><td>A structured document setting out detailed descriptions of the system’s functions, services and operational constraints. Defines what should be implemented so may be part of a contract.</td><td>开发者、测试、架构师、合同方</td><td>结构化文档，含详细功能与非功能约束</td></tr></table><p>课件用一张「不同需求类型的读者」图说明：用户需求写给客户看，系统需求写给技术方看，两者不能混写。混写的典型后果是「客户看不懂技术条款，开发看不懂业务意图」。</p><h3 id="s5">4.4 干系人</h3><p>干系人定义：“Any person or organization who is affected by the system in some way and so who has a legitimate interest.”（以某种方式受系统影响、因而具有正当利益的任何个人或组织。）课件列了四类：最终用户（end users）、系统管理者（system managers）、系统所有者（system owners）、外部干系人（external stakeholders）。</p><div class="callout warn"><b>易错</b>干系人 ≠ 用户。系统所有者出钱、系统管理者运维、外部干系人（监管机构、工会、合作伙伴）可能从不使用系统，但能一票否决。第 13 讲的评分明确要求「识别重要干系人群体」，只写「用户」会失分。</div><h3 id="s6">4.5 敏捷与需求</h3><p>课件如实呈现了敏捷对需求的挑战：许多敏捷方法认为「产出详细系统需求是浪费时间」，因为需求变化太快，需求文档总是过时；敏捷通常采用<b>增量式需求工程</b>，用「用户故事」表达需求。这对业务系统是实用的，但对「需要交付前分析的系统」或「多个团队共同开发的系统」是有问题的。</p><p>为什么有问题？因为交付前分析（如安全关键系统的危害分析）必须在实现前完成；多团队开发需要共享的、稳定的接口定义。用户故事粒度太小、太口语化，无法承担这两类任务。这一点在第 12 讲 Sasken 案例（客户要求「完整产品」而非「增量故事」）中会具体呈现。</p><h3 id="s7">4.6 功能需求、非功能需求、领域需求</h3><table><tr><th>类型</th><th>英文定义</th><th>例子</th></tr><tr><td>功能需求 functional requirements</td><td>Statements of services the system should provide, how the system should react to particular inputs and how the system should behave. May state what the system should not do.</td><td>系统应向用户开具发票；系统应拒绝超过信用额度的订单</td></tr><tr><td>非功能需求 non-functional requirements</td><td>Constraints on the services or functions offered by the system such as timing constraints, constraints on the development process, standards. Often apply to the system as a whole rather than individual features.</td><td>响应时间不超过 2 秒；必须使用公司指定的 IDE；须符合 WCAG 2.1 AA</td></tr><tr><td>领域需求 domain requirements</td><td>Constraints on the system from the domain of operation.</td><td>医疗系统须符合病历保存年限法规；航空系统须符合 ARINC 653 分区要求</td></tr></table><p>功能需求的细节：它描述功能或系统服务，取决于软件类型、预期用户、系统使用场景；功能性的<b>用户需求</b>可以是高层陈述（「系统应支持排班」），但功能性的<b>系统需求</b>必须详细描述服务（「系统应在 3 秒内为 200 名护士生成满足最大连续工时 5 小时的排班，冲突时给出替代方案」）。</p><h3 id="s8">4.7 完整性与一致性：原则上要求，实践中做不到</h3><p>课件明确：原则上需求应既<b>完整</b>（complete，包含所有需要设施的说明）又<b>一致</b>（consistent，设施描述之间无冲突或矛盾）。但实践中，由于系统与环境的复杂性，<b>不可能</b>产出完整且一致的需求文档。</p><p>这句话的考试价值在于：它解释了为什么需求管理（4.13）是必需的，也解释了为什么「需求文档必须完美才能开工」是伪命题。工程答案是：接受不完整，但用可追溯性与变更控制来管理不完整。</p><h3 id="s9">4.8 非功能需求为什么更关键</h3><p>非功能需求定义系统属性与约束（响应时间、存储要求、I/O 设备能力、系统表示等）；过程需求也可被规定（指定 IDE、编程语言或开发方法）。课件给出一个强判断：<b>非功能需求可能比功能需求更关键；若不满足，系统可能变得无用</b>。</p><p>原因是功能可以被绕过，而非功能不能。用户发现少了某个功能，会用 Excel 补上；但系统不可靠或太慢，用户就完全无法达成目标（第 10 讲会以「主观质量主要由非功能特性决定」再次论证）。</p><p>非功能需求对架构的影响：它们往往影响<b>整体体系结构</b>而非单个构件。例如为满足性能要求，你可能必须把系统组织成「最小化构件间通信」的形式。此外，一条非功能需求（如安全需求）可能<b>派生出一批功能需求</b>（需要哪些服务来实现安全），也可能<b>限制既有需求</b>（某些功能因安全策略被禁止）。</p><p>非功能需求的三种分类：</p><table><tr><th>分类</th><th>英文</th><th>含义</th><th>例子</th></tr><tr><td>产品需求</td><td>product requirements</td><td>规定交付的产品必须以某种方式表现</td><td>响应时间、可用性、内存占用</td></tr><tr><td>组织需求</td><td>organisational requirements</td><td>源于组织的政策与流程</td><td>必须使用公司指定的开发流程与工具、必须遵循文档模板</td></tr><tr><td>外部需求</td><td>external requirements</td><td>源于系统及其开发过程之外的因素</td><td>法规、会计标准、互操作标准</td></tr></table><h3 id="s10">4.9 目标与可验证需求</h3><p>非功能需求很难精确陈述，不精确的需求难以验证。课件区分两个词：</p><ul><li><b>目标 goal</b>：用户的总体意图，如「易用」。</li><li><b>可验证的非功能需求 verifiable non-functional requirement</b>：使用某种可被客观测试的度量来陈述。</li></ul><p>目标是开发者理解用户意图的有用信息，但不能作为验收标准。改写方法：给目标加上「度量 + 条件 + 判定阈值」。例如「易用」→「新用户在无培训情况下，5 分钟内完成首次下单，成功率 ≥ 90%（可用性测试，n ≥ 20）」。</p><div class="callout tip"><b>技巧</b>把目标变成可验证需求的三步：① 找出可观测的量（时间、比例、次数、容量）；② 加上测量条件（在什么负载、什么设备、什么用户群）；③ 给出阈值与判定方式。三步缺一，验收时就会吵架。</div><h3 id="s11">4.10 需求工程的四个通用活动</h3><p>不同应用领域、不同人员、不同组织的过程差异很大，但所有过程都有若干通用活动：<b>需求获取</b>（elicitation）、<b>需求分析</b>（analysis）、<b>需求验证</b>（validation）、<b>需求管理</b>（management）。实践中它们是<b>迭代交织</b>的，课件用「需求工程过程的螺旋视图」表示：每一圈都从获取开始，经分析、规格，再进入下一轮。</p><h3 id="s12">4.11 需求获取与分析</h3><p>获取（elicitation，也叫 requirements discovery）指技术人员与客户合作，了解应用领域、系统应提供哪些服务、系统的运行约束。参与者可能包括最终用户、管理者、维护工程师、领域专家、工会等。</p><p>五个典型问题（高频考点）：</p><ol><li>干系人<b>并不知道自己真正想要什么</b>；</li><li>干系人用<b>自己的术语</b>表达需求；</li><li>不同干系人的需求可能<b>相互冲突</b>；</li><li>组织与政治因素会影响系统需求；</li><li>需求在分析过程中<b>还会变化</b>——新干系人出现、业务环境变化。</li></ol><p>获取过程的四个活动：</p><table><tr><th>活动</th><th>英文</th><th>做什么</th></tr><tr><td>需求发现</td><td>requirements discovery</td><td>与干系人互动，发现其需求；领域需求也在此阶段被发现</td></tr><tr><td>分类与组织</td><td>requirements classification and organisation</td><td>把相关需求分组，组织成连贯的簇</td></tr><tr><td>排优先级与协商</td><td>prioritisation and negotiation</td><td>排定优先级，解决需求冲突</td></tr><tr><td>需求规格</td><td>requirements specification</td><td>把需求文档化，并输入螺旋的下一轮</td></tr></table><h3 id="s13">4.12 获取技术：访谈、民族志、场景</h3><p><b>访谈（interviewing）</b>是最常用的技术。类型有二：<b>封闭式</b>（closed，基于预先确定的问题清单）与<b>开放式</b>（open，与干系人自由探讨各种议题）。实践中通常是二者的混合。</p><p>访谈的实践要点：适合获得「干系人做什么、如何与系统交互」的总体理解；访谈者必须<b>不带先入之见</b>；要主动用「建议某些需求」的方式引导用户开口，而不是只问「你想要什么」——因为用户往往说不出抽象需求，但能对具体建议作出反应。</p><p>访谈的三个问题：领域专家使用的语言，需求工程师听不懂；访谈<b>不适合获取领域需求</b>——工程师不理解专业术语，而有些领域知识太熟悉，人们觉得「不值得说」或根本说不出来。</p><p><b>民族志（ethnography）</b>：社会科学家花相当长时间观察并分析人们实际如何工作。优点是人们不必解释或陈述自己的工作；能观察到重要的社会与组织因素；研究表明<b>实际工作总比简单系统模型所暗示的更丰富、更复杂</b>。</p><p>民族志能发现两类需求：来自「人们实际怎么做」（而非流程文件说应该怎么做）的需求；来自「协作与对他人活动的感知」（awareness）的需求——知道别人在做什么，会改变我们做事的顺序与方式。</p><p>局限：民族志适合理解<b>现有</b>过程，<b>无法识别应该新增哪些功能</b>。补救办法是<b>聚焦民族志</b>（focused ethnography）：把民族志与原型结合——原型开发产生的未解问题，正好聚焦民族志分析的方向。另一个问题是它研究的是既有实践，而这些实践可能有已失去意义的历史包袱。</p><p><b>故事与场景（stories and scenarios）</b>：场景与用户故事是「系统如何被使用」的真实例子；因为它们基于具体情境，干系人能把自己代入并评论。</p><p>场景是用户故事的<b>结构化形式</b>，应包含五要素：</p><ol><li>起始情境的描述（starting situation）；</li><li>正常事件流的描述（normal flow of events）；</li><li>可能出什么错的描述（what can go wrong）；</li><li>其他并发活动的信息（concurrent activities）；</li><li>场景结束时状态的描述（state when the scenario finishes）。</li></ol><h3 id="s14">4.13 需求规格：怎么写</h3><p>规格是把用户需求与系统需求写进需求文档的过程。用户需求必须让没有技术背景的最终用户与客户看懂；系统需求更详细、可含更多技术信息；需求可能是开发合同的一部分，因此必须尽可能完整。</p><p>五种表示法（课件表格）：</p><table><tr><th>表示法</th><th>说明</th><th>适用与局限</th></tr><tr><td>自然语言 natural language</td><td>用编号句子书写，每句表达一条需求</td><td>表达力强、直观、通用；但易歧义</td></tr><tr><td>结构化自然语言 structured natural language</td><td>在标准表单或模板上书写，每个字段提供需求某一方面的信息</td><td>一致性较好；对业务需求有时过于僵化</td></tr><tr><td>设计描述语言 design description languages</td><td>类似编程语言但更抽象，通过定义系统的操作模型来规定需求</td><td>现在很少使用；对接口规格仍有用</td></tr><tr><td>图形表示 graphical notations</td><td>图形模型 + 文字注释定义功能需求；常用 UML 用例图与顺序图</td><td>直观、便于沟通；细节需文字补充</td></tr><tr><td>数学规格 mathematical specifications</td><td>基于有限状态机、集合等数学概念</td><td>无歧义、可减少需求文档中的模糊；但客户难懂，成本高</td></tr></table><p><b>需求与设计不可分</b>：原则上需求说「做什么」，设计说「怎么做」；实践中二者不可分——体系结构可能被设计用来组织需求；系统可能与其他系统互操作而产生设计需求；为满足非功能需求而选用特定架构可能本身就是领域需求；这些也可能来自监管要求。</p><p>自然语言规格的写作指南（课件五条，考试常考）：</p><ul><li>发明一种标准格式，并对所有需求统一使用；</li><li>语言用法一致：<b>shall</b> 表示强制需求，<b>should</b> 表示期望需求；</li><li>用文本高亮标出需求的关键部分；</li><li>避免计算机行话；</li><li>为每条需求加入<b>理由（rationale）</b>，说明它为什么必要。</li></ul><p>结构化规格（structured specifications）：限制写作者的自由度，用标准方式书写需求。它对某些类型需求很有效，但对业务系统需求有时过于僵化。表单式规格（form-based）的字段包括：功能或实体的定义；输入及其来源；输出及其去向；计算所需信息及其他被使用的实体；要采取的动作；前置与后置条件（如适用）；函数的副作用（如有）。</p><h3 id="s15">4.14 用例（use cases）</h3><p>用例是 UML 中的一种场景：它识别交互中的<b>参与者</b>（actors）并描述交互本身。一组用例应描述与系统的<b>所有可能交互</b>；形式是「高层图形模型 + 更详细的表格描述」；UML 顺序图可用于补充细节，展示系统中事件处理的顺序。</p><p>用例表的标准字段（第 13 讲项目模板完全采用这套字段）：ID、名称与版本、参与者、前置条件、描述、异常、结果、其他需求。第 12 讲的 EXCEED 与第 13 讲的示例项目都用这套表格。</p><h3 id="s16">4.15 软件需求文档</h3><p>软件需求文档（SRS）是「对系统开发者所要求内容」的<b>正式陈述</b>；应同时包含用户需求的定义与系统需求的规格。</p><p>课件有一句加粗的警告：<b>它不是设计文档</b>。“It is NOT a design document. As far as possible, it should set out WHAT the system should do rather than HOW it should do it.”（它应尽可能说明系统该做什么，而不是怎么做。）</p><div class="callout exam"><b>必考</b>「SRS 不是设计文档」几乎年年出现。判卷要点：能否指出 SRS 写 WHAT、设计文档写 HOW，并给出一个「把 HOW 写进 SRS」的反例（如「用 Redis 缓存会话」属于设计决策，应写成「会话数据在服务重启后 30 分钟内不得丢失」）。</div><h3 id="s17">4.16 需求验证</h3><p>验证关注「需求是否定义了客户真正想要的系统」。为什么重要？因为需求错误代价极高：交付后修一个需求错误，可能是修一个实现错误的 <b>100 倍</b>。</p><p>五维检查（必须能背）：</p><table><tr><th>检查项</th><th>英文</th><th>问的问题</th></tr><tr><td>有效性</td><td>Validity</td><td>系统是否提供了最支持客户需要的功能？</td></tr><tr><td>一致性</td><td>Consistency</td><td>需求之间是否存在冲突？</td></tr><tr><td>完整性</td><td>Completeness</td><td>客户要求的所有功能是否都包含？</td></tr><tr><td>现实性</td><td>Realism</td><td>在给定预算与技术下，这些需求能实现吗？</td></tr><tr><td>可验证性</td><td>Verifiability</td><td>需求能被检查吗（是否有客观判据）？</td></tr></table><p>三种验证技术：<b>需求评审</b>（对需求做系统的人工分析）、<b>原型</b>（用可执行模型检查需求）、<b>测试用例生成</b>（为需求开发测试，以检查其可测试性）。第三种最容易被忽略：写不出测试，说明需求不可验证。</p><h3 id="s18">4.17 需求变更与需求管理</h3><p>需求必然变化，课件给了四个原因：系统安装后业务与技术环境总会变；付钱的人与使用的人很少是同一批人；大型系统用户群多样，需求与优先级可能冲突甚至矛盾；最终需求是折中，而经验表明「对不同用户的支持力度」常常需要重新平衡。</p><p>需求管理（requirements management）是在需求工程过程与系统开发过程中管理变化需求的过程。新需求会在开发中以及投入使用后出现。你需要：跟踪每条需求；维护依赖需求之间的<b>链接</b>（以便评估变更影响）；建立正式的变更提案流程，并把提案与系统需求关联。</p><p>变更管理的三个阶段：</p><ol><li><b>问题分析与变更规格</b>：分析问题或变更提案是否有效；把分析结果反馈给提出者，提出者可能给出更具体的提案，或撤回请求。</li><li><b>变更分析与成本核算</b>：利用<b>可追溯性信息</b>（traceability）与对系统需求的一般知识评估变更影响；分析完成后，决定是否继续该变更。</li><li><b>变更实现</b>：修改需求文档，必要时修改系统设计与实现。理想情况下文档的组织方式应使变更易于实施。</li></ol><p>注意第一阶段与第二阶段的区别：第一阶段判断「这个变更请求是否成立」，第二阶段判断「实施它要付什么代价」。两者都通过才进入实现。</p><div class="callout idea" data-ext="l04-requirements-engineering-0"><b>前后衔接</b><p>需求可以很抽象，也可以很详细，这不是失误而是双重功能：招标阶段要抽象到不锁定方案，中标后要详细到可验证，两者都叫需求文档，对应课程项目模拟的合同后详细规格。务必区分读者：用户需求写给客户，用自然语言加图；系统需求写给开发、测试与合同方，是结构化文档。干系人也不等于用户——出钱的所有者、运维的系统管理者、监管等外部干系人都有正当利益却未必直接使用系统。非功能需求常被忽视，却可能比功能需求更关键。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>requirements engineering</td><td>需求工程</td><td>Establishing the services a customer requires and the constraints on operation and development.</td></tr><tr><td>system requirements</td><td>系统需求</td><td>A structured document with detailed descriptions of functions, services and constraints; may be part of a contract.</td></tr><tr><td>user requirements</td><td>用户需求</td><td>Natural language statements plus diagrams, written for customers.</td></tr><tr><td>functional requirement</td><td>功能需求</td><td>Services the system should provide and how it reacts to particular inputs.</td></tr><tr><td>non-functional requirement</td><td>非功能需求</td><td>Constraints on services or functions: timing, process, standards.</td></tr><tr><td>domain requirement</td><td>领域需求</td><td>Constraints derived from the domain of operation.</td></tr><tr><td>stakeholder</td><td>干系人</td><td>Any person or organisation affected by the system with a legitimate interest.</td></tr><tr><td>elicitation</td><td>需求获取</td><td>Technical staff working with customers to find out the domain, services and constraints.</td></tr><tr><td>ethnography</td><td>民族志</td><td>Observing how people actually work to discover requirements.</td></tr><tr><td>scenario</td><td>场景</td><td>A structured user story with starting situation, normal flow, what can go wrong, concurrent activities and final state.</td></tr><tr><td>use case</td><td>用例</td><td>A UML scenario identifying actors and the interaction itself.</td></tr><tr><td>requirements validation</td><td>需求验证</td><td>Demonstrating that the requirements define the system the customer really wants.</td></tr><tr><td>verifiability</td><td>可验证性</td><td>Whether a requirement can be checked objectively.</td></tr><tr><td>traceability</td><td>可追溯性</td><td>Links between requirements used to assess the impact of change.</td></tr><tr><td>requirements management</td><td>需求管理</td><td>Managing changing requirements during RE and development.</td></tr><tr><td>SRS</td><td>软件需求规格说明书</td><td>The official statement of what is required; WHAT, not HOW.</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A4050 软件工程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-2.html">第 2 章 需求、建模与架构</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 4 讲 · 需求工程</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 4 讲 · 需求工程 · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">4.1 需求工程是什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">4.2 一条需求可以有多抽象</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">4.3 用户需求与系统需求</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">4.4 干系人</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">4.5 敏捷与需求</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">4.6 功能需求、非功能需求、领域需求</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">4.7 完整性与一致性：原则上要求，实践中做不到</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">4.8 非功能需求为什么更关键</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">4.9 目标与可验证需求</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">4.10 需求工程的四个通用活动</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">4.11 需求获取与分析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">4.12 获取技术：访谈、民族志、场景</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">4.13 需求规格：怎么写</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">4.14 用例（use cases）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">4.15 软件需求文档</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">4.16 需求验证</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">4.17 需求变更与需求管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">写与查需求的清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-34" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-34"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="l04-requirements-engineering.html" aria-current="page"><span class="directory-label">第 4 讲 · 需求工程</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l09-project-management-and-planning.html"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l10-quality-and-configuration-management.html"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-43" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-43"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l12-case-studies.html"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-project-docs.html"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/l04-requirements-engineering"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 04 / 14 讲</p><h1 id="lecture-title">第 4 讲 · 需求工程</h1><p class="lecture-subtitle">Requirements Engineering</p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 需求、建模与架构</a></p><details class="lecture-sources"><summary>资料来源 · 1 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>4e70699d188d</code>（用于识别内容变更）</dd></dl><ul><li><code>11_Week 5/1_SE - Lecture 4 - 2026.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>需求工程是整门课最「贵」的一讲：课件给出一个量化结论——交付后再修一个需求错误的成本，可能是修一个实现错误的 <b>100 倍</b>。因此这一讲不只是概念，而是一套「把错误挡在编码之前」的方法：如何找对人、如何问出真需求、如何写得可验证、如何验证写对了、如何管理后续变更。</p><p>与前后的衔接：第 3 讲把「规格」列为四项活动之一，本讲把它展开；第 5 讲的建模（用例图、顺序图）是需求表达的工具；第 13 讲的课程项目正是产出一份需求规格说明书，本讲与第 12 讲的写作规范直接服务于它。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>区分用户需求与系统需求，并说明两类文档的读者差异</li><li>把一条需求正确归类为功能需求、非功能需求或领域需求</li><li>把一个模糊的「目标（goal）」改写成可验证的非功能需求</li><li>为给定项目设计访谈与观察（民族志）方案，并指出访谈的三个典型问题</li><li>对一份需求规格做五维检查（validity, consistency, completeness, realism, verifiability）</li><li>描述需求变更管理的三个阶段，并说明可追溯性在其中的作用</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 需求工程是什么</h3><p>课件定义：“The process of establishing the services that a customer requires from a system and the constraints under which the system operates and developed.”（确立客户需要系统提供哪些服务，以及系统运行与开发所受约束的过程。）而在该过程中产生的「系统服务的描述与约束」，就是<b>系统需求</b>（system requirements）。</p><p>课件另给一个更工程化的定义：需求工程是在系统设计的每个阶段对需求进行<b>形式化与定义</b>的过程，包括客户需求、设计需求与测试需求；它是对软件系统需求进行定义、创建与验证的<b>系统而严格</b>的方法，目的是确保软件满足用户需要，并按时、按预算、按质量交付。</p><h3 id="s3">4.2 一条需求可以有多抽象</h3><p>课件指出：需求可以是「高层抽象的服务陈述或系统约束」，也可以是「详细的数学化功能规格」。这不是失误，而是因为需求有<b>双重功能</b>：</p><ul><li>它可能是<b>投标</b>的基础——因此必须开放给不同承包商作不同解释；</li><li>它可能是<b>合同本身</b>的基础——因此必须被详细定义；</li><li>这两种陈述都叫「需求」。</li></ul><p>Davis 的经典表述把这件事说透了：</p><p>“If a company wishes to let a contract for a large software development project, it must define its needs in a sufficiently abstract way that a solution is not pre-defined … Once a contract has been awarded, the contractor must write a system definition for the client in more detail so that the client understands and can validate what the software will do. Both of these documents may be called the requirements document for the system.”（若公司要为大型项目招标，必须以足够抽象的方式定义需求，使方案不被预先锁定……中标后，承包方必须为客户写出更详细的系统定义，使客户理解并能验证软件将做什么。这两份文件都可以称为该系统的需求文档。）</p><p>这段话解释了为什么同一项目会有「招标用需求」与「合同用需求」两套文本，也解释了为什么第 13 讲的项目模板要求「需求要可验收」——课程项目模拟的是合同后的详细规格。</p><h3 id="s4">4.3 用户需求与系统需求</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>类型</th><th>英文定义</th><th>读者</th><th>形式</th></tr><tr><td>用户需求 user requirements</td><td>Statements in natural language plus diagrams of the services the system provides and its operational constraints. Written for customers.</td><td>客户、最终用户、业务方</td><td>自然语言 + 图，避免技术细节</td></tr><tr><td>系统需求 system requirements</td><td>A structured document setting out detailed descriptions of the system’s functions, services and operational constraints. Defines what should be implemented so may be part of a contract.</td><td>开发者、测试、架构师、合同方</td><td>结构化文档，含详细功能与非功能约束</td></tr></table></div><p>课件用一张「不同需求类型的读者」图说明：用户需求写给客户看，系统需求写给技术方看，两者不能混写。混写的典型后果是「客户看不懂技术条款，开发看不懂业务意图」。</p><h3 id="s5">4.4 干系人</h3><p>干系人定义：“Any person or organization who is affected by the system in some way and so who has a legitimate interest.”（以某种方式受系统影响、因而具有正当利益的任何个人或组织。）课件列了四类：最终用户（end users）、系统管理者（system managers）、系统所有者（system owners）、外部干系人（external stakeholders）。</p><div class="callout warn"><b>易错</b>干系人 ≠ 用户。系统所有者出钱、系统管理者运维、外部干系人（监管机构、工会、合作伙伴）可能从不使用系统，但能一票否决。第 13 讲的评分明确要求「识别重要干系人群体」，只写「用户」会失分。</div><h3 id="s6">4.5 敏捷与需求</h3><p>课件如实呈现了敏捷对需求的挑战：许多敏捷方法认为「产出详细系统需求是浪费时间」，因为需求变化太快，需求文档总是过时；敏捷通常采用<b>增量式需求工程</b>，用「用户故事」表达需求。这对业务系统是实用的，但对「需要交付前分析的系统」或「多个团队共同开发的系统」是有问题的。</p><p>为什么有问题？因为交付前分析（如安全关键系统的危害分析）必须在实现前完成；多团队开发需要共享的、稳定的接口定义。用户故事粒度太小、太口语化，无法承担这两类任务。这一点在第 12 讲 Sasken 案例（客户要求「完整产品」而非「增量故事」）中会具体呈现。</p><h3 id="s7">4.6 功能需求、非功能需求、领域需求</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>类型</th><th>英文定义</th><th>例子</th></tr><tr><td>功能需求 functional requirements</td><td>Statements of services the system should provide, how the system should react to particular inputs and how the system should behave. May state what the system should not do.</td><td>系统应向用户开具发票；系统应拒绝超过信用额度的订单</td></tr><tr><td>非功能需求 non-functional requirements</td><td>Constraints on the services or functions offered by the system such as timing constraints, constraints on the development process, standards. Often apply to the system as a whole rather than individual features.</td><td>响应时间不超过 2 秒；必须使用公司指定的 IDE；须符合 WCAG 2.1 AA</td></tr><tr><td>领域需求 domain requirements</td><td>Constraints on the system from the domain of operation.</td><td>医疗系统须符合病历保存年限法规；航空系统须符合 ARINC 653 分区要求</td></tr></table></div><p>功能需求的细节：它描述功能或系统服务，取决于软件类型、预期用户、系统使用场景；功能性的<b>用户需求</b>可以是高层陈述（「系统应支持排班」），但功能性的<b>系统需求</b>必须详细描述服务（「系统应在 3 秒内为 200 名护士生成满足最大连续工时 5 小时的排班，冲突时给出替代方案」）。</p><h3 id="s8">4.7 完整性与一致性：原则上要求，实践中做不到</h3><p>课件明确：原则上需求应既<b>完整</b>（complete，包含所有需要设施的说明）又<b>一致</b>（consistent，设施描述之间无冲突或矛盾）。但实践中，由于系统与环境的复杂性，<b>不可能</b>产出完整且一致的需求文档。</p><p>这句话的考试价值在于：它解释了为什么需求管理（4.13）是必需的，也解释了为什么「需求文档必须完美才能开工」是伪命题。工程答案是：接受不完整，但用可追溯性与变更控制来管理不完整。</p><h3 id="s9">4.8 非功能需求为什么更关键</h3><p>非功能需求定义系统属性与约束（响应时间、存储要求、I/O 设备能力、系统表示等）；过程需求也可被规定（指定 IDE、编程语言或开发方法）。课件给出一个强判断：<b>非功能需求可能比功能需求更关键；若不满足，系统可能变得无用</b>。</p><p>原因是功能可以被绕过，而非功能不能。用户发现少了某个功能，会用 Excel 补上；但系统不可靠或太慢，用户就完全无法达成目标（第 10 讲会以「主观质量主要由非功能特性决定」再次论证）。</p><p>非功能需求对架构的影响：它们往往影响<b>整体体系结构</b>而非单个构件。例如为满足性能要求，你可能必须把系统组织成「最小化构件间通信」的形式。此外，一条非功能需求（如安全需求）可能<b>派生出一批功能需求</b>（需要哪些服务来实现安全），也可能<b>限制既有需求</b>（某些功能因安全策略被禁止）。</p><p>非功能需求的三种分类：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>分类</th><th>英文</th><th>含义</th><th>例子</th></tr><tr><td>产品需求</td><td>product requirements</td><td>规定交付的产品必须以某种方式表现</td><td>响应时间、可用性、内存占用</td></tr><tr><td>组织需求</td><td>organisational requirements</td><td>源于组织的政策与流程</td><td>必须使用公司指定的开发流程与工具、必须遵循文档模板</td></tr><tr><td>外部需求</td><td>external requirements</td><td>源于系统及其开发过程之外的因素</td><td>法规、会计标准、互操作标准</td></tr></table></div><h3 id="s10">4.9 目标与可验证需求</h3><p>非功能需求很难精确陈述，不精确的需求难以验证。课件区分两个词：</p><ul><li><b>目标 goal</b>：用户的总体意图，如「易用」。</li><li><b>可验证的非功能需求 verifiable non-functional requirement</b>：使用某种可被客观测试的度量来陈述。</li></ul><p>目标是开发者理解用户意图的有用信息，但不能作为验收标准。改写方法：给目标加上「度量 + 条件 + 判定阈值」。例如「易用」→「新用户在无培训情况下，5 分钟内完成首次下单，成功率 ≥ 90%（可用性测试，n ≥ 20）」。</p><div class="callout tip"><b>技巧</b>把目标变成可验证需求的三步：① 找出可观测的量（时间、比例、次数、容量）；② 加上测量条件（在什么负载、什么设备、什么用户群）；③ 给出阈值与判定方式。三步缺一，验收时就会吵架。</div><h3 id="s11">4.10 需求工程的四个通用活动</h3><p>不同应用领域、不同人员、不同组织的过程差异很大，但所有过程都有若干通用活动：<b>需求获取</b>（elicitation）、<b>需求分析</b>（analysis）、<b>需求验证</b>（validation）、<b>需求管理</b>（management）。实践中它们是<b>迭代交织</b>的，课件用「需求工程过程的螺旋视图」表示：每一圈都从获取开始，经分析、规格，再进入下一轮。</p><h3 id="s12">4.11 需求获取与分析</h3><p>获取（elicitation，也叫 requirements discovery）指技术人员与客户合作，了解应用领域、系统应提供哪些服务、系统的运行约束。参与者可能包括最终用户、管理者、维护工程师、领域专家、工会等。</p><p>五个典型问题（高频考点）：</p><ol><li>干系人<b>并不知道自己真正想要什么</b>；</li><li>干系人用<b>自己的术语</b>表达需求；</li><li>不同干系人的需求可能<b>相互冲突</b>；</li><li>组织与政治因素会影响系统需求；</li><li>需求在分析过程中<b>还会变化</b>——新干系人出现、业务环境变化。</li></ol><p>获取过程的四个活动：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>活动</th><th>英文</th><th>做什么</th></tr><tr><td>需求发现</td><td>requirements discovery</td><td>与干系人互动，发现其需求；领域需求也在此阶段被发现</td></tr><tr><td>分类与组织</td><td>requirements classification and organisation</td><td>把相关需求分组，组织成连贯的簇</td></tr><tr><td>排优先级与协商</td><td>prioritisation and negotiation</td><td>排定优先级，解决需求冲突</td></tr><tr><td>需求规格</td><td>requirements specification</td><td>把需求文档化，并输入螺旋的下一轮</td></tr></table></div><h3 id="s13">4.12 获取技术：访谈、民族志、场景</h3><p><b>访谈（interviewing）</b>是最常用的技术。类型有二：<b>封闭式</b>（closed，基于预先确定的问题清单）与<b>开放式</b>（open，与干系人自由探讨各种议题）。实践中通常是二者的混合。</p><p>访谈的实践要点：适合获得「干系人做什么、如何与系统交互」的总体理解；访谈者必须<b>不带先入之见</b>；要主动用「建议某些需求」的方式引导用户开口，而不是只问「你想要什么」——因为用户往往说不出抽象需求，但能对具体建议作出反应。</p><p>访谈的三个问题：领域专家使用的语言，需求工程师听不懂；访谈<b>不适合获取领域需求</b>——工程师不理解专业术语，而有些领域知识太熟悉，人们觉得「不值得说」或根本说不出来。</p><p><b>民族志（ethnography）</b>：社会科学家花相当长时间观察并分析人们实际如何工作。优点是人们不必解释或陈述自己的工作；能观察到重要的社会与组织因素；研究表明<b>实际工作总比简单系统模型所暗示的更丰富、更复杂</b>。</p><p>民族志能发现两类需求：来自「人们实际怎么做」（而非流程文件说应该怎么做）的需求；来自「协作与对他人活动的感知」（awareness）的需求——知道别人在做什么，会改变我们做事的顺序与方式。</p><p>局限：民族志适合理解<b>现有</b>过程，<b>无法识别应该新增哪些功能</b>。补救办法是<b>聚焦民族志</b>（focused ethnography）：把民族志与原型结合——原型开发产生的未解问题，正好聚焦民族志分析的方向。另一个问题是它研究的是既有实践，而这些实践可能有已失去意义的历史包袱。</p><p><b>故事与场景（stories and scenarios）</b>：场景与用户故事是「系统如何被使用」的真实例子；因为它们基于具体情境，干系人能把自己代入并评论。</p><p>场景是用户故事的<b>结构化形式</b>，应包含五要素：</p><ol><li>起始情境的描述（starting situation）；</li><li>正常事件流的描述（normal flow of events）；</li><li>可能出什么错的描述（what can go wrong）；</li><li>其他并发活动的信息（concurrent activities）；</li><li>场景结束时状态的描述（state when the scenario finishes）。</li></ol><h3 id="s14">4.13 需求规格：怎么写</h3><p>规格是把用户需求与系统需求写进需求文档的过程。用户需求必须让没有技术背景的最终用户与客户看懂；系统需求更详细、可含更多技术信息；需求可能是开发合同的一部分，因此必须尽可能完整。</p><p>五种表示法（课件表格）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>表示法</th><th>说明</th><th>适用与局限</th></tr><tr><td>自然语言 natural language</td><td>用编号句子书写，每句表达一条需求</td><td>表达力强、直观、通用；但易歧义</td></tr><tr><td>结构化自然语言 structured natural language</td><td>在标准表单或模板上书写，每个字段提供需求某一方面的信息</td><td>一致性较好；对业务需求有时过于僵化</td></tr><tr><td>设计描述语言 design description languages</td><td>类似编程语言但更抽象，通过定义系统的操作模型来规定需求</td><td>现在很少使用；对接口规格仍有用</td></tr><tr><td>图形表示 graphical notations</td><td>图形模型 + 文字注释定义功能需求；常用 UML 用例图与顺序图</td><td>直观、便于沟通；细节需文字补充</td></tr><tr><td>数学规格 mathematical specifications</td><td>基于有限状态机、集合等数学概念</td><td>无歧义、可减少需求文档中的模糊；但客户难懂，成本高</td></tr></table></div><p><b>需求与设计不可分</b>：原则上需求说「做什么」，设计说「怎么做」；实践中二者不可分——体系结构可能被设计用来组织需求；系统可能与其他系统互操作而产生设计需求；为满足非功能需求而选用特定架构可能本身就是领域需求；这些也可能来自监管要求。</p><p>自然语言规格的写作指南（课件五条，考试常考）：</p><ul><li>发明一种标准格式，并对所有需求统一使用；</li><li>语言用法一致：<b>shall</b> 表示强制需求，<b>should</b> 表示期望需求；</li><li>用文本高亮标出需求的关键部分；</li><li>避免计算机行话；</li><li>为每条需求加入<b>理由（rationale）</b>，说明它为什么必要。</li></ul><p>结构化规格（structured specifications）：限制写作者的自由度，用标准方式书写需求。它对某些类型需求很有效，但对业务系统需求有时过于僵化。表单式规格（form-based）的字段包括：功能或实体的定义；输入及其来源；输出及其去向；计算所需信息及其他被使用的实体；要采取的动作；前置与后置条件（如适用）；函数的副作用（如有）。</p><h3 id="s15">4.14 用例（use cases）</h3><p>用例是 UML 中的一种场景：它识别交互中的<b>参与者</b>（actors）并描述交互本身。一组用例应描述与系统的<b>所有可能交互</b>；形式是「高层图形模型 + 更详细的表格描述」；UML 顺序图可用于补充细节，展示系统中事件处理的顺序。</p><p>用例表的标准字段（第 13 讲项目模板完全采用这套字段）：ID、名称与版本、参与者、前置条件、描述、异常、结果、其他需求。第 12 讲的 EXCEED 与第 13 讲的示例项目都用这套表格。</p><h3 id="s16">4.15 软件需求文档</h3><p>软件需求文档（SRS）是「对系统开发者所要求内容」的<b>正式陈述</b>；应同时包含用户需求的定义与系统需求的规格。</p><p>课件有一句加粗的警告：<b>它不是设计文档</b>。“It is NOT a design document. As far as possible, it should set out WHAT the system should do rather than HOW it should do it.”（它应尽可能说明系统该做什么，而不是怎么做。）</p><div class="callout exam"><b>必考</b>「SRS 不是设计文档」几乎年年出现。判卷要点：能否指出 SRS 写 WHAT、设计文档写 HOW，并给出一个「把 HOW 写进 SRS」的反例（如「用 Redis 缓存会话」属于设计决策，应写成「会话数据在服务重启后 30 分钟内不得丢失」）。</div><h3 id="s17">4.16 需求验证</h3><p>验证关注「需求是否定义了客户真正想要的系统」。为什么重要？因为需求错误代价极高：交付后修一个需求错误，可能是修一个实现错误的 <b>100 倍</b>。</p><p>五维检查（必须能背）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>检查项</th><th>英文</th><th>问的问题</th></tr><tr><td>有效性</td><td>Validity</td><td>系统是否提供了最支持客户需要的功能？</td></tr><tr><td>一致性</td><td>Consistency</td><td>需求之间是否存在冲突？</td></tr><tr><td>完整性</td><td>Completeness</td><td>客户要求的所有功能是否都包含？</td></tr><tr><td>现实性</td><td>Realism</td><td>在给定预算与技术下，这些需求能实现吗？</td></tr><tr><td>可验证性</td><td>Verifiability</td><td>需求能被检查吗（是否有客观判据）？</td></tr></table></div><p>三种验证技术：<b>需求评审</b>（对需求做系统的人工分析）、<b>原型</b>（用可执行模型检查需求）、<b>测试用例生成</b>（为需求开发测试，以检查其可测试性）。第三种最容易被忽略：写不出测试，说明需求不可验证。</p><h3 id="s18">4.17 需求变更与需求管理</h3><p>需求必然变化，课件给了四个原因：系统安装后业务与技术环境总会变；付钱的人与使用的人很少是同一批人；大型系统用户群多样，需求与优先级可能冲突甚至矛盾；最终需求是折中，而经验表明「对不同用户的支持力度」常常需要重新平衡。</p><p>需求管理（requirements management）是在需求工程过程与系统开发过程中管理变化需求的过程。新需求会在开发中以及投入使用后出现。你需要：跟踪每条需求；维护依赖需求之间的<b>链接</b>（以便评估变更影响）；建立正式的变更提案流程，并把提案与系统需求关联。</p><p>变更管理的三个阶段：</p><ol><li><b>问题分析与变更规格</b>：分析问题或变更提案是否有效；把分析结果反馈给提出者，提出者可能给出更具体的提案，或撤回请求。</li><li><b>变更分析与成本核算</b>：利用<b>可追溯性信息</b>（traceability）与对系统需求的一般知识评估变更影响；分析完成后，决定是否继续该变更。</li><li><b>变更实现</b>：修改需求文档，必要时修改系统设计与实现。理想情况下文档的组织方式应使变更易于实施。</li></ol><p>注意第一阶段与第二阶段的区别：第一阶段判断「这个变更请求是否成立」，第二阶段判断「实施它要付什么代价」。两者都通过才进入实现。</p><div class="callout idea" data-ext="l04-requirements-engineering-0"><b>前后衔接</b><p>需求可以很抽象，也可以很详细，这不是失误而是双重功能：招标阶段要抽象到不锁定方案，中标后要详细到可验证，两者都叫需求文档，对应课程项目模拟的合同后详细规格。务必区分读者：用户需求写给客户，用自然语言加图；系统需求写给开发、测试与合同方，是结构化文档。干系人也不等于用户——出钱的所有者、运维的系统管理者、监管等外部干系人都有正当利益却未必直接使用系统。非功能需求常被忽视，却可能比功能需求更关键。</p></div><h3 id="s19">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/e639901cbd016071ab55.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p46" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p46.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 46 页</figcaption></figure><figure><img src="../../assets/optimized/fa0f69757f36cc3e1598.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p47" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p47.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 47 页</figcaption></figure><figure><img src="../../assets/optimized/5e9f4c749d9c449f9fc4.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p48" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p48.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 48 页</figcaption></figure><figure><img src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p49.jpg" loading="lazy" alt="1_SE - Lecture 4 - 2026 p49" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p49.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 49 页</figcaption></figure><figure><img src="../../assets/optimized/990d1a802be75394629c.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p51" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p51.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 51 页</figcaption></figure><figure><img src="../../assets/optimized/5c121a365fb005e2fa4e.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p52" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p52.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 52 页</figcaption></figure><figure><img src="../../assets/optimized/0c2da99e6f55c151d2e1.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p32" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p32.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 32 页</figcaption></figure><figure><img src="../../assets/optimized/f7b94caf02881ffbb5b7.webp" loading="lazy" alt="1_SE - Lecture 4 - 2026 p50" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30361/slides/1_SE_-_Lecture_4_-_2026-p50.jpg"><figcaption>1_SE - Lecture 4 - 2026 · 第 50 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>requirements engineering</td><td>需求工程</td><td>Establishing the services a customer requires and the constraints on operation and development.</td></tr><tr><td>system requirements</td><td>系统需求</td><td>A structured document with detailed descriptions of functions, services and constraints; may be part of a contract.</td></tr><tr><td>user requirements</td><td>用户需求</td><td>Natural language statements plus diagrams, written for customers.</td></tr><tr><td>functional requirement</td><td>功能需求</td><td>Services the system should provide and how it reacts to particular inputs.</td></tr><tr><td>non-functional requirement</td><td>非功能需求</td><td>Constraints on services or functions: timing, process, standards.</td></tr><tr><td>domain requirement</td><td>领域需求</td><td>Constraints derived from the domain of operation.</td></tr><tr><td>stakeholder</td><td>干系人</td><td>Any person or organisation affected by the system with a legitimate interest.</td></tr><tr><td>elicitation</td><td>需求获取</td><td>Technical staff working with customers to find out the domain, services and constraints.</td></tr><tr><td>ethnography</td><td>民族志</td><td>Observing how people actually work to discover requirements.</td></tr><tr><td>scenario</td><td>场景</td><td>A structured user story with starting situation, normal flow, what can go wrong, concurrent activities and final state.</td></tr><tr><td>use case</td><td>用例</td><td>A UML scenario identifying actors and the interaction itself.</td></tr><tr><td>requirements validation</td><td>需求验证</td><td>Demonstrating that the requirements define the system the customer really wants.</td></tr><tr><td>verifiability</td><td>可验证性</td><td>Whether a requirement can be checked objectively.</td></tr><tr><td>traceability</td><td>可追溯性</td><td>Links between requirements used to assess the impact of change.</td></tr><tr><td>requirements management</td><td>需求管理</td><td>Managing changing requirements during RE and development.</td></tr><tr><td>SRS</td><td>软件需求规格说明书</td><td>The official statement of what is required; WHAT, not HOW.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把三条需求正确归类</div><p>情境：某医院预约系统的需求如下。① 患者可在 App 上选择科室、医生与时段并确认预约。② 系统在早 8:00–10:00 高峰期的预约请求响应时间不超过 1.5 秒（95 分位）。③ 系统须符合《电子病历管理规范》关于预约记录保存 15 年的要求。请分类并说明理由。</p><p><b>分析：</b>先问「它约束的是行为还是属性」。① 描述系统提供什么服务、如何响应输入 → <b>功能需求</b>。② 描述系统作为一个整体的性能约束 → <b>非功能需求</b>（产品需求中的性能子类）。③ 约束来自医疗业务领域法规，不是用户提出也不是技术选择 → <b>领域需求</b>。</p><p><b>进一步：</b>② 是可验证的（有度量、有负载条件、有分位数）；如果把 ② 写成「系统应快速响应」，那就是目标（goal）而非可验证需求，验收时无法判定。</p><p><b>通用思路：</b>功能需求看「做什么」，非功能需求看「多快、多稳、多安全、受什么流程约束」，领域需求看「这个行业的规则从哪来」。</p></div><div class="qa"><div class="q">例 2　把目标改写成可验证需求</div><p>情境：客户说「这个系统要非常好用，护士看一眼就会」。请改写为可验证的非功能需求，并说明验证方式。</p><p><b>解：</b>第一步找可观测的量——「会用」可以操作化为「在无培训条件下完成核心任务的成功率与耗时」。第二步加条件——任务是什么、用户是谁、样本多大。第三步给阈值与判定方式。</p><p>改写结果：「在无培训条件下，20 名未使用过本系统的注册护士中，至少 18 名（90%）能在 3 分钟内完成『为一名患者改约到下周二下午』这一任务，且无需求助；测试在真实设备（10 英寸平板）上进行，采用可用性测试脚本，记录任务完成率与耗时。」</p><p><b>验证方式：</b>可用性测试（形成性测试用于改进，总结性测试用于验收）；若未达标，则记录失败点并迭代界面。</p><p><b>注意：</b>不要把它写成「界面应简洁美观」——那是目标，不是需求；也不要把实现方案（「用大按钮」）写进需求，那是设计。</p></div><div class="qa"><div class="q">例 3　设计访谈与观察方案</div><p>情境：你要为某快递公司的分拣中心开发一套「异常件处理」系统。调度主管说「我们流程很标准，你按流程文档写就行」。请设计获取方案，并指出只做访谈会漏掉什么。</p><p><b>分析：</b>「流程很标准」本身是风险信号——课件指出实际工作总比流程文档所暗示的更丰富。</p><p><b>方案：</b>① <b>开放式访谈</b>调度主管与一线分拣员，先问「昨天最难处理的一件是什么」，用具体事件代替抽象流程；② <b>封闭式访谈</b>质控与 IT，核对异常代码表、系统接口与报表口径；③ <b>民族志观察</b>一个完整班次（含交接班），记录实际动作、口头沟通、便签与临时表格；④ 用<b>场景</b>把观察到的典型情形写成五要素剧本，回读给分拣员确认；⑤ 用<b>原型</b>（异常件登记界面）做聚焦民族志，让操作员在真实节奏下试用。</p><p><b>只做访谈会漏掉：</b>① 人们「说不出来」的隐性规则（例如某类破损件必须先拍照再上报，因为理赔需要）；② 协作与感知类需求（分拣员通过看邻台是否堆货来判断是否叫人）；③ 实际工作中的绕行做法（用纸单兜底）；④ 语言差异导致的误解（「滞留件」「疑难件」「问题件」在不同班组含义不同）。</p><p><b>结论：</b>访谈拿「意图」，观察拿「事实」，场景拿「共识」，原型拿「反应」。四者组合才构成完整获取。</p></div><div class="qa"><div class="q">例 4　五维检查与变更影响分析</div><p>情境：需求文档中有三条：R1「系统应支持导出报表」；R2「所有报表导出必须在 1 秒内完成」；R3「报表格式须符合财政局 2024 年第 7 号文」。另有新提案「增加按科室维度导出」。请做验证检查，并分析变更影响。</p><p><b>验证：</b><b>有效性</b>——R1 未说明哪些报表、给谁用，无法判断是否支持客户需要；<b>一致性</b>——R2 的「1 秒」对「全量年度报表」可能不现实，与 R1 的范围模糊共同构成潜在冲突；<b>完整性</b>——缺「无数据时如何导出」「权限不足时如何处理」；<b>现实性</b>——R2 在现有数据库上可能不可达；<b>可验证性</b>——R2 可验证（有度量），但缺测量条件（数据量、并发数）。</p><p><b>变更影响：</b>借助可追溯性，从「按科室维度导出」追溯到：报表生成服务（R1）、性能约束（R2，新增维度可能破坏 1 秒指标）、格式规范（R3，需确认新维度是否在规范允许的列范围内）、数据模型（是否已有科室字段与权限模型）。</p><p><b>结论：</b>该提案技术上可行但会触碰 R2；应在变更分析阶段给出「新增维度后的性能实测」，再决定是放宽 R2 还是优化查询。这正是「变更分析与成本核算」阶段的作用。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>用户需求与系统需求的区别是什么？各举一例。</li><li>判断：非功能需求只影响单个构件，不影响整体架构。（对/错，说明理由）</li><li>写出场景的五要素，并用其中三要素描述「患者在 App 上改约」的正常流程。</li><li>访谈为什么不适合获取领域需求？给出两种补救手段。</li><li>把「系统应安全」改写为两条可验证的非功能需求。</li><li>某需求在开发中期被提出变更。请按变更管理的三阶段写出你的处理步骤。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 用户需求用自然语言 + 图，写给客户看，避免技术细节（「护士应能在一个屏幕上看到本班次全部患者」）；系统需求是结构化文档，写给技术方，可含详细约束（「该屏幕在 200 名患者、10 英寸设备上首屏渲染 ≤ 800 ms」）。</p><p><b>2.</b> 错。课件明确：非功能需求常影响整体体系结构而非单个构件，例如为满足性能须最小化构件间通信；一条安全需求还可能派生出一批功能需求。</p><p><b>3.</b> 五要素：起始情境、正常事件流、可能出错之处、并发活动、结束状态。示例：起始——患者已登录且有一个未来 7 天内的预约；正常流——进入「我的预约」→ 选择该预约 → 点「改约」→ 选择新时段 → 确认；结束——旧预约被取消、新预约生成、双方收到通知。</p><p><b>4.</b> 因为工程师不懂专业术语，且部分领域知识过于熟悉，从业者认为不值得说或说不清。补救：请领域专家参与并充当翻译；用民族志观察实际工作；用原型引出对具体方案的反应。</p><p><b>5.</b> 例：「系统在检测到未授权访问尝试后 60 秒内锁定该账户并通知所有者」；「系统对静态存储的患者数据使用 AES-256 加密，密钥轮换周期不超过 90 天」。两条都有度量或可检查的机制。</p><p><b>6.</b> ①问题分析与变更规格：确认提案是否成立、范围与验收标准，反馈给提出者；②变更分析与成本核算：用可追溯性找出受影响需求、设计、测试，估算工作量与风险，决定是否实施；③变更实现：更新需求文档与基线，同步修改设计、代码与测试用例，并记录变更日志。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>需求工程定义、用户/系统需求差异、功能/非功能/领域三类、五维验证（validity/consistency/completeness/realism/verifiability）、场景五要素、SRS 不是设计文档、需求错误 100 倍成本、变更管理三阶段。</div><div class="callout warn"><b>易错 1</b>把「完整性 / 一致性」当成必须达到的目标。课件明确：由于复杂性，完整且一致的需求文档在实践中不可能产出。</div><div class="callout warn"><b>易错 2</b>把民族志当成万能。它只能理解现有实践，无法识别应新增的功能；必须与原型结合（focused ethnography）。</div><div class="callout warn"><b>易错 3</b>把「目标」当需求写进 SRS。「易用」「高性能」不可验收，必须转成度量 + 条件 + 阈值。</div><div class="callout warn"><b>易错 4</b>把用例写成「功能列表」。用例必须有参与者、前置条件、异常与结果；没有异常路径的用例通常是不完整的。</div><div class="callout tip"><b>进阶</b>能解释「需求双重功能」与「敏捷用户故事」的张力：招标要抽象、合同要详细，而用户故事既不够抽象（绑定具体交互）也不够详细（缺异常与约束），因此多团队与安全关键场景仍需系统需求文档。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">写与查需求的清单</h2><ol class="steps"><li>找全干系人：用户、管理者、所有者、外部（监管/工会/合作方）</li><li>选获取手段：访谈（意图）+ 观察（事实）+ 场景（共识）+ 原型（反应）</li><li>分类每条需求：功能 / 非功能（产品·组织·外部）/ 领域</li><li>把每个目标改写成可验证需求：度量 + 条件 + 阈值</li><li>写场景五要素，确保有异常路径与并发活动</li><li>用用例表写清参与者、前置条件、异常、结果</li><li>做五维验证：有效性、一致性、完整性、现实性、可验证性</li><li>为每条需求建立追溯链接（需求 ↔ 设计 ↔ 测试）</li><li>按「问题分析 → 变更分析 → 变更实现」三阶段处理变更，并记录基线</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p4–p9</td><td>需求工程定义、需求的双重功能、Davis 抽象论述、用户需求与系统需求、读者差异</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p10–p12</td><td>干系人类型、敏捷与需求、功能/非功能/领域需求</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p13–p19</td><td>功能需求细节、完整性与一致性、非功能需求的重要性与实现影响、三类分类、目标与可验证需求</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p20–p34</td><td>RE 四个活动、获取的五个问题、获取过程四活动、访谈与问题、民族志与聚焦民族志、故事与场景</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p35–p42</td><td>需求规格、五种表示法、需求与设计不可分、自然语言规格与写作指南、结构化与表单式规格、用例</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p43–p50</td><td>SRS 定义与「不是设计文档」、需求验证与 100 倍成本、五维检查、三种验证技术、变更原因、需求管理与三阶段</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p51–p52</td><td>结论与要点</td></tr><tr><td>（跳过）11_Week 5/2_Exercise Sessions</td><td>全篇</td><td>Pearson 案例讨论说明页，案例本身已并入第 11 讲</td></tr><tr><td>（补充）</td><td>—</td><td>非功能需求的具体度量示例与指标写法属于应用性补充，不引入新考点</td></tr></table></section><div class="lnav"><a class="prev" href="l03-process-activities-and-improvement.html">← 第 3 讲 · 软件过程、过程活动与过程改进</a><a class="next" href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">写与查需求的清单</h2><ol class="steps"><li>找全干系人：用户、管理者、所有者、外部（监管/工会/合作方）</li><li>选获取手段：访谈（意图）+ 观察（事实）+ 场景（共识）+ 原型（反应）</li><li>分类每条需求：功能 / 非功能（产品·组织·外部）/ 领域</li><li>把每个目标改写成可验证需求：度量 + 条件 + 阈值</li><li>写场景五要素，确保有异常路径与并发活动</li><li>用用例表写清参与者、前置条件、异常、结果</li><li>做五维验证：有效性、一致性、完整性、现实性、可验证性</li><li>为每条需求建立追溯链接（需求 ↔ 设计 ↔ 测试）</li><li>按「问题分析 → 变更分析 → 变更实现」三阶段处理变更，并记录基线</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p4–p9</td><td>需求工程定义、需求的双重功能、Davis 抽象论述、用户需求与系统需求、读者差异</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p10–p12</td><td>干系人类型、敏捷与需求、功能/非功能/领域需求</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p13–p19</td><td>功能需求细节、完整性与一致性、非功能需求的重要性与实现影响、三类分类、目标与可验证需求</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p20–p34</td><td>RE 四个活动、获取的五个问题、获取过程四活动、访谈与问题、民族志与聚焦民族志、故事与场景</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p35–p42</td><td>需求规格、五种表示法、需求与设计不可分、自然语言规格与写作指南、结构化与表单式规格、用例</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p43–p50</td><td>SRS 定义与「不是设计文档」、需求验证与 100 倍成本、五维检查、三种验证技术、变更原因、需求管理与三阶段</td></tr><tr><td>11_Week 5/1_SE - Lecture 4 - 2026.pdf</td><td>p51–p52</td><td>结论与要点</td></tr><tr><td>（跳过）11_Week 5/2_Exercise Sessions</td><td>全篇</td><td>Pearson 案例讨论说明页，案例本身已并入第 11 讲</td></tr><tr><td>（补充）</td><td>—</td><td>非功能需求的具体度量示例与指标写法属于应用性补充，不引入新考点</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l03-process-activities-and-improvement.html"><span>上一讲</span><strong>第 3 讲 · 软件过程、过程活动与过程改进</strong></a><a data-sequence="parent" href="part-2.html"><span>返回目录</span><strong>第 2 章 需求、建模与架构</strong></a><a data-sequence="next" href="l05-system-modelling.html"><span>下一讲</span><strong>第 5 讲 · 系统建模与 UML</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

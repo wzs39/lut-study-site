@@ -8,204 +8,362 @@
 <title>第 9 讲 · 整除、最大公因数与欧几里得算法 · 30565</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-4.html">第 4 章 数论与模运算</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">9.1 数论研究什么</a><a class="toc-l3" href="#s3">9.2 整除的定义与基本引理</a><a class="toc-l3" href="#s4">9.3 整除的例题</a><a class="toc-l3" href="#s5">9.4 最大公因数</a><a class="toc-l3" href="#s6">9.5 带余除法</a><a class="toc-l3" href="#s7">9.6 a mod b</a><a class="toc-l3" href="#s8">9.7 欧几里得算法</a><a class="toc-l3" href="#s9">9.8 反推欧几里得：求 ax + by = gcd(a, b)</a><a class="toc-l3" href="#s10">9.9 当 c ≠ gcd(a, b)</a><a class="toc-l3" href="#s11">9.10 全部解的公式</a><a class="toc-l3" href="#s12">9.11 完整范例：1032x + 320y = 56</a><a class="toc-l2" href="#s13">考点分层</a><a class="toc-l2" href="#s14">方法清单</a><a class="toc-l3" href="#s15">欧几里得算法（手算版）</a><a class="toc-l3" href="#s16">解 ax + by = c 的四步</a><a class="toc-l3" href="#s17">负数的带余除法</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a href="relations-inverse-composition-logic.html">第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a href="combinatorics-counting.html">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a class="toc-l3" href="divisibility-euclidean-algorithm.html">▸ 第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a href="modular-inverse-rsa-matrices-intro.html">第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a href="supp-set-proof-workshop.html">补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>第 9 讲 · 整除、最大公因数与欧几里得算法</h1><p class="lead">Divisibility, Greatest Common Divisors and the Euclidean Algorithm <span class="badge mute">30565</span> <span class="badge mute">第 9 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 数论与模运算</a></p><p class="src">原始文件：<code>09-lesson.pdf</code> <code>10-exercise.pdf</code> <code>Lecture6_Number theory.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>从第 9 讲开始进入数论（Lessons 9–11）。本讲只处理“整数的除法”：整除（divisibility）、最大公因数（gcd）、欧几里得算法，以及用它解二元一次不定方程 <code>ax + by = c</code>。</p><p>这条线索会一路延伸到第 10 讲的模运算与第 11 讲的 RSA：RSA 的私钥 d 就是解 <code>ed ≡ 1 (mod φ)</code>，而它等价于解一个 <code>ax + by = 1</code> 型的不定方程。所以本讲的算法必须练到“不用想、直接写”的熟练度。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用定义（存在 q 使 n = q·d）判断与证明整除，而不是用除法</li><li>证明整除的基本引理，特别是“若 c|a 且 c|b 则 c|ax + by”</li><li>写出带余除法 a = qb + r（0 ≤ r &lt; b），并处理负数 a</li><li>用欧几里得算法求 gcd(a, b)，并解释它为何正确</li><li>用“反推欧几里得”求 ax + by = gcd(a, b) 的一组解</li><li>判断 ax + by = c 是否有解（gcd | c），并写出全部解的通式</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">9.1 数论研究什么</h3><p>数论（number theory）研究整数的性质。典型问题：素数的性质（公式、统计、与其他数的关系）；方程的整数解，如 <code>xⁿ + yⁿ = zⁿ</code>、<code>ax + by = c</code>、<code>x² = 4y + 2</code>（这类只求整数解的方程叫丢番图方程 Diophantine equation）；整除性问题（x 何时整除 y）。</p><p>应用：密码学（cryptography，只有目标收件人能读的秘密书写）、纠错码（error-correcting codes，能在传输错误后自行纠正）、哈希函数（hash functions，单向秘密、数据完整性校验、快速数据库）。Gauss 的名言是：“数学是科学的皇后，而数论是数学的皇后。”</p><p>本课程在 9–11 讲会做四件事：解 <code>ax + by = c</code>；证明素数分解定理；学模运算并计算 2²⁰²⁶ 的最后两位；看 RSA 如何工作。这只是数论的短介绍，深入内容可参考 Rose 的《A Course in Number Theory》。</p><h3 id="s3">9.2 整除的定义与基本引理</h3><p>定义：若存在 <code>q ∈ Z</code> 使 <code>n = q·d</code>，则称 d 整除 n（d divides n），记作 <code>d | n</code>；q 称为商。不整除记作 <code>d ∤ n</code>。例：5 | 10，但 4 ∤ 10。</p><div class="callout warn"><b>用定义，不要用除法</b>判断 d | n 时不能写“n/d 是整数”，因为 n/d 在整数范围内可能根本不存在。要写“存在 q ∈ Z 使 n = q·d”。负数也一样：−3 | 27 因为 27 = (−9)·(−3)。</div><p>引理（对任意整数 a, b, c）：(a) <code>a | a</code>、<code>a | 0</code>、<code>1 | a</code>、<code>−1 | a</code>；(b) <code>0 | a 当且仅当 a = 0</code>；(c) 若 c &gt; 0 且 a | c，则 c ≥ a；(d) 若 a | b 且 b | c，则 a | c（传递性）；(e) 若 c | a 且 c | b，则对一切 x, y ∈ Z 有 <code>c | ax + by</code>（线性组合）。</p><p>逐条的理由都很短：(a) a = 1·a、0 = 0·a、a = a·1、a = (−a)(−1)。(b) 0 | a 意为存在 q 使 a = q·0 = 0，故只有 a = 0。(c) a | c 且 c &gt; 0 给 c = qa（q ≥ 1），故 c ≥ a。(d) b = q₁a、c = q₂b ⇒ c = (q₁q₂)a。(e) a = q₁c、b = q₂c ⇒ ax + by = (q₁x + q₂y)c。</p><h3 id="s4">9.3 整除的例题</h3><p>Ex1：4 | 18？不成立（18 = 4·4.5，商不是整数）；−3 | 27？成立（27 = (−9)·(−3)）；10 | 32050？成立（32050 = 3205·10）。判断时只需找到那个 q。</p><p>Ex2：证明若 c | a 且 c | b，则对一切 x, y 有 c | ax + by。证明：由假设存在 q₁, q₂ 使 a = q₁c、b = q₂c，于是 <code>ax + by = (q₁x + q₂y)c</code>，而 q₁x + q₂y ∈ Z，故 c | ax + by。□ 这条引理是后面所有整除证明的主力。</p><p>Ex3：<code>F = { n ∈ N : n | 12 } = {1, 2, 3, 4, 6, 12}</code>（注意 0 不能作为除数，且 n ∈ N 含 0，但 0 ∤ 12）。Ex4 要求画出 F 上“整除”关系的网络图：从 x 指向 y 当且仅当 x | y，于是 1 指向所有元素，2 指向 4、6、12，3 指向 6、12，等等。</p><p>Ex5：<code>f(n) = 3<sup>2n+2</sup> + 8n − 9</code>，证明 8 | f(n)。做法一（归纳）：n = 0 时 f(0) = 9 − 9 = 0；且 <code>f(n+1) − f(n) = 3<sup>2n+4</sup> − 3<sup>2n+2</sup> + 8 = 3<sup>2n+2</sup>(9 − 1) + 8 = 8(3<sup>2n+2</sup> + 1)</code>，被 8 整除，故由归纳得证。做法二（模 8）：<code>3² = 9 ≡ 1</code>，故 <code>3<sup>2n+2</sup> = 9<sup>n+1</sup> ≡ 1</code>，而 8n ≡ 0、−9 ≡ −1，三项相加 ≡ 0（mod 8）。</p><h3 id="s5">9.4 最大公因数</h3><p>动机：<code>4x + 2y = 5</code> 无整数解，因为左边永远是偶数而 5 是奇数。更一般地，若存在 m 使 m | a、m | b 但 m ∤ c，则 <code>ax + by = c</code> 无解。于是我们关心“同时整除 a 与 b 的最大者”。</p><p>定义：<code>gcd(a, b)</code> 是满足 <code>m | a</code> 且 <code>m | b</code> 的最大 <code>m ∈ N</code>。定理：若 a, b 不全为零，则 gcd(a, b) 存在且唯一。证明：令 <code>D = { q ∈ N : q | a 且 q | b }</code>，则 1 ∈ D 且 <code>D ⊆ {1, 2, …, max(|a|, |b|)}</code>，故 D 非空且有上界，因此有唯一最大元。□</p><p>三条性质必须记住：① gcd(a, b) 是能写成 <code>ax + by</code>（x, y ∈ Z）的最小正整数；② 若 d | a 且 d | b，则 <code>d | gcd(a, b)</code>；③ 若 a | n、b | n 且 gcd(a, b) = 1，则 <code>ab | n</code>。</p><p>例子：5 | 20、5 | 30，故 5 | gcd(20, 30) = 10；若 4 | n 且 7 | n，因 gcd(4,7) = 1，故 28 | n；但 4 | 24、8 | 24 而 gcd(4,8) = 4 ≠ 1，此时 32 ∤ 24——这说明性质 ③ 的“互素”条件不能省。</p><h3 id="s6">9.5 带余除法</h3><p>定理（division algorithm）：给定 a, b ∈ Z 且 b &gt; 0，存在唯一的整数 q（商）与 r（余数）使 <code>a = q·b + r</code> 且 <code>0 ≤ r &lt; b</code>。</p><p>存在性（了解即可）：集合 <code>{ a − n·b : n ∈ Z } ∩ N</code> 非空，取其最小元 ε = a − n_ε·b，令 r = ε、q = n_ε。若 r ≥ b，则 <code>r′ = a − (n_ε + 1)b</code> 是更小的非负元素，矛盾，故 r &lt; b。</p><p>唯一性：设 <code>a = qb + r = q′b + r′</code> 且 0 ≤ r, r′ &lt; b。则 <code>(q − q′)b = r′ − r</code>。若 q ≠ q′，则 |r − r′| = |q − q′|b ≥ b，但 r、r′ 都小于 b 且非负，|r − r′| &lt; b，矛盾。故 q = q′，进而 r = r′。□</p><p>Ex6：53 = 7·7 + 4（q = 7、r = 4）；−40 = (−14)·3 + 2（注意 r 必须非负，故 q 要“往小取”，得 q = −14、r = 2）；2634 = 21·123 + 51。这一“负数除法”是考试常见坑：−40/3 若写 q = −13、r = −1 就违反 0 ≤ r &lt; b。</p><h3 id="s7">9.6 a mod b</h3><p><code>a mod b</code> 是一个函数：输入 a ∈ Z（正、负、零都可）与 b ∈ Z⁺，输出唯一满足 <code>a = qb + r</code>、<code>0 ≤ r &lt; b</code> 的 r，即最小非负余数（least non-negative residue）。</p><p>Python 里就是 <code>%</code>：<code>−21 % 12 = 3</code>（因为 −21 = (−2)·12 + 3），<code>365 % 7 = 1</code>。注意 C 语言与 Java 的 % 对负数会给出负余数（−21 % 12 = −9），两者不同——考试用数学定义，不用某种语言的实现。</p><h3 id="s8">9.7 欧几里得算法</h3><p>求 gcd 的高效方法是欧几里得算法（Euclidean algorithm）。先看例子（265 与 30）：设 d 是同时整除 265 与 30 的数。由 <code>265 = 8·30 + 25</code> 得 <code>d | 25</code>；由 <code>30 = 1·25 + 5</code> 得 <code>d | 5</code>；由 <code>25 = 5·5 + 0</code> 得“任何数都整除 0”。于是 d | 5，而 5 的最大约数是 5。反向检查：5 | 25、5 | 30，由第一式得 5 | 265，故 5 确实是公约数。因此 gcd(265, 30) = 5。</p><p>算法本身：<code>gcd(a, b)</code> = 若 b = 0 则 a，否则 <code>gcd(b, a mod b)</code>。写成竖式就是不断做带余除法，直到余数为 0，最后一个非零余数就是 gcd。</p><p>Ex8：gcd(10043, 616)。计算：10043 = 16·616 + 187；616 = 3·187 + 55；187 = 3·55 + 22；55 = 2·22 + 11；22 = 2·11 + 0。故 gcd = 11。</p><div class="callout exam"><b>必须练到条件反射</b>考试一定会让你手算 gcd（如 2024 年第一次考试 gcd(1197, 840)）。步骤写全、余数非负、最后一行的非零余数标出来，是拿满分的关键。</div><h3 id="s9">9.8 反推欧几里得：求 ax + by = gcd(a, b)</h3><p>欧几里得算法不仅能算 gcd，还能顺便给出“把 gcd 写成 a、b 的整数线性组合”的方法：从最后一个非零余数开始，逐行把余数用上一层的数表示，最后回代到 a、b。</p><p>以 gcd(265, 30) = 5 为例：<code>5 = 30 − 1·25</code>；把 <code>25 = 265 − 8·30</code> 代入得 <code>5 = 30 − (265 − 8·30) = 9·30 − 1·265</code>。故 <code>265·(−1) + 30·9 = 5</code>，即 x = −1、y = 9。</p><p>以 10043 与 616 为例（源文件 p22）：从下往上写 <code>11 = 55 − 2·22</code>，把 22 = 187 − 3·55 代入得 <code>11 = 7·55 − 2·187</code>，再把 55 = 616 − 3·187 代入得 <code>11 = 7·616 − 23·187</code>，最后把 187 = 10043 − 16·616 代入得 <code>11 = 375·616 − 23·10043</code>。故 <code>10043·(−23) + 616·375 = 11</code>。</p><p>操作要点：每次代入只替换“较大的那个数”，系数一路累积；最后检查一遍（把 x、y 代回原式）以防符号出错。</p><h3 id="s10">9.9 当 c ≠ gcd(a, b)</h3><p>若 gcd(a, b) ∤ c，则无解（因为 gcd 整除 a 与 b，必整除 ax + by，故必整除 c）。若 gcd(a, b) | c 但 c ≠ gcd，则先解 <code>ax′ + by′ = gcd(a, b)</code>，再把整式乘以 <code>c/gcd(a, b)</code>。</p><p>例：解 <code>265x + 30y = −50</code>。已知 gcd = 5，且 <code>265·(−1) + 30·9 = 5</code>。两边乘 −10 得 <code>265·10 + 30·(−90) = −50</code>，故 x = 10、y = −90 是一组解。</p><p>定理：设 a, b, c ∈ Z 且 a、b 不全为零，则 <code>ax + by = c</code> 有整数解当且仅当 <code>gcd(a, b) | c</code>。求一组解的三步指令：(a) 算 gcd(a, b)；(b) 检查 gcd | c（否则停）；(c) 用反推欧几里得解出 <code>ax′ + by′ = gcd</code>，再乘以 c/gcd。</p><h3 id="s11">9.10 全部解的公式</h3><p>设 (x₀, y₀) 是一组解，(x₁, y₁) 是另一组。两式相减：<code>a(x₁ − x₀) = −b(y₁ − y₀)</code>。两边除以 g = gcd(a, b) 得 <code>(a/g)(x₁ − x₀) = −(b/g)(y₁ − y₀)</code>。因 <code>gcd(a/g, b/g) = 1</code>，故 a/g 必须整除 (y₁ − y₀)，即 <code>y₁ = y₀ + (a/g)k</code>；代回得 <code>x₁ = x₀ − (b/g)k</code>。</p><p>反过来（⇐），把这对式子代入原方程，两项的 k 部分恰好抵消，故对任意 k ∈ Z 都是解。两个方向合起来给出定理：(x₀, y₀) 的全部解为 <code>{(x₀ − (b/g)k, y₀ + (a/g)k) : k ∈ Z}</code>。</p><div class="callout warn"><b>符号方向</b>不同教材把 k 的符号取得相反，写成 x = x₀ + (b/g)k、y = y₀ − (a/g)k，两者等价（把 k 换成 −k）。答题时保持自洽即可，但同一题里不要混用。</div><h3 id="s12">9.11 完整范例：1032x + 320y = 56</h3><p>第一步，求 gcd：1032 = 3·320 + 72；320 = 4·72 + 32；72 = 2·32 + 8；32 = 4·8 + 0。故 gcd(1032, 320) = 8。</p><p>第二步，检查整除：c/g = 56/8 = 7 ∈ Z，故有解。</p><p>第三步，解 <code>1032x′ + 320y′ = 8</code>：从 <code>8 = 72 − 2·32</code> 开始，代 32 = 320 − 4·72 得 <code>8 = 9·72 − 2·320</code>，再代 72 = 1032 − 3·320 得 <code>8 = 9·1032 − 29·320</code>。</p><p>第四步，乘以 7：<code>1032·63 + 320·(−203) = 56</code>，故 (63, −203) 是一组解。</p><p>第五步，写全部解：<code>x = 63 − (320/8)k = 63 − 40k</code>，<code>y = −203 + (1032/8)k = −203 + 129k</code>，k ∈ Z。取 k = 1 得 (23, −74)，取 k = 2 得 (−17, 55)，可见 x 在 63 与 23 之间跨过 0，最接近 0 的两组是 (23, −74) 与 (−17, 55)。</p><p>Ex13：<code>834x − 24y = 54</code>。gcd(834, 24) = 6，6 | 54。反推：<code>6 = 24 − 18 = 24 − (834 − 34·24) = 35·24 − 834</code>，即 <code>834·(−1) + 24·35 = 6</code>；乘 9 得 <code>834·(−9) + 24·315 = 54</code>。注意原式是 <code>834x − 24y = 54</code>，故 x = −9、y = −315。全部解：<code>x = −9 + 4k</code>、<code>y = −315 + 139k</code>（因 b/g = 24/6 = 4，a/g = 834/6 = 139）。</p><p>Ex14：<code>75x − 27y = 10</code>。gcd(75, 27) = 3，而 3 ∤ 10，故无整数解。这一问只考“检查 gcd 是否整除 c”，一句话即可拿分。</p><div class="callout idea" data-ext="divisibility-euclidean-algorithm-0"><b>常见误解</b><p>判断 d | n 要按定义写存在 q ∈ Z 使 n = q·d，不要写 n/d 是整数，因为整数范围内商可能根本不存在。负数同样成立：−3 | 27 因为 27=(−9)(−3)。0 | a 当且仅当 a=0，别把除数为零当成可整除。线性组合引理是后续主力：若 c|a 且 c|b，则对一切 x,y 有 c | ax+by，证明只需把 a=q₁c、b=q₂c 代入得 ax+by=(q₁x+q₂y)c。解 ax+by=c 的路线是算 gcd、检查整除、反推欧几里得求一组解、再写通解。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>number theory</td><td>数论</td><td>The study of properties of the integers.</td></tr><tr><td>divisibility</td><td>整除</td><td>d | n iff n = q·d for some q ∈ Z.</td></tr><tr><td>quotient</td><td>商</td><td>The q in n = q·d, or in a = q·b + r.</td></tr><tr><td>remainder</td><td>余数</td><td>The r with 0 ≤ r &lt; b in a = q·b + r.</td></tr><tr><td>greatest common divisor</td><td>最大公因数</td><td>The largest m ∈ N dividing both a and b.</td></tr><tr><td>relatively prime</td><td>互素</td><td>gcd(a, b) = 1.</td></tr><tr><td>division algorithm</td><td>带余除法</td><td>Unique q, r with a = qb + r and 0 ≤ r &lt; b.</td></tr><tr><td>least non-negative residue</td><td>最小非负余数</td><td>a mod b, the r in [0, b).</td></tr><tr><td>Euclidean algorithm</td><td>欧几里得算法</td><td>gcd(a,b) = gcd(b, a mod b) until the remainder is 0.</td></tr><tr><td>Diophantine equation</td><td>丢番图方程</td><td>An equation solved in integers, e.g. ax + by = c.</td></tr><tr><td>linear combination</td><td>线性组合</td><td>ax + by; if c divides a and b it divides every such combination.</td></tr><tr><td>general solution</td><td>通解</td><td>x = x₀ − (b/g)k, y = y₀ + (a/g)k, k ∈ Z.</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">BM20A9200 数学A</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-4.html">第 4 章 数论与模运算</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 9 讲 · 整除、最大公因数与欧几里得算法</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 9 讲 · 整除、最大公因数与欧几里得算法 · 30565</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">9.1 数论研究什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">9.2 整除的定义与基本引理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">9.3 整除的例题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">9.4 最大公因数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">9.5 带余除法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">9.6 a mod b</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">9.7 欧几里得算法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">9.8 反推欧几里得：求 ax + by = gcd(a, b)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">9.9 当 c ≠ gcd(a, b)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">9.10 全部解的公式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">9.11 完整范例：1032x + 320y = 56</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-19" aria-expanded="true" data-start-open="false" aria-label="展开或收起：考点与易错"><span aria-hidden="true">›</span></button></div><div id="directory-branch-19"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">考点分层</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-22" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-22"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">欧几里得算法（手算版）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">解 ax + by = c 的四步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">负数的带余除法</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">BM20A9200 数学A</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="true" aria-label="展开或收起：BM20A9200 数学A"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 集合、关系与逻辑</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-28" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 集合、关系与逻辑"><span aria-hidden="true">›</span></button></div><div id="directory-branch-28"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="sets-basics.html"><span class="directory-label">第 1 讲 · 集合、属于关系与集合运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="families-cartesian-relations.html"><span class="directory-label">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="relations-inverse-composition-logic.html"><span class="directory-label">第 3 讲 · 逆关系与合成、命题逻辑与真值表</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 证明、函数与基数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-32" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 证明、函数与基数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-32"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="formal-proofs-number-systems.html"><span class="directory-label">第 4 讲 · 一阶逻辑、三类证明与数系进制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="proof-strategy-functions.html"><span class="directory-label">第 5 讲 · 证明策略选择与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="cardinality-countable-sets.html"><span class="directory-label">第 6 讲 · 基数、可数集与对角线法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 计数与归纳</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 计数与归纳"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="combinatorics-counting.html"><span class="directory-label">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="induction-and-stacked-implications.html"><span class="directory-label">第 8 讲 · 堆叠蕴含与数学归纳法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-4.html"><span class="directory-label">第 4 章 数论与模运算</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 4 章 数论与模运算"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="divisibility-euclidean-algorithm.html" aria-current="page"><span class="directory-label">第 9 讲 · 整除、最大公因数与欧几里得算法</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="primes-and-modular-arithmetic.html"><span class="directory-label">第 10 讲 · 素数分解与模运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="modular-inverse-rsa-matrices-intro.html"><span class="directory-label">第 11 讲 · 乘法逆元、RSA 与矩阵初步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 矩阵、复习与习题</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-43" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 矩阵、复习与习题"><span aria-hidden="true">›</span></button></div><div id="directory-branch-43"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="matrices-gauss-jordan.html"><span class="directory-label">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="exam-review-and-problem-types.html"><span class="directory-label">第 13 讲 · 习题课与考试题型总览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-exercises.html"><span class="directory-label">补充 · 12 套习题课题目与解答册：六类题型与标准写法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">补充专题与习题训练</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-47" aria-expanded="true" data-start-open="false" aria-label="展开或收起：补充专题与习题训练"><span aria-hidden="true">›</span></button></div><div id="directory-branch-47"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="supp-set-proof-workshop.html"><span class="directory-label">补充专题 · 集合证明工作坊：从定义到完整论证</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30565/divisibility-euclidean-algorithm"><header class="lecture-head"><p class="lecture-kicker">BM20A9200 数学A · 第 09 / 15 讲</p><h1 id="lecture-title">第 9 讲 · 整除、最大公因数与欧几里得算法</h1><p class="lecture-subtitle">Divisibility, Greatest Common Divisors and the Euclidean Algorithm</p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 数论与模运算</a></p><details class="lecture-sources"><summary>资料来源 · 3 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>49318f6a03a2</code>（用于识别内容变更）</dd></dl><ul><li><code>09-lesson.pdf</code> <span class="sub">未附原文件</span></li><li><code>10-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>Lecture6_Number theory.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>从第 9 讲开始进入数论（Lessons 9–11）。本讲只处理“整数的除法”：整除（divisibility）、最大公因数（gcd）、欧几里得算法，以及用它解二元一次不定方程 <code>ax + by = c</code>。</p><p>这条线索会一路延伸到第 10 讲的模运算与第 11 讲的 RSA：RSA 的私钥 d 就是解 <code>ed ≡ 1 (mod φ)</code>，而它等价于解一个 <code>ax + by = 1</code> 型的不定方程。所以本讲的算法必须练到“不用想、直接写”的熟练度。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用定义（存在 q 使 n = q·d）判断与证明整除，而不是用除法</li><li>证明整除的基本引理，特别是“若 c|a 且 c|b 则 c|ax + by”</li><li>写出带余除法 a = qb + r（0 ≤ r &lt; b），并处理负数 a</li><li>用欧几里得算法求 gcd(a, b)，并解释它为何正确</li><li>用“反推欧几里得”求 ax + by = gcd(a, b) 的一组解</li><li>判断 ax + by = c 是否有解（gcd | c），并写出全部解的通式</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">9.1 数论研究什么</h3><p>数论（number theory）研究整数的性质。典型问题：素数的性质（公式、统计、与其他数的关系）；方程的整数解，如 <code>xⁿ + yⁿ = zⁿ</code>、<code>ax + by = c</code>、<code>x² = 4y + 2</code>（这类只求整数解的方程叫丢番图方程 Diophantine equation）；整除性问题（x 何时整除 y）。</p><p>应用：密码学（cryptography，只有目标收件人能读的秘密书写）、纠错码（error-correcting codes，能在传输错误后自行纠正）、哈希函数（hash functions，单向秘密、数据完整性校验、快速数据库）。Gauss 的名言是：“数学是科学的皇后，而数论是数学的皇后。”</p><p>本课程在 9–11 讲会做四件事：解 <code>ax + by = c</code>；证明素数分解定理；学模运算并计算 2²⁰²⁶ 的最后两位；看 RSA 如何工作。这只是数论的短介绍，深入内容可参考 Rose 的《A Course in Number Theory》。</p><h3 id="s3">9.2 整除的定义与基本引理</h3><p>定义：若存在 <code>q ∈ Z</code> 使 <code>n = q·d</code>，则称 d 整除 n（d divides n），记作 <code>d | n</code>；q 称为商。不整除记作 <code>d ∤ n</code>。例：5 | 10，但 4 ∤ 10。</p><div class="callout warn"><b>用定义，不要用除法</b>判断 d | n 时不能写“n/d 是整数”，因为 n/d 在整数范围内可能根本不存在。要写“存在 q ∈ Z 使 n = q·d”。负数也一样：−3 | 27 因为 27 = (−9)·(−3)。</div><p>引理（对任意整数 a, b, c）：(a) <code>a | a</code>、<code>a | 0</code>、<code>1 | a</code>、<code>−1 | a</code>；(b) <code>0 | a 当且仅当 a = 0</code>；(c) 若 c &gt; 0 且 a | c，则 c ≥ a；(d) 若 a | b 且 b | c，则 a | c（传递性）；(e) 若 c | a 且 c | b，则对一切 x, y ∈ Z 有 <code>c | ax + by</code>（线性组合）。</p><p>逐条的理由都很短：(a) a = 1·a、0 = 0·a、a = a·1、a = (−a)(−1)。(b) 0 | a 意为存在 q 使 a = q·0 = 0，故只有 a = 0。(c) a | c 且 c &gt; 0 给 c = qa（q ≥ 1），故 c ≥ a。(d) b = q₁a、c = q₂b ⇒ c = (q₁q₂)a。(e) a = q₁c、b = q₂c ⇒ ax + by = (q₁x + q₂y)c。</p><h3 id="s4">9.3 整除的例题</h3><p>Ex1：4 | 18？不成立（18 = 4·4.5，商不是整数）；−3 | 27？成立（27 = (−9)·(−3)）；10 | 32050？成立（32050 = 3205·10）。判断时只需找到那个 q。</p><p>Ex2：证明若 c | a 且 c | b，则对一切 x, y 有 c | ax + by。证明：由假设存在 q₁, q₂ 使 a = q₁c、b = q₂c，于是 <code>ax + by = (q₁x + q₂y)c</code>，而 q₁x + q₂y ∈ Z，故 c | ax + by。□ 这条引理是后面所有整除证明的主力。</p><p>Ex3：<code>F = { n ∈ N : n | 12 } = {1, 2, 3, 4, 6, 12}</code>（注意 0 不能作为除数，且 n ∈ N 含 0，但 0 ∤ 12）。Ex4 要求画出 F 上“整除”关系的网络图：从 x 指向 y 当且仅当 x | y，于是 1 指向所有元素，2 指向 4、6、12，3 指向 6、12，等等。</p><p>Ex5：<code>f(n) = 3<sup>2n+2</sup> + 8n − 9</code>，证明 8 | f(n)。做法一（归纳）：n = 0 时 f(0) = 9 − 9 = 0；且 <code>f(n+1) − f(n) = 3<sup>2n+4</sup> − 3<sup>2n+2</sup> + 8 = 3<sup>2n+2</sup>(9 − 1) + 8 = 8(3<sup>2n+2</sup> + 1)</code>，被 8 整除，故由归纳得证。做法二（模 8）：<code>3² = 9 ≡ 1</code>，故 <code>3<sup>2n+2</sup> = 9<sup>n+1</sup> ≡ 1</code>，而 8n ≡ 0、−9 ≡ −1，三项相加 ≡ 0（mod 8）。</p><h3 id="s5">9.4 最大公因数</h3><p>动机：<code>4x + 2y = 5</code> 无整数解，因为左边永远是偶数而 5 是奇数。更一般地，若存在 m 使 m | a、m | b 但 m ∤ c，则 <code>ax + by = c</code> 无解。于是我们关心“同时整除 a 与 b 的最大者”。</p><p>定义：<code>gcd(a, b)</code> 是满足 <code>m | a</code> 且 <code>m | b</code> 的最大 <code>m ∈ N</code>。定理：若 a, b 不全为零，则 gcd(a, b) 存在且唯一。证明：令 <code>D = { q ∈ N : q | a 且 q | b }</code>，则 1 ∈ D 且 <code>D ⊆ {1, 2, …, max(|a|, |b|)}</code>，故 D 非空且有上界，因此有唯一最大元。□</p><p>三条性质必须记住：① gcd(a, b) 是能写成 <code>ax + by</code>（x, y ∈ Z）的最小正整数；② 若 d | a 且 d | b，则 <code>d | gcd(a, b)</code>；③ 若 a | n、b | n 且 gcd(a, b) = 1，则 <code>ab | n</code>。</p><p>例子：5 | 20、5 | 30，故 5 | gcd(20, 30) = 10；若 4 | n 且 7 | n，因 gcd(4,7) = 1，故 28 | n；但 4 | 24、8 | 24 而 gcd(4,8) = 4 ≠ 1，此时 32 ∤ 24——这说明性质 ③ 的“互素”条件不能省。</p><h3 id="s6">9.5 带余除法</h3><p>定理（division algorithm）：给定 a, b ∈ Z 且 b &gt; 0，存在唯一的整数 q（商）与 r（余数）使 <code>a = q·b + r</code> 且 <code>0 ≤ r &lt; b</code>。</p><p>存在性（了解即可）：集合 <code>{ a − n·b : n ∈ Z } ∩ N</code> 非空，取其最小元 ε = a − n_ε·b，令 r = ε、q = n_ε。若 r ≥ b，则 <code>r′ = a − (n_ε + 1)b</code> 是更小的非负元素，矛盾，故 r &lt; b。</p><p>唯一性：设 <code>a = qb + r = q′b + r′</code> 且 0 ≤ r, r′ &lt; b。则 <code>(q − q′)b = r′ − r</code>。若 q ≠ q′，则 |r − r′| = |q − q′|b ≥ b，但 r、r′ 都小于 b 且非负，|r − r′| &lt; b，矛盾。故 q = q′，进而 r = r′。□</p><p>Ex6：53 = 7·7 + 4（q = 7、r = 4）；−40 = (−14)·3 + 2（注意 r 必须非负，故 q 要“往小取”，得 q = −14、r = 2）；2634 = 21·123 + 51。这一“负数除法”是考试常见坑：−40/3 若写 q = −13、r = −1 就违反 0 ≤ r &lt; b。</p><h3 id="s7">9.6 a mod b</h3><p><code>a mod b</code> 是一个函数：输入 a ∈ Z（正、负、零都可）与 b ∈ Z⁺，输出唯一满足 <code>a = qb + r</code>、<code>0 ≤ r &lt; b</code> 的 r，即最小非负余数（least non-negative residue）。</p><p>Python 里就是 <code>%</code>：<code>−21 % 12 = 3</code>（因为 −21 = (−2)·12 + 3），<code>365 % 7 = 1</code>。注意 C 语言与 Java 的 % 对负数会给出负余数（−21 % 12 = −9），两者不同——考试用数学定义，不用某种语言的实现。</p><h3 id="s8">9.7 欧几里得算法</h3><p>求 gcd 的高效方法是欧几里得算法（Euclidean algorithm）。先看例子（265 与 30）：设 d 是同时整除 265 与 30 的数。由 <code>265 = 8·30 + 25</code> 得 <code>d | 25</code>；由 <code>30 = 1·25 + 5</code> 得 <code>d | 5</code>；由 <code>25 = 5·5 + 0</code> 得“任何数都整除 0”。于是 d | 5，而 5 的最大约数是 5。反向检查：5 | 25、5 | 30，由第一式得 5 | 265，故 5 确实是公约数。因此 gcd(265, 30) = 5。</p><p>算法本身：<code>gcd(a, b)</code> = 若 b = 0 则 a，否则 <code>gcd(b, a mod b)</code>。写成竖式就是不断做带余除法，直到余数为 0，最后一个非零余数就是 gcd。</p><p>Ex8：gcd(10043, 616)。计算：10043 = 16·616 + 187；616 = 3·187 + 55；187 = 3·55 + 22；55 = 2·22 + 11；22 = 2·11 + 0。故 gcd = 11。</p><div class="callout exam"><b>必须练到条件反射</b>考试一定会让你手算 gcd（如 2024 年第一次考试 gcd(1197, 840)）。步骤写全、余数非负、最后一行的非零余数标出来，是拿满分的关键。</div><h3 id="s9">9.8 反推欧几里得：求 ax + by = gcd(a, b)</h3><p>欧几里得算法不仅能算 gcd，还能顺便给出“把 gcd 写成 a、b 的整数线性组合”的方法：从最后一个非零余数开始，逐行把余数用上一层的数表示，最后回代到 a、b。</p><p>以 gcd(265, 30) = 5 为例：<code>5 = 30 − 1·25</code>；把 <code>25 = 265 − 8·30</code> 代入得 <code>5 = 30 − (265 − 8·30) = 9·30 − 1·265</code>。故 <code>265·(−1) + 30·9 = 5</code>，即 x = −1、y = 9。</p><p>以 10043 与 616 为例（源文件 p22）：从下往上写 <code>11 = 55 − 2·22</code>，把 22 = 187 − 3·55 代入得 <code>11 = 7·55 − 2·187</code>，再把 55 = 616 − 3·187 代入得 <code>11 = 7·616 − 23·187</code>，最后把 187 = 10043 − 16·616 代入得 <code>11 = 375·616 − 23·10043</code>。故 <code>10043·(−23) + 616·375 = 11</code>。</p><p>操作要点：每次代入只替换“较大的那个数”，系数一路累积；最后检查一遍（把 x、y 代回原式）以防符号出错。</p><h3 id="s10">9.9 当 c ≠ gcd(a, b)</h3><p>若 gcd(a, b) ∤ c，则无解（因为 gcd 整除 a 与 b，必整除 ax + by，故必整除 c）。若 gcd(a, b) | c 但 c ≠ gcd，则先解 <code>ax′ + by′ = gcd(a, b)</code>，再把整式乘以 <code>c/gcd(a, b)</code>。</p><p>例：解 <code>265x + 30y = −50</code>。已知 gcd = 5，且 <code>265·(−1) + 30·9 = 5</code>。两边乘 −10 得 <code>265·10 + 30·(−90) = −50</code>，故 x = 10、y = −90 是一组解。</p><p>定理：设 a, b, c ∈ Z 且 a、b 不全为零，则 <code>ax + by = c</code> 有整数解当且仅当 <code>gcd(a, b) | c</code>。求一组解的三步指令：(a) 算 gcd(a, b)；(b) 检查 gcd | c（否则停）；(c) 用反推欧几里得解出 <code>ax′ + by′ = gcd</code>，再乘以 c/gcd。</p><h3 id="s11">9.10 全部解的公式</h3><p>设 (x₀, y₀) 是一组解，(x₁, y₁) 是另一组。两式相减：<code>a(x₁ − x₀) = −b(y₁ − y₀)</code>。两边除以 g = gcd(a, b) 得 <code>(a/g)(x₁ − x₀) = −(b/g)(y₁ − y₀)</code>。因 <code>gcd(a/g, b/g) = 1</code>，故 a/g 必须整除 (y₁ − y₀)，即 <code>y₁ = y₀ + (a/g)k</code>；代回得 <code>x₁ = x₀ − (b/g)k</code>。</p><p>反过来（⇐），把这对式子代入原方程，两项的 k 部分恰好抵消，故对任意 k ∈ Z 都是解。两个方向合起来给出定理：(x₀, y₀) 的全部解为 <code>{(x₀ − (b/g)k, y₀ + (a/g)k) : k ∈ Z}</code>。</p><div class="callout warn"><b>符号方向</b>不同教材把 k 的符号取得相反，写成 x = x₀ + (b/g)k、y = y₀ − (a/g)k，两者等价（把 k 换成 −k）。答题时保持自洽即可，但同一题里不要混用。</div><h3 id="s12">9.11 完整范例：1032x + 320y = 56</h3><p>第一步，求 gcd：1032 = 3·320 + 72；320 = 4·72 + 32；72 = 2·32 + 8；32 = 4·8 + 0。故 gcd(1032, 320) = 8。</p><p>第二步，检查整除：c/g = 56/8 = 7 ∈ Z，故有解。</p><p>第三步，解 <code>1032x′ + 320y′ = 8</code>：从 <code>8 = 72 − 2·32</code> 开始，代 32 = 320 − 4·72 得 <code>8 = 9·72 − 2·320</code>，再代 72 = 1032 − 3·320 得 <code>8 = 9·1032 − 29·320</code>。</p><p>第四步，乘以 7：<code>1032·63 + 320·(−203) = 56</code>，故 (63, −203) 是一组解。</p><p>第五步，写全部解：<code>x = 63 − (320/8)k = 63 − 40k</code>，<code>y = −203 + (1032/8)k = −203 + 129k</code>，k ∈ Z。取 k = 1 得 (23, −74)，取 k = 2 得 (−17, 55)，可见 x 在 63 与 23 之间跨过 0，最接近 0 的两组是 (23, −74) 与 (−17, 55)。</p><p>Ex13：<code>834x − 24y = 54</code>。gcd(834, 24) = 6，6 | 54。反推：<code>6 = 24 − 18 = 24 − (834 − 34·24) = 35·24 − 834</code>，即 <code>834·(−1) + 24·35 = 6</code>；乘 9 得 <code>834·(−9) + 24·315 = 54</code>。注意原式是 <code>834x − 24y = 54</code>，故 x = −9、y = −315。全部解：<code>x = −9 + 4k</code>、<code>y = −315 + 139k</code>（因 b/g = 24/6 = 4，a/g = 834/6 = 139）。</p><p>Ex14：<code>75x − 27y = 10</code>。gcd(75, 27) = 3，而 3 ∤ 10，故无整数解。这一问只考“检查 gcd 是否整除 c”，一句话即可拿分。</p><div class="callout idea" data-ext="divisibility-euclidean-algorithm-0"><b>常见误解</b><p>判断 d | n 要按定义写存在 q ∈ Z 使 n = q·d，不要写 n/d 是整数，因为整数范围内商可能根本不存在。负数同样成立：−3 | 27 因为 27=(−9)(−3)。0 | a 当且仅当 a=0，别把除数为零当成可整除。线性组合引理是后续主力：若 c|a 且 c|b，则对一切 x,y 有 c | ax+by，证明只需把 a=q₁c、b=q₂c 代入得 ax+by=(q₁x+q₂y)c。解 ax+by=c 的路线是算 gcd、检查整除、反推欧几里得求一组解、再写通解。</p></div><h3 id="s13">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/img/30565/slides/09-lesson-p06.jpg" loading="lazy" alt="09-lesson p6" width="527" height="395" decoding="async" data-full-src="../../assets/img/30565/slides/09-lesson-p06.jpg"><figcaption>09-lesson · 第 6 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>number theory</td><td>数论</td><td>The study of properties of the integers.</td></tr><tr><td>divisibility</td><td>整除</td><td>d | n iff n = q·d for some q ∈ Z.</td></tr><tr><td>quotient</td><td>商</td><td>The q in n = q·d, or in a = q·b + r.</td></tr><tr><td>remainder</td><td>余数</td><td>The r with 0 ≤ r &lt; b in a = q·b + r.</td></tr><tr><td>greatest common divisor</td><td>最大公因数</td><td>The largest m ∈ N dividing both a and b.</td></tr><tr><td>relatively prime</td><td>互素</td><td>gcd(a, b) = 1.</td></tr><tr><td>division algorithm</td><td>带余除法</td><td>Unique q, r with a = qb + r and 0 ≤ r &lt; b.</td></tr><tr><td>least non-negative residue</td><td>最小非负余数</td><td>a mod b, the r in [0, b).</td></tr><tr><td>Euclidean algorithm</td><td>欧几里得算法</td><td>gcd(a,b) = gcd(b, a mod b) until the remainder is 0.</td></tr><tr><td>Diophantine equation</td><td>丢番图方程</td><td>An equation solved in integers, e.g. ax + by = c.</td></tr><tr><td>linear combination</td><td>线性组合</td><td>ax + by; if c divides a and b it divides every such combination.</td></tr><tr><td>general solution</td><td>通解</td><td>x = x₀ − (b/g)k, y = y₀ + (a/g)k, k ∈ Z.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 Ex8）计算 gcd(10043, 616)，并用反推给出 10043x + 616y = 11 的一组解。</div><p>竖式：10043 = 16·616 + 187；616 = 3·187 + 55；187 = 3·55 + 22；55 = 2·22 + 11；22 = 2·11 + 0。故 gcd = 11。</p><p>反推：11 = 55 − 2·22；代入 22 = 187 − 3·55 得 11 = 7·55 − 2·187；代入 55 = 616 − 3·187 得 11 = 7·616 − 23·187；代入 187 = 10043 − 16·616 得 11 = 375·616 − 23·10043。</p><p>故 <code>10043·(−23) + 616·375 = 11</code>，即 x = −23、y = 375。</p><p>检验：10043 × (−23) = −230989；616 × 375 = 231000；两者相加 = 11，正确。</p></div><div class="qa"><div class="q">例 2　（源文件 Ex9）求 1032x + 320y = 56 的一组解与全部解。</div><p>gcd：1032 = 3·320 + 72；320 = 4·72 + 32；72 = 2·32 + 8；32 = 4·8 + 0，故 gcd = 8；8 | 56，有解。</p><p>反推：8 = 72 − 2·32 = 72 − 2(320 − 4·72) = 9·72 − 2·320 = 9(1032 − 3·320) − 2·320 = 9·1032 − 29·320。</p><p>乘 56/8 = 7：<code>1032·63 + 320·(−203) = 56</code>，故 (63, −203)。</p><p>全部解：<code>x = 63 − 40k</code>、<code>y = −203 + 129k</code>（k ∈ Z）。取 k = 0,1,2 得 (63, −203)、(23, −74)、(−17, 55)。</p></div><div class="qa"><div class="q">例 3　（源文件 Ex14）判断 75x − 27y = 10 是否有整数解。</div><p>先算 gcd(75, 27)：75 = 2·27 + 21；27 = 1·21 + 6；21 = 3·6 + 3；6 = 2·3 + 0，故 gcd = 3。</p><p>检查整除：3 ∤ 10（10 = 3·3 + 1）。</p><p>结论：无整数解。理由：3 整除 75 与 27，故 3 整除 75x − 27y；若等于 10，则 3 | 10，矛盾。</p></div><div class="qa"><div class="q">例 4　（源文件 Ex6）求 −40 除以 3 的商与非负余数。</div><p>要求 <code>−40 = q·3 + r</code> 且 0 ≤ r &lt; 3。</p><p>试 q = −13：−39 + r = −40 ⇒ r = −1，不合格。试 q = −14：−42 + r = −40 ⇒ r = 2，合格。</p><p>所以 q = −14、r = 2。也可用 <code>−40 mod 3 = 2</code> 直接得余数，再反推 q = (−40 − 2)/3 = −14。</p><p>常见错误：写 q = −13、r = −1，或写 q = −14、r = 2 但把余数写成 −1。记住余数永远落在 [0, b)。</p></div><div class="qa"><div class="q">例 5　（源文件 Ex5）证明 8 | 3<sup>2n+2</sup> + 8n − 9 对一切 n ∈ N 成立。</div><p>用归纳。n = 0：<code>3² + 0 − 9 = 0</code>，被 8 整除。</p><p>设 8 | f(k)。计算差：<code>f(k+1) − f(k) = 3<sup>2k+4</sup> − 3<sup>2k+2</sup> + 8 = 3<sup>2k+2</sup>(3² − 1) + 8 = 8·3<sup>2k+2</sup> + 8 = 8(3<sup>2k+2</sup> + 1)</code>，被 8 整除。</p><p>故 f(k+1) = f(k) + 8(…) 也被 8 整除，由归纳法得证。□</p><p>另解（模 8）：<code>3² ≡ 1 (mod 8)</code> ⇒ <code>3<sup>2n+2</sup> ≡ 1</code>；<code>8n ≡ 0</code>；<code>−9 ≡ −1</code>；相加 ≡ 0 (mod 8)，即被 8 整除。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>判断真假并说明理由：7 | 91、12 | 100、−5 | 0、0 | 7。</li><li>求 gcd(161, 434)，并判断 161x − 434y = 5 与 161x − 434y = 21 是否有解。</li><li>求 84x + 30y = 6 的一组解与全部解。</li><li>计算 2345 除以 17 的商与非负余数，并写出 2345 mod 17。</li><li>设 a | n、b | n 且 gcd(a, b) = 1。证明 ab | n。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 7 | 91 真（91 = 13·7）；12 | 100 假（100 = 8·12 + 4）；−5 | 0 真（0 = 0·(−5)）；0 | 7 假（不存在 q 使 7 = q·0）。</p><p><b>2.</b> 434 = 2·161 + 112；161 = 1·112 + 49；112 = 2·49 + 14；49 = 3·14 + 7；14 = 2·7 + 0，故 gcd = 7。7 ∤ 5，故第一个方程无解；7 | 21，第二个有解（把 gcd 的表示乘以 3 即可）。</p><p><b>3.</b> gcd(84, 30)：84 = 2·30 + 24；30 = 1·24 + 6；24 = 4·6，故 gcd = 6，且 6 = 30 − 24 = 30 − (84 − 2·30) = 3·30 − 84，即 84·(−1) + 30·3 = 6。全部解：<code>x = −1 + 5k</code>、<code>y = 3 − 14k</code>（b/g = 30/6 = 5，a/g = 84/6 = 14）。</p><p><b>4.</b> 17·137 = 2329，2345 − 2329 = 16，故 q = 137、r = 16，即 2345 mod 17 = 16。</p><p><b>5.</b> 由 a | n 得 n = q₁a；由 b | n 得 b | q₁a。因 gcd(a,b) = 1，故 b | q₁，设 q₁ = q₂b，则 n = q₂ab，即 ab | n。□（这条性质在 9.4 已作为结论列出。）</p></div></details></section>
-<section id="sec-exam" class="card" data-type="exam"><h2 id="s13">考点分层</h2><div class="callout exam"><b>必考</b>① 计算 gcd（欧几里得算法竖式），2022 年第一次考试第 2(a)、2023 年第二次考试 4(a)、2024 年第一次考试 4(a) 都考。② 判断 ax + by = c 是否有解，并给出一组解（2(b)(c)）。③ 写出全部解的通式（2023 年第二次考试 4(c)、2025 年第二次考试第 4 题）。④ 用整除定义证明线性组合性质或整除恒等式。</div><div class="callout warn"><b>易错点</b>① 用除法判断整除，写出 n/d ∈ Z 这种不合法的表达式。② 求余数时允许负余数（应取 0 ≤ r &lt; b）。③ 忘记检查 gcd | c 就直接找解。④ 反推欧几里得时系数符号错，代回不成立。⑤ 全部解公式里把 a/g 与 b/g 的位置写反。</div><div class="callout warn"><b>失分点</b>只写 gcd 的值不写竖式，过程分全失；写全部解时漏掉“k ∈ Z”，或只给一组解就说“所有解”，会被判不完整。</div><div class="callout tip"><b>进阶</b>① 知道 gcd(a,b) 是 ax + by 能表示的最小正整数（Bézout 恒等式）。② 会用“模 8/模 9”快速证明整除恒等式。③ 理解“gcd | c”是充要条件而非必要条件式的巧合。④ 会把负系数方程（如 834x − 24y）先化为标准形再套公式。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">方法清单</h2><h3 id="s15">欧几里得算法（手算版）</h3><ol class="steps"><li>把较大的数写在左、较小的写在右</li><li>做带余除法 a = q·b + r，余数必须非负</li><li>把 (a, b) 换成 (b, r)，重复</li><li>当余数为 0 时，最后一个非零余数就是 gcd</li><li>把每一步都写出来，便于反推与检查</li></ol><h3 id="s16">解 ax + by = c 的四步</h3><ul class="checklist"><li>算 g = gcd(a, b)</li><li>检查 g | c：不整除则写出“无解”并说明理由</li><li>反推欧几里得，求 ax′ + by′ = g 的一组解</li><li>两边乘以 c/g，得到一组解 (x₀, y₀)</li><li>写通解 x = x₀ − (b/g)k、y = y₀ + (a/g)k，k ∈ Z</li></ul><h3 id="s17">负数的带余除法</h3><ol class="steps"><li>先写出目标形式 a = q·b + r 与约束 0 ≤ r &lt; b</li><li>用 a mod b（Python 的 %）直接得 r</li><li>由 q = (a − r)/b 反算商</li><li>把 q、r 代回检验，确认 r 落在 [0, b)</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>09-lesson.pdf</td><td>p3–p7</td><td>数论的研究对象、应用（密码学/纠错码/哈希）、Gauss 名言、本课程三讲路线</td></tr><tr><td>09-lesson.pdf</td><td>p8–p9</td><td>整除的定义与五条引理、Ex1–Ex5（含 8 | 3<sup>2n+2</sup>+8n−9）</td></tr><tr><td>09-lesson.pdf</td><td>p11–p13</td><td>用反证法看 4x+2y=5 无解、gcd 的定义与存在唯一性、三条性质</td></tr><tr><td>09-lesson.pdf</td><td>p15–p17</td><td>带余除法的存在性与唯一性证明、Ex6–Ex7、a mod b 函数与 Python %</td></tr><tr><td>09-lesson.pdf</td><td>p18–p19</td><td>欧几里得算法的原理（gcd(265,30)）、Ex8 gcd(10043,616)</td></tr><tr><td>09-lesson.pdf</td><td>p21–p25</td><td>反推欧几里得、10043x+616y=11、c ≠ gcd 时乘倍数、充要条件与三步指令、Ex9–Ex11</td></tr><tr><td>09-lesson.pdf</td><td>p28–p34</td><td>1032x+320y=56 的四步全过程、全部解公式的推导（三个部分）、Ex12–Ex14</td></tr><tr><td>10-exercise.pdf</td><td>Ex4–Ex6</td><td>gcd(2023,1428)、3x−5y=7、21x−35y=24、97x+127y=1、219x−396y=−12</td></tr><tr><td>（跳过）</td><td>p5–p6、p11、p20–p21、p26–p27</td><td>目录与讨论页，内容已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>Bézout 恒等式、模 8 与模 9 的快捷证明、负系数方程的标准化处理</td></tr></table></section><div class="lnav"><a class="prev" href="induction-and-stacked-implications.html">← 第 8 讲 · 堆叠蕴含与数学归纳法</a><a class="next" href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算 →</a></div></article></div>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s14">考点分层</h2><div class="callout exam"><b>必考</b>① 计算 gcd（欧几里得算法竖式），2022 年第一次考试第 2(a)、2023 年第二次考试 4(a)、2024 年第一次考试 4(a) 都考。② 判断 ax + by = c 是否有解，并给出一组解（2(b)(c)）。③ 写出全部解的通式（2023 年第二次考试 4(c)、2025 年第二次考试第 4 题）。④ 用整除定义证明线性组合性质或整除恒等式。</div><div class="callout warn"><b>易错点</b>① 用除法判断整除，写出 n/d ∈ Z 这种不合法的表达式。② 求余数时允许负余数（应取 0 ≤ r &lt; b）。③ 忘记检查 gcd | c 就直接找解。④ 反推欧几里得时系数符号错，代回不成立。⑤ 全部解公式里把 a/g 与 b/g 的位置写反。</div><div class="callout warn"><b>失分点</b>只写 gcd 的值不写竖式，过程分全失；写全部解时漏掉“k ∈ Z”，或只给一组解就说“所有解”，会被判不完整。</div><div class="callout tip"><b>进阶</b>① 知道 gcd(a,b) 是 ax + by 能表示的最小正整数（Bézout 恒等式）。② 会用“模 8/模 9”快速证明整除恒等式。③ 理解“gcd | c”是充要条件而非必要条件式的巧合。④ 会把负系数方程（如 834x − 24y）先化为标准形再套公式。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">方法清单</h2><h3 id="s16">欧几里得算法（手算版）</h3><ol class="steps"><li>把较大的数写在左、较小的写在右</li><li>做带余除法 a = q·b + r，余数必须非负</li><li>把 (a, b) 换成 (b, r)，重复</li><li>当余数为 0 时，最后一个非零余数就是 gcd</li><li>把每一步都写出来，便于反推与检查</li></ol><h3 id="s17">解 ax + by = c 的四步</h3><ul class="checklist"><li>算 g = gcd(a, b)</li><li>检查 g | c：不整除则写出“无解”并说明理由</li><li>反推欧几里得，求 ax′ + by′ = g 的一组解</li><li>两边乘以 c/g，得到一组解 (x₀, y₀)</li><li>写通解 x = x₀ − (b/g)k、y = y₀ + (a/g)k，k ∈ Z</li></ul><h3 id="s18">负数的带余除法</h3><ol class="steps"><li>先写出目标形式 a = q·b + r 与约束 0 ≤ r &lt; b</li><li>用 a mod b（Python 的 %）直接得 r</li><li>由 q = (a − r)/b 反算商</li><li>把 q、r 代回检验，确认 r 落在 [0, b)</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>09-lesson.pdf</td><td>p3–p7</td><td>数论的研究对象、应用（密码学/纠错码/哈希）、Gauss 名言、本课程三讲路线</td></tr><tr><td>09-lesson.pdf</td><td>p8–p9</td><td>整除的定义与五条引理、Ex1–Ex5（含 8 | 3<sup>2n+2</sup>+8n−9）</td></tr><tr><td>09-lesson.pdf</td><td>p11–p13</td><td>用反证法看 4x+2y=5 无解、gcd 的定义与存在唯一性、三条性质</td></tr><tr><td>09-lesson.pdf</td><td>p15–p17</td><td>带余除法的存在性与唯一性证明、Ex6–Ex7、a mod b 函数与 Python %</td></tr><tr><td>09-lesson.pdf</td><td>p18–p19</td><td>欧几里得算法的原理（gcd(265,30)）、Ex8 gcd(10043,616)</td></tr><tr><td>09-lesson.pdf</td><td>p21–p25</td><td>反推欧几里得、10043x+616y=11、c ≠ gcd 时乘倍数、充要条件与三步指令、Ex9–Ex11</td></tr><tr><td>09-lesson.pdf</td><td>p28–p34</td><td>1032x+320y=56 的四步全过程、全部解公式的推导（三个部分）、Ex12–Ex14</td></tr><tr><td>10-exercise.pdf</td><td>Ex4–Ex6</td><td>gcd(2023,1428)、3x−5y=7、21x−35y=24、97x+127y=1、219x−396y=−12</td></tr><tr><td>（跳过）</td><td>p5–p6、p11、p20–p21、p26–p27</td><td>目录与讨论页，内容已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>Bézout 恒等式、模 8 与模 9 的快捷证明、负系数方程的标准化处理</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="induction-and-stacked-implications.html"><span>上一讲</span><strong>第 8 讲 · 堆叠蕴含与数学归纳法</strong></a><a data-sequence="parent" href="part-4.html"><span>返回目录</span><strong>第 4 章 数论与模运算</strong></a><a data-sequence="next" href="primes-and-modular-arithmetic.html"><span>下一讲</span><strong>第 10 讲 · 素数分解与模运算</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

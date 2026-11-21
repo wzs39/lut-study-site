@@ -8,204 +8,362 @@
 <title>Week 3 · 有符号数、补码、溢出与 IEEE 754 · 86</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,40 +464,216 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-2.html">第 2 章 数制与数据表示</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、问题：硬件里没有负号</a><a class="toc-l3" href="#s3">1.1 日常做法与硬件限制</a><a class="toc-l3" href="#s4">1.2 符号位方案</a><a class="toc-l2" href="#s5">二、符号-数值表示（Signed-Magnitude）</a><a class="toc-l3" href="#s6">2.1 定义</a><a class="toc-l3" href="#s7">2.2 八个例子</a><a class="toc-l3" href="#s8">2.3 两个致命缺点</a><a class="toc-l2" href="#s9">三、过渡方案：反码（Ones Complement）</a><a class="toc-l3" href="#s10">3.1 规则</a><a class="toc-l3" href="#s11">3.2 算例</a><a class="toc-l3" href="#s12">3.3 仍然存在双零</a><a class="toc-l2" href="#s13">四、工业标准：补码（Two&#x27;s Complement）</a><a class="toc-l3" href="#s14">4.1 为什么选它</a><a class="toc-l3" href="#s15">4.2 规则</a><a class="toc-l3" href="#s16">4.3 两个算例</a><a class="toc-l3" href="#s17">4.4 反向验证：给一个补码串，怎么读出它是多少</a><a class="toc-l2" href="#s18">五、可表示的范围（以 8 位为例）</a><a class="toc-l3" href="#s19">5.1 原码的范围</a><a class="toc-l3" href="#s20">5.2 补码的边界值</a><a class="toc-l3" href="#s21">5.3 公式</a><a class="toc-l2" href="#s22">六、补码加法</a><a class="toc-l3" href="#s23">6.1 黄金规则</a><a class="toc-l3" href="#s24">6.2 算例：14 + 9</a><a class="toc-l3" href="#s25">6.3 算例：−5 + 3（复习负数加法）</a><a class="toc-l2" href="#s26">七、补码减法</a><a class="toc-l3" href="#s27">7.1 黄金规则与公式</a><a class="toc-l3" href="#s28">7.2 算例：7 − 4</a><a class="toc-l3" href="#s29">7.3 算例：−5 − (−3)</a><a class="toc-l2" href="#s30">八、溢出</a><a class="toc-l3" href="#s31">8.1 定义与类比</a><a class="toc-l3" href="#s32">8.2 两条判断规则</a><a class="toc-l3" href="#s33">8.3 正溢出算例：+100 + (+50)</a><a class="toc-l3" href="#s34">8.4 负溢出算例：−100 + (−50)</a><a class="toc-l3" href="#s35">8.5 硬件怎样检测溢出</a><a class="toc-l3" href="#s36">8.6 溢出与正常进位的区别</a><a class="toc-l2" href="#s37">九、二进制小数转十进制</a><a class="toc-l3" href="#s38">9.1 位权变成负指数</a><a class="toc-l3" href="#s39">9.2 两个算例</a><a class="toc-l2" href="#s40">十、十进制小数转二进制：乘 2 取整法</a><a class="toc-l3" href="#s41">10.1 四步规则</a><a class="toc-l3" href="#s42">10.2 算例：0.375</a><a class="toc-l3" href="#s43">10.3 算例：0.8125</a><a class="toc-l3" href="#s44">10.4 算例：0.1 的无限循环</a><a class="toc-l3" href="#s45">10.5 顺便记住几个「转不干净」的数</a><a class="toc-l2" href="#s46">十一、定点数与浮点数</a><a class="toc-l3" href="#s47">11.1 定点数的问题</a><a class="toc-l3" href="#s48">11.2 浮点数的思路</a><a class="toc-l2" href="#s49">十二、IEEE 754 单精度（32 位）</a><a class="toc-l3" href="#s50">12.1 三段布局</a><a class="toc-l3" href="#s51">12.2 为什么指数要加偏置</a><a class="toc-l3" href="#s52">12.3 隐藏前导 1</a><a class="toc-l3" href="#s53">12.4 编码 −5.75 的五步</a><a class="toc-l3" href="#s54">12.5 反向解码的四步</a><a class="toc-l2" href="#s55">十三、浮点加法：四步</a><a class="toc-l3" href="#s56">13.1 完整算例：9.5 + 7.0</a><a class="toc-l2" href="#s57">十四、IEEE 754 的特殊值</a><a class="toc-l2" href="#s58">十五、双精度（64 位）</a><a class="toc-l2" href="#s59">十六、三种编码在现实中的分工</a><a class="toc-l2" href="#s60">十七、课堂练习（课件原题）</a><a class="toc-l2" href="#s61">方法清单</a><a class="toc-l3" href="#s62">求一个负数的 8 位补码（四步）</a><a class="toc-l3" href="#s63">读出补码串的真值（三步）</a><a class="toc-l3" href="#s64">判溢出（任选一条，两条互验）</a><a class="toc-l3" href="#s65">IEEE 754 单精度编码（五步）</a><a class="toc-l3" href="#s66">IEEE 754 单精度解码（六步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a class="toc-l3" href="w3-signed-numbers-and-float.html">▸ Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a href="w8-storage-and-files.html">Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 3 · 有符号数、补码、溢出与 IEEE 754</h1><p class="lead">Signed Integers, Two&#x27;s Complement and Floating Point <span class="badge mute">86</span> <span class="badge mute">第 3 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 数制与数据表示</a></p><p class="src">原始文件：<code>Week3- Digital Data Encoding/Lecture3.pdf</code> <code>Week3- Digital Data Encoding/Exercise 2.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲解决了「正整数怎么写」。可现实里的数据有负数（温度 −5 ℃）、有小数（价钱 12.625）。这一讲补上这两块：先用<b>符号位</b>与<b>补码</b>把负数塞进固定位宽，再用<b>IEEE 754</b>把小数塞进去。</p><p>为什么补码是本周的核心？因为它把「减法」变成了「加法」。计算机没有减法器，只有一个加法器；把 −B 写成 B 的补码，A − B 就变成 A + (−B)，一次加法就够。这条设计至今仍是所有 CPU 的做法（x86、ARM、RISC-V 全都如此）。</p><p>本讲的三块内容层层递进：补码解决「整数带符号」，定点/浮点解决「小数」，IEEE 754 解决「不同机器之间怎么交换小数」。学完这一讲，你看到 <code>0xC1480000</code> 这种十六进制串，就能反推它代表的浮点数。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 8 位写出一个整数的原码、反码、补码三种形式</li><li>说明补码为什么能消除「双零」，并写出 n 位的表示范围</li><li>做补码加法与减法，正确丢弃最高位的进位</li><li>按两条规则判断溢出，并用 Cin 与 Cout 的异或验证</li><li>把二进制小数转成十进制，把十进制小数用乘 2 取整法转成二进制</li><li>按五步把十进制实数编码成 32 位 IEEE 754 单精度</li><li>从 32 位十六进制串反解出它代表的十进制实数</li><li>说明浮点加法为什么要先对齐指数，以及精度误差从哪来</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、问题：硬件里没有负号</h2><h3 id="s3">1.1 日常做法与硬件限制</h3><p>日常生活里我们用 + 和 − 两个符号表示正负。但课件指出硬件限制：<b>计算机只懂 0 和 1，内存里没有物理的负号</b>。</p><h3 id="s4">1.2 符号位方案</h3><p>解决办法是把最高位（Most Significant Bit，MSB，最左边那一位）征用为符号位：</p><table><tr><th>符号位</th><th>含义</th></tr><tr><td>0</td><td>正数（+）</td></tr><tr><td>1</td><td>负数（−）</td></tr></table><p>课件明确约定：本讲所有例子都按 <b>8 位字长</b>讨论。这个约定很重要——同一个二进制串在 8 位与 16 位下的值不同，考试若不写位宽，按 8 位处理并注明。</p><p>注意符号位占掉了最高位，于是「数值部分」只剩 7 位。8 位能表示 2^8 = 256 种模式，但其中一半要分给负数，这就是后面所有「范围」计算的出发点。</p><h2 id="s5">二、符号-数值表示（Signed-Magnitude）</h2><h3 id="s6">2.1 定义</h3><p>课件称它为最简单的编码：<b>MSB 是符号位，其余位表示绝对值</b>（magnitude）。</p><h3 id="s7">2.2 八个例子</h3><pre><code>+5  = 0000 0101
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">HDD5020 信息处理基础（计算机导论）</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-2.html">第 2 章 数制与数据表示</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">Week 3 · 有符号数、补码、溢出与 IEEE 754</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">Week 3 · 有符号数、补码、溢出与 IEEE 754 · 86</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">一、问题：硬件里没有负号</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-4" aria-expanded="true" data-start-open="false" aria-label="展开或收起：一、问题：硬件里没有负号"><span aria-hidden="true">›</span></button></div><div id="directory-branch-4"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">1.1 日常做法与硬件限制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">1.2 符号位方案</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">二、符号-数值表示（Signed-Magnitude）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-7" aria-expanded="true" data-start-open="false" aria-label="展开或收起：二、符号-数值表示（Signed-Magnitude）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-7"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.1 定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.2 八个例子</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">2.3 两个致命缺点</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">三、过渡方案：反码（Ones Complement）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-11" aria-expanded="true" data-start-open="false" aria-label="展开或收起：三、过渡方案：反码（Ones Complement）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-11"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">3.1 规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">3.2 算例</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">3.3 仍然存在双零</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">四、工业标准：补码（Two&#x27;s Complement）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-15" aria-expanded="true" data-start-open="false" aria-label="展开或收起：四、工业标准：补码（Two&#x27;s Complement）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-15"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">4.1 为什么选它</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">4.2 规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">4.3 两个算例</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">4.4 反向验证：给一个补码串，怎么读出它是多少</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">五、可表示的范围（以 8 位为例）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-20" aria-expanded="true" data-start-open="false" aria-label="展开或收起：五、可表示的范围（以 8 位为例）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-20"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">5.1 原码的范围</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">5.2 补码的边界值</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s21"><span class="directory-label">5.3 公式</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s22"><span class="directory-label">六、补码加法</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：六、补码加法"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s23"><span class="directory-label">6.1 黄金规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s24"><span class="directory-label">6.2 算例：14 + 9</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s25"><span class="directory-label">6.3 算例：−5 + 3（复习负数加法）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s26"><span class="directory-label">七、补码减法</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-28" aria-expanded="true" data-start-open="false" aria-label="展开或收起：七、补码减法"><span aria-hidden="true">›</span></button></div><div id="directory-branch-28"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s27"><span class="directory-label">7.1 黄金规则与公式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s28"><span class="directory-label">7.2 算例：7 − 4</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s29"><span class="directory-label">7.3 算例：−5 − (−3)</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s30"><span class="directory-label">八、溢出</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-32" aria-expanded="true" data-start-open="false" aria-label="展开或收起：八、溢出"><span aria-hidden="true">›</span></button></div><div id="directory-branch-32"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s31"><span class="directory-label">8.1 定义与类比</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s32"><span class="directory-label">8.2 两条判断规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s33"><span class="directory-label">8.3 正溢出算例：+100 + (+50)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s34"><span class="directory-label">8.4 负溢出算例：−100 + (−50)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s35"><span class="directory-label">8.5 硬件怎样检测溢出</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s36"><span class="directory-label">8.6 溢出与正常进位的区别</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s37"><span class="directory-label">九、二进制小数转十进制</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="false" aria-label="展开或收起：九、二进制小数转十进制"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s38"><span class="directory-label">9.1 位权变成负指数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s39"><span class="directory-label">9.2 两个算例</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s40"><span class="directory-label">十、十进制小数转二进制：乘 2 取整法</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-42" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十、十进制小数转二进制：乘 2 取整法"><span aria-hidden="true">›</span></button></div><div id="directory-branch-42"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s41"><span class="directory-label">10.1 四步规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s42"><span class="directory-label">10.2 算例：0.375</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s43"><span class="directory-label">10.3 算例：0.8125</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s44"><span class="directory-label">10.4 算例：0.1 的无限循环</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s45"><span class="directory-label">10.5 顺便记住几个「转不干净」的数</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s46"><span class="directory-label">十一、定点数与浮点数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-48" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十一、定点数与浮点数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-48"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s47"><span class="directory-label">11.1 定点数的问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s48"><span class="directory-label">11.2 浮点数的思路</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s49"><span class="directory-label">十二、IEEE 754 单精度（32 位）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-51" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十二、IEEE 754 单精度（32 位）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-51"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s50"><span class="directory-label">12.1 三段布局</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s51"><span class="directory-label">12.2 为什么指数要加偏置</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s52"><span class="directory-label">12.3 隐藏前导 1</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s53"><span class="directory-label">12.4 编码 −5.75 的五步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s54"><span class="directory-label">12.5 反向解码的四步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s55"><span class="directory-label">十三、浮点加法：四步</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-57" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十三、浮点加法：四步"><span aria-hidden="true">›</span></button></div><div id="directory-branch-57"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s56"><span class="directory-label">13.1 完整算例：9.5 + 7.0</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s57"><span class="directory-label">十四、IEEE 754 的特殊值</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s58"><span class="directory-label">十五、双精度（64 位）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s59"><span class="directory-label">十六、三种编码在现实中的分工</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s60"><span class="directory-label">十七、课堂练习（课件原题）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-62" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十七、课堂练习（课件原题）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-62"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s61"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-68" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-68"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s62"><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-69" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-69"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s63"><span class="directory-label">求一个负数的 8 位补码（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s64"><span class="directory-label">读出补码串的真值（三步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s65"><span class="directory-label">判溢出（任选一条，两条互验）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s66"><span class="directory-label">IEEE 754 单精度编码（五步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s67"><span class="directory-label">IEEE 754 单精度解码（六步）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD5020 信息处理基础（计算机导论）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-76" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD5020 信息处理基础（计算机导论）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-76"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 计算机与信息处理导论</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-77" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 计算机与信息处理导论"><span aria-hidden="true">›</span></button></div><div id="directory-branch-77"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w1-introduction.html"><span class="directory-label">Week 1 · 信息、数据、算法、程序与 AI</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-2.html"><span class="directory-label">第 2 章 数制与数据表示</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-79" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 2 章 数制与数据表示"><span aria-hidden="true">›</span></button></div><div id="directory-branch-79"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w2-number-systems.html"><span class="directory-label">Week 2 · 数制、位置记数法与进制转换</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="w3-signed-numbers-and-float.html" aria-current="page"><span class="directory-label">Week 3 · 有符号数、补码、溢出与 IEEE 754</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 数字编码与压缩</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-82" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 数字编码与压缩"><span aria-hidden="true">›</span></button></div><div id="directory-branch-82"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w4-character-encoding.html"><span class="directory-label">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w5-image-representation.html"><span class="directory-label">Week 5 · 图像表示：采样、量化、编码与 RGB</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w6-audio-and-video.html"><span class="directory-label">Week 6 · 音频与视频表示：采样率、位深、帧率</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w7-data-compression.html"><span class="directory-label">Week 7 · 数据压缩：RLE、Huffman、无损与有损</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 信息存储、文件与检索</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-87" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 信息存储、文件与检索"><span aria-hidden="true">›</span></button></div><div id="directory-branch-87"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w8-storage-and-files.html"><span class="directory-label">Week 8 · 信息存储与文件表示</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w9-information-retrieval.html"><span class="directory-label">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 数据加密与信息安全</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-90" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 数据加密与信息安全"><span aria-hidden="true">›</span></button></div><div id="directory-branch-90"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w10-data-encryption.html"><span class="directory-label">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">第 6 章 逻辑与信息处理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-92" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 6 章 逻辑与信息处理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-92"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w11-logic.html"><span class="directory-label">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-7.html"><span class="directory-label">第 7 章 期末复习与模拟</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-94" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 7 章 期末复习与模拟"><span aria-hidden="true">›</span></button></div><div id="directory-branch-94"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w12-review.html"><span class="directory-label">Week 12 · 全课整合复习与模拟题</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="86/w3-signed-numbers-and-float"><header class="lecture-head"><p class="lecture-kicker">HDD5020 信息处理基础（计算机导论） · 第 03 / 12 讲</p><h1 id="lecture-title">Week 3 · 有符号数、补码、溢出与 IEEE 754</h1><p class="lecture-subtitle">Signed Integers, Two&#x27;s Complement and Floating Point</p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 数制与数据表示</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>280bdb1ee9f0</code>（用于识别内容变更）</dd></dl><ul><li><code>Week3- Digital Data Encoding/Lecture3.pdf</code> <span class="sub">未附原文件</span></li><li><code>Week3- Digital Data Encoding/Exercise 2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>上一讲解决了「正整数怎么写」。可现实里的数据有负数（温度 −5 ℃）、有小数（价钱 12.625）。这一讲补上这两块：先用<b>符号位</b>与<b>补码</b>把负数塞进固定位宽，再用<b>IEEE 754</b>把小数塞进去。</p><p>为什么补码是本周的核心？因为它把「减法」变成了「加法」。计算机没有减法器，只有一个加法器；把 −B 写成 B 的补码，A − B 就变成 A + (−B)，一次加法就够。这条设计至今仍是所有 CPU 的做法（x86、ARM、RISC-V 全都如此）。</p><p>本讲的三块内容层层递进：补码解决「整数带符号」，定点/浮点解决「小数」，IEEE 754 解决「不同机器之间怎么交换小数」。学完这一讲，你看到 <code>0xC1480000</code> 这种十六进制串，就能反推它代表的浮点数。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 8 位写出一个整数的原码、反码、补码三种形式</li><li>说明补码为什么能消除「双零」，并写出 n 位的表示范围</li><li>做补码加法与减法，正确丢弃最高位的进位</li><li>按两条规则判断溢出，并用 Cin 与 Cout 的异或验证</li><li>把二进制小数转成十进制，把十进制小数用乘 2 取整法转成二进制</li><li>按五步把十进制实数编码成 32 位 IEEE 754 单精度</li><li>从 32 位十六进制串反解出它代表的十进制实数</li><li>说明浮点加法为什么要先对齐指数，以及精度误差从哪来</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、问题：硬件里没有负号</h2><h3 id="s3">1.1 日常做法与硬件限制</h3><p>日常生活里我们用 + 和 − 两个符号表示正负。但课件指出硬件限制：<b>计算机只懂 0 和 1，内存里没有物理的负号</b>。</p><h3 id="s4">1.2 符号位方案</h3><p>解决办法是把最高位（Most Significant Bit，MSB，最左边那一位）征用为符号位：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>符号位</th><th>含义</th></tr><tr><td>0</td><td>正数（+）</td></tr><tr><td>1</td><td>负数（−）</td></tr></table></div><p>课件明确约定：本讲所有例子都按 <b>8 位字长</b>讨论。这个约定很重要——同一个二进制串在 8 位与 16 位下的值不同，考试若不写位宽，按 8 位处理并注明。</p><p>注意符号位占掉了最高位，于是「数值部分」只剩 7 位。8 位能表示 2^8 = 256 种模式，但其中一半要分给负数，这就是后面所有「范围」计算的出发点。</p><h2 id="s5">二、符号-数值表示（Signed-Magnitude）</h2><h3 id="s6">2.1 定义</h3><p>课件称它为最简单的编码：<b>MSB 是符号位，其余位表示绝对值</b>（magnitude）。</p><h3 id="s7">2.2 八个例子</h3><pre><code>+5  = 0000 0101
 -5  = 1000 0101
 +13 = 0000 1101
--13 = 1000 1101</code></pre><p>规律一目了然：负数只是把最高位从 0 改成 1，低 7 位与正数完全相同。人读起来非常直观。</p><h3 id="s8">2.3 两个致命缺点</h3><p>课件列了两条，它们决定了这个方案不能用于整数运算：</p><p><b>（1）零有两种写法。</b><code>+0 = 0000 0000</code>，<code>-0 = 1000 0000</code>。这既浪费了一个二进制状态（256 个模式里只有 255 个不同的值），又让比较逻辑变复杂——判断「是否为零」要检查两种模式。</p><p><b>（2）算术复杂。</b>加法和减法需要不同的硬件电路。原因是符号位与数值位混在一起：<code>5 + (−3)</code> 不能直接把两个 8 位模式相加，硬件必须先比较符号，再决定是做加法还是减法、结果取谁的符号。</p><div class="callout warn"><b>常见误解</b>不要以为 <code>1000 0101 + 0000 0011</code> 会得到 −2。按符号-数值直接相加得 <code>1000 1000</code>，即 −8，完全错。这正是要引入补码的理由。</div><h2 id="s9">三、过渡方案：反码（Ones Complement）</h2><p>课件把它称为「垫脚石」：在解决硬件问题之前先引入反码。</p><h3 id="s10">3.1 规则</h3><table><tr><th>数</th><th>规则</th></tr><tr><td>正数</td><td>与符号-数值表示完全相同，例如 +5 = 0000 0101</td></tr><tr><td>负数</td><td>符号位保持 1，其余数值位<b>逐位取反</b>（0→1，1→0）</td></tr></table><h3 id="s11">3.2 算例</h3><pre><code>+5 的符号-数值：0000 0101
--5 的反码：      1111 1010</code></pre><p>做法：先写 +5 的 7 位数值 000 0101，逐位取反得 111 1010，前面加符号位 1 → <code>1111 1010</code>。</p><h3 id="s12">3.3 仍然存在双零</h3><p>课件指出：反码依然有两个零，<code>+0 = 0000 0000</code>、<code>-0 = 1111 1111</code>。所以它只是过渡，不是终点。</p><p>但反码并没有被淘汰：网络协议里的校验和（IPv4、TCP、UDP 的 Internet checksum）至今仍用「反码和」，因为它有一个方便的性质——把进位折回最低位就能得到结果。这一点在第九节的应用表里会再出现。</p><h2 id="s13">四、工业标准：补码（Two's Complement）</h2><h3 id="s14">4.1 为什么选它</h3><p>课件给了三条理由：几乎所有现代计算机都用它；它解决了「双零」问题；它把加法与减法统一成单一硬件电路（加法器）。</p><h3 id="s15">4.2 规则</h3><table><tr><th>数</th><th>规则</th></tr><tr><td>正数</td><td>与符号-数值表示完全相同</td></tr><tr><td>负数</td><td>反码 + 1</td></tr><tr><td>负数的等价规则</td><td>全部位取反，再加 1</td></tr></table><p>注意第二条与第三条的差别：反码 + 1 是「数值位取反后加 1」，全位取反再加 1 是「连符号位也取反后加 1」。对 8 位而言两种做法结果相同（因为符号位取反再加 1 会自然回到 1 附近），但考试通常按第一条写。</p><h3 id="s16">4.3 两个算例</h3><p><b>求 −5（8 位）：</b></p><ol class="steps"><li>写 +5：0000 0101</li><li>全部取反：1111 1010</li><li>加 1：1111 1011</li><li>结果：−5 = 1111 1011</li></ol><p><b>求 −32（8 位）：</b></p><ol class="steps"><li>写 +32：0010 0000</li><li>全部取反：1101 1111</li><li>加 1：1110 0000</li><li>结果：−32 = 1110 0000</li></ol><div class="callout tip"><b>秒算技巧</b>从右往左看，<b>第一个 1 及其右边的 0 保持不变，左边的所有位取反</b>。例：+32 = 0010 0000，最右的 1 在第 5 位（从 0 计），它右边的 0 都不变，左边 001 取反成 110 → 1110 0000。算得快且不易错。</div><h3 id="s17">4.4 反向验证：给一个补码串，怎么读出它是多少</h3><p>若最高位是 0，直接按无符号数读。若最高位是 1，则它是负数，值为 <code>原串按无符号读 − 2^n</code>。例：<code>1111 1011</code> 无符号读是 251，<code>251 − 256 = −5</code>。</p><p>这个方法比「取反加一再读」更快，也更能说明补码的本质：它就是「把 2^n 当作 0」的环形计数器。这个视角在第八节讲溢出时非常有用。</p><h2 id="s18">五、可表示的范围（以 8 位为例）</h2><h3 id="s19">5.1 原码的范围</h3><p>因为补码消除了 −0，我们多得到一个负数。课件先把两种方案的 8 位范围并列：</p><table><tr><th>编码</th><th>8 位范围</th><th>不同值的个数</th><th>零的个数</th></tr><tr><td>符号-数值</td><td>−127 到 +127</td><td>255</td><td>2（+0 与 −0）</td></tr><tr><td>补码</td><td>−128 到 +127</td><td>256</td><td>1</td></tr></table><h3 id="s20">5.2 补码的边界值</h3><p>课件把三个关键值写得很清楚：</p><pre><code>最大正数：0111 1111 = +127
+-13 = 1000 1101</code></pre><p>规律一目了然：负数只是把最高位从 0 改成 1，低 7 位与正数完全相同。人读起来非常直观。</p><h3 id="s8">2.3 两个致命缺点</h3><p>课件列了两条，它们决定了这个方案不能用于整数运算：</p><p><b>（1）零有两种写法。</b><code>+0 = 0000 0000</code>，<code>-0 = 1000 0000</code>。这既浪费了一个二进制状态（256 个模式里只有 255 个不同的值），又让比较逻辑变复杂——判断「是否为零」要检查两种模式。</p><p><b>（2）算术复杂。</b>加法和减法需要不同的硬件电路。原因是符号位与数值位混在一起：<code>5 + (−3)</code> 不能直接把两个 8 位模式相加，硬件必须先比较符号，再决定是做加法还是减法、结果取谁的符号。</p><div class="callout warn"><b>常见误解</b>不要以为 <code>1000 0101 + 0000 0011</code> 会得到 −2。按符号-数值直接相加得 <code>1000 1000</code>，即 −8，完全错。这正是要引入补码的理由。</div><h2 id="s9">三、过渡方案：反码（Ones Complement）</h2><p>课件把它称为「垫脚石」：在解决硬件问题之前先引入反码。</p><h3 id="s10">3.1 规则</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>数</th><th>规则</th></tr><tr><td>正数</td><td>与符号-数值表示完全相同，例如 +5 = 0000 0101</td></tr><tr><td>负数</td><td>符号位保持 1，其余数值位<b>逐位取反</b>（0→1，1→0）</td></tr></table></div><h3 id="s11">3.2 算例</h3><pre><code>+5 的符号-数值：0000 0101
+-5 的反码：      1111 1010</code></pre><p>做法：先写 +5 的 7 位数值 000 0101，逐位取反得 111 1010，前面加符号位 1 → <code>1111 1010</code>。</p><h3 id="s12">3.3 仍然存在双零</h3><p>课件指出：反码依然有两个零，<code>+0 = 0000 0000</code>、<code>-0 = 1111 1111</code>。所以它只是过渡，不是终点。</p><p>但反码并没有被淘汰：网络协议里的校验和（IPv4、TCP、UDP 的 Internet checksum）至今仍用「反码和」，因为它有一个方便的性质——把进位折回最低位就能得到结果。这一点在第九节的应用表里会再出现。</p><h2 id="s13">四、工业标准：补码（Two's Complement）</h2><h3 id="s14">4.1 为什么选它</h3><p>课件给了三条理由：几乎所有现代计算机都用它；它解决了「双零」问题；它把加法与减法统一成单一硬件电路（加法器）。</p><h3 id="s15">4.2 规则</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>数</th><th>规则</th></tr><tr><td>正数</td><td>与符号-数值表示完全相同</td></tr><tr><td>负数</td><td>反码 + 1</td></tr><tr><td>负数的等价规则</td><td>全部位取反，再加 1</td></tr></table></div><p>注意第二条与第三条的差别：反码 + 1 是「数值位取反后加 1」，全位取反再加 1 是「连符号位也取反后加 1」。对 8 位而言两种做法结果相同（因为符号位取反再加 1 会自然回到 1 附近），但考试通常按第一条写。</p><h3 id="s16">4.3 两个算例</h3><p><b>求 −5（8 位）：</b></p><ol class="steps"><li>写 +5：0000 0101</li><li>全部取反：1111 1010</li><li>加 1：1111 1011</li><li>结果：−5 = 1111 1011</li></ol><p><b>求 −32（8 位）：</b></p><ol class="steps"><li>写 +32：0010 0000</li><li>全部取反：1101 1111</li><li>加 1：1110 0000</li><li>结果：−32 = 1110 0000</li></ol><div class="callout tip"><b>秒算技巧</b>从右往左看，<b>第一个 1 及其右边的 0 保持不变，左边的所有位取反</b>。例：+32 = 0010 0000，最右的 1 在第 5 位（从 0 计），它右边的 0 都不变，左边 001 取反成 110 → 1110 0000。算得快且不易错。</div><h3 id="s17">4.4 反向验证：给一个补码串，怎么读出它是多少</h3><p>若最高位是 0，直接按无符号数读。若最高位是 1，则它是负数，值为 <code>原串按无符号读 − 2^n</code>。例：<code>1111 1011</code> 无符号读是 251，<code>251 − 256 = −5</code>。</p><p>这个方法比「取反加一再读」更快，也更能说明补码的本质：它就是「把 2^n 当作 0」的环形计数器。这个视角在第八节讲溢出时非常有用。</p><h2 id="s18">五、可表示的范围（以 8 位为例）</h2><h3 id="s19">5.1 原码的范围</h3><p>因为补码消除了 −0，我们多得到一个负数。课件先把两种方案的 8 位范围并列：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>编码</th><th>8 位范围</th><th>不同值的个数</th><th>零的个数</th></tr><tr><td>符号-数值</td><td>−127 到 +127</td><td>255</td><td>2（+0 与 −0）</td></tr><tr><td>补码</td><td>−128 到 +127</td><td>256</td><td>1</td></tr></table></div><h3 id="s20">5.2 补码的边界值</h3><p>课件把三个关键值写得很清楚：</p><pre><code>最大正数：0111 1111 = +127
 零：      0000 0000 = 0
-最大负数：1000 0000 = -128</code></pre><p>为什么 <code>1000 0000</code> 是 −128 而不是 −0？用第 4.4 节的算法：无符号读是 128，<code>128 − 256 = −128</code>。也就是说这个模式在补码里被「推」到了环的另一端。</p><h3 id="s21">5.3 公式</h3><p><b><code>n 位补码范围 = [−2^(n−1), 2^(n−1) − 1]</code></b></p><table><tr><th>位宽 n</th><th>范围</th><th>值的个数 2^n</th></tr><tr><td>4</td><td>−8 到 +7</td><td>16</td></tr><tr><td>8</td><td>−128 到 +127</td><td>256</td></tr><tr><td>16</td><td>−32 768 到 +32 767</td><td>65 536</td></tr><tr><td>32</td><td>−2 147 483 648 到 +2 147 483 647</td><td>约 42.9 亿</td></tr></table><p>这条公式的价值在于「不对称」：负数比正数多一个。原因就是零只有一个模式，省下来的那个模式给了 −2^(n−1)。凡是「范围内最多能表示多少」的题，先写这条公式再算。</p><h2 id="s22">六、补码加法</h2><h3 id="s23">6.1 黄金规则</h3><p>课件称它为 the Golden Rule：<b>把两个二进制数逐位相加，符号位一起参与，最高位（MSB）产生的进位直接丢弃</b>。</p><p>注意「符号位一起参与」这六个字：这是补码与符号-数值最本质的差别。符号位不是特殊位，它只是最高位，跟着一起加。</p><h3 id="s24">6.2 算例：14 + 9</h3><pre><code>+14: 0000 1110
+最大负数：1000 0000 = -128</code></pre><p>为什么 <code>1000 0000</code> 是 −128 而不是 −0？用第 4.4 节的算法：无符号读是 128，<code>128 − 256 = −128</code>。也就是说这个模式在补码里被「推」到了环的另一端。</p><h3 id="s21">5.3 公式</h3><p><b><code>n 位补码范围 = [−2^(n−1), 2^(n−1) − 1]</code></b></p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>位宽 n</th><th>范围</th><th>值的个数 2^n</th></tr><tr><td>4</td><td>−8 到 +7</td><td>16</td></tr><tr><td>8</td><td>−128 到 +127</td><td>256</td></tr><tr><td>16</td><td>−32 768 到 +32 767</td><td>65 536</td></tr><tr><td>32</td><td>−2 147 483 648 到 +2 147 483 647</td><td>约 42.9 亿</td></tr></table></div><p>这条公式的价值在于「不对称」：负数比正数多一个。原因就是零只有一个模式，省下来的那个模式给了 −2^(n−1)。凡是「范围内最多能表示多少」的题，先写这条公式再算。</p><h2 id="s22">六、补码加法</h2><h3 id="s23">6.1 黄金规则</h3><p>课件称它为 the Golden Rule：<b>把两个二进制数逐位相加，符号位一起参与，最高位（MSB）产生的进位直接丢弃</b>。</p><p>注意「符号位一起参与」这六个字：这是补码与符号-数值最本质的差别。符号位不是特殊位，它只是最高位，跟着一起加。</p><h3 id="s24">6.2 算例：14 + 9</h3><pre><code>+14: 0000 1110
 + 9: 0000 1001
 和 : 0001 0111</code></pre><p>低 4 位 <code>1110 + 1001 = 1 0111</code>，向高 4 位进 1，高 4 位 <code>0000 + 0000 + 1 = 0001</code>。结果 <code>0001 0111 = 23</code>，正确。</p><h3 id="s25">6.3 算例：−5 + 3（复习负数加法）</h3><pre><code>-5 : 1111 1011
 +3 : 0000 0011
@@ -361,7 +693,7 @@ section[data-type],.card{break-inside:avoid}
 - 50: 1100 1110   (符号位 1)
 和  :[1] 0110 1010   （最左边的 1 超出 8 位，丢弃）</code></pre><p>剩下的 8 位以 0 开头，CPU 读成正数：<code>0110 1010 = +106</code>。同样是错的。注意这里「丢弃了进位」却不是正常情况——这正是下一小节要区分的地方。</p><h3 id="s35">8.5 硬件怎样检测溢出</h3><p>课件给了两种方法：</p><p><b>方法 1（符号位逻辑）：</b>若 <code>Sign(A) == Sign(B)</code> 且 <code>Sign(结果) ≠ Sign(A)</code>，则溢出为真。</p><p><b>方法 2（双进位异或）：</b>看进入符号位的进位 <code>C_in</code> 与从符号位出去的进位 <code>C_out</code>；若二者不相等（异或为 1），则发生溢出。</p><p>方法 2 是硬件实际采用的方式，因为它只要两个进位信号做一次异或，不需要比较符号。这也是考试里最爱考的「用 Cin 与 Cout 判断」。</p><h3 id="s36">8.6 溢出与正常进位的区别</h3><p>课件专门用 <code>−14 + (−9)</code> 提醒不要混淆：</p><pre><code>-14: 1111 0010
 - 9: 1111 0111
-和 :[1] 1110 1001</code></pre><p>检查：<code>C_in（进入符号位）= 1</code>，<code>C_out（离开符号位）= 1</code>，两者相等 → <b>没有溢出</b>。被丢弃的 [1] 只是正常进位。结果 <code>1110 1001</code>：无符号 233，<code>233 − 256 = −23</code>，完全正确（−14 + −9 = −23）。</p><div class="callout warn"><b>最容易错的一点</b>「丢掉了最高位进位」<b>不等于</b>溢出。补码加法永远会丢掉 MSB 进位；判溢出要看 Cin 与 Cout 是否一致，或看符号是否被翻转。</div><h2 id="s37">九、二进制小数转十进制</h2><h3 id="s38">9.1 位权变成负指数</h3><p>课件用位置加权的思路直接类比：十进制的十分位是 <code>10^(−1) = 0.1</code>、百分位是 <code>10^(−2) = 0.01</code>；二进制的小数位就是 <code>2^(−1) = 0.5</code>、<code>2^(−2) = 0.25</code>、<code>2^(−3) = 0.125</code>。</p><table><tr><th>小数位</th><th>位权</th><th>十进制值</th></tr><tr><td>第 1 位</td><td>2^(−1)</td><td>0.5</td></tr><tr><td>第 2 位</td><td>2^(−2)</td><td>0.25</td></tr><tr><td>第 3 位</td><td>2^(−3)</td><td>0.125</td></tr><tr><td>第 4 位</td><td>2^(−4)</td><td>0.0625</td></tr><tr><td>第 5 位</td><td>2^(−5)</td><td>0.03125</td></tr></table><p>规则很简单：<b>每一位二进制数字乘以它的位权，再全部相加</b>。</p><h3 id="s39">9.2 两个算例</h3><p><b>例 1：<code>0.11₂</code></b></p><pre><code>1 × 2^(-1) + 1 × 2^(-2) = 0.5 + 0.25 = 0.75₁₀</code></pre><p><b>例 2：<code>10.011₂</code></b></p><p>整数部分 <code>10₂ = 2₁₀</code>；小数部分 <code>0 × 0.5 + 1 × 0.25 + 1 × 0.125 = 0.375</code>；合计 <b>2.375₁₀</b>。</p><p>这个「整数与小数分开算再合并」的做法在后面 IEEE 754 编码时还要用一次，务必熟练。</p><h2 id="s40">十、十进制小数转二进制：乘 2 取整法</h2><h3 id="s41">10.1 四步规则</h3><ol class="steps"><li>把小数部分乘以 2</li><li>记下整数部分（0 或 1），它就是这一位的二进制数字</li><li>用新的<b>小数部分</b>再乘 2</li><li>重复到小数部分为 0（或达到位数上限），结果<b>从上往下</b>读</li></ol><p>「从上往下读」是关键：第一次乘出来的整数是<b>最高位</b>（紧挨着小数点右边第一位）。这与整数部分的「除基取余要逆序读」正好相反，两件事别搞混。</p><h3 id="s42">10.2 算例：0.375</h3><pre><code>0.375 × 2 = 0.750 → 记 0（最高位）
+和 :[1] 1110 1001</code></pre><p>检查：<code>C_in（进入符号位）= 1</code>，<code>C_out（离开符号位）= 1</code>，两者相等 → <b>没有溢出</b>。被丢弃的 [1] 只是正常进位。结果 <code>1110 1001</code>：无符号 233，<code>233 − 256 = −23</code>，完全正确（−14 + −9 = −23）。</p><div class="callout warn"><b>最容易错的一点</b>「丢掉了最高位进位」<b>不等于</b>溢出。补码加法永远会丢掉 MSB 进位；判溢出要看 Cin 与 Cout 是否一致，或看符号是否被翻转。</div><h2 id="s37">九、二进制小数转十进制</h2><h3 id="s38">9.1 位权变成负指数</h3><p>课件用位置加权的思路直接类比：十进制的十分位是 <code>10^(−1) = 0.1</code>、百分位是 <code>10^(−2) = 0.01</code>；二进制的小数位就是 <code>2^(−1) = 0.5</code>、<code>2^(−2) = 0.25</code>、<code>2^(−3) = 0.125</code>。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>小数位</th><th>位权</th><th>十进制值</th></tr><tr><td>第 1 位</td><td>2^(−1)</td><td>0.5</td></tr><tr><td>第 2 位</td><td>2^(−2)</td><td>0.25</td></tr><tr><td>第 3 位</td><td>2^(−3)</td><td>0.125</td></tr><tr><td>第 4 位</td><td>2^(−4)</td><td>0.0625</td></tr><tr><td>第 5 位</td><td>2^(−5)</td><td>0.03125</td></tr></table></div><p>规则很简单：<b>每一位二进制数字乘以它的位权，再全部相加</b>。</p><h3 id="s39">9.2 两个算例</h3><p><b>例 1：<code>0.11₂</code></b></p><pre><code>1 × 2^(-1) + 1 × 2^(-2) = 0.5 + 0.25 = 0.75₁₀</code></pre><p><b>例 2：<code>10.011₂</code></b></p><p>整数部分 <code>10₂ = 2₁₀</code>；小数部分 <code>0 × 0.5 + 1 × 0.25 + 1 × 0.125 = 0.375</code>；合计 <b>2.375₁₀</b>。</p><p>这个「整数与小数分开算再合并」的做法在后面 IEEE 754 编码时还要用一次，务必熟练。</p><h2 id="s40">十、十进制小数转二进制：乘 2 取整法</h2><h3 id="s41">10.1 四步规则</h3><ol class="steps"><li>把小数部分乘以 2</li><li>记下整数部分（0 或 1），它就是这一位的二进制数字</li><li>用新的<b>小数部分</b>再乘 2</li><li>重复到小数部分为 0（或达到位数上限），结果<b>从上往下</b>读</li></ol><p>「从上往下读」是关键：第一次乘出来的整数是<b>最高位</b>（紧挨着小数点右边第一位）。这与整数部分的「除基取余要逆序读」正好相反，两件事别搞混。</p><h3 id="s42">10.2 算例：0.375</h3><pre><code>0.375 × 2 = 0.750 → 记 0（最高位）
 0.750 × 2 = 1.500 → 记 1
 0.500 × 2 = 1.000 → 记 1（小数部分为 0，停止）</code></pre><p>自上而下读：<b>0.011₂</b>。验算：<code>0.25 + 0.125 = 0.375</code>，正确。</p><h3 id="s43">10.3 算例：0.8125</h3><pre><code>0.8125 × 2 = 1.6250 → 记 1（最高位）
 0.6250 × 2 = 1.2500 → 记 1
@@ -371,21 +703,180 @@ section[data-type],.card{break-inside:avoid}
 0.4 × 2 = 0.8 → 0
 0.8 × 2 = 1.6 → 1
 0.6 × 2 = 1.2 → 1
-0.2 × 2 = 0.4 → 0   （回到第 2 步，开始循环）</code></pre><p>结果是 <code>0.0001100110011…₂</code>，无限循环，周期为 4（0011 反复出现）。</p><div class="callout exam"><b>必考结论</b>计算机不能存无限位，必须截断或舍入。这就是浮点误差的来源：<code>0.1 + 0.2 ≠ 0.3</code>。所以在程序里<b>绝不要用 <code>==</code> 比较两个浮点数</b>，要比较它们的差的绝对值是否小于某个容差（如 <code>1e−9</code>）。</div><h3 id="s45">10.5 顺便记住几个「转不干净」的数</h3><p>二进制只能精确表示「分母是 2 的幂」的分数（0.5、0.25、0.125、0.375…）。0.1、0.2、0.3、1/3 这类分母含 5 或 3 的数都转不干净。这条判据能让你一眼看出题目会不会出现无限循环。</p><h2 id="s46">十一、定点数与浮点数</h2><h3 id="s47">11.1 定点数的问题</h3><p>课件把两种方案对立起来讲。定点数（fixed-point）把小数点固定在某个位置，例如 4 位给整数、4 位给小数。问题是：<b>它无法同时表示很大的数和很小的数</b>。8 位定点只能表示 0 到 15.9375（步长 1/16），既装不下 100000，也装不下 0.0001。</p><h3 id="s48">11.2 浮点数的思路</h3><p>浮动点数（floating-point）基于科学记数法：</p><p><b><code>(−1)^S × M × 2^E</code></b></p><p>小数点随着指数 E 浮动：E 大就把小数点往右推（表示大数），E 小就往左推（表示小数）。于是有限的 32 位既能表示 <code>10^38</code> 量级，也能表示 <code>10^(−38)</code> 量级。代价是「精度随数值大小变化」——大数附近的间隔大，小数附近的间隔小。</p><h2 id="s49">十二、IEEE 754 单精度（32 位）</h2><h3 id="s50">12.1 三段布局</h3><table><tr><th>字段</th><th>位数</th><th>含义</th></tr><tr><td>符号位 Sign</td><td>1 位</td><td>0 = 正，1 = 负</td></tr><tr><td>指数 Exponent</td><td>8 位</td><td>存储时加偏置 127（存储值 = 实际指数 + 127）</td></tr><tr><td>尾数 Mantissa</td><td>23 位</td><td>有效数字的位，小数点前的那个 1 被隐藏（hidden 1）以省空间</td></tr></table><p>三段相加：<code>1 + 8 + 23 = 32</code>。</p><h3 id="s51">12.2 为什么指数要加偏置</h3><p>实际指数可以是负数（表示很小的数），但 8 位字段本身是无符号的。加 127 之后，<code>−126 … +127</code> 被平移成 <code>1 … 254</code>，全是正数，比较大小与运算都方便。极端值 0 与 255 被留作特殊用途（见第十四节），所以正常数的存储指数范围是 1–254。</p><h3 id="s52">12.3 隐藏前导 1</h3><p>规格化之后，任何非零数都能写成 <code>1.xxxxx × 2^n</code>，小数点前那位永远是 1。既然是「永远」，就不必存它——省下 1 位，等于把有效精度从 23 位提高到 24 位。这个 1 叫 hidden 1（隐藏位），解码时要记得补回来。</p><h3 id="s53">12.4 编码 −5.75 的五步</h3><p>课件用它做完整示范：</p><ol class="steps"><li>转二进制：−5.75 = −101.11₂（5 = 101，0.75 = 0.11）</li><li>规格化：把小数点移到第一个 1 之后 → −1.0111 × 2^2</li><li>定符号：负数，符号位 = 1</li><li>算指数：实际指数 2，加偏置 <code>2 + 127 = 129</code>，129₁₀ = <code>1000 0001</code></li><li>取尾数：小数点后是 0111，丢掉隐藏的 1，后面补 0 到 23 位 → <code>0111 0000 0000 0000 0000 000</code></li></ol><p>拼起来：</p><pre><code>1 10000001 01110000000000000000000
+0.2 × 2 = 0.4 → 0   （回到第 2 步，开始循环）</code></pre><p>结果是 <code>0.0001100110011…₂</code>，无限循环，周期为 4（0011 反复出现）。</p><div class="callout exam"><b>必考结论</b>计算机不能存无限位，必须截断或舍入。这就是浮点误差的来源：<code>0.1 + 0.2 ≠ 0.3</code>。所以在程序里<b>绝不要用 <code>==</code> 比较两个浮点数</b>，要比较它们的差的绝对值是否小于某个容差（如 <code>1e−9</code>）。</div><h3 id="s45">10.5 顺便记住几个「转不干净」的数</h3><p>二进制只能精确表示「分母是 2 的幂」的分数（0.5、0.25、0.125、0.375…）。0.1、0.2、0.3、1/3 这类分母含 5 或 3 的数都转不干净。这条判据能让你一眼看出题目会不会出现无限循环。</p><h2 id="s46">十一、定点数与浮点数</h2><h3 id="s47">11.1 定点数的问题</h3><p>课件把两种方案对立起来讲。定点数（fixed-point）把小数点固定在某个位置，例如 4 位给整数、4 位给小数。问题是：<b>它无法同时表示很大的数和很小的数</b>。8 位定点只能表示 0 到 15.9375（步长 1/16），既装不下 100000，也装不下 0.0001。</p><h3 id="s48">11.2 浮点数的思路</h3><p>浮动点数（floating-point）基于科学记数法：</p><p><b><code>(−1)^S × M × 2^E</code></b></p><p>小数点随着指数 E 浮动：E 大就把小数点往右推（表示大数），E 小就往左推（表示小数）。于是有限的 32 位既能表示 <code>10^38</code> 量级，也能表示 <code>10^(−38)</code> 量级。代价是「精度随数值大小变化」——大数附近的间隔大，小数附近的间隔小。</p><h2 id="s49">十二、IEEE 754 单精度（32 位）</h2><h3 id="s50">12.1 三段布局</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>字段</th><th>位数</th><th>含义</th></tr><tr><td>符号位 Sign</td><td>1 位</td><td>0 = 正，1 = 负</td></tr><tr><td>指数 Exponent</td><td>8 位</td><td>存储时加偏置 127（存储值 = 实际指数 + 127）</td></tr><tr><td>尾数 Mantissa</td><td>23 位</td><td>有效数字的位，小数点前的那个 1 被隐藏（hidden 1）以省空间</td></tr></table></div><p>三段相加：<code>1 + 8 + 23 = 32</code>。</p><h3 id="s51">12.2 为什么指数要加偏置</h3><p>实际指数可以是负数（表示很小的数），但 8 位字段本身是无符号的。加 127 之后，<code>−126 … +127</code> 被平移成 <code>1 … 254</code>，全是正数，比较大小与运算都方便。极端值 0 与 255 被留作特殊用途（见第十四节），所以正常数的存储指数范围是 1–254。</p><h3 id="s52">12.3 隐藏前导 1</h3><p>规格化之后，任何非零数都能写成 <code>1.xxxxx × 2^n</code>，小数点前那位永远是 1。既然是「永远」，就不必存它——省下 1 位，等于把有效精度从 23 位提高到 24 位。这个 1 叫 hidden 1（隐藏位），解码时要记得补回来。</p><h3 id="s53">12.4 编码 −5.75 的五步</h3><p>课件用它做完整示范：</p><ol class="steps"><li>转二进制：−5.75 = −101.11₂（5 = 101，0.75 = 0.11）</li><li>规格化：把小数点移到第一个 1 之后 → −1.0111 × 2^2</li><li>定符号：负数，符号位 = 1</li><li>算指数：实际指数 2，加偏置 <code>2 + 127 = 129</code>，129₁₀ = <code>1000 0001</code></li><li>取尾数：小数点后是 0111，丢掉隐藏的 1，后面补 0 到 23 位 → <code>0111 0000 0000 0000 0000 000</code></li></ol><p>拼起来：</p><pre><code>1 10000001 01110000000000000000000
 符号 指数      尾数</code></pre><p>按 4 位一组写成十六进制：<code>1100 0000 1011 1000 0000 0000 0000 0000</code> → <b>0xC0B80000</b>。交作业写十六进制更简洁，也便于核对。</p><h3 id="s54">12.5 反向解码的四步</h3><ol class="steps"><li>把 32 位按 1 / 8 / 23 切开</li><li>符号位决定正负</li><li>指数减 127 得到实际指数 n</li><li>尾数前面补 1.（隐藏位），得到 1.xxxxx，再乘 2^n，最后转十进制</li></ol><h2 id="s55">十三、浮点加法：四步</h2><p>课件把 CPU 做浮点加法的过程拆成四步：</p><ol class="steps"><li>对齐指数（align exponents）：把指数较小的那个数的尾数右移，直到指数与大的一致</li><li>相加尾数（add mantissas）：现在可以逐位加了</li><li>规格化（normalize）：把结果调回 <code>1.xxxxx × 2^n</code> 的形式</li><li>舍入（round）：截到 23 位，这一步会丢精度</li></ol><p>课件给了一个十进制类比：算 <code>1.2 × 10^3 + 3.0 × 10^1</code>，要先把后者改写成 <code>0.03 × 10^3</code>，再相加。</p><h3 id="s56">13.1 完整算例：9.5 + 7.0</h3><p><b>Step 1 转二进制科学记数法：</b></p><pre><code>A = 9.5 = 1001.1₂ → 1.0011 × 2^3
 B = 7.0 = 111.0₂  → 1.1100 × 2^2</code></pre><p>（注意：计算时要把隐藏的 1 补回来。）</p><p><b>Step 2 对齐指数：</b>规则是「永远移动较小的那个数」。B 的指数从 2 提到 3，尾数右移 1 位：<code>1.1100 → 0.1110</code>。</p><p><b>Step 3 相加尾数：</b></p><pre><code>  1.0011
 + 0.1110
 ---------
- 10.0001</code></pre><p>得到 <code>10.0001 × 2^3</code>。</p><p><b>Step 4 规格化：</b>结果以 10. 开头，不符合 1.xxxxx 的要求。把小数点左移 1 位、指数加 1：<code>1.00001 × 2^4</code>。</p><p>验算：<code>1.00001 × 2^4 = 10000.1₂ = 16.5</code>，而 9.5 + 7.0 = 16.5，正确。</p><div class="callout tip"><b>精度去哪了</b>当两个数相差悬殊（如 <code>10^20 + 1</code>），对齐时小数的尾数要被右移到几乎全部变成 0，加完再舍入，那个 1 就消失了。这就是浮点加法不满足结合律的原因：<code>(a + b) + c</code> 与 <code>a + (b + c)</code> 可能不同。</div><h2 id="s57">十四、IEEE 754 的特殊值</h2><p>因为正常数的指数被限制在 1–254，两个极端（全 0 与全 1）被留下来表示特殊情形：</p><table><tr><th>指数</th><th>尾数</th><th>含义</th><th>说明</th></tr><tr><td>全 0</td><td>全 0</td><td>精确的零（±0）</td><td>符号位决定是 +0 还是 −0，但逻辑上 +0 == −0</td></tr><tr><td>全 0</td><td>非 0</td><td>非规格化数（denormalized）</td><td>隐藏的前导 1 被去掉，写成 <code>0.xxxxx</code>，用来表示极接近 0 的数</td></tr><tr><td>全 1（255）</td><td>全 0</td><td>无穷（±∞）</td><td>溢出或非零数除以 0 的结果</td></tr><tr><td>全 1（255）</td><td>非 0</td><td>NaN（Not a Number）</td><td>未定义的数学错误，如 0/0 或负数开平方</td></tr></table><p>为什么需要非规格化数？因为规格化数的最小正数是 <code>1.0 × 2^(−126)</code>，再小就表示不了。非规格化数让尾数不再隐含前导 1，于是能表示到 <code>2^(−149)</code> 量级，代价是有效位数变少（精度下降）。这个「逐渐下溢」的设计避免了「小到某个值突然变成 0」的断崖。</p><p>为什么需要 NaN 而不是直接报错？因为浮点运算要在硬件里连续执行，无法中途抛异常；用一个特殊位模式把「结果无效」这件事编码进数据本身，后续任何运算碰到 NaN 都会继续传播 NaN，最后由软件统一检查。</p><h2 id="s58">十五、双精度（64 位）</h2><p>课件留了一页讲双精度，这里补全参数（属于对同一标准的结构性说明，不新增考点）：</p><table><tr><th>字段</th><th>单精度 32 位</th><th>双精度 64 位</th></tr><tr><td>符号位</td><td>1 位</td><td>1 位</td></tr><tr><td>指数</td><td>8 位（偏置 127）</td><td>11 位（偏置 1023）</td></tr><tr><td>尾数</td><td>23 位（+1 隐藏位）</td><td>52 位（+1 隐藏位）</td></tr><tr><td>有效十进制位</td><td>约 7 位</td><td>约 15–16 位</td></tr><tr><td>指数范围</td><td>约 <code>10^(−38)</code> 到 <code>10^38</code></td><td>约 <code>10^(−308)</code> 到 <code>10^308</code></td></tr></table><p>记住三件事就够：双精度多出的位主要给了尾数（精度）与指数（范围）；两者的字段含义、特殊值规则、编码步骤完全一致，只是参数不同。</p><h2 id="s59">十六、三种编码在现实中的分工</h2><p>课件用一张表说明这三种编码并没有互相淘汰，而是各管一段：</p><table><tr><th>编码方式</th><th>现代领域的核心角色</th><th>典型用途</th></tr><tr><td>补码（Two's complement）</td><td>整数存储与算术</td><td>CPU 的 ALU 运算（x86、ARM、RISC-V）；语言里的 int、long 等有符号基本类型</td></tr><tr><td>符号-数值（Signed-Magnitude）</td><td>浮点表示的符号位</td><td>IEEE 754 的 float、double 的符号位</td></tr><tr><td>反码（Ones' complement）</td><td>网络协议与基础原语</td><td>IPv4、TCP、UDP 的 Internet 校验和；Linux 的 umask 权限；硬件中间状态</td></tr></table><p>这张表本身就是一道好题：问「为什么要学反码，它都被淘汰了吧」，答案就在第三行——校验和至今用它。</p><h2 id="s60">十七、课堂练习（课件原题）</h2><p>课件留了两道当堂练习，第五节的例题会给出完整解：</p><ul><li>任务 1（整数）：按 8 位补码计算 <code>12 − 20</code>，写出二进制步骤并验证结果是 −8。</li><li>任务 2（小数）：用乘 2 取整法把 <code>0.6875₁₀</code> 转成二进制，写出中间步骤。</li></ul></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>sign bit</td><td>符号位</td><td>The most significant bit, 0 for positive and 1 for negative.</td></tr><tr><td>signed-magnitude</td><td>符号-数值表示</td><td>Sign bit plus absolute value; has two zeros and needs separate add/subtract circuits.</td></tr><tr><td>ones' complement</td><td>反码</td><td>Invert every bit of the magnitude; still has +0 and −0.</td></tr><tr><td>two's complement</td><td>补码</td><td>Ones' complement plus one; used by almost all modern computers.</td></tr><tr><td>most significant bit (MSB)</td><td>最高有效位</td><td>The leftmost bit of a fixed-width word.</td></tr><tr><td>range</td><td>表示范围</td><td>For n-bit two's complement: [−2^(n−1), 2^(n−1) − 1].</td></tr><tr><td>carry out</td><td>进位输出</td><td>The carry leaving the MSB; discarded in two's complement addition.</td></tr><tr><td>overflow</td><td>溢出</td><td>The result does not fit into the allocated bits; only possible when adding two numbers of the same sign.</td></tr><tr><td>C_in and C_out</td><td>符号位进/出进位</td><td>Overflow occurs when the carry into the sign bit differs from the carry out of it.</td></tr><tr><td>fixed-point</td><td>定点数</td><td>The radix point is locked at a fixed position; limited dynamic range.</td></tr><tr><td>floating-point</td><td>浮点数</td><td>Value written as (−1)^S × M × 2^E; the point floats with the exponent.</td></tr><tr><td>bias</td><td>偏置</td><td>The stored exponent equals the actual exponent plus 127 in single precision.</td></tr><tr><td>mantissa</td><td>尾数</td><td>The 23-bit fraction field; the leading 1 is hidden.</td></tr><tr><td>normalization</td><td>规格化</td><td>Rewriting a value as 1.xxxxx × 2^n so the leading bit is always 1.</td></tr><tr><td>NaN</td><td>非数</td><td>A special IEEE 754 pattern (exponent all 1s, mantissa non-zero) for undefined results.</td></tr><tr><td>denormalized number</td><td>非规格化数</td><td>Exponent all 0s with non-zero mantissa; no hidden leading 1, for values extremely close to zero.</td></tr></table></section>
+ 10.0001</code></pre><p>得到 <code>10.0001 × 2^3</code>。</p><p><b>Step 4 规格化：</b>结果以 10. 开头，不符合 1.xxxxx 的要求。把小数点左移 1 位、指数加 1：<code>1.00001 × 2^4</code>。</p><p>验算：<code>1.00001 × 2^4 = 10000.1₂ = 16.5</code>，而 9.5 + 7.0 = 16.5，正确。</p><div class="callout tip"><b>精度去哪了</b>当两个数相差悬殊（如 <code>10^20 + 1</code>），对齐时小数的尾数要被右移到几乎全部变成 0，加完再舍入，那个 1 就消失了。这就是浮点加法不满足结合律的原因：<code>(a + b) + c</code> 与 <code>a + (b + c)</code> 可能不同。</div><h2 id="s57">十四、IEEE 754 的特殊值</h2><p>因为正常数的指数被限制在 1–254，两个极端（全 0 与全 1）被留下来表示特殊情形：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>指数</th><th>尾数</th><th>含义</th><th>说明</th></tr><tr><td>全 0</td><td>全 0</td><td>精确的零（±0）</td><td>符号位决定是 +0 还是 −0，但逻辑上 +0 == −0</td></tr><tr><td>全 0</td><td>非 0</td><td>非规格化数（denormalized）</td><td>隐藏的前导 1 被去掉，写成 <code>0.xxxxx</code>，用来表示极接近 0 的数</td></tr><tr><td>全 1（255）</td><td>全 0</td><td>无穷（±∞）</td><td>溢出或非零数除以 0 的结果</td></tr><tr><td>全 1（255）</td><td>非 0</td><td>NaN（Not a Number）</td><td>未定义的数学错误，如 0/0 或负数开平方</td></tr></table></div><p>为什么需要非规格化数？因为规格化数的最小正数是 <code>1.0 × 2^(−126)</code>，再小就表示不了。非规格化数让尾数不再隐含前导 1，于是能表示到 <code>2^(−149)</code> 量级，代价是有效位数变少（精度下降）。这个「逐渐下溢」的设计避免了「小到某个值突然变成 0」的断崖。</p><p>为什么需要 NaN 而不是直接报错？因为浮点运算要在硬件里连续执行，无法中途抛异常；用一个特殊位模式把「结果无效」这件事编码进数据本身，后续任何运算碰到 NaN 都会继续传播 NaN，最后由软件统一检查。</p><h2 id="s58">十五、双精度（64 位）</h2><p>课件留了一页讲双精度，这里补全参数（属于对同一标准的结构性说明，不新增考点）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 9，可横向滚动"><table><tr><th>字段</th><th>单精度 32 位</th><th>双精度 64 位</th></tr><tr><td>符号位</td><td>1 位</td><td>1 位</td></tr><tr><td>指数</td><td>8 位（偏置 127）</td><td>11 位（偏置 1023）</td></tr><tr><td>尾数</td><td>23 位（+1 隐藏位）</td><td>52 位（+1 隐藏位）</td></tr><tr><td>有效十进制位</td><td>约 7 位</td><td>约 15–16 位</td></tr><tr><td>指数范围</td><td>约 <code>10^(−38)</code> 到 <code>10^38</code></td><td>约 <code>10^(−308)</code> 到 <code>10^308</code></td></tr></table></div><p>记住三件事就够：双精度多出的位主要给了尾数（精度）与指数（范围）；两者的字段含义、特殊值规则、编码步骤完全一致，只是参数不同。</p><h2 id="s59">十六、三种编码在现实中的分工</h2><p>课件用一张表说明这三种编码并没有互相淘汰，而是各管一段：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 10，可横向滚动"><table><tr><th>编码方式</th><th>现代领域的核心角色</th><th>典型用途</th></tr><tr><td>补码（Two's complement）</td><td>整数存储与算术</td><td>CPU 的 ALU 运算（x86、ARM、RISC-V）；语言里的 int、long 等有符号基本类型</td></tr><tr><td>符号-数值（Signed-Magnitude）</td><td>浮点表示的符号位</td><td>IEEE 754 的 float、double 的符号位</td></tr><tr><td>反码（Ones' complement）</td><td>网络协议与基础原语</td><td>IPv4、TCP、UDP 的 Internet 校验和；Linux 的 umask 权限；硬件中间状态</td></tr></table></div><p>这张表本身就是一道好题：问「为什么要学反码，它都被淘汰了吧」，答案就在第三行——校验和至今用它。</p><h2 id="s60">十七、课堂练习（课件原题）</h2><p>课件留了两道当堂练习，第五节的例题会给出完整解：</p><ul><li>任务 1（整数）：按 8 位补码计算 <code>12 − 20</code>，写出二进制步骤并验证结果是 −8。</li><li>任务 2（小数）：用乘 2 取整法把 <code>0.6875₁₀</code> 转成二进制，写出中间步骤。</li></ul><h3 id="s61">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/56646394926b34a1763e.webp" loading="lazy" alt="Lecture3 p24" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture3-p24.jpg"><figcaption>Lecture3 · 第 24 页</figcaption></figure><figure><img src="../../assets/optimized/65f96e6e04ed7b21fcb6.webp" loading="lazy" alt="Lecture3 p31" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture3-p31.jpg"><figcaption>Lecture3 · 第 31 页</figcaption></figure><figure><img src="../../assets/optimized/7b246b7475e695a755a6.webp" loading="lazy" alt="Lecture3 p34" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture3-p34.jpg"><figcaption>Lecture3 · 第 34 页</figcaption></figure><figure><img src="../../assets/img/86/slides/Lecture3-p01.jpg" loading="lazy" alt="Lecture3 p1" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture3-p01.jpg"><figcaption>Lecture3 · 第 1 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 11，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>sign bit</td><td>符号位</td><td>The most significant bit, 0 for positive and 1 for negative.</td></tr><tr><td>signed-magnitude</td><td>符号-数值表示</td><td>Sign bit plus absolute value; has two zeros and needs separate add/subtract circuits.</td></tr><tr><td>ones' complement</td><td>反码</td><td>Invert every bit of the magnitude; still has +0 and −0.</td></tr><tr><td>two's complement</td><td>补码</td><td>Ones' complement plus one; used by almost all modern computers.</td></tr><tr><td>most significant bit (MSB)</td><td>最高有效位</td><td>The leftmost bit of a fixed-width word.</td></tr><tr><td>range</td><td>表示范围</td><td>For n-bit two's complement: [−2^(n−1), 2^(n−1) − 1].</td></tr><tr><td>carry out</td><td>进位输出</td><td>The carry leaving the MSB; discarded in two's complement addition.</td></tr><tr><td>overflow</td><td>溢出</td><td>The result does not fit into the allocated bits; only possible when adding two numbers of the same sign.</td></tr><tr><td>C_in and C_out</td><td>符号位进/出进位</td><td>Overflow occurs when the carry into the sign bit differs from the carry out of it.</td></tr><tr><td>fixed-point</td><td>定点数</td><td>The radix point is locked at a fixed position; limited dynamic range.</td></tr><tr><td>floating-point</td><td>浮点数</td><td>Value written as (−1)^S × M × 2^E; the point floats with the exponent.</td></tr><tr><td>bias</td><td>偏置</td><td>The stored exponent equals the actual exponent plus 127 in single precision.</td></tr><tr><td>mantissa</td><td>尾数</td><td>The 23-bit fraction field; the leading 1 is hidden.</td></tr><tr><td>normalization</td><td>规格化</td><td>Rewriting a value as 1.xxxxx × 2^n so the leading bit is always 1.</td></tr><tr><td>NaN</td><td>非数</td><td>A special IEEE 754 pattern (exponent all 1s, mantissa non-zero) for undefined results.</td></tr><tr><td>denormalized number</td><td>非规格化数</td><td>Exponent all 0s with non-zero mantissa; no hidden leading 1, for values extremely close to zero.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用 8 位写出 <code>−13</code> 的原码、反码、补码，并读出它的补码值。</div><p>先写 +13：<code>0000 1101</code>（13 = 8 + 4 + 1）。</p><p><b>原码（符号-数值）：</b>符号位改 1，数值位不变 → <code>1000 1101</code>。</p><p><b>反码：</b>符号位 1，数值位逐位取反（000 1101 → 111 0010）→ <code>1111 0010</code>。</p><p><b>补码：</b>反码加 1 → <code>1111 0011</code>。</p><p><b>反向读出：</b><code>1111 0011</code> 按无符号读是 243，<code>243 − 256 = −13</code>，正确。</p><p>三种写法只有补码能直接参与加法。检验：<code>13 + (−13)</code> 用补码相加 → <code>0000 1101 + 1111 0011 = 1 0000 0000</code>，丢弃 MSB 进位后为 <code>0000 0000</code>，正好是 0。这就是补码「把 2^8 当 0」的本质。</p></div><div class="qa"><div class="q">例 2　按 4 位补码计算 <code>0001 + 0111</code>，判断是否溢出并解释。</div><p>相加：<code>0001 + 0111 = 1000</code>。</p><p><b>先按规则读：</b><code>0001 = +1</code>，<code>0111 = +7</code>，<code>1000</code> 按无符号是 8，<code>8 − 16 = −8</code>。</p><p><b>数学检验：</b>1 + 7 = 8，而 4 位补码范围是 <code>[−8, +7]</code>，8 超出上限 1 → 溢出。</p><p><b>用规则 2 判断：</b>两个操作数都是正数（符号位 0），结果的符号位变成 1（读成负数）→ 正 + 正 = 负结果，溢出。</p><p><b>用 Cin/Cout 判断：</b>数值位相加 <code>001 + 111 = 1000</code>，向符号位进 1，故 <code>C_in = 1</code>；符号位 <code>0 + 0 + 1 = 1</code>，没有向外的进位，故 <code>C_out = 0</code>。<code>C_in ≠ C_out</code> → 溢出。三种判据结论一致。</p><p>这道题就是 Exercise 2 第 1 题的第二小问，答案 <code>1000₂</code>（读作 −8）在数学上是错的，写答案时要明确标注「溢出，结果无效」。</p></div><div class="qa"><div class="q">例 3　把 <code>−12.625</code> 编码成 32 位 IEEE 754 单精度，用十六进制给出结果。</div><p><b>Step 1 转二进制：</b>整数部分 12 = <code>1100</code>；小数部分 0.625 × 2 = 1.25 记 1、0.25 × 2 = 0.5 记 0、0.5 × 2 = 1.0 记 1 → <code>0.101</code>。合起来 <code>12.625 = 1100.101₂</code>。</p><p><b>Step 2 规格化：</b>小数点左移 3 位 → <code>1.100101 × 2^3</code>。</p><p><b>Step 3 符号位：</b>负 → <code>1</code>。</p><p><b>Step 4 指数：</b><code>3 + 127 = 130</code>，<code>130 = 1000 0010₂</code>。</p><p><b>Step 5 尾数：</b>小数部分 <code>100101</code>，补 0 到 23 位 → <code>1001010 00000000 00000000</code>。</p><p><b>拼装：</b><code>1 | 10000010 | 10010100000000000000000</code> → 每 4 位一组：<code>1100 0001 0100 1010 0000 0000 0000 0000</code> → <b><code>0xC14A0000</code></b>。</p><p>检验方法：把 <code>0xC14A0000</code> 解码回去应得 −12.625（见例 4 的步骤）。</p></div><div class="qa"><div class="q">例 4　给定 <code>0xC1480000</code>，求它代表的十进制实数。</div><p><b>Step 1 展开成二进制：</b><code>C1 48 00 00</code> → <code>1100 0001 0100 1000 0000 0000 0000 0000</code>。</p><p><b>Step 2 切三段：</b>符号 <code>1</code>；指数 <code>1000 0010</code>；尾数 <code>1001 0000 …</code>（23 位）。</p><p><b>Step 3 读符号：</b>符号位 1 → 负数。</p><p><b>Step 4 算指数：</b><code>1000 0010₂ = 130</code>，<code>130 − 127 = 3</code>。</p><p><b>Step 5 补隐藏位并移位：</b>尾数 <code>1001</code> → <code>1.1001 × 2^3</code> → 小数点右移 3 位 → <code>1100.1₂</code>。</p><p><b>Step 6 转十进制：</b><code>1100.1₂ = 8 + 4 + 0.5 = 12.5</code>，加符号 → <b>−12.5</b>。</p><p>注意例 3 与例 4 只差在尾数：<code>0xC14A0000</code> 尾数多了 <code>101</code>，值就变成 12.625。十六进制差 1 位，十进制值差 0.125——这就是浮点「精度由尾数决定」的直接证据。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>写出 4 位补码能表示的全部取值，从最大排到最小。</li><li>按 4 位补码计算 <code>1010 + 1010</code>，给出 4 位结果与十进制值，并判断是否溢出。</li><li>按 4 位补码计算 <code>1111 − 1101</code>，用「加负数」的方式做一遍。</li><li>按 8 位补码计算 <code>12 − 20</code>，验证结果为 −8。</li><li>用乘 2 取整法把 <code>0.6875₁₀</code> 转成二进制。</li><li>把 <code>6.5</code> 编码成 IEEE 754 单精度，并用十六进制给出结果。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 4 位补码范围 <code>[−8, +7]</code>：<code>0111 (+7), 0110 (+6), 0101 (+5), 0100 (+4), 0011 (+3), 0010 (+2), 0001 (+1), 0000 (0), 1111 (−1), 1110 (−2), 1101 (−3), 1100 (−4), 1011 (−5), 1010 (−6), 1001 (−7), 1000 (−8)</code>，共 16 个值。</p><p><b>2.</b> <code>1010 + 1010 = 1 0100</code>，丢弃 MSB 进位得 <code>0100</code>。按补码读 <code>1010 = −6</code>，−6 + (−6) = −12，超出 <code>[−8, +7]</code> → 溢出；<code>0100</code> 读作 +4，答案错。两条判据都成立：负 + 负 得到正结果；再看进位，数值位 <code>010 + 010 = 100</code> 未向符号位进位（<code>C_in = 0</code>），符号位 <code>1 + 1 + 0 = 10</code> 向外出位（<code>C_out = 1</code>），<code>C_in ≠ C_out</code> → 溢出。</p><p><b>3.</b> <code>1111 − 1101 = 1111 + 0011</code>（1101 取反得 0010，加 1 得 0011）<code>= 1 0010</code>，丢弃进位 → <code>0010 = +2</code>。检验：<code>−1 − (−3) = +2</code>，正确。</p><p><b>4.</b> <code>12 = 0000 1100</code>；<code>20 = 0001 0100</code>，取反 <code>1110 1011</code>，加 1 得 <code>1110 1100</code>（−20）。相加：<code>0000 1100 + 1110 1100 = 1111 1000</code>。读值：无符号 248，<code>248 − 256 = −8</code>，正确。</p><p><b>5.</b> <code>0.6875 × 2 = 1.375</code> 记 1；<code>0.375 × 2 = 0.75</code> 记 0；<code>0.75 × 2 = 1.5</code> 记 1；<code>0.5 × 2 = 1.0</code> 记 1 → <code>0.1011₂</code>。验算 <code>0.5 + 0.125 + 0.0625 = 0.6875</code>。</p><p><b>6.</b> <code>6.5 = 110.1₂ = 1.101 × 2^2</code>；符号 0；指数 <code>2 + 127 = 129 = 1000 0001</code>；尾数 <code>101</code> 补零到 23 位。拼装 <code>0 | 10000001 | 10100000000000000000000</code> → <code>0100 0000 1101 0000 0000 0000 0000 0000</code> → <b><code>0x40D00000</code></b>。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>① 三种编码的写法与互相转换；② <code>n</code> 位补码范围公式；③ 补码加减法（丢弃 MSB 进位）；④ 两条溢出规则与 Cin/Cout 判据；⑤ 十进制小数乘 2 取整；⑥ IEEE 754 编码五步与解码六步；⑦ 浮点加法四步。</div><div class="callout warn"><b>易错 1</b>求补码时只取反、忘记加 1。反码与补码只差这 1，但值差 1，整道题全错。</div><div class="callout warn"><b>易错 2</b>把「丢弃 MSB 进位」当成溢出。补码加法永远丢弃这一位；判溢出要用符号规则或 <code>C_in ≠ C_out</code>。</div><div class="callout warn"><b>易错 3</b>IEEE 754 的指数位置接填实际指数。必须<b>加偏置 127</b>（双精度 1023），且尾数要丢掉隐藏的 1。</div><div class="callout warn"><b>易错 4</b>小数转二进制时把结果逆序读。整数部分除 2 取余是逆序读，小数部分乘 2 取整是正序读，两者相反。</div><div class="callout tip"><b>进阶</b>① 求补码可用「第一个 1 及其右侧不变、左侧取反」；② 读补码可用「无符号值 − 2^n」；③ 记住 <code>0x3F800000 = 1.0</code>、<code>0x40000000 = 2.0</code> 这类锚点，能快速估出解码结果的量级；④ 双精度只是把参数换成 11/52 与偏置 1023，步骤完全一样。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s61">方法清单</h2><h3 id="s62">求一个负数的 8 位补码（四步）</h3><ol class="steps"><li>写出它的正数形式（8 位，最高位 0）</li><li>全部位取反（0→1，1→0）</li><li>加 1（注意连续进位）</li><li>用「无符号值 − 256」反向验证</li></ol><h3 id="s63">读出补码串的真值（三步）</h3><ol class="steps"><li>看最高位：0 为正、1 为负</li><li>0 → 直接按无符号读</li><li>1 → 按无符号读后减去 2^n</li></ol><h3 id="s64">判溢出（任选一条，两条互验）</h3><ul class="checklist"><li>符号法：同号相加而结果变号 → 溢出；异号相加永不溢出</li><li>进位法：<code>C_in ≠ C_out</code> → 溢出</li><li>数学法：真实和是否落在 <code>[−2^(n−1), 2^(n−1) − 1]</code> 内</li><li>三种判据结论必须一致，不一致说明竖式算错</li></ul><h3 id="s65">IEEE 754 单精度编码（五步）</h3><ol class="steps"><li>整数与小数部分分别转二进制，合并</li><li>规格化成 <code>1.xxxxx × 2^n</code></li><li>符号位：负为 1</li><li>指数：<code>n + 127</code>，写成 8 位二进制</li><li>尾数：取小数点后的位，补 0 到 23 位</li></ol><h3 id="s66">IEEE 754 单精度解码（六步）</h3><ol class="steps"><li>十六进制展开成 32 位，按 1 / 8 / 23 切段</li><li>符号位定正负</li><li>指数减 127 得 n</li><li>尾数前补 <code>1.</code>（隐藏位）</li><li>小数点按 n 右移（n 为负则左移）</li><li>转成十进制并核对量级</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p2</td><td>本周目标：三种有符号编码、补码运算与溢出、小数转换、IEEE 754、浮点加法</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p3</td><td>硬件没有负号、MSB 作符号位、8 位字长约定</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p4–p5</td><td>符号-数值表示、+5/−5/+13/−13、双零、算术复杂</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p6</td><td>反码规则、−5 的反码、仍有两个零</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p7–p8</td><td>补码的三条理由、两条规则、−5 与 −32 的算例</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p9</td><td>两种编码的 8 位范围、边界值 0111 1111 / 1000 0000、公式 [−2^(n−1), 2^(n−1)−1]</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p10–p12</td><td>补码加法黄金规则与丢弃进位、14+9、减法 A−B = A+(−B)、7−4、−5−(−3)</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p13–p16</td><td>溢出定义与水杯类比、100+50、两条规则、正溢出与负溢出的完整竖式</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p17–p18</td><td>两种检测法（符号逻辑、Cin/Cout 异或）、−14+(−9) 的正常进位辨析</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p19–p22</td><td>二进制小数位权、0.11 与 10.011、乘 2 取整法、0.375 与 0.8125、0.1 的无限循环与 == 陷阱</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p23–p25</td><td>定点与浮点、(−1)^S × M × 2^E、IEEE 754 三段布局、偏置 127、隐藏位、−5.75 的五步编码</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p26–p28</td><td>浮点加法四步、9.5+7.0 的完整过程与验算</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p29–p30</td><td>四种特殊值（0、非规格化、∞、NaN）与编码条件、真值表</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p31–p32</td><td>双精度参数、三种编码的现实分工表（ALU / 浮点符号位 / 网络校验和）</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p33</td><td>课堂练习：12−20 与 0.6875（已收进本讲例题与练习）</td></tr><tr><td>Week3- Digital Data Encoding/Exercise 2.pdf</td><td>第 1 题 (a)(b)(c)</td><td>4 位补码范围、四个运算（0001+0011、0001+0111、1010+1010、1111−1101）、用十进制验证并指出错误</td></tr><tr><td>Week3- Digital Data Encoding/Exercise 2.pdf</td><td>第 2–3 题</td><td>−12.625 编码成单精度十六进制、0xC1480000 解码成十进制（本讲例 3、例 4 完整覆盖）</td></tr><tr><td>（跳过）Week3- Digital Data Encoding/Zishuo. Wang.pdf</td><td>全文</td><td>学生提交版只有姓名与学号，无题干也无作答，无信息可抽取</td></tr><tr><td>（补充）</td><td>—</td><td>补码秒算技巧（第一个 1 左侧取反）、「无符号值 − 2^n」读法、双精度参数、非规格化数与 NaN 的存在理由、0x3F800000 这类锚点，均为衔接性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w2-number-systems.html">← Week 2 · 数制、位置记数法与进制转换</a><a class="next" href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8 →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s62">方法清单</h2><h3 id="s63">求一个负数的 8 位补码（四步）</h3><ol class="steps"><li>写出它的正数形式（8 位，最高位 0）</li><li>全部位取反（0→1，1→0）</li><li>加 1（注意连续进位）</li><li>用「无符号值 − 256」反向验证</li></ol><h3 id="s64">读出补码串的真值（三步）</h3><ol class="steps"><li>看最高位：0 为正、1 为负</li><li>0 → 直接按无符号读</li><li>1 → 按无符号读后减去 2^n</li></ol><h3 id="s65">判溢出（任选一条，两条互验）</h3><ul class="checklist"><li>符号法：同号相加而结果变号 → 溢出；异号相加永不溢出</li><li>进位法：<code>C_in ≠ C_out</code> → 溢出</li><li>数学法：真实和是否落在 <code>[−2^(n−1), 2^(n−1) − 1]</code> 内</li><li>三种判据结论必须一致，不一致说明竖式算错</li></ul><h3 id="s66">IEEE 754 单精度编码（五步）</h3><ol class="steps"><li>整数与小数部分分别转二进制，合并</li><li>规格化成 <code>1.xxxxx × 2^n</code></li><li>符号位：负为 1</li><li>指数：<code>n + 127</code>，写成 8 位二进制</li><li>尾数：取小数点后的位，补 0 到 23 位</li></ol><h3 id="s67">IEEE 754 单精度解码（六步）</h3><ol class="steps"><li>十六进制展开成 32 位，按 1 / 8 / 23 切段</li><li>符号位定正负</li><li>指数减 127 得 n</li><li>尾数前补 <code>1.</code>（隐藏位）</li><li>小数点按 n 右移（n 为负则左移）</li><li>转成十进制并核对量级</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p2</td><td>本周目标：三种有符号编码、补码运算与溢出、小数转换、IEEE 754、浮点加法</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p3</td><td>硬件没有负号、MSB 作符号位、8 位字长约定</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p4–p5</td><td>符号-数值表示、+5/−5/+13/−13、双零、算术复杂</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p6</td><td>反码规则、−5 的反码、仍有两个零</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p7–p8</td><td>补码的三条理由、两条规则、−5 与 −32 的算例</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p9</td><td>两种编码的 8 位范围、边界值 0111 1111 / 1000 0000、公式 [−2^(n−1), 2^(n−1)−1]</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p10–p12</td><td>补码加法黄金规则与丢弃进位、14+9、减法 A−B = A+(−B)、7−4、−5−(−3)</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p13–p16</td><td>溢出定义与水杯类比、100+50、两条规则、正溢出与负溢出的完整竖式</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p17–p18</td><td>两种检测法（符号逻辑、Cin/Cout 异或）、−14+(−9) 的正常进位辨析</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p19–p22</td><td>二进制小数位权、0.11 与 10.011、乘 2 取整法、0.375 与 0.8125、0.1 的无限循环与 == 陷阱</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p23–p25</td><td>定点与浮点、(−1)^S × M × 2^E、IEEE 754 三段布局、偏置 127、隐藏位、−5.75 的五步编码</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p26–p28</td><td>浮点加法四步、9.5+7.0 的完整过程与验算</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p29–p30</td><td>四种特殊值（0、非规格化、∞、NaN）与编码条件、真值表</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p31–p32</td><td>双精度参数、三种编码的现实分工表（ALU / 浮点符号位 / 网络校验和）</td></tr><tr><td>Week3- Digital Data Encoding/Lecture3.pdf</td><td>p33</td><td>课堂练习：12−20 与 0.6875（已收进本讲例题与练习）</td></tr><tr><td>Week3- Digital Data Encoding/Exercise 2.pdf</td><td>第 1 题 (a)(b)(c)</td><td>4 位补码范围、四个运算（0001+0011、0001+0111、1010+1010、1111−1101）、用十进制验证并指出错误</td></tr><tr><td>Week3- Digital Data Encoding/Exercise 2.pdf</td><td>第 2–3 题</td><td>−12.625 编码成单精度十六进制、0xC1480000 解码成十进制（本讲例 3、例 4 完整覆盖）</td></tr><tr><td>（跳过）Week3- Digital Data Encoding/Zishuo. Wang.pdf</td><td>全文</td><td>学生提交版只有姓名与学号，无题干也无作答，无信息可抽取</td></tr><tr><td>（补充）</td><td>—</td><td>补码秒算技巧（第一个 1 左侧取反）、「无符号值 − 2^n」读法、双精度参数、非规格化数与 NaN 的存在理由、0x3F800000 这类锚点，均为衔接性拓展</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="w2-number-systems.html"><span>上一讲</span><strong>Week 2 · 数制、位置记数法与进制转换</strong></a><a data-sequence="parent" href="part-2.html"><span>返回目录</span><strong>第 2 章 数制与数据表示</strong></a><a data-sequence="next" href="w4-character-encoding.html"><span>下一讲</span><strong>Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

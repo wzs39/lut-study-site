@@ -203,13 +203,7 @@
 
   /* ---------------- Supabase Cloud Client (Pure Fetch + Optional Realtime) ---------------- */
   function sbHeaders(extra) {
-    return Object.assign(
-      {
-        apikey: SB_KEY,
-        Authorization: "Bearer " + SB_KEY
-      },
-      extra || {}
-    );
+    return window.LUTSharingConfig.headers(SB_KEY,extra);
   }
 
   function sbPublicUrl(path) {
@@ -388,21 +382,24 @@
   var modalEl = null;
   function ensureModal() {
     if (modalEl) return modalEl;
-    modalEl = document.createElement("div");
+    modalEl = document.createElement("dialog");
     modalEl.className = "mat-modal";
+    modalEl.setAttribute('aria-labelledby','material-preview-title');
+    modalEl.setAttribute('closedby','any');
     modalEl.innerHTML =
-      '<div class="mat-modal-box" role="dialog" aria-modal="true">' +
+      '<div class="mat-modal-box">' +
         '<div class="mat-modal-head">' +
-          '<div class="mat-modal-title"></div>' +
-          '<button type="button" class="mat-close" aria-label="关闭">✕</button>' +
+          '<h2 class="mat-modal-title" id="material-preview-title"></h2>' +
+          '<button type="button" class="mat-close" aria-label="关闭资料预览" autofocus>✕</button>' +
         "</div>" +
         '<div class="mat-modal-body"></div>' +
       "</div>";
     modalEl.addEventListener("click", function (e) {
-      if (e.target === modalEl || e.target.classList.contains("mat-close")) closeModal();
+      if (e.target.classList.contains("mat-close")) closeModal();
     });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && modalEl.classList.contains("open")) closeModal();
+    modalEl.addEventListener('close',function(){
+      modalEl.querySelector('.mat-modal-body').replaceChildren();
+      activeObjectUrls.forEach(function(url){URL.revokeObjectURL(url);});activeObjectUrls=[];
     });
     document.body.appendChild(modalEl);
     return modalEl;
@@ -411,10 +408,7 @@
   var activeObjectUrls = [];
   function closeModal() {
     if (!modalEl) return;
-    modalEl.classList.remove("open");
-    modalEl.querySelector(".mat-modal-body").innerHTML = "";
-    activeObjectUrls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} });
-    activeObjectUrls = [];
+    modalEl.close();
   }
 
   function openPreview(item) {
@@ -429,7 +423,7 @@
           '<span>时间：' + esc(fmtTime(item.created_at)) + "</span>" +
         "</div>" +
         '<div class="mat-md-view">' + renderMarkdown(item.note_markdown || "") + "</div>";
-      m.classList.add("open");
+      m.showModal();
       return;
     }
 
@@ -462,7 +456,7 @@
         '<div class="callout"><b>提示</b>浏览器不支持直接内嵌预览 <code>' + esc(ext || "该格式") + "</code> 文件，请直接下载到本地打开。</div>" +
         '<p><a class="mat-btn primary" href="' + esc(url) + '" download="' + esc(item.file_name || "download") + '" target="_blank" rel="noopener">下载 ' + esc(item.file_name || "文件") + "</a></p>";
     }
-    m.classList.add("open");
+    m.showModal();
   }
 
   function downloadItem(item) {
@@ -509,7 +503,13 @@
         '<div class="mat-empty">本章节还没有同学上传补充资料或笔记。成为第一个分享者吧！</div>';
       return;
     }
+    var groups=new Map(),older=0;
+    function historyKey(it){return JSON.stringify([it.course_id,it.part_index,it.kind,(it.title||it.file_name||'').trim().normalize('NFKC').toLowerCase()]);}
+    items.forEach(function(it,index){var key=historyKey(it);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(index);});
     container.innerHTML = items.map(function (it, idx) {
+      var releases=groups.get(historyKey(it)),position=releases.indexOf(idx),isOlder=position>0;
+      if(isOlder)older++;
+      var history=releases.length>1?'<span class="badge mute">同名发布 '+releases.length+' 次 · '+(isOlder?'较早记录':'最近记录')+'</span>':'';
       var b = fileBadge(it);
       var srcTag = it._source === "cloud"
         ? '<span class="badge ok">实时云端</span>'
@@ -528,11 +528,11 @@
         ? '<button type="button" class="mat-btn ghost" data-act="delete" data-idx="' + idx + '">删除</button>'
         : "";
       return (
-        '<div class="mat-item">' +
+        '<div class="mat-item"'+(isOlder?' data-history="older" hidden':'')+'>' +
           '<div class="mat-item-main">' +
             '<div class="mat-item-head">' +
               '<span class="badge ' + esc(b.cls) + '">' + esc(b.label) + "</span>" +
-              srcTag + locTag +
+              srcTag + locTag + history +
               '<strong class="mat-item-title">' + esc(it.title || it.file_name || "未命名资料") + "</strong>" +
             "</div>" +
             (desc || previewSnippet) +
@@ -549,6 +549,10 @@
         "</div>"
       );
     }).join("");
+    if(older){
+      var toggle=document.createElement('button');toggle.type='button';toggle.className='study-button';toggle.textContent='展开较早的同名记录（'+older+'）';toggle.setAttribute('aria-expanded','false');
+      toggle.addEventListener('click',function(){var expanded=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(expanded));container.querySelectorAll('[data-history="older"]').forEach(function(row){row.hidden=!expanded;});toggle.textContent=expanded?'收起较早的同名记录':'展开较早的同名记录（'+older+'）';});container.appendChild(toggle);
+    }
 
     container.querySelectorAll("button[data-act]").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -579,7 +583,7 @@
       : "";
 
     return (
-      '<div class="mat-tabs" role="tablist">' +
+      '<div class="mat-tabs" role="group" aria-label="资料形式">' +
         '<button type="button" class="mat-tab active" data-mode="file">📎 上传课件 / 资料文件</button>' +
         '<button type="button" class="mat-tab" data-mode="note">📝 在线写 Markdown 笔记</button>' +
       "</div>" +
@@ -714,7 +718,7 @@
           if (uploaderInput && uploaderVal) uploaderInput.value = uploaderVal;
           droppedFile = null;
           showSelectedFile(null);
-          statusEl.textContent = IS_CLOUD ? "✓ 发布成功！所有人已实时可见。" : "✓ 已保存到本机浏览器预览。";
+          statusEl.textContent = IS_CLOUD ? "✓ 云端已收录，其他浏览器可刷新查看。" : "✓ 已保存到本机浏览器预览，仅当前浏览器可见。";
           statusEl.className = "mat-status ok";
           if (opts.onSubmitted) opts.onSubmitted();
         })
@@ -731,11 +735,11 @@
   /* ---------------- Mode Status Banner ---------------- */
   function modeBannerHTML() {
     if (IS_CLOUD) {
-      return '<span class="mat-live-pill"><span class="mat-dot"></span>实时云端同步已开启</span>';
+      return '<span class="mat-live-pill"><span class="mat-dot"></span>已配置云端 · 以请求结果为准</span>';
     }
     return (
       '<span class="mat-live-pill local"><span class="mat-dot"></span>本机预览模式</span>' +
-      '<span class="mat-hint">（当前上传保存在本机浏览器；在 <code>assets/config.js</code> 填入免费 Supabase 配置后，即可全员实时共享）</span>'
+      '<span class="mat-hint">（当前上传仅保存在本机浏览器；可在上传中心检查共享连接，或由维护者配置 <code>assets/config.js</code>）</span>'
     );
   }
 
@@ -847,7 +851,7 @@
       el.innerHTML =
         '<div class="mat-hub-status">' + modeBannerHTML() + "</div>" +
         '<div class="card"><h2>上传讲义、课件或章节笔记</h2>' +
-          '<p class="sub">选择对应的课程与章节后提交，资料会立即出现在该章节页和下方实时动态中。</p>' +
+          '<p class="sub">选择课程与章节后提交。云端模式供其他人读取，本机预览仅保存在当前浏览器；同名资料保留较早记录。</p>' +
           '<div class="mat-drawer"></div>' +
         "</div>" +
         '<div class="card">' +

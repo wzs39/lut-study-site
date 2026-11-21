@@ -8,204 +8,362 @@
 <title>第 5 讲 · 工程演讲与图表描述 · 32632</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">KE00DA03 大学英语</a> / <a href="part-2.html">第 2 章 词汇语法与演讲表达</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">5.1 任务与评分：五项并列</a><a class="toc-l3" href="#s3">5.2 选源：什么样的来源算可信</a><a class="toc-l3" href="#s4">5.3 3 至 4 分钟装多少内容</a><a class="toc-l3" href="#s5">5.4 路标语：让听众知道你在哪</a><a class="toc-l3" href="#s6">5.5 一页幻灯片只讲一件事</a><a class="toc-l3" href="#s7">5.6 图表描述：三类词、四类句式</a><a class="toc-l3" href="#s8">5.7 图表描述的三段式</a><a class="toc-l3" href="#s9">5.8 交付：breakout room 与 Zoom 录制</a><a class="toc-l3" href="#s10">5.9 发音与流利度：朗读测试的考前准备</a><a class="toc-l3" href="#s11">5.10 AI 规则与作者身份</a><a class="toc-l3" href="#s12">5.11 图表词库扩展（Meeting 9 原版词库）</a><a class="toc-l3" href="#s13">5.11a 五种图（Types of Graphs）</a><a class="toc-l3" href="#s14">5.11b 上升（NUMBER IS GOING UP）</a><a class="toc-l3" href="#s15">5.11c 下降（NUMBER IS GOING DOWN）</a><a class="toc-l3" href="#s16">5.11d 波动·峰值·平稳（UP AND DOWN / STAYING THE SAME）</a><a class="toc-l3" href="#s17">5.11e 幅度副词（LEVEL OF CHANGE）</a><a class="toc-l3" href="#s18">5.12 阅读落地：为什么数据中心落户芬兰（B1/C1 双版精读）</a><a class="toc-l2" href="#s19">本讲方法清单</a><a class="toc-l3" href="#s20">演讲准备五步</a><a class="toc-l3" href="#s21">图表句四查</a><a class="toc-l3" href="#s22">发音考前热身</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l1-launch-self-intro.html">第 1 讲 · 开课、自我介绍与学习资源</a><a href="l2-reading-chunking.html">第 2 讲 · 朗读、分块与技术文本阅读</a><a href="l3-vocabulary-grammar-clinic.html">第 3 讲 · 词汇与语法诊所</a><a href="l4-elevator-pitch.html">第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a class="toc-l3" href="l5-presentation-data.html">▸ 第 5 讲 · 工程演讲与图表描述</a><a href="l7-word-order-questions.html">第 6 讲 · Unit 1 语法专题：语序、问句与附加疑问句</a><a href="l6-meetings-negotiation.html">第 7 讲 · 会议沟通、协商与专业简报</a><a href="l9-pronunciation-clinic.html">第 9 讲 · 语音诊所：重音、语调、最小对立与录音交付</a><a href="supp-homework-map.html">补遗 · 十三次课的作业地图、交付通道与考核节点</a><a href="l8-assignments-listening.html">第 8 讲 · 四项作业、口语测试与课堂听说材料</a></div></aside><article><h1>第 5 讲 · 工程演讲与图表描述</h1><p class="lead">Technical Presentations and Describing Graphs <span class="badge mute">32632</span> <span class="badge mute">第 5 / 10 讲</span></p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 词汇语法与演讲表达</a></p><p class="src">原始文件：<code>3_Assignments_4_ASSIGNMENT 3 Presentation [DL Nov 27]_intro_intro.html</code> <code>5_UNIT 2 Expressing Opinions_3_Meeting 9 homework.html</code> <code>5_UNIT 2 Expressing Opinions_8_Meeting 12 homework.html</code> <code>4_UNIT 1 Building Know-how_5_Meeting 5 homework.html</code> <code>4_UNIT 1 Building Know-how_2_Meeting 2 homework.html</code> <code>Meeting9_EHUT_3015.pdf</code> <code>News_article_2_(Energy&amp;Software)_-_Data_centers_(C1).pdf</code> <code>News_article_2_(Energy&amp;Software)_-_Data_centers_(B1).pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 5 讲对应 Assignment 3：3 至 4 分钟的工程主题演讲，在最后一次网课的 breakout room 里向 3 至 5 人小组交付，并为老师录制。它同时并入了两条支线：Meeting 9 的<b>图表描述</b>（British Council B1 材料 + 小游戏）与 Meeting 12 的<b>朗读测试</b>准备（11 月 18 日，Moodle 10:00–22:00）。</p><p>与前几讲的关系：第 4 讲练「60 秒说服」，本讲练「4 分钟讲清一件事」；第 2 讲的分块与停顿、第 3 讲的词序与搭配在这里被同时调用，评分表也第一次把 fluency、vocabulary、pronunciation、grammar 四项并列。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>判断一个来源是否属于课程认可的可信来源，并说明理由</li><li>在 3 至 4 分钟里安排 400 至 520 词的内容，分配开场、主体、结尾的时间</li><li>用 first、second、finally、moving on 等路标语组织演讲</li><li>用趋势动词、副词与四类句式准确描述一张折线图或柱状图</li><li>区分 increase by 与 increase to、percent 与 percentage point</li><li>为一页幻灯片做减法：一个信息点、清晰的层级、标注来源</li><li>用绕口令与最小对立对练发音，完成朗读测试的考前准备</li><li>在 breakout room 里交付并录制，用 Zoom 桌面端而不是手机或浏览器</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">5.1 任务与评分：五项并列</h3><p>作业要求可以拆成五步：选一个与未来专业相关的工程主题（公司、技术、产品、流程、发明、创新均可）→ 找来源且必须在演讲中提及 → 做 3 至 4 分钟的演讲 → 加视觉材料（PowerPoint 可以，但不必须是；Canva 等自由选择）→ 在最后一次网课（11 月 27 日）的 breakout room 里向 3 至 5 人小组演讲，同时为老师录制。</p><p>评分维度有五项，原文列出：<i>overall impression (content, sources, visuals)</i>、<i>fluency</i>、<i>vocabulary</i>、<i>pronunciation</i>、<i>grammar</i>。注意第一项是<b>整体印象</b>，它把内容、来源、视觉三者打包评价——这意味着「资料找得对、幻灯片做得清楚」本身就能拿分。</p><div class="callout exam"><b>计分换算</b>与电梯演讲同一套：0 至 49.99 Fail (revise)，50 至 59.99 Passable (1)，60 至 69.99 Satisfactory (2)，70 至 79.99 Good (3)，80 至 89.99 Very Good (4)，90 至 100 Excellent (5)。</div><h3 id="s3">5.2 选源：什么样的来源算可信</h3><p>作业对来源的限制非常具体，这是本讲最容易被忽略却最容易丢分的部分：<i>Credible sources include research articles, reports, and government/organization websites. Do not use commercial websites, blogs, news articles, or wikis.</i></p><table><tr><th>来源</th><th>可用？</th><th>理由</th></tr><tr><td>研究论文（期刊、会议论文）</td><td>可用</td><td>有同行评审，方法与数据可追溯</td></tr><tr><td>机构或政府报告（能源署、统计局、标准组织）</td><td>可用</td><td>署名机构、有统计口径与年份</td></tr><tr><td>大学或实验室官网的技术说明</td><td>可用</td><td>属 organization website，作者与日期明确</td></tr><tr><td>企业产品页 / 营销页面</td><td>不可用</td><td>商业网站，数据为营销目的服务</td></tr><tr><td>个人博客、Medium 专栏</td><td>不可用</td><td>无审稿，作者资质不明</td></tr><tr><td>新闻文章（含英文新闻网站）</td><td>不可用</td><td>二次转述，常缺方法与口径</td></tr><tr><td>维基百科等 wiki</td><td>不可用</td><td>多人协作、随时改动，不能作为引用来源</td></tr></table><p>判断一个来源能不能用，问三个问题：<b>谁写的</b>（署名机构还是匿名）、<b>数据从哪来</b>（原始统计还是转述）、<b>有没有日期与口径</b>（年份、样本、单位）。三问有一问答不上来，就换一个来源。</p><div class="callout warn"><b>常见误区</b>新闻网站上的「某研究称……」不能当来源——你要引的是那项研究本身。反过来，研究论文里引用的政府统计数据，可以直接去政府网站找原始表格。</div><h3 id="s4">5.3 3 至 4 分钟装多少内容</h3><p>按 130 至 150 词／分钟计算，3 分钟约 390 至 450 词，4 分钟约 520 至 600 词。留出幻灯片切换与两次停顿，安全区间是 <b>400 至 520 词</b>。超过 550 词几乎必然超时，因为切换幻灯片时语流会中断。</p><table><tr><th>段落</th><th>3 分钟版</th><th>4 分钟版</th><th>内容</th></tr><tr><td>开场</td><td>25 秒</td><td>35 秒</td><td>钩子 + 主题 + 路线图（今天讲三点）</td></tr><tr><td>主体一</td><td>50 秒</td><td>65 秒</td><td>背景与问题：为什么这件事值得讲</td></tr><tr><td>主体二</td><td>55 秒</td><td>75 秒</td><td>技术核心：原理、流程或数据</td></tr><tr><td>主体三</td><td>40 秒</td><td>55 秒</td><td>影响与限制：成本、风险、前景</td></tr><tr><td>结尾</td><td>20 秒</td><td>30 秒</td><td>总结一句 + 行动邀请 + 提问</td></tr></table><p>这个分配有一个纪律：<b>主体三点、每点一句主张</b>。三点讲不透，不如两点讲透。作业评分看的是整体印象与流利度，不是信息量。</p><h3 id="s5">5.4 路标语：让听众知道你在哪</h3><p>演讲的流利不等于语速快，而是<b>结构可预测</b>。路标语（signposting）就是给听众的路牌，每一句都在告诉他「现在到哪了、接下来去哪」：</p><table><tr><th>功能</th><th>句型</th><th>使用时机</th></tr><tr><td>开场与路线图</td><td>Today I’ll cover three points: first … , then … , and finally … .</td><td>第一页幻灯片</td></tr><tr><td>开始第一点</td><td>Let’s start with the background.</td><td>进入主体</td></tr><tr><td>切换</td><td>That brings me to my second point.</td><td>换页时，代替「接下来」</td></tr><tr><td>举例</td><td>A good example of this is … .</td><td>需要具体化时</td></tr><tr><td>强调</td><td>What matters here is … .</td><td>核心数据前后</td></tr><tr><td>收束</td><td>So, to sum up, … .</td><td>最后一张幻灯片</td></tr><tr><td>邀请提问</td><td>I’m happy to take any questions.</td><td>结尾</td></tr></table><p>这些句子还有一个副作用：它们给你<b>换气的时机</b>。每切换一次就有一个自然停顿，语速会自动稳定下来。</p><h3 id="s6">5.5 一页幻灯片只讲一件事</h3><p>作业只要求 <i>Add some visuals</i>，没有规定版式，但评分维度里的 visuals 决定了你需要遵守几条基本纪律：</p><ul class="checklist"><li>一页一个信息点：标题就是这一页的结论，不是「结果」这样的空标题</li><li>文字不超过六行，每行不超过八个词；讲稿放在你嘴里，不放在屏幕上</li><li>图表大于文字：能用一张图说清的，不要用三行 bullet</li><li>层级清楚：标题最大，数据次之，来源最小但必须有</li><li>来源标注格式统一：机构名 + 年份，写在页面底部</li></ul><p>来源标注不是形式主义。作业要求 <i>Find sources on the topic (must be mentioned)</i>——「提及」既包括口头说 <i>according to a 2023 report by …</i>，也包括幻灯片上的一行小字。两者都做最稳。</p><h3 id="s7">5.6 图表描述：三类词、四类句式</h3><p>Meeting 9 的作业给了两条训练：一个 learningapps 上的图表词小游戏，以及 British Council B1 的 <i>describing charts</i> 阅读加三个任务。核心是把「趋势」拆成<b>方向、幅度、时间</b>三个变量。</p><table><tr><th>方向</th><th>动词</th><th>名词形式</th></tr><tr><td>上升</td><td>rise, increase, grow, climb, go up</td><td>an increase, a rise, growth</td></tr><tr><td>下降</td><td>fall, decline, decrease, drop, go down</td><td>a fall, a decline, a decrease</td></tr><tr><td>平稳</td><td>remain stable, stay steady, level off, plateau</td><td>stability, a plateau</td></tr><tr><td>波动</td><td>fluctuate, vary</td><td>fluctuation</td></tr><tr><td>峰值与低谷</td><td>peak, reach a peak, hit a low, bottom out</td><td>a peak, a low</td></tr></table><table><tr><th>幅度副词</th><th>含义</th><th>例</th></tr><tr><td>sharply / dramatically / steeply</td><td>急剧</td><td>Sales rose sharply from 20 to 45 units.</td></tr><tr><td>significantly</td><td>显著（可用于统计语境）</td><td>Energy use increased significantly after 2020.</td></tr><tr><td>steadily / gradually</td><td>稳定、渐进</td><td>The share grew steadily over five years.</td></tr><tr><td>slightly / marginally</td><td>轻微</td><td>Costs fell slightly in the second quarter.</td></tr></table><p>四类句式覆盖绝大多数图表句：</p><ul><li><b>动词句</b>：<i>Sales rose from 20 to 45 units between January and March.</i>（from A to B 表区间）</li><li><b>名词句</b>：<i>There was a sharp increase in sales in the first quarter.</i>（there was + a + 形容词 + 名词 + in）</li><li><b>状态句</b>：<i>The figure stood at 12% at the end of the year.</i>（stood at 表某时点的值）</li><li><b>占比句</b>：<i>Wind power accounted for 30% of the total.</i>（account for 表占比）</li></ul><div class="callout warn"><b>四个数字陷阱</b>① <i>increased by 20%</i> 是「增长了 20%」，<i>increased to 20%</i> 是「增长到 20%」；② <i>percent</i> 与 <i>percentage point</i> 不能混用：两个百分比之差用 <b>percentage points</b>（从 10% 到 13% 是上升 3 个百分点，不是 3%）；③ <i>the number of + 复数名词</i> 用单数谓语（<i>the number of units was</i>），<i>a number of + 复数名词</i> 用复数谓语；④ <i>amount</i> 配不可数（amount of energy），<i>number</i> 配可数（number of units）。</div><h3 id="s8">5.7 图表描述的三段式</h3><p>一段好的图表描述不是流水账，而是「引入—描述—解读」三步。以作业要求「找一个有意思的图，准备介绍并讨论」为例：</p><p><b>引入</b>：<i>This chart shows the share of renewable electricity in Finland from 2010 to 2023.</i>（说明图讲什么、时间范围、单位）。</p><p><b>描述</b>：<i>It rose steadily from about 25% to just over 40%, with a sharp increase after 2019.</i>（方向 + 幅度 + 转折点）。</p><p><b>解读</b>：<i>What stands out is that most of the growth came after 2019, which suggests that policy changes had an effect.</i>（一句结论 + 一句谨慎的原因，避免把相关当因果）。</p><div class="callout tip"><b>解读要留余地</b>用 <i>which suggests that …</i>、<i>this may be because …</i>，不要用 <i>this proves …</i>。图表只能显示相关，不能证明因果。</div><h3 id="s9">5.8 交付：breakout room 与 Zoom 录制</h3><p>交付方式有两个技术约束，每年都有人在这里丢分：演讲在 <b>breakout room（3 至 5 人）</b>进行，并且必须<b>为老师录制</b>；录制要求用 <b>Zoom 电脑应用程序</b>加入会议，因为 <i>recording does not work on phone/tablet or in browser version</i>。</p><ol class="steps"><li>提前用电脑端 Zoom 加入测试会议，确认本地录制可用</li><li>把幻灯片存成 PDF 备份，避免字体或动画在共享时出错</li><li>在 breakout room 里先报主题与时长，再开始讲</li><li>讲完把录制文件上传云端并生成公开链接，课后提交到返交框</li></ol><h3 id="s10">5.9 发音与流利度：朗读测试的考前准备</h3><p>Assignment 2 的朗读测试在 11 月 18 日，Moodle 当天 10:00 至 22:00 开放，范围是<b>课上练过的材料</b>，官方建议用 recap material 加 Padlet 上的句子复习。评分表里的 pronunciation 与 fluency 两项，也在此处被直接检验。</p><p>Meeting 5 的作业要求在家练绕口令（tongue twisters），这是最省时的发音热身：</p><ul><li><i>She sells seashells by the seashore.</i>　练 /ʃ/ 与 /s/ 的切换，注意 <i>seashells</i> 中间不停。</li><li><i>Peter Piper picked a peck of pickled peppers.</i>　练 /p/ 的送气与连续爆破。</li><li><i>Red lorry, yellow lorry.</i>　练 /r/ 与 /l/，以及 /e/ 与 /əʊ/ 的区别。</li><li><i>Three thin thieves thought a thousand thoughts.</i>　练 /θ/ 与 /ð/ 的舌尖位置。</li></ul><p>练习方法不是「念快」，而是<b>三档速度</b>：慢速（每词清楚）→ 中速（连成块）→ 常速（只保证每块清楚，块内可含糊）。三档都过，才算练成。录音对比时只听一个音，不要一次听全部。</p><h3 id="s11">5.10 AI 规则与作者身份</h3><p>本作业允许 AI 做四件事：<i>brainstorming</i>、<i>help in the information search (double check AI sources!)</i>、<i>summarizing information</i>、<i>creating visuals</i>；禁止两件事：<i>writing a script for the presentation</i> 与 <i>producing any material (other than visuals)</i>。</p><p>注意 <i>double check AI sources</i> 这个括号：AI 给的来源链接经常不存在或与内容不符，而本作业明确要求来源可信。凡是 AI 提供的文献，必须自己打开原文核对作者、年份与数据。</p><div class="callout idea" data-ext="l5-presentation-data-0"><b>前后衔接</b><p>第 4 讲练“60 秒说服”，本讲练“4 分钟讲清一件事”：分块与停顿（第 2 讲）、词序与搭配（第 3 讲）在这里同时被调用，评分表第一次把 fluency、vocabulary、pronunciation、grammar 与 overall impression 并列。路标语给听众路牌也给讲者换气时机：<em>Today I’ll cover three points …</em>／<em>That brings me to my second point</em>／<em>So, to sum up …</em>。每切换一次就有自然停顿，语速自动稳定。主体三点、每点一句主张；三点讲不透不如两点讲透。</p></div><div class="callout tip" data-ext="l5-presentation-data-1"><b>常见误解</b><p>选源是本讲最易丢分处：可用研究论文、机构报告、政府或大学官网，<b>不可用</b>商业产品页、博客、新闻、wiki——新闻里的“某研究称”不能当来源，要引那项研究本身。图表四个数字陷阱：<em>increased by 20%</em>（增长幅度）与 <em>increased to 20%</em>（终值）不同；10%→13% 是三个 <b>percentage points</b> 而非 3%；<em>the number of units was</em> 用单数、<em>a number of units were</em> 用复数；amount 配不可数、number 配可数。解读留余地用 <em>which suggests that …</em>，别说 <em>this proves</em>。</p></div><h3 id="s12">5.11 图表词库扩展（Meeting 9 原版词库）</h3><div class="callout tip"><b>来源</b>数据中心文章（B1/C1 两版）与 Meeting 9 幻灯片已归档；本块把幻灯片里的图表词库全部落进讲义。</div><h3 id="s13">5.11a 五种图（Types of Graphs）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>pie chart (circle chart)</td><td>饼图</td><td>circular graphic divided into slices → numerical proportion</td></tr><tr><td>line graph (line chart)</td><td>折线图</td><td>shows information that changes over time</td></tr><tr><td>bar chart (column chart)</td><td>柱状图</td><td>categories represented by rectangles</td></tr><tr><td>area chart</td><td>面积图</td><td>lines + filled areas</td></tr><tr><td>scatter plot</td><td>散点图</td><td>dots for two numeric variables</td></tr></table><h3 id="s14">5.11b 上升（NUMBER IS GOING UP）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>increase (steady)</td><td>稳步上升</td><td></td></tr><tr><td>rise</td><td>上升</td><td></td></tr><tr><td>grow</td><td>增长</td><td></td></tr><tr><td>go up</td><td>上行</td><td></td></tr><tr><td>soar (rapid)</td><td>暴涨</td><td></td></tr><tr><td>double</td><td>翻倍</td><td></td></tr><tr><td>multiply</td><td>成倍增长</td><td></td></tr><tr><td>climb</td><td>爬升</td><td></td></tr><tr><td>exceed</td><td>超过</td><td></td></tr></table><h3 id="s15">5.11c 下降（NUMBER IS GOING DOWN）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>decrease</td><td>下降</td><td></td></tr><tr><td>drop (rapid)</td><td>骤降</td><td></td></tr><tr><td>fall</td><td>下跌</td><td></td></tr><tr><td>decline</td><td>衰退</td><td></td></tr><tr><td>plummet (rapid)</td><td>断崖式下跌</td><td></td></tr><tr><td>halve</td><td>减半</td><td></td></tr><tr><td>depreciate</td><td>贬值</td><td></td></tr><tr><td>plunge (rapid)</td><td>猛跌</td><td></td></tr></table><h3 id="s16">5.11d 波动·峰值·平稳（UP AND DOWN / STAYING THE SAME）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>fluctuate / undulate</td><td>波动</td><td></td></tr><tr><td>dip</td><td>先降后升的小低谷</td><td></td></tr><tr><td>reach a peak / peaked</td><td>到达峰值</td><td></td></tr><tr><td>bottom out</td><td>触底</td><td></td></tr><tr><td>sink to a trough</td><td>跌入谷底</td><td></td></tr><tr><td>level off</td><td>趋平</td><td></td></tr><tr><td>remain constant/steady</td><td>保持稳定</td><td></td></tr></table><h3 id="s17">5.11e 幅度副词（LEVEL OF CHANGE）</h3><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>小幅</td><td>gently · gradually · slightly · steadily · a little</td><td></td></tr><tr><td>大幅</td><td>suddenly · sharply · dramatically · steeply · abruptly · substantially</td><td></td></tr></table><p><b>幻灯片原例句（背下来直接用）：</b><i>Consumer demand will rise in the following months.</i>；<i>The number of complaints has been increasing since June.</i>（现在完成进行时）；<i>Our market share is expected to decline this year.</i>（is expected to 预测句式）；<i>The number of Windows users has plunged in the past two years.</i>；<i>Sales dipped in July but peaked again in December.</i>；<i>Customer satisfaction improved gradually for years until it decreased sharply in 2020.</i>（gradually + sharply 对比）</p><h3 id="s18">5.12 阅读落地：为什么数据中心落户芬兰（B1/C1 双版精读）</h3><p><b>文章结构（businessfinland.com, 2025-01-20）：</b>标题 <i>Cool, calm and connected: Why companies are placing their data centers in Finland</i>——四个自然优势 + 一组量化数字 + 政策引语。</p><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>ICT industry is heavy on the environment</td><td>ICT 产业环境负担重</td><td>总起句：servers consume massive amounts of electricity</td></tr><tr><td>water is needed to cool the equipment</td><td>冷却要耗水</td><td>与耗电并列的第二个环境成本</td></tr><tr><td>the explosion of generative AI</td><td>生成式 AI 的爆发</td><td>加重大负担的表达</td></tr><tr><td>asking ChatGPT-4 to write a 100-word email</td><td>让 GPT 写一封 100 词邮件</td><td>≈ 14 只 LED 灯亮 1 小时的电量 + 超过半升水</td></tr><tr><td>if 1 in 10 Americans asked once a week…</td><td>每十个美国人每周一次</td><td>电量 ≈ 华盛顿特区全部住户 20 天用电；水 > 4.35 亿升</td></tr><tr><td>CO2 targets / accountability</td><td>碳目标 / 问责压力</td><td>企业选址的两大推力</td></tr><tr><td>cool climate</td><td>凉爽气候</td><td>天然免费冷源</td></tr><tr><td>affordable clean energy</td><td>廉价清洁能源</td><td>芬兰电网低碳</td></tr><tr><td>abundant fresh water</td><td>充足淡水</td><td>冷却资源</td></tr><tr><td>robust / excellent digital infrastructure</td><td>扎实的数字基础设施</td><td>connectivity 连通性</td></tr><tr><td>50 construction-ready sites</td><td>50 个可开工建设场址</td><td>小至小型、大到 1000 MW+</td></tr><tr><td>renewable energy · top-notch security</td><td>可再生能源 · 顶级安全</td><td>投资推介标准三件套</td></tr></table><p><b>B1 版用法：</b>同一事实用短句改写（如 <i>Servers use a lot of electricity. AI makes it worse.</i>），适合先读 B1 抓结构，再回 C1 采集高级表达（<i>stack it all together</i> 把数字加总、<i>staggering</i> 惊人的、<i>prime location</i> 优选地、<i>paywall</i> 付费墙）。</p></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>credible source</td><td>可信来源</td><td>Research articles, reports and government websites are acceptable.</td></tr><tr><td>commercial website</td><td>商业网站</td><td>Product pages cannot be used as sources in this assignment.</td></tr><tr><td>signposting</td><td>路标语</td><td>Today I’ll cover three points … helps listeners follow you.</td></tr><tr><td>breakout room</td><td>分组讨论室</td><td>You will present in breakout rooms of three to five people.</td></tr><tr><td>trend verb</td><td>趋势动词</td><td>rise, fall, level off, peak, fluctuate.</td></tr><tr><td>percentage point</td><td>百分点</td><td>A change from 10% to 13% is three percentage points.</td></tr><tr><td>account for</td><td>占（比例）</td><td>Wind power accounted for 30% of the total.</td></tr><tr><td>stand at</td><td>处于（某数值）</td><td>The figure stood at 12% at the end of the year.</td></tr><tr><td>fluency</td><td>流利度</td><td>One of the five criteria in the presentation assessment.</td></tr><tr><td>overall impression</td><td>整体印象</td><td>Content, sources and visuals are judged together.</td></tr><tr><td>visual</td><td>视觉材料</td><td>A visual can be a slide, a chart or a short clip.</td></tr><tr><td>tongue twister</td><td>绕口令</td><td>She sells seashells by the seashore.</td></tr><tr><td>minimal pair</td><td>最小对立对</td><td>ship / sheep differ in one vowel sound only.</td></tr><tr><td>recap material</td><td>复习材料</td><td>Use the recap material and the Padlet sentences before the test.</td></tr><tr><td>local recording</td><td>本地录制</td><td>Zoom recording only works in the desktop application.</td></tr><tr><td>double check</td><td>复核</td><td>Double check AI sources before you cite them.</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">KE00DA03 大学英语</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-2.html">第 2 章 词汇语法与演讲表达</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 5 讲 · 工程演讲与图表描述</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 5 讲 · 工程演讲与图表描述 · 32632</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">5.1 任务与评分：五项并列</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">5.2 选源：什么样的来源算可信</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">5.3 3 至 4 分钟装多少内容</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">5.4 路标语：让听众知道你在哪</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">5.5 一页幻灯片只讲一件事</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">5.6 图表描述：三类词、四类句式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">5.7 图表描述的三段式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">5.8 交付：breakout room 与 Zoom 录制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">5.9 发音与流利度：朗读测试的考前准备</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">5.10 AI 规则与作者身份</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">5.11 图表词库扩展（Meeting 9 原版词库）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">5.11a 五种图（Types of Graphs）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">5.11b 上升（NUMBER IS GOING UP）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">5.11c 下降（NUMBER IS GOING DOWN）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">5.11d 波动·峰值·平稳（UP AND DOWN / STAYING THE SAME）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">5.11e 幅度副词（LEVEL OF CHANGE）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">5.12 阅读落地：为什么数据中心落户芬兰（B1/C1 双版精读）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">5.13 Meeting 9 幻灯片原图（图表类型与描述变化）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">本讲方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本讲方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s21"><span class="directory-label">演讲准备五步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s22"><span class="directory-label">图表句四查</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s23"><span class="directory-label">发音考前热身</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">KE00DA03 大学英语</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-32" aria-expanded="true" data-start-open="true" aria-label="展开或收起：KE00DA03 大学英语"><span aria-hidden="true">›</span></button></div><div id="directory-branch-32"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 开课与阅读基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 开课与阅读基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l1-launch-self-intro.html"><span class="directory-label">第 1 讲 · 开课、自我介绍与学习资源</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l2-reading-chunking.html"><span class="directory-label">第 2 讲 · 朗读、分块与技术文本阅读</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-2.html"><span class="directory-label">第 2 章 词汇语法与演讲表达</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 2 章 词汇语法与演讲表达"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l3-vocabulary-grammar-clinic.html"><span class="directory-label">第 3 讲 · 词汇与语法诊所</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l4-elevator-pitch.html"><span class="directory-label">第 4 讲 · 电梯演讲：60 秒说清你是谁</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="l5-presentation-data.html" aria-current="page"><span class="directory-label">第 5 讲 · 工程演讲与图表描述</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l7-word-order-questions.html"><span class="directory-label">第 6 讲 · Unit 1 语法专题：语序、问句与附加疑问句</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 会议沟通与协商</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 会议沟通与协商"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l6-meetings-negotiation.html"><span class="directory-label">第 7 讲 · 会议沟通、协商与专业简报</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">未分章</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-43" aria-expanded="true" data-start-open="false" aria-label="展开或收起：未分章"><span aria-hidden="true">›</span></button></div><div id="directory-branch-43"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l9-pronunciation-clinic.html"><span class="directory-label">第 9 讲 · 语音诊所：重音、语调、最小对立与录音交付</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 4 章 作业、交付与考核</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-45" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 作业、交付与考核"><span aria-hidden="true">›</span></button></div><div id="directory-branch-45"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="supp-homework-map.html"><span class="directory-label">补遗 · 十三次课的作业地图、交付通道与考核节点</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l8-assignments-listening.html"><span class="directory-label">第 8 讲 · 四项作业、口语测试与课堂听说材料</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="32632/l5-presentation-data"><header class="lecture-head"><p class="lecture-kicker">KE00DA03 大学英语 · 第 05 / 10 讲</p><h1 id="lecture-title">第 5 讲 · 工程演讲与图表描述</h1><p class="lecture-subtitle">Technical Presentations and Describing Graphs</p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 词汇语法与演讲表达</a></p><details class="lecture-sources"><summary>资料来源 · 8 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>8d561949aeb5</code>（用于识别内容变更）</dd></dl><ul><li><code>3_Assignments_4_ASSIGNMENT 3 Presentation [DL Nov 27]_intro_intro.html</code> <span class="sub">未附原文件</span></li><li><code>5_UNIT 2 Expressing Opinions_3_Meeting 9 homework.html</code> <span class="sub">未附原文件</span></li><li><code>5_UNIT 2 Expressing Opinions_8_Meeting 12 homework.html</code> <span class="sub">未附原文件</span></li><li><code>4_UNIT 1 Building Know-how_5_Meeting 5 homework.html</code> <span class="sub">未附原文件</span></li><li><code>4_UNIT 1 Building Know-how_2_Meeting 2 homework.html</code> <span class="sub">未附原文件</span></li><li><code>Meeting9_EHUT_3015.pdf</code> <span class="sub">未附原文件</span></li><li><code>News_article_2_(Energy&amp;Software)_-_Data_centers_(C1).pdf</code> <span class="sub">未附原文件</span></li><li><code>News_article_2_(Energy&amp;Software)_-_Data_centers_(B1).pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 5 讲对应 Assignment 3：3 至 4 分钟的工程主题演讲，在最后一次网课的 breakout room 里向 3 至 5 人小组交付，并为老师录制。它同时并入了两条支线：Meeting 9 的<b>图表描述</b>（British Council B1 材料 + 小游戏）与 Meeting 12 的<b>朗读测试</b>准备（11 月 18 日，Moodle 10:00–22:00）。</p><p>与前几讲的关系：第 4 讲练「60 秒说服」，本讲练「4 分钟讲清一件事」；第 2 讲的分块与停顿、第 3 讲的词序与搭配在这里被同时调用，评分表也第一次把 fluency、vocabulary、pronunciation、grammar 四项并列。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>判断一个来源是否属于课程认可的可信来源，并说明理由</li><li>在 3 至 4 分钟里安排 400 至 520 词的内容，分配开场、主体、结尾的时间</li><li>用 first、second、finally、moving on 等路标语组织演讲</li><li>用趋势动词、副词与四类句式准确描述一张折线图或柱状图</li><li>区分 increase by 与 increase to、percent 与 percentage point</li><li>为一页幻灯片做减法：一个信息点、清晰的层级、标注来源</li><li>用绕口令与最小对立对练发音，完成朗读测试的考前准备</li><li>在 breakout room 里交付并录制，用 Zoom 桌面端而不是手机或浏览器</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">5.1 任务与评分：五项并列</h3><p>作业要求可以拆成五步：选一个与未来专业相关的工程主题（公司、技术、产品、流程、发明、创新均可）→ 找来源且必须在演讲中提及 → 做 3 至 4 分钟的演讲 → 加视觉材料（PowerPoint 可以，但不必须是；Canva 等自由选择）→ 在最后一次网课（11 月 27 日）的 breakout room 里向 3 至 5 人小组演讲，同时为老师录制。</p><p>评分维度有五项，原文列出：<i>overall impression (content, sources, visuals)</i>、<i>fluency</i>、<i>vocabulary</i>、<i>pronunciation</i>、<i>grammar</i>。注意第一项是<b>整体印象</b>，它把内容、来源、视觉三者打包评价——这意味着「资料找得对、幻灯片做得清楚」本身就能拿分。</p><div class="callout exam"><b>计分换算</b>与电梯演讲同一套：0 至 49.99 Fail (revise)，50 至 59.99 Passable (1)，60 至 69.99 Satisfactory (2)，70 至 79.99 Good (3)，80 至 89.99 Very Good (4)，90 至 100 Excellent (5)。</div><h3 id="s3">5.2 选源：什么样的来源算可信</h3><p>作业对来源的限制非常具体，这是本讲最容易被忽略却最容易丢分的部分：<i>Credible sources include research articles, reports, and government/organization websites. Do not use commercial websites, blogs, news articles, or wikis.</i></p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>来源</th><th>可用？</th><th>理由</th></tr><tr><td>研究论文（期刊、会议论文）</td><td>可用</td><td>有同行评审，方法与数据可追溯</td></tr><tr><td>机构或政府报告（能源署、统计局、标准组织）</td><td>可用</td><td>署名机构、有统计口径与年份</td></tr><tr><td>大学或实验室官网的技术说明</td><td>可用</td><td>属 organization website，作者与日期明确</td></tr><tr><td>企业产品页 / 营销页面</td><td>不可用</td><td>商业网站，数据为营销目的服务</td></tr><tr><td>个人博客、Medium 专栏</td><td>不可用</td><td>无审稿，作者资质不明</td></tr><tr><td>新闻文章（含英文新闻网站）</td><td>不可用</td><td>二次转述，常缺方法与口径</td></tr><tr><td>维基百科等 wiki</td><td>不可用</td><td>多人协作、随时改动，不能作为引用来源</td></tr></table></div><p>判断一个来源能不能用，问三个问题：<b>谁写的</b>（署名机构还是匿名）、<b>数据从哪来</b>（原始统计还是转述）、<b>有没有日期与口径</b>（年份、样本、单位）。三问有一问答不上来，就换一个来源。</p><div class="callout warn"><b>常见误区</b>新闻网站上的「某研究称……」不能当来源——你要引的是那项研究本身。反过来，研究论文里引用的政府统计数据，可以直接去政府网站找原始表格。</div><h3 id="s4">5.3 3 至 4 分钟装多少内容</h3><p>按 130 至 150 词／分钟计算，3 分钟约 390 至 450 词，4 分钟约 520 至 600 词。留出幻灯片切换与两次停顿，安全区间是 <b>400 至 520 词</b>。超过 550 词几乎必然超时，因为切换幻灯片时语流会中断。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>段落</th><th>3 分钟版</th><th>4 分钟版</th><th>内容</th></tr><tr><td>开场</td><td>25 秒</td><td>35 秒</td><td>钩子 + 主题 + 路线图（今天讲三点）</td></tr><tr><td>主体一</td><td>50 秒</td><td>65 秒</td><td>背景与问题：为什么这件事值得讲</td></tr><tr><td>主体二</td><td>55 秒</td><td>75 秒</td><td>技术核心：原理、流程或数据</td></tr><tr><td>主体三</td><td>40 秒</td><td>55 秒</td><td>影响与限制：成本、风险、前景</td></tr><tr><td>结尾</td><td>20 秒</td><td>30 秒</td><td>总结一句 + 行动邀请 + 提问</td></tr></table></div><p>这个分配有一个纪律：<b>主体三点、每点一句主张</b>。三点讲不透，不如两点讲透。作业评分看的是整体印象与流利度，不是信息量。</p><h3 id="s5">5.4 路标语：让听众知道你在哪</h3><p>演讲的流利不等于语速快，而是<b>结构可预测</b>。路标语（signposting）就是给听众的路牌，每一句都在告诉他「现在到哪了、接下来去哪」：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>功能</th><th>句型</th><th>使用时机</th></tr><tr><td>开场与路线图</td><td>Today I’ll cover three points: first … , then … , and finally … .</td><td>第一页幻灯片</td></tr><tr><td>开始第一点</td><td>Let’s start with the background.</td><td>进入主体</td></tr><tr><td>切换</td><td>That brings me to my second point.</td><td>换页时，代替「接下来」</td></tr><tr><td>举例</td><td>A good example of this is … .</td><td>需要具体化时</td></tr><tr><td>强调</td><td>What matters here is … .</td><td>核心数据前后</td></tr><tr><td>收束</td><td>So, to sum up, … .</td><td>最后一张幻灯片</td></tr><tr><td>邀请提问</td><td>I’m happy to take any questions.</td><td>结尾</td></tr></table></div><p>这些句子还有一个副作用：它们给你<b>换气的时机</b>。每切换一次就有一个自然停顿，语速会自动稳定下来。</p><h3 id="s6">5.5 一页幻灯片只讲一件事</h3><p>作业只要求 <i>Add some visuals</i>，没有规定版式，但评分维度里的 visuals 决定了你需要遵守几条基本纪律：</p><ul class="checklist"><li>一页一个信息点：标题就是这一页的结论，不是「结果」这样的空标题</li><li>文字不超过六行，每行不超过八个词；讲稿放在你嘴里，不放在屏幕上</li><li>图表大于文字：能用一张图说清的，不要用三行 bullet</li><li>层级清楚：标题最大，数据次之，来源最小但必须有</li><li>来源标注格式统一：机构名 + 年份，写在页面底部</li></ul><p>来源标注不是形式主义。作业要求 <i>Find sources on the topic (must be mentioned)</i>——「提及」既包括口头说 <i>according to a 2023 report by …</i>，也包括幻灯片上的一行小字。两者都做最稳。</p><h3 id="s7">5.6 图表描述：三类词、四类句式</h3><p>Meeting 9 的作业给了两条训练：一个 learningapps 上的图表词小游戏，以及 British Council B1 的 <i>describing charts</i> 阅读加三个任务。核心是把「趋势」拆成<b>方向、幅度、时间</b>三个变量。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>方向</th><th>动词</th><th>名词形式</th></tr><tr><td>上升</td><td>rise, increase, grow, climb, go up</td><td>an increase, a rise, growth</td></tr><tr><td>下降</td><td>fall, decline, decrease, drop, go down</td><td>a fall, a decline, a decrease</td></tr><tr><td>平稳</td><td>remain stable, stay steady, level off, plateau</td><td>stability, a plateau</td></tr><tr><td>波动</td><td>fluctuate, vary</td><td>fluctuation</td></tr><tr><td>峰值与低谷</td><td>peak, reach a peak, hit a low, bottom out</td><td>a peak, a low</td></tr></table></div><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>幅度副词</th><th>含义</th><th>例</th></tr><tr><td>sharply / dramatically / steeply</td><td>急剧</td><td>Sales rose sharply from 20 to 45 units.</td></tr><tr><td>significantly</td><td>显著（可用于统计语境）</td><td>Energy use increased significantly after 2020.</td></tr><tr><td>steadily / gradually</td><td>稳定、渐进</td><td>The share grew steadily over five years.</td></tr><tr><td>slightly / marginally</td><td>轻微</td><td>Costs fell slightly in the second quarter.</td></tr></table></div><p>四类句式覆盖绝大多数图表句：</p><ul><li><b>动词句</b>：<i>Sales rose from 20 to 45 units between January and March.</i>（from A to B 表区间）</li><li><b>名词句</b>：<i>There was a sharp increase in sales in the first quarter.</i>（there was + a + 形容词 + 名词 + in）</li><li><b>状态句</b>：<i>The figure stood at 12% at the end of the year.</i>（stood at 表某时点的值）</li><li><b>占比句</b>：<i>Wind power accounted for 30% of the total.</i>（account for 表占比）</li></ul><div class="callout warn"><b>四个数字陷阱</b>① <i>increased by 20%</i> 是「增长了 20%」，<i>increased to 20%</i> 是「增长到 20%」；② <i>percent</i> 与 <i>percentage point</i> 不能混用：两个百分比之差用 <b>percentage points</b>（从 10% 到 13% 是上升 3 个百分点，不是 3%）；③ <i>the number of + 复数名词</i> 用单数谓语（<i>the number of units was</i>），<i>a number of + 复数名词</i> 用复数谓语；④ <i>amount</i> 配不可数（amount of energy），<i>number</i> 配可数（number of units）。</div><h3 id="s8">5.7 图表描述的三段式</h3><p>一段好的图表描述不是流水账，而是「引入—描述—解读」三步。以作业要求「找一个有意思的图，准备介绍并讨论」为例：</p><p><b>引入</b>：<i>This chart shows the share of renewable electricity in Finland from 2010 to 2023.</i>（说明图讲什么、时间范围、单位）。</p><p><b>描述</b>：<i>It rose steadily from about 25% to just over 40%, with a sharp increase after 2019.</i>（方向 + 幅度 + 转折点）。</p><p><b>解读</b>：<i>What stands out is that most of the growth came after 2019, which suggests that policy changes had an effect.</i>（一句结论 + 一句谨慎的原因，避免把相关当因果）。</p><div class="callout tip"><b>解读要留余地</b>用 <i>which suggests that …</i>、<i>this may be because …</i>，不要用 <i>this proves …</i>。图表只能显示相关，不能证明因果。</div><h3 id="s9">5.8 交付：breakout room 与 Zoom 录制</h3><p>交付方式有两个技术约束，每年都有人在这里丢分：演讲在 <b>breakout room（3 至 5 人）</b>进行，并且必须<b>为老师录制</b>；录制要求用 <b>Zoom 电脑应用程序</b>加入会议，因为 <i>recording does not work on phone/tablet or in browser version</i>。</p><ol class="steps"><li>提前用电脑端 Zoom 加入测试会议，确认本地录制可用</li><li>把幻灯片存成 PDF 备份，避免字体或动画在共享时出错</li><li>在 breakout room 里先报主题与时长，再开始讲</li><li>讲完把录制文件上传云端并生成公开链接，课后提交到返交框</li></ol><h3 id="s10">5.9 发音与流利度：朗读测试的考前准备</h3><p>Assignment 2 的朗读测试在 11 月 18 日，Moodle 当天 10:00 至 22:00 开放，范围是<b>课上练过的材料</b>，官方建议用 recap material 加 Padlet 上的句子复习。评分表里的 pronunciation 与 fluency 两项，也在此处被直接检验。</p><p>Meeting 5 的作业要求在家练绕口令（tongue twisters），这是最省时的发音热身：</p><ul><li><i>She sells seashells by the seashore.</i>　练 /ʃ/ 与 /s/ 的切换，注意 <i>seashells</i> 中间不停。</li><li><i>Peter Piper picked a peck of pickled peppers.</i>　练 /p/ 的送气与连续爆破。</li><li><i>Red lorry, yellow lorry.</i>　练 /r/ 与 /l/，以及 /e/ 与 /əʊ/ 的区别。</li><li><i>Three thin thieves thought a thousand thoughts.</i>　练 /θ/ 与 /ð/ 的舌尖位置。</li></ul><p>练习方法不是「念快」，而是<b>三档速度</b>：慢速（每词清楚）→ 中速（连成块）→ 常速（只保证每块清楚，块内可含糊）。三档都过，才算练成。录音对比时只听一个音，不要一次听全部。</p><h3 id="s11">5.10 AI 规则与作者身份</h3><p>本作业允许 AI 做四件事：<i>brainstorming</i>、<i>help in the information search (double check AI sources!)</i>、<i>summarizing information</i>、<i>creating visuals</i>；禁止两件事：<i>writing a script for the presentation</i> 与 <i>producing any material (other than visuals)</i>。</p><p>注意 <i>double check AI sources</i> 这个括号：AI 给的来源链接经常不存在或与内容不符，而本作业明确要求来源可信。凡是 AI 提供的文献，必须自己打开原文核对作者、年份与数据。</p><div class="callout idea" data-ext="l5-presentation-data-0"><b>前后衔接</b><p>第 4 讲练“60 秒说服”，本讲练“4 分钟讲清一件事”：分块与停顿（第 2 讲）、词序与搭配（第 3 讲）在这里同时被调用，评分表第一次把 fluency、vocabulary、pronunciation、grammar 与 overall impression 并列。路标语给听众路牌也给讲者换气时机：<em>Today I’ll cover three points …</em>／<em>That brings me to my second point</em>／<em>So, to sum up …</em>。每切换一次就有自然停顿，语速自动稳定。主体三点、每点一句主张；三点讲不透不如两点讲透。</p></div><div class="callout tip" data-ext="l5-presentation-data-1"><b>常见误解</b><p>选源是本讲最易丢分处：可用研究论文、机构报告、政府或大学官网，<b>不可用</b>商业产品页、博客、新闻、wiki——新闻里的“某研究称”不能当来源，要引那项研究本身。图表四个数字陷阱：<em>increased by 20%</em>（增长幅度）与 <em>increased to 20%</em>（终值）不同；10%→13% 是三个 <b>percentage points</b> 而非 3%；<em>the number of units was</em> 用单数、<em>a number of units were</em> 用复数；amount 配不可数、number 配可数。解读留余地用 <em>which suggests that …</em>，别说 <em>this proves</em>。</p></div><h3 id="s12">5.11 图表词库扩展（Meeting 9 原版词库）</h3><div class="callout tip"><b>来源</b>数据中心文章（B1/C1 两版）与 Meeting 9 幻灯片已归档；本块把幻灯片里的图表词库全部落进讲义。</div><h3 id="s13">5.11a 五种图（Types of Graphs）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>pie chart (circle chart)</td><td>饼图</td><td>circular graphic divided into slices → numerical proportion</td></tr><tr><td>line graph (line chart)</td><td>折线图</td><td>shows information that changes over time</td></tr><tr><td>bar chart (column chart)</td><td>柱状图</td><td>categories represented by rectangles</td></tr><tr><td>area chart</td><td>面积图</td><td>lines + filled areas</td></tr><tr><td>scatter plot</td><td>散点图</td><td>dots for two numeric variables</td></tr></table></div><h3 id="s14">5.11b 上升（NUMBER IS GOING UP）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>increase (steady)</td><td>稳步上升</td><td></td></tr><tr><td>rise</td><td>上升</td><td></td></tr><tr><td>grow</td><td>增长</td><td></td></tr><tr><td>go up</td><td>上行</td><td></td></tr><tr><td>soar (rapid)</td><td>暴涨</td><td></td></tr><tr><td>double</td><td>翻倍</td><td></td></tr><tr><td>multiply</td><td>成倍增长</td><td></td></tr><tr><td>climb</td><td>爬升</td><td></td></tr><tr><td>exceed</td><td>超过</td><td></td></tr></table></div><h3 id="s15">5.11c 下降（NUMBER IS GOING DOWN）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>decrease</td><td>下降</td><td></td></tr><tr><td>drop (rapid)</td><td>骤降</td><td></td></tr><tr><td>fall</td><td>下跌</td><td></td></tr><tr><td>decline</td><td>衰退</td><td></td></tr><tr><td>plummet (rapid)</td><td>断崖式下跌</td><td></td></tr><tr><td>halve</td><td>减半</td><td></td></tr><tr><td>depreciate</td><td>贬值</td><td></td></tr><tr><td>plunge (rapid)</td><td>猛跌</td><td></td></tr></table></div><h3 id="s16">5.11d 波动·峰值·平稳（UP AND DOWN / STAYING THE SAME）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 9，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>fluctuate / undulate</td><td>波动</td><td></td></tr><tr><td>dip</td><td>先降后升的小低谷</td><td></td></tr><tr><td>reach a peak / peaked</td><td>到达峰值</td><td></td></tr><tr><td>bottom out</td><td>触底</td><td></td></tr><tr><td>sink to a trough</td><td>跌入谷底</td><td></td></tr><tr><td>level off</td><td>趋平</td><td></td></tr><tr><td>remain constant/steady</td><td>保持稳定</td><td></td></tr></table></div><h3 id="s17">5.11e 幅度副词（LEVEL OF CHANGE）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 10，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>小幅</td><td>gently · gradually · slightly · steadily · a little</td><td></td></tr><tr><td>大幅</td><td>suddenly · sharply · dramatically · steeply · abruptly · substantially</td><td></td></tr></table></div><p><b>幻灯片原例句（背下来直接用）：</b><i>Consumer demand will rise in the following months.</i>；<i>The number of complaints has been increasing since June.</i>（现在完成进行时）；<i>Our market share is expected to decline this year.</i>（is expected to 预测句式）；<i>The number of Windows users has plunged in the past two years.</i>；<i>Sales dipped in July but peaked again in December.</i>；<i>Customer satisfaction improved gradually for years until it decreased sharply in 2020.</i>（gradually + sharply 对比）</p><h3 id="s18">5.12 阅读落地：为什么数据中心落户芬兰（B1/C1 双版精读）</h3><p><b>文章结构（businessfinland.com, 2025-01-20）：</b>标题 <i>Cool, calm and connected: Why companies are placing their data centers in Finland</i>——四个自然优势 + 一组量化数字 + 政策引语。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 11，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>ICT industry is heavy on the environment</td><td>ICT 产业环境负担重</td><td>总起句：servers consume massive amounts of electricity</td></tr><tr><td>water is needed to cool the equipment</td><td>冷却要耗水</td><td>与耗电并列的第二个环境成本</td></tr><tr><td>the explosion of generative AI</td><td>生成式 AI 的爆发</td><td>加重大负担的表达</td></tr><tr><td>asking ChatGPT-4 to write a 100-word email</td><td>让 GPT 写一封 100 词邮件</td><td>≈ 14 只 LED 灯亮 1 小时的电量 + 超过半升水</td></tr><tr><td>if 1 in 10 Americans asked once a week…</td><td>每十个美国人每周一次</td><td>电量 ≈ 华盛顿特区全部住户 20 天用电；水 > 4.35 亿升</td></tr><tr><td>CO2 targets / accountability</td><td>碳目标 / 问责压力</td><td>企业选址的两大推力</td></tr><tr><td>cool climate</td><td>凉爽气候</td><td>天然免费冷源</td></tr><tr><td>affordable clean energy</td><td>廉价清洁能源</td><td>芬兰电网低碳</td></tr><tr><td>abundant fresh water</td><td>充足淡水</td><td>冷却资源</td></tr><tr><td>robust / excellent digital infrastructure</td><td>扎实的数字基础设施</td><td>connectivity 连通性</td></tr><tr><td>50 construction-ready sites</td><td>50 个可开工建设场址</td><td>小至小型、大到 1000 MW+</td></tr><tr><td>renewable energy · top-notch security</td><td>可再生能源 · 顶级安全</td><td>投资推介标准三件套</td></tr></table></div><p><b>B1 版用法：</b>同一事实用短句改写（如 <i>Servers use a lot of electricity. AI makes it worse.</i>），适合先读 B1 抓结构，再回 C1 采集高级表达（<i>stack it all together</i> 把数字加总、<i>staggering</i> 惊人的、<i>prime location</i> 优选地、<i>paywall</i> 付费墙）。</p><h3 id="s19">5.13 Meeting 9 幻灯片原图（图表类型与描述变化）</h3><p>下面 4 页是 Meeting 9 幻灯片里「图表」部分的<b>原版画面</b>，与 5.11 的词库一一对应——描述变化时脑中过一遍这张图，用词就不会跑偏。</p><div class="imggrid"><figure><img src="../../assets/optimized/3cd079c78cd4f1aa3d28.webp" loading="lazy" alt="Types of Graphs" width="1536" height="864" decoding="async" data-full-src="../../assets/img/32632/meeting9/meeting9-17.jpg"><figcaption>Slide 17 · 五种图（pie / line / bar / area / scatter）</figcaption></figure><figure><img src="../../assets/optimized/c61b7d100de5bf8e1aa4.webp" loading="lazy" alt="Describing change I" width="1536" height="864" decoding="async" data-full-src="../../assets/img/32632/meeting9/meeting9-18.jpg"><figcaption>Slide 18 · Describing change Ⅰ（上升 / 下降）</figcaption></figure><figure><img src="../../assets/optimized/f0056e64c2b555616c95.webp" loading="lazy" alt="Describing change II" width="1536" height="864" decoding="async" data-full-src="../../assets/img/32632/meeting9/meeting9-19.jpg"><figcaption>Slide 19 · Describing change Ⅱ（波动 / 峰值 / 平稳）</figcaption></figure><figure><img src="../../assets/optimized/498a35b4a5248c854913.webp" loading="lazy" alt="Describing change III" width="1536" height="864" decoding="async" data-full-src="../../assets/img/32632/meeting9/meeting9-20.jpg"><figcaption>Slide 20 · Describing change Ⅲ（幅度副词）</figcaption></figure></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>credible source</td><td>可信来源</td><td>Research articles, reports and government websites are acceptable.</td></tr><tr><td>commercial website</td><td>商业网站</td><td>Product pages cannot be used as sources in this assignment.</td></tr><tr><td>signposting</td><td>路标语</td><td>Today I’ll cover three points … helps listeners follow you.</td></tr><tr><td>breakout room</td><td>分组讨论室</td><td>You will present in breakout rooms of three to five people.</td></tr><tr><td>trend verb</td><td>趋势动词</td><td>rise, fall, level off, peak, fluctuate.</td></tr><tr><td>percentage point</td><td>百分点</td><td>A change from 10% to 13% is three percentage points.</td></tr><tr><td>account for</td><td>占（比例）</td><td>Wind power accounted for 30% of the total.</td></tr><tr><td>stand at</td><td>处于（某数值）</td><td>The figure stood at 12% at the end of the year.</td></tr><tr><td>fluency</td><td>流利度</td><td>One of the five criteria in the presentation assessment.</td></tr><tr><td>overall impression</td><td>整体印象</td><td>Content, sources and visuals are judged together.</td></tr><tr><td>visual</td><td>视觉材料</td><td>A visual can be a slide, a chart or a short clip.</td></tr><tr><td>tongue twister</td><td>绕口令</td><td>She sells seashells by the seashore.</td></tr><tr><td>minimal pair</td><td>最小对立对</td><td>ship / sheep differ in one vowel sound only.</td></tr><tr><td>recap material</td><td>复习材料</td><td>Use the recap material and the Padlet sentences before the test.</td></tr><tr><td>local recording</td><td>本地录制</td><td>Zoom recording only works in the desktop application.</td></tr><tr><td>double check</td><td>复核</td><td>Double check AI sources before you cite them.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　改错并说明规则：<i>Sales increased with 20% from 20 to 45 units. The number of customers were higher in March.</i></div><p><b>解：</b>第一处 <i>increased with 20%</i> 介词错：幅度用 by，<i>increased by 20%</i>。若要表达区间用 from … to …：<i>Sales increased from 20 to 45 units.</i></p><p>第二处 <i>The number of customers were</i> 主谓不一致：<i>the number of</i> 的中心词是 number，单数，改为 <i>was</i>。若写 <i>A number of customers were</i>（许多顾客）才用复数。</p><p>第三处隐含问题：<i>increased by 20%</i> 与 <i>from 20 to 45</i> 同时出现会自相矛盾（从 20 到 45 是增长 125%）。二者只能选一个口径。</p><p><b>通用思路：</b>先定口径（幅度／区间／终值）→ 选对应介词（by／from…to／to）→ 再查 the number of 的主谓一致。</p></div><div class="qa"><div class="q">例 2　用三句话描述这张图（2010 至 2023 年芬兰可再生能源电力占比：25% → 40%，2019 年后急升），并按「引入—描述—解读」标注。</div><p><b>解：</b>引入：<i>This chart shows the share of renewable electricity in Finland between 2010 and 2023.</i></p><p>描述：<i>The share rose steadily from about 25% to just over 40%, with a sharp increase after 2019.</i>（from … to … 表区间，steadily 表幅度，after 2019 标转折点）。</p><p>解读：<i>What stands out is that most of the growth came after 2019, which suggests that policy changes played a role.</i>（what stands out 引出结论，which suggests 留余地）。</p><p><b>通用思路：</b>一句说明图是什么 → 一句说方向、幅度、转折 → 一句给谨慎的解读；三句之内不要出现两个以上数字口径。</p></div><div class="qa"><div class="q">例 3　你要做 3 分 30 秒的演讲，写稿时该定多少词？给出分段字数与页数建议。</div><p><b>解：</b>3.5 分钟 × 140 词／分钟 ≈ 490 词，取整 480 词（留切换与停顿余量）。</p><p>分段：开场 30 秒 70 词；主体一 55 秒 128 词；主体二 60 秒 140 词；主体三 50 秒 116 词；结尾 25 秒 58 词。合计 3 分 40 秒、512 词，略超，可把主体二压到 130 词。</p><p>页数：开场 1 页、主体 3 页（每点一页）、结尾 1 页，共 5 页；每页平均停留 40 秒，正好够讲清楚一个信息点。</p><p><b>通用思路：</b>先定总时长 → 乘 140 得词数 → 按段落比例分配 → 页数等于段落数（一点一页），最后按实际朗读复测一次。</p></div><div class="qa"><div class="q">例 4　判断下列来源可否用于本作业，并说明理由：① 某风电企业官网的技术页面；② 国际能源署（IEA）2024 年报告；③ 维基百科「Wind power」条目；④ 期刊论文《Nordic wind power integration》。</div><p><b>解：</b>① 不可用：商业网站（commercial website），数据服务于营销。② 可用：机构报告（organization report），有署名、年份与统计口径。③ 不可用：wiki，多人协作且随时改动，只能用来找线索，不能作引用来源。④ 可用：研究论文（research article），有同行评审与方法说明。</p><p>补充做法：从③找到它引用的①与④，再回到原始来源核对数据——这正是 <i>double check</i> 的实际操作。</p><p><b>通用思路：</b>三问定生死——谁写的、数据从哪来、有没有年份与口径；三问全过才引用。</p></div><div class="qa"><div class="q">例 · 用词库描述一张三阶段折线图</div><p>图：某 App 月活跃用户 2022-2025——2022 缓升，2023 中段暴涨，2024 后回落趋平。</p><p><b>解（三段式 + 词库替换）：</b>① 开头点题：<i>This line graph shows our monthly active users from 2022 to 2025.</i>② 分段描述：From 2022 to mid-2023, the number <b>climbed steadily</b>. Then it <b>soared</b> after the AI feature launch, nearly <b>doubling</b> within a year. Since 2024, however, it has <b>declined slightly</b> and <b>levelled off</b> around 4 million.③ 收尾：Overall, growth was <b>gradual</b> at first but turned <b>dramatic</b> in 2023.——每段动词都标注了「速度」（steady/rapid/unsteady），这正是 5.6 的三类词。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>把下列句子改成语义准确的图表句：<i>The price increased to 15%.</i> / <i>Production was raised with 200 units.</i> / <i>The amount of factories grew.</i></li><li>用「引入—描述—解读」三句描述一张你熟悉的图（可用课程作业里的能耗或产量数据），并标注每句的功能。</li><li>写一份 3 分钟演讲的开场 30 秒（约 70 词），必须包含钩子、主题与三点路线图。</li><li>把下面这段路标语补齐：<i>Today I’ll cover three points. ______ , the background. ______ , the technology itself. And ______ , what it means for Finland.</i></li><li>判断四个来源能否引用并写一句理由：政府统计年鉴、企业产品手册、大学实验室技术报告、个人技术博客。</li><li>给 <i>She sells seashells by the seashore</i> 设计三档速度的练习方案，并说明每档要检查什么。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> <i>The price rose by 15%.</i>（若原意是「涨到 15% 这个水平」则用 <i>rose to 15%</i>，但价格通常用幅度）；<i>Production was raised by 200 units.</i>；<i>The number of factories grew.</i>（factory 可数，用 number 不用 amount）。</p><p><b>2.</b> 参考：引入 <i>This chart shows electricity consumption per capita in Finland from 2015 to 2023.</i>／描述 <i>It stayed almost flat until 2020 and then fell slightly, from about 15 MWh to 14 MWh.</i>／解读 <i>What stands out is how stable consumption has been, which may reflect efficiency gains offsetting new demand.</i></p><p><b>3.</b> 参考（72 词）：<i>Every winter, Finland burns more energy than it can store. I’m going to talk about one technology that changes that: large-scale heat storage. Today I’ll cover three points — first, why storage matters; then, how the technology works; and finally, what it could mean for Finnish industry.</i> 含钩子、主题、三点路线图。</p><p><b>4.</b> <i>First</i>／<i>Second</i>／<i>finally</i>（或 <i>To begin with</i>／<i>Next</i>／<i>And finally</i>）。注意 first 与 second 后接逗号，finally 前用 and 更自然。</p><p><b>5.</b> 政府统计年鉴：可用（政府网站 + 原始统计）；企业产品手册：不可用（商业网站）；大学实验室技术报告：可用（organization 的技术文档，署名与日期清楚）；个人技术博客：不可用（blog，无审稿）。</p><p><b>6.</b> 慢速：每词清楚，重点查 /s/ 与 /ʃ/ 是否分清（seashells 里两个音相邻）；中速：块内连读，<i>sells seashells</i> 不停；常速：只保证 <i>she / sells / seashells / seashore</i> 四个重读词清楚，块内可含糊。每档录 10 秒对比。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>可信来源的四类与四类禁用；3 至 4 分钟对应 400 至 520 词；路标语七种功能；图表四类句式与四个数字陷阱；五项评分维度；Zoom 桌面端录制限制；朗读测试的时间与范围。</div><div class="callout warn"><b>易错 1</b>increase by 与 increase to 混用；percent 与 percentage point 混用；the number of 后接复数谓语。</div><div class="callout warn"><b>易错 2</b>把新闻文章或维基当来源；幻灯片堆满文字、无来源标注。</div><div class="callout warn"><b>易错 3</b>用手机或浏览器版 Zoom 录制，结果没有文件——这是纯技术性丢分，完全可避免。</div><div class="callout tip"><b>进阶</b>图表解读句加一层限定：<i>which suggests that …</i>、<i>although other factors may also be involved</i>，比直接下因果结论更专业，也更难被质疑。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s19">本讲方法清单</h2><h3 id="s20">演讲准备五步</h3><ol class="steps"><li>选主题并写一句主张（这次演讲要让人记住哪一件事）</li><li>找 3 个可信来源，每个来源记下机构、年份、关键数字</li><li>按五段分配秒数与词数，总词数控制在 400 至 520</li><li>每段配一页幻灯片，页面只放结论与数据，讲稿留在嘴里</li><li>按 130 至 150 词／分钟朗读复测，超时按「例子→背景→细节」顺序删</li></ol><h3 id="s21">图表句四查</h3><ul class="checklist"><li>口径对不对：幅度用 by，区间用 from … to，终值用 to</li><li>主谓一致：the number of 单数，a number of 复数</li><li>单位与百分比：percent 与 percentage point 不混用</li><li>解读留余地：suggests／may，而不是 proves</li></ul><h3 id="s22">发音考前热身</h3><ul class="checklist"><li>四个绕口令各三档速度，每档录 10 秒</li><li>Padlet 上的句子逐句朗读，标出难词并单独练</li><li>只查一个音（如 /θ/ 或 /ʃ/），不要一次改全部</li><li>测试当天提前 10 分钟测试麦克风，10:00 至 22:00 窗口内提交</li></ul></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置 / 页码</th><th>覆盖内容</th></tr><tr><td>3_Assignments/4_ASSIGNMENT 3 Presentation [DL Nov 27]/intro/intro.html</td><td>全篇</td><td>五个 AIM、五步任务、来源限制、视觉要求、breakout room 与 Zoom 录制、0–100 评分与五项维度、AI 规则</td></tr><tr><td>5_UNIT 2/3_Meeting 9 homework.html</td><td>全篇</td><td>图表描述：learningapps 小游戏、British Council B1 describing charts 阅读与三个任务、找一张有意思的图准备介绍</td></tr><tr><td>5_UNIT 2/8_Meeting 12 homework.html</td><td>全篇</td><td>朗读测试：11 月 18 日、Moodle 10:00–22:00、范围为课上材料、recap material 与 Padlet 句子</td></tr><tr><td>4_UNIT 1/5_Meeting 5 homework.html</td><td>全篇</td><td>在家练绕口令</td></tr><tr><td>4_UNIT 1/2_Meeting 2 homework.html</td><td>全篇</td><td>Padlet 词表朗读与难读词清单，构成朗读测试的复习范围</td></tr><tr><td>（拓展）</td><td>—</td><td>五段时间分配表、路标语七种功能、图表四类句式与四个数字陷阱、三档速度练习法为教学补充</td></tr><tr><td>3_Assignments_3_ASSIGNMENT 2 Pronunciation Test [DL Nov 18]_Submissions_Zishuo Wang_Online text.html</td><td>全篇</td><td>学生提交的朗读测试视频链接，仅作提交格式示例</td></tr><tr><td>（跳过）</td><td>—</td><td>H5P 演示材料、learningapps 游戏与 British Council 页面本身不在源文本内，仅按作业描述转述其任务</td></tr></table></section><div class="lnav"><a class="prev" href="l4-elevator-pitch.html">← 第 4 讲 · 电梯演讲：60 秒说清你是谁</a><a class="next" href="l7-word-order-questions.html">第 6 讲 · Unit 1 语法专题：语序、问句与附加疑问句 →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s20">本讲方法清单</h2><h3 id="s21">演讲准备五步</h3><ol class="steps"><li>选主题并写一句主张（这次演讲要让人记住哪一件事）</li><li>找 3 个可信来源，每个来源记下机构、年份、关键数字</li><li>按五段分配秒数与词数，总词数控制在 400 至 520</li><li>每段配一页幻灯片，页面只放结论与数据，讲稿留在嘴里</li><li>按 130 至 150 词／分钟朗读复测，超时按「例子→背景→细节」顺序删</li></ol><h3 id="s22">图表句四查</h3><ul class="checklist"><li>口径对不对：幅度用 by，区间用 from … to，终值用 to</li><li>主谓一致：the number of 单数，a number of 复数</li><li>单位与百分比：percent 与 percentage point 不混用</li><li>解读留余地：suggests／may，而不是 proves</li></ul><h3 id="s23">发音考前热身</h3><ul class="checklist"><li>四个绕口令各三档速度，每档录 10 秒</li><li>Padlet 上的句子逐句朗读，标出难词并单独练</li><li>只查一个音（如 /θ/ 或 /ʃ/），不要一次改全部</li><li>测试当天提前 10 分钟测试麦克风，10:00 至 22:00 窗口内提交</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 13，可横向滚动"><table><tr><th>源文件</th><th>位置 / 页码</th><th>覆盖内容</th></tr><tr><td>3_Assignments/4_ASSIGNMENT 3 Presentation [DL Nov 27]/intro/intro.html</td><td>全篇</td><td>五个 AIM、五步任务、来源限制、视觉要求、breakout room 与 Zoom 录制、0–100 评分与五项维度、AI 规则</td></tr><tr><td>5_UNIT 2/3_Meeting 9 homework.html</td><td>全篇</td><td>图表描述：learningapps 小游戏、British Council B1 describing charts 阅读与三个任务、找一张有意思的图准备介绍</td></tr><tr><td>5_UNIT 2/8_Meeting 12 homework.html</td><td>全篇</td><td>朗读测试：11 月 18 日、Moodle 10:00–22:00、范围为课上材料、recap material 与 Padlet 句子</td></tr><tr><td>4_UNIT 1/5_Meeting 5 homework.html</td><td>全篇</td><td>在家练绕口令</td></tr><tr><td>4_UNIT 1/2_Meeting 2 homework.html</td><td>全篇</td><td>Padlet 词表朗读与难读词清单，构成朗读测试的复习范围</td></tr><tr><td>（拓展）</td><td>—</td><td>五段时间分配表、路标语七种功能、图表四类句式与四个数字陷阱、三档速度练习法为教学补充</td></tr><tr><td>3_Assignments_3_ASSIGNMENT 2 Pronunciation Test [DL Nov 18]_Submissions_Zishuo Wang_Online text.html</td><td>全篇</td><td>学生提交的朗读测试视频链接，仅作提交格式示例</td></tr><tr><td>（跳过）</td><td>—</td><td>H5P 演示材料、learningapps 游戏与 British Council 页面本身不在源文本内，仅按作业描述转述其任务</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l4-elevator-pitch.html"><span>上一讲</span><strong>第 4 讲 · 电梯演讲：60 秒说清你是谁</strong></a><a data-sequence="parent" href="part-2.html"><span>返回目录</span><strong>第 2 章 词汇语法与演讲表达</strong></a><a data-sequence="next" href="l7-word-order-questions.html"><span>下一讲</span><strong>第 6 讲 · Unit 1 语法专题：语序、问句与附加疑问句</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

@@ -8,204 +8,362 @@
 <title>Week 8 · 信息存储与文件表示 · 86</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,47 +464,382 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">HDD5020 信息处理基础（计算机导论）</a> / <a href="part-4.html">第 4 章 信息存储、文件与检索</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、从数字数据到被存储的信息</a><a class="toc-l3" href="#s3">1.1 四种文件，一种本质</a><a class="toc-l3" href="#s4">1.2 为什么需要存储</a><a class="toc-l2" href="#s5">二、内存与存储</a><a class="toc-l3" href="#s6">2.1 一张对照表</a><a class="toc-l3" href="#s7">2.2 易失与非易失</a><a class="toc-l2" href="#s8">三、存储单位</a><a class="toc-l3" href="#s9">3.1 位与字节</a><a class="toc-l3" href="#s10">3.2 十进制单位（厂商口径）</a><a class="toc-l3" href="#s11">3.3 二进制单位（操作系统口径）</a><a class="toc-l3" href="#s12">3.4 文件大小的大致感觉</a><a class="toc-l3" href="#s13">3.5 换算的两个式子</a><a class="toc-l3" href="#s14">3.6 容量与文件大小</a><a class="toc-l2" href="#s15">四、存储的层次</a><a class="toc-l2" href="#s16">五、存储介质</a><a class="toc-l3" href="#s17">5.1 机械硬盘（HDD）</a><a class="toc-l3" href="#s18">5.2 固态硬盘（SSD）</a><a class="toc-l3" href="#s19">5.3 HDD 与 SSD 对比</a><a class="toc-l3" href="#s20">5.4 U 盘与存储卡</a><a class="toc-l3" href="#s21">5.5 三种闪存设备的对比</a><a class="toc-l3" href="#s22">5.6 光盘</a><a class="toc-l3" href="#s23">5.7 云存储</a><a class="toc-l3" href="#s24">5.8 怎样选存储设备</a><a class="toc-l2" href="#s25">六、什么是文件</a><a class="toc-l3" href="#s26">6.1 定义</a><a class="toc-l3" href="#s27">6.2 文件是字节序列</a><a class="toc-l3" href="#s28">6.3 同一字节，不同含义</a><a class="toc-l3" href="#s29">6.4 文本文件与二进制文件</a><a class="toc-l3" href="#s30">6.5 文件不只是内容</a><a class="toc-l3" href="#s31">6.6 打开一个文件的四步</a><a class="toc-l2" href="#s32">七、文件格式</a><a class="toc-l3" href="#s33">7.1 定义</a><a class="toc-l3" href="#s34">7.2 扩展名</a><a class="toc-l3" href="#s35">7.3 改名不会改变格式</a><a class="toc-l3" href="#s36">7.4 文件签名与头部</a><a class="toc-l3" href="#s37">7.5 元数据</a><a class="toc-l3" href="#s38">7.6 内容与元数据</a><a class="toc-l3" href="#s39">7.7 格式、编解码器、容器</a><a class="toc-l3" href="#s40">7.8 格式为什么重要</a><a class="toc-l2" href="#s41">八、目录与文件操作</a><a class="toc-l3" href="#s42">8.1 为什么组织文件</a><a class="toc-l3" href="#s43">8.2 层次结构</a><a class="toc-l3" href="#s44">8.3 常见操作</a><a class="toc-l3" href="#s45">8.4 良好实践</a><a class="toc-l2" href="#s46">九、访问速度</a><a class="toc-l3" href="#s47">9.1 影响什么</a><a class="toc-l3" href="#s48">9.2 延迟与吞吐</a><a class="toc-l2" href="#s49">十、存储的数据为什么会丢</a><a class="toc-l3" href="#s50">10.1 六种原因</a><a class="toc-l3" href="#s51">10.2 备份与冗余</a><a class="toc-l2" href="#s52">十一、课件复习题（附答案）</a><a class="toc-l2" href="#s53">十二、场景练习：选格式</a><a class="toc-l2" href="#s54">方法清单</a><a class="toc-l3" href="#s55">换算存储单位（三步）</a><a class="toc-l3" href="#s56">判断一个文件到底是什么（四步）</a><a class="toc-l3" href="#s57">区分内容与元数据（一问）</a><a class="toc-l3" href="#s58">设计一个可靠的保存方案（四步）</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="w1-introduction.html">Week 1 · 信息、数据、算法、程序与 AI</a><a href="w2-number-systems.html">Week 2 · 数制、位置记数法与进制转换</a><a href="w3-signed-numbers-and-float.html">Week 3 · 有符号数、补码、溢出与 IEEE 754</a><a href="w4-character-encoding.html">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</a><a href="w5-image-representation.html">Week 5 · 图像表示：采样、量化、编码与 RGB</a><a href="w6-audio-and-video.html">Week 6 · 音频与视频表示：采样率、位深、帧率</a><a href="w7-data-compression.html">Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a class="toc-l3" href="w8-storage-and-files.html">▸ Week 8 · 信息存储与文件表示</a><a href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</a><a href="w10-data-encryption.html">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</a><a href="w11-logic.html">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</a><a href="w12-review.html">Week 12 · 全课整合复习与模拟题</a></div></aside><article><h1>Week 8 · 信息存储与文件表示</h1><p class="lead">Information Storage and File Representation <span class="badge mute">86</span> <span class="badge mute">第 8 / 12 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 信息存储、文件与检索</a></p><p class="src">原始文件：<code>Week8- Information Storage and File Representation/Lecture8.pdf</code> <code>Week9- Information Retrieval/Exercise 5.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前面几讲都在讲「数据怎样表示」，这一讲换一个角度：数据最后放在哪里、以什么形式组织。答案是「存在存储介质上，组织成文件」。这一步看似琐碎，却是所有计算机使用的起点——你打开的任何东西，都是一个文件。</p><p>本讲要建立三个区分：<b>内存与存储</b>（易失 vs 持久）、<b>十进制单位与二进制单位</b>（MB vs MiB）、<b>文件格式与内容</b>（扩展名只是标签）。三个区分都直接对应现实中的误解：以为关机不丢数据、以为 1 TB 就是 1000 GB 可用、以为把 .jpg 改成 .txt 就变成了文本。</p><p>与前几讲的衔接：第 4 讲讲「字符 → 字节」，本讲讲「字节 → 文件 → 目录 → 设备」；与下一讲的衔接：第 9 讲要在一大堆文件里找信息，那就必须先有「文件」这个概念，还要有索引。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>区分内存（RAM）与存储（SSD/HDD），并说明易失与非易失的含义</li><li>在 KB 与 KiB、MB 与 MiB 之间正确换算，并说明厂商标称容量的口径</li><li>说明存储层次中「越往下容量越大、延迟越高」的规律</li><li>比较 HDD、SSD、U 盘、SD 卡、光盘、云存储的适用场景</li><li>说明「文件是字节序列」的含义，并解释同一字节串为何可以有不同解释</li><li>区分文件内容与元数据，说出至少四项元数据</li><li>说明扩展名、文件格式、编解码器、容器四者的关系</li><li>解释备份与冗余的区别，以及为什么二者不能互相替代</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、从数字数据到被存储的信息</h2><h3 id="s3">1.1 四种文件，一种本质</h3><p>课件先把前几讲的成果并列：</p><table><tr><th>文件类型</th><th>里面存的是什么</th></tr><tr><td>文本文档</td><td>编码后的字符</td></tr><tr><td>图像文件</td><td>与像素相关的数据</td></tr><tr><td>音频文件</td><td>数字音频信息</td></tr><tr><td>程序文件</td><td>指令与相关数据</td></tr></table><p>课件的关键句：<b>不同类型的信息都可以存成位和字节</b>。这是第 1 讲「一切都能变成 0/1」的最终落地。</p><h3 id="s4">1.2 为什么需要存储</h3><p>课件列了五条理由：</p><ul><li>让程序与数据随时可用</li><li>把工作保存下来供以后使用</li><li>存储大量信息</li><li>在应用与设备之间共享数据</li><li>让信息在关机之后仍然保留</li></ul><p>课件还留了一个反问：<b>如果计算机不能永久保存数据，会怎样？</b>答案很直接——每次开机都要重新输入一切，程序无法安装，历史无法累积。整个「计算」的意义都会消失。</p><h2 id="s5">二、内存与存储</h2><h3 id="s6">2.1 一张对照表</h3><table><tr><th>对照项</th><th>内存（RAM）</th><th>存储（SSD / HDD）</th></tr><tr><td>存什么</td><td>当前正在使用的数据</td><td>留待以后使用的数据</td></tr><tr><td>易失性</td><td>通常是易失的（volatile）</td><td>非易失（non-volatile）</td></tr><tr><td>速度</td><td>通常更快</td><td>相对较慢</td></tr><tr><td>容量与持久性</td><td>通常较小</td><td>通常更大且持久</td></tr></table><p>课件补了一句限定：在计算机体系结构里 memory 一词含义更广，这里主要以 RAM 为例。这个限定很重要——严格说 cache 也是 memory，但本节要对比的是「工作区 vs 仓库」。</p><h3 id="s7">2.2 易失与非易失</h3><p><b>易失（volatile）</b>：断电后数据通常消失。<b>非易失（non-volatile）</b>：不需要持续供电也能保留数据。</p><table><tr><th>介质</th><th>易失性</th></tr><tr><td>RAM</td><td>易失</td></tr><tr><td>SSD</td><td>非易失</td></tr><tr><td>HDD</td><td>非易失</td></tr><tr><td>USB 闪存盘</td><td>非易失</td></tr></table><p>课件留了一个小问题：<b>RAM 适合作为保存学生论文的唯一位置吗？</b>显然不适合——断电、崩溃、关机都会让论文消失。正确做法是「在 RAM 里编辑，随时保存到存储介质，并保留备份」。</p><h2 id="s8">三、存储单位</h2><h3 id="s9">3.1 位与字节</h3><p>课件先复习最小的两级：<b>位（bit，b）</b>是最小单位，取值 0 或 1；<b>字节（byte，B）</b>是 8 位一组。例：<code>01000001</code> = 8 位 = 1 字节。</p><p>课件加粗提醒：<b>b 表示 bit，B 表示 byte</b>。这两个字母的大小写差别会带来 8 倍的误会。</p><h3 id="s10">3.2 十进制单位（厂商口径）</h3><table><tr><th>单位</th><th>含义</th></tr><tr><td>1 KB</td><td>1 000 字节</td></tr><tr><td>1 MB</td><td>1 000 KB</td></tr><tr><td>1 GB</td><td>1 000 MB</td></tr><tr><td>1 TB</td><td>1 000 GB</td></tr></table><p>课件说明这是存储厂商常用的十进制单位。所以标称 512 GB 的硬盘，就是 512 × 10^9 字节。</p><h3 id="s11">3.3 二进制单位（操作系统口径）</h3><table><tr><th>单位</th><th>精确大小</th></tr><tr><td>1 KiB</td><td>1 024 字节</td></tr><tr><td>1 MiB</td><td>1 024 KiB</td></tr><tr><td>1 GiB</td><td>1 024 MiB</td></tr><tr><td>1 TiB</td><td>1 024 GiB</td></tr></table><p>课件的提示句：<b>KB 与 KiB 并不完全相等，MB 与 MiB 也不完全相等；计算前先确认题目用的是哪种单位</b>。</p><div class="callout exam"><b>为什么会「买来少了一截」</b>厂商按十进制标 1 TB = 10^12 字节；操作系统按二进制算，<code>10^12 / 1024^4 ≈ 0.909 TiB</code>。于是 1 TB 硬盘在系统里显示约 931 GiB。这不是「缺斤少两」，而是两种口径。</div><h3 id="s12">3.4 文件大小的大致感觉</h3><p>课件给了四个参照：</p><ul><li>短文本文件：几 KB</li><li>高分辨率照片：几 MB</li><li>一首歌：几 MB 或更多</li><li>一部电影：几 GB 或更多</li></ul><p>课件补了一句：实际大小取决于内容、格式与压缩方式。这句话把第 7 讲接上了——同样的画面，PNG 与 JPEG 差好几倍。</p><h3 id="s13">3.5 换算的两个式子</h3><p>若文件有 N 字节：</p><p><b><code>十进制：大小（KB）= N / 1000</code></b>　　　<b><code>二进制：大小（KiB）= N / 1024</code></b></p><p>课件的例子：文件 12 288 字节。</p><pre><code>十进制：12 288 / 1000 = 12.288 KB
-二进制：12 288 / 1024 = 12 KiB</code></pre><p>两个结果都「对」，只是口径不同。注意 12 288 = 12 × 1024，所以二进制换算是干净的整数；这也是「挑数」的常见手法。</p><h3 id="s14">3.6 容量与文件大小</h3><p>课件区分两个概念：<b>存储容量</b>是设备能装多少；<b>文件大小</b>是某个文件需要多少空间。例：512 GB 的 SSD 与 25 MB 的图片集。</p><p>一个设备可以装很多文件，但受可用容量与文件系统限制。「文件系统限制」这句提示很实在：单个文件可能有上限（如 FAT32 单文件 4 GB），文件数也可能有上限。</p><h2 id="s15">四、存储的层次</h2><p>计算机用不同技术满足不同需求。课件给的规律是：<b>越往下，容量越大、每字节成本越低，但访问延迟通常越高</b>。</p><table><tr><th>层次</th><th>特点</th><th>典型规模</th></tr><tr><td>CPU 寄存器</td><td>极快、极小</td><td>几十到几百字节</td></tr><tr><td>CPU 缓存（cache）</td><td>很快、较小</td><td>几 MB</td></tr><tr><td>主存（RAM）</td><td>较快的工作区</td><td>几 GB 到几十 GB</td></tr><tr><td>SSD / HDD</td><td>持久、大容量</td><td>几百 GB 到几 TB</td></tr></table><p>课件特意声明这是一个概念性层次，不是对每个设备的精确排名。这句话是对的：NVMe SSD 的延迟已经远低于机械硬盘，某些场景甚至接近内存，但「寄存器 > cache > RAM > 外存」这个量级顺序仍然成立。</p><h2 id="s16">五、存储介质</h2><h3 id="s17">5.1 机械硬盘（HDD）</h3><ul><li>用磁记录方式把数据存在旋转的盘片上</li><li>靠机械部件访问数据（磁头寻道、盘片旋转）</li><li>通常容量大、每字节成本低</li><li>机械运动影响访问时间</li></ul><p>典型用途：大量文件、台式机、备份存储。</p><h3 id="s18">5.2 固态硬盘（SSD）</h3><ul><li>把数据存在闪存（flash memory）里</li><li>没有移动的机械部件</li><li>通常访问延迟更低</li><li>能提供高读写吞吐</li></ul><p>典型用途：操作系统、应用程序、笔记本、高速存储。</p><h3 id="s19">5.3 HDD 与 SSD 对比</h3><table><tr><th>特性</th><th>HDD</th><th>SSD</th></tr><tr><td>技术</td><td>磁盘（磁记录）</td><td>闪存</td></tr><tr><td>运动部件</td><td>有</td><td>无</td></tr><tr><td>访问延迟</td><td>通常更高</td><td>通常更低</td></tr><tr><td>每字节成本</td><td>通常更低</td><td>通常更高</td></tr><tr><td>常见优势</td><td>单位成本容量</td><td>速度与响应</td></tr></table><p>这条对比解释了现实中的组合方案：系统盘用 SSD 求快，资料盘用 HDD 求容量。</p><h3 id="s20">5.4 U 盘与存储卡</h3><ul><li>用非易失闪存</li><li>便携、方便</li><li>支持设备间传输数据</li><li>写入寿命有限，且可能丢失或损坏</li></ul><p>例子：USB 闪存盘、SD 卡、microSD 卡。</p><h3 id="s21">5.5 三种闪存设备的对比</h3><table><tr><th>特性</th><th>SSD</th><th>U 盘</th><th>SD 卡</th></tr><tr><td>存储技术</td><td>NAND 闪存</td><td>NAND 闪存</td><td>NAND 闪存</td></tr><tr><td>连接方式</td><td>SATA 或 PCIe/NVMe</td><td>USB 接口</td><td>读卡器或卡槽</td></tr><tr><td>读写速度</td><td>通常最高（尤其 NVMe）</td><td>差异大，通常远低于 SSD</td><td>取决于速度等级，通常远低于 SSD</td></tr><tr><td>访问性能</td><td>低延迟、高吞吐</td><td>取决于控制器与 USB 接口</td><td>取决于速度等级与读卡器</td></tr><tr><td>耐久性</td><td>无运动部件，内置型号受外壳保护</td><td>无运动部件，接口可能裸露</td><td>无运动部件，卡片小易丢失或损坏</td></tr><tr><td>典型用途</td><td>系统、应用、大数据集</td><td>文件传输与便携存储</td><td>相机、手机、无人机、嵌入式</td></tr><tr><td>主要优势</td><td>高性能与大容量</td><td>方便、兼容性好</td><td>小巧、为便携设备设计</td></tr></table><p>这张表值得记住的结构：<b>三者技术同源（NAND 闪存），差别在接口与控制器</b>。所以「U 盘能不能当系统盘」的答案不是「不能」，而是「通常不划算」——接口与主控决定了随机读写性能差距。</p><h3 id="s22">5.6 光盘</h3><p>用光学技术存数据，包括 CD、DVD、蓝光（Blu-ray）。适当保存时可用于分发或长期归档，但需要兼容的光驱。</p><p>课件补了两条限定：并非所有光盘都可重写；光盘寿命取决于介质质量与保存条件。</p><h3 id="s23">5.7 云存储</h3><p>云存储把数据放在远端设施上，通过网络访问。</p><table><tr><th>优点</th><th>局限</th></tr><tr><td>可从不同设备访问</td><td>依赖网络与服务可用性</td></tr><tr><td>分享与协作更容易</td><td>可能有订阅费用</td></tr><tr><td>容量可扩展</td><td>需关注隐私、访问控制与服务条款</td></tr></table><p>最后一条是本课的安全伏笔：数据放在别人的机器上，「访问控制」与「服务条款」就是你必须读的部分。第 5 章讲加密时会回到这一点。</p><h3 id="s24">5.8 怎样选存储设备</h3><p>课件列了七个考虑因素：</p><span class="chip">容量</span> <span class="chip">访问速度与延迟</span> <span class="chip">成本</span> <span class="chip">便携性</span> <span class="chip">可靠性与耐久性</span> <span class="chip">功耗</span> <span class="chip">安全与备份需求</span><p>并给了两个例子：笔记本系统盘受益于 SSD；大型媒体归档则优先考虑容量与成本。</p><h2 id="s25">六、什么是文件</h2><h3 id="s26">6.1 定义</h3><p>文件（file）是<b>由操作系统或其他存储系统管理的、有名字的数据单元</b>。</p><p>一个文件里可能有：文本、数值数据、图像或音频数据、程序指令、结构化记录。文件提供了保存、取回、复制、分享数据的便利方式。</p><p>定义里三个要素要抓住：<b>有名字</b>（否则无法引用）、<b>有管理主体</b>（操作系统）、<b>是一个单元</b>（可作为整体复制、删除、移动）。</p><h3 id="s27">6.2 文件是字节序列</h3><p>在最底层，文件可以看成一串字节。课件的例子：</p><pre><code>01001000 01101001 00100001
-三个字节：十六进制 48 69 21</code></pre><p>在 ASCII 兼容的文本编码下，这三个字节表示 <b>Hi!</b>。</p><p>课件加了一句关键话：<b>光有字节不能说明数据是什么意思，我们需要一种解释</b>。这与第 4 讲的「字节不知道自己是什么编码」是同一个意思，只是扩大到了「文件类型」层面。</p><h3 id="s28">6.3 同一字节，不同含义</h3><p>课件取一个字节 <code>01000001</code>，指出它可能是：</p><ul><li>ASCII 字符 A</li><li>无符号整数 65</li><li>某个更大的二进制数据结构中的一个值</li></ul><p>解释取决于格式与上下文。课件强调：<b>字节序列没有唯一的含义</b>（"A byte sequence does not have one universal meaning"）。</p><h3 id="s29">6.4 文本文件与二进制文件</h3><table><tr><th>类型</th><th>内容</th><th>例子</th><th>用文本编辑器打开</th></tr><tr><td>文本文件</td><td>用字符编码存的字符</td><td>.txt、.csv、.html、.json</td><td>正常显示（编码正确时）</td></tr><tr><td>二进制文件</td><td>不打算被当普通文本直接读的数据</td><td>JPEG 图像、MP3 音频、可执行程序、科研数据文件</td><td>可能出现不可读的符号</td></tr></table><p>课件强调：二进制文件<b>仍然是字节</b>，只是它的结构需要合适的解释方式。所以「文本 vs 二进制」不是两种物理存储，而是两种<b>约定</b>。</p><h3 id="s30">6.5 文件不只是内容</h3><p>一个文件还关联着：名字、位置或路径、大小、创建/修改时间戳、访问权限、文件类型或格式。</p><p>课件指出：其中一些信息存在<b>文件系统的元数据</b>里，而不在文件本身内部。并留了一个反问：<b>文件名一定是文件内容的一部分吗？</b>答案是否——改名不改内容，正是下一节「改名不换格式」的基础。</p><h3 id="s31">6.6 打开一个文件的四步</h3><ol class="steps"><li>用户选中一个文件</li><li>应用程序读取它的字节</li><li>应用程序按预期的格式解释这些字节</li><li>应用程序显示或处理数据</li></ol><p>课件补了一句：若应用用错格式，或文件损坏，结果可能不对，或根本打不开。这四步是所有「文件打不开」问题的排查框架。</p><h2 id="s32">七、文件格式</h2><h3 id="s33">7.1 定义</h3><p>文件格式规定数据在文件里怎样组织与解释。一个格式可能规定：</p><ul><li>文件的结构</li><li>值怎样表示</li><li>不同数据段放在哪里</li><li>数据应当怎样解释</li></ul><p>例子：TXT、CSV、PNG、JPEG、WAV、PDF。</p><h3 id="s34">7.2 扩展名</h3><p>文件扩展名是常用的类型标记后缀，如 <code>notes.txt</code>、<code>data.csv</code>、<code>photo.png</code>、<code>report.pdf</code>。扩展名帮用户与系统选择合适的应用。</p><p>课件加粗提醒：<b>扩展名只是标签，不保证文件实际内容</b>。</p><h3 id="s35">7.3 改名不会改变格式</h3><p>课件的例子：把 <code>photo.jpg</code> 改名为 <code>photo.txt</code>。改名只改了名字，并没有把 JPEG 数据变成文本。要真正改变格式，应用必须读取并转换数据。</p><p>课件把区分写成两行：<b>改名改变的是文件名；转换改变的是数据表示</b>。</p><h3 id="s36">7.4 文件签名与头部</h3><p>许多格式在文件开头附近带识别信息，可称文件签名（file signature），或属于文件头（header）的一部分。例子：</p><ul><li>PNG 文件以一个确定的签名开始</li><li>PDF 文件通常以 <code>%PDF-</code> 开头</li><li>其他格式各有自己的标识字节模式或结构</li></ul><p>应用可以用这些信息帮助识别与解释文件。课件加了两条限定：并非每种格式都有简单的签名；有签名也不等于文件有效或安全。</p><div class="callout tip"><b>为什么这条重要</b>改扩展名后打不开、或杀毒软件报「文件类型与扩展名不符」，都是因为签名与扩展名不一致。检查签名是判断真实格式的可靠办法。</div><h3 id="s37">7.5 元数据</h3><p>元数据（metadata）是<b>描述其他数据的数据</b>。课件给了四类例子：</p><table><tr><th>对象</th><th>元数据例子</th></tr><tr><td>图像</td><td>宽、高、颜色信息、拍摄时间</td></tr><tr><td>音频</td><td>时长、采样率、声道数</td></tr><tr><td>文档</td><td>作者、标题、创建时间</td></tr><tr><td>文件系统</td><td>大小、时间戳、权限</td></tr></table><p>元数据能帮应用解释、组织、搜索与管理数据。第 9 讲的检索、第 5 讲的隐私问题都会用到它。</p><h3 id="s38">7.6 内容与元数据</h3><p>以一张照片为例：</p><table><tr><th>类别</th><th>内容</th></tr><tr><td>内容（content）</td><td>用来重建画面的编码图像数据</td></tr><tr><td>元数据（metadata）</td><td>图像尺寸、拍摄日期、相机设置（若记录）、位置信息（若有）</td></tr></table><p>元数据可以嵌在文件里，也可以单独存放。</p><p>课件留了一个讨论题：<b>为什么用户会在分享照片前删除位置元数据？</b>因为地理坐标会暴露住址、行程、作息；这类信息与照片本身无关，却会长期泄漏隐私。第 5 章讲「加密不是安全的全部」时，这是同一类问题的另一面。</p><h3 id="s39">7.7 格式、编解码器、容器</h3><table><tr><th>概念</th><th>定义</th><th>例子</th></tr><tr><td>文件格式（file format）</td><td>规定信息在文件中怎样结构化</td><td>TXT、CSV、PNG</td></tr><tr><td>编解码器（codec）</td><td>编码与解码特定类型的媒体数据</td><td>H.264（视频）、AAC（音频）</td></tr><tr><td>容器（container）</td><td>把媒体流与相关信息打包在一起</td><td>MP4、MKV</td></tr></table><p>课件给的例子：MP4 常用作媒体容器，H.264 是视频编码标准，AAC 是音频编码格式；一个 MP4 文件里可以有 H.264 编码的视频与 AAC 编码的音频。</p><p>课件强调三者相关但<b>不能互换</b>。这条区分直接来自第 6 讲的「格式 ≠ 编解码器」，本讲把它补全成三方关系。</p><h3 id="s40">7.8 格式为什么重要</h3><p>文件格式影响：应用之间的兼容性、支持的数据类型与特性、存储大小与可用的压缩、原始数据能否被精确恢复、长期可访问性。</p><p>课件的例子：CSV 适合简单表格数据；大型科研数据集可能更适合专门的二进制格式。</p><p>「长期可访问性」这一条最容易被忽略：用冷门格式存的数据，十年后可能没有软件能打开。这也是归档领域偏好开放、简单格式的原因。</p><h2 id="s41">八、目录与文件操作</h2><h3 id="s42">8.1 为什么组织文件</h3><p>没有组织就很难找到某个文件。目录（directory，常称文件夹）帮用户：</p><ul><li>把相关文件分组</li><li>建立层次结构</li><li>避免无谓的杂乱</li><li>更容易定位与管理文件</li></ul><p>课件的例子分组：Documents、Images、Projects、Backups。</p><h3 id="s43">8.2 层次结构</h3><p>一个目录可以包含文件与其他目录，于是形成层次（hierarchy）。这个结构就是数据结构里的「树」——第 1 讲列过 Tree 这一项，这里是它的日常形态。</p><h3 id="s44">8.3 常见操作</h3><p>课件列了七种：</p><span class="chip">create</span> <span class="chip">open and read</span> <span class="chip">write and save</span> <span class="chip">rename</span> <span class="chip">copy</span> <span class="chip">move</span> <span class="chip">delete</span><p>课件提醒不同操作效果不同：复制文件通常会多出一个副本；移动文件改变的是位置或目录项。</p><p>这句「移动改变的是目录项」很精确：在同一分区内移动通常不搬数据，只改指向；跨分区移动才是真的复制再删除。这也解释了「移动大文件很快、复制大文件很慢」的现象。</p><h3 id="s45">8.4 良好实践</h3><ul><li>用有意义的文件名</li><li>按项目或用途分组</li><li>把相关数据与文档放在一起</li><li>避免 <code>final_final2_new</code> 这类含混名字</li><li>为重要文件保留备份</li></ul><p>课件给了一个具体的目录例子：</p><pre><code>BearingStudy/RawData/
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">HDD5020 信息处理基础（计算机导论）</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-4.html">第 4 章 信息存储、文件与检索</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">Week 8 · 信息存储与文件表示</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">Week 8 · 信息存储与文件表示 · 86</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">一、从数字数据到被存储的信息</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-4" aria-expanded="true" data-start-open="false" aria-label="展开或收起：一、从数字数据到被存储的信息"><span aria-hidden="true">›</span></button></div><div id="directory-branch-4"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">1.1 四种文件，一种本质</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">1.2 为什么需要存储</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">二、内存与存储</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-7" aria-expanded="true" data-start-open="false" aria-label="展开或收起：二、内存与存储"><span aria-hidden="true">›</span></button></div><div id="directory-branch-7"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.1 一张对照表</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.2 易失与非易失</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">三、存储单位</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-10" aria-expanded="true" data-start-open="false" aria-label="展开或收起：三、存储单位"><span aria-hidden="true">›</span></button></div><div id="directory-branch-10"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">3.1 位与字节</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">3.2 十进制单位（厂商口径）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">3.3 二进制单位（操作系统口径）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">3.4 文件大小的大致感觉</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">3.5 换算的两个式子</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">3.6 容量与文件大小</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">四、存储的层次</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">五、存储介质</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-18" aria-expanded="true" data-start-open="false" aria-label="展开或收起：五、存储介质"><span aria-hidden="true">›</span></button></div><div id="directory-branch-18"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">5.1 机械硬盘（HDD）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">5.2 固态硬盘（SSD）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">5.3 HDD 与 SSD 对比</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">5.4 U 盘与存储卡</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s21"><span class="directory-label">5.5 三种闪存设备的对比</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s22"><span class="directory-label">5.6 光盘</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s23"><span class="directory-label">5.7 云存储</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s24"><span class="directory-label">5.8 怎样选存储设备</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s25"><span class="directory-label">六、什么是文件</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：六、什么是文件"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s26"><span class="directory-label">6.1 定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s27"><span class="directory-label">6.2 文件是字节序列</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s28"><span class="directory-label">6.3 同一字节，不同含义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s29"><span class="directory-label">6.4 文本文件与二进制文件</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s30"><span class="directory-label">6.5 文件不只是内容</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s31"><span class="directory-label">6.6 打开一个文件的四步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s32"><span class="directory-label">七、文件格式</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-34" aria-expanded="true" data-start-open="false" aria-label="展开或收起：七、文件格式"><span aria-hidden="true">›</span></button></div><div id="directory-branch-34"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s33"><span class="directory-label">7.1 定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s34"><span class="directory-label">7.2 扩展名</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s35"><span class="directory-label">7.3 改名不会改变格式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s36"><span class="directory-label">7.4 文件签名与头部</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s37"><span class="directory-label">7.5 元数据</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s38"><span class="directory-label">7.6 内容与元数据</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s39"><span class="directory-label">7.7 格式、编解码器、容器</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s40"><span class="directory-label">7.8 格式为什么重要</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s41"><span class="directory-label">八、目录与文件操作</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-43" aria-expanded="true" data-start-open="false" aria-label="展开或收起：八、目录与文件操作"><span aria-hidden="true">›</span></button></div><div id="directory-branch-43"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s42"><span class="directory-label">8.1 为什么组织文件</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s43"><span class="directory-label">8.2 层次结构</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s44"><span class="directory-label">8.3 常见操作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s45"><span class="directory-label">8.4 良好实践</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s46"><span class="directory-label">九、访问速度</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-48" aria-expanded="true" data-start-open="false" aria-label="展开或收起：九、访问速度"><span aria-hidden="true">›</span></button></div><div id="directory-branch-48"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s47"><span class="directory-label">9.1 影响什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s48"><span class="directory-label">9.2 延迟与吞吐</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s49"><span class="directory-label">十、存储的数据为什么会丢</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-51" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十、存储的数据为什么会丢"><span aria-hidden="true">›</span></button></div><div id="directory-branch-51"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s50"><span class="directory-label">10.1 六种原因</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s51"><span class="directory-label">10.2 备份与冗余</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s52"><span class="directory-label">十一、课件复习题（附答案）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s53"><span class="directory-label">十二、场景练习：选格式</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-55" aria-expanded="true" data-start-open="false" aria-label="展开或收起：十二、场景练习：选格式"><span aria-hidden="true">›</span></button></div><div id="directory-branch-55"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s54"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-61" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-61"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s55"><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-62" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-62"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s56"><span class="directory-label">换算存储单位（三步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s57"><span class="directory-label">判断一个文件到底是什么（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s58"><span class="directory-label">区分内容与元数据（一问）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s59"><span class="directory-label">设计一个可靠的保存方案（四步）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD5020 信息处理基础（计算机导论）</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-68" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD5020 信息处理基础（计算机导论）"><span aria-hidden="true">›</span></button></div><div id="directory-branch-68"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 计算机与信息处理导论</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-69" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 计算机与信息处理导论"><span aria-hidden="true">›</span></button></div><div id="directory-branch-69"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w1-introduction.html"><span class="directory-label">Week 1 · 信息、数据、算法、程序与 AI</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 数制与数据表示</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-71" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 数制与数据表示"><span aria-hidden="true">›</span></button></div><div id="directory-branch-71"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w2-number-systems.html"><span class="directory-label">Week 2 · 数制、位置记数法与进制转换</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w3-signed-numbers-and-float.html"><span class="directory-label">Week 3 · 有符号数、补码、溢出与 IEEE 754</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 数字编码与压缩</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-74" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 数字编码与压缩"><span aria-hidden="true">›</span></button></div><div id="directory-branch-74"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w4-character-encoding.html"><span class="directory-label">Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w5-image-representation.html"><span class="directory-label">Week 5 · 图像表示：采样、量化、编码与 RGB</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w6-audio-and-video.html"><span class="directory-label">Week 6 · 音频与视频表示：采样率、位深、帧率</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w7-data-compression.html"><span class="directory-label">Week 7 · 数据压缩：RLE、Huffman、无损与有损</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-4.html"><span class="directory-label">第 4 章 信息存储、文件与检索</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-79" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 4 章 信息存储、文件与检索"><span aria-hidden="true">›</span></button></div><div id="directory-branch-79"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="w8-storage-and-files.html" aria-current="page"><span class="directory-label">Week 8 · 信息存储与文件表示</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="w9-information-retrieval.html"><span class="directory-label">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 数据加密与信息安全</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-82" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 数据加密与信息安全"><span aria-hidden="true">›</span></button></div><div id="directory-branch-82"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w10-data-encryption.html"><span class="directory-label">Week 10 · 数据加密：古典密码、OTP、AES 与 RSA</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">第 6 章 逻辑与信息处理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-84" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 6 章 逻辑与信息处理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-84"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w11-logic.html"><span class="directory-label">Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-7.html"><span class="directory-label">第 7 章 期末复习与模拟</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-86" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 7 章 期末复习与模拟"><span aria-hidden="true">›</span></button></div><div id="directory-branch-86"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="w12-review.html"><span class="directory-label">Week 12 · 全课整合复习与模拟题</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="86/w8-storage-and-files"><header class="lecture-head"><p class="lecture-kicker">HDD5020 信息处理基础（计算机导论） · 第 08 / 12 讲</p><h1 id="lecture-title">Week 8 · 信息存储与文件表示</h1><p class="lecture-subtitle">Information Storage and File Representation</p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 信息存储、文件与检索</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>a8f9a3141d70</code>（用于识别内容变更）</dd></dl><ul><li><code>Week8- Information Storage and File Representation/Lecture8.pdf</code> <span class="sub">未附原文件</span></li><li><code>Week9- Information Retrieval/Exercise 5.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前面几讲都在讲「数据怎样表示」，这一讲换一个角度：数据最后放在哪里、以什么形式组织。答案是「存在存储介质上，组织成文件」。这一步看似琐碎，却是所有计算机使用的起点——你打开的任何东西，都是一个文件。</p><p>本讲要建立三个区分：<b>内存与存储</b>（易失 vs 持久）、<b>十进制单位与二进制单位</b>（MB vs MiB）、<b>文件格式与内容</b>（扩展名只是标签）。三个区分都直接对应现实中的误解：以为关机不丢数据、以为 1 TB 就是 1000 GB 可用、以为把 .jpg 改成 .txt 就变成了文本。</p><p>与前几讲的衔接：第 4 讲讲「字符 → 字节」，本讲讲「字节 → 文件 → 目录 → 设备」；与下一讲的衔接：第 9 讲要在一大堆文件里找信息，那就必须先有「文件」这个概念，还要有索引。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>区分内存（RAM）与存储（SSD/HDD），并说明易失与非易失的含义</li><li>在 KB 与 KiB、MB 与 MiB 之间正确换算，并说明厂商标称容量的口径</li><li>说明存储层次中「越往下容量越大、延迟越高」的规律</li><li>比较 HDD、SSD、U 盘、SD 卡、光盘、云存储的适用场景</li><li>说明「文件是字节序列」的含义，并解释同一字节串为何可以有不同解释</li><li>区分文件内容与元数据，说出至少四项元数据</li><li>说明扩展名、文件格式、编解码器、容器四者的关系</li><li>解释备份与冗余的区别，以及为什么二者不能互相替代</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、从数字数据到被存储的信息</h2><h3 id="s3">1.1 四种文件，一种本质</h3><p>课件先把前几讲的成果并列：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>文件类型</th><th>里面存的是什么</th></tr><tr><td>文本文档</td><td>编码后的字符</td></tr><tr><td>图像文件</td><td>与像素相关的数据</td></tr><tr><td>音频文件</td><td>数字音频信息</td></tr><tr><td>程序文件</td><td>指令与相关数据</td></tr></table></div><p>课件的关键句：<b>不同类型的信息都可以存成位和字节</b>。这是第 1 讲「一切都能变成 0/1」的最终落地。</p><h3 id="s4">1.2 为什么需要存储</h3><p>课件列了五条理由：</p><ul><li>让程序与数据随时可用</li><li>把工作保存下来供以后使用</li><li>存储大量信息</li><li>在应用与设备之间共享数据</li><li>让信息在关机之后仍然保留</li></ul><p>课件还留了一个反问：<b>如果计算机不能永久保存数据，会怎样？</b>答案很直接——每次开机都要重新输入一切，程序无法安装，历史无法累积。整个「计算」的意义都会消失。</p><h2 id="s5">二、内存与存储</h2><h3 id="s6">2.1 一张对照表</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>对照项</th><th>内存（RAM）</th><th>存储（SSD / HDD）</th></tr><tr><td>存什么</td><td>当前正在使用的数据</td><td>留待以后使用的数据</td></tr><tr><td>易失性</td><td>通常是易失的（volatile）</td><td>非易失（non-volatile）</td></tr><tr><td>速度</td><td>通常更快</td><td>相对较慢</td></tr><tr><td>容量与持久性</td><td>通常较小</td><td>通常更大且持久</td></tr></table></div><p>课件补了一句限定：在计算机体系结构里 memory 一词含义更广，这里主要以 RAM 为例。这个限定很重要——严格说 cache 也是 memory，但本节要对比的是「工作区 vs 仓库」。</p><h3 id="s7">2.2 易失与非易失</h3><p><b>易失（volatile）</b>：断电后数据通常消失。<b>非易失（non-volatile）</b>：不需要持续供电也能保留数据。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>介质</th><th>易失性</th></tr><tr><td>RAM</td><td>易失</td></tr><tr><td>SSD</td><td>非易失</td></tr><tr><td>HDD</td><td>非易失</td></tr><tr><td>USB 闪存盘</td><td>非易失</td></tr></table></div><p>课件留了一个小问题：<b>RAM 适合作为保存学生论文的唯一位置吗？</b>显然不适合——断电、崩溃、关机都会让论文消失。正确做法是「在 RAM 里编辑，随时保存到存储介质，并保留备份」。</p><h2 id="s8">三、存储单位</h2><h3 id="s9">3.1 位与字节</h3><p>课件先复习最小的两级：<b>位（bit，b）</b>是最小单位，取值 0 或 1；<b>字节（byte，B）</b>是 8 位一组。例：<code>01000001</code> = 8 位 = 1 字节。</p><p>课件加粗提醒：<b>b 表示 bit，B 表示 byte</b>。这两个字母的大小写差别会带来 8 倍的误会。</p><h3 id="s10">3.2 十进制单位（厂商口径）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>单位</th><th>含义</th></tr><tr><td>1 KB</td><td>1 000 字节</td></tr><tr><td>1 MB</td><td>1 000 KB</td></tr><tr><td>1 GB</td><td>1 000 MB</td></tr><tr><td>1 TB</td><td>1 000 GB</td></tr></table></div><p>课件说明这是存储厂商常用的十进制单位。所以标称 512 GB 的硬盘，就是 512 × 10^9 字节。</p><h3 id="s11">3.3 二进制单位（操作系统口径）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>单位</th><th>精确大小</th></tr><tr><td>1 KiB</td><td>1 024 字节</td></tr><tr><td>1 MiB</td><td>1 024 KiB</td></tr><tr><td>1 GiB</td><td>1 024 MiB</td></tr><tr><td>1 TiB</td><td>1 024 GiB</td></tr></table></div><p>课件的提示句：<b>KB 与 KiB 并不完全相等，MB 与 MiB 也不完全相等；计算前先确认题目用的是哪种单位</b>。</p><div class="callout exam"><b>为什么会「买来少了一截」</b>厂商按十进制标 1 TB = 10^12 字节；操作系统按二进制算，<code>10^12 / 1024^4 ≈ 0.909 TiB</code>。于是 1 TB 硬盘在系统里显示约 931 GiB。这不是「缺斤少两」，而是两种口径。</div><h3 id="s12">3.4 文件大小的大致感觉</h3><p>课件给了四个参照：</p><ul><li>短文本文件：几 KB</li><li>高分辨率照片：几 MB</li><li>一首歌：几 MB 或更多</li><li>一部电影：几 GB 或更多</li></ul><p>课件补了一句：实际大小取决于内容、格式与压缩方式。这句话把第 7 讲接上了——同样的画面，PNG 与 JPEG 差好几倍。</p><h3 id="s13">3.5 换算的两个式子</h3><p>若文件有 N 字节：</p><p><b><code>十进制：大小（KB）= N / 1000</code></b>　　　<b><code>二进制：大小（KiB）= N / 1024</code></b></p><p>课件的例子：文件 12 288 字节。</p><pre><code>十进制：12 288 / 1000 = 12.288 KB
+二进制：12 288 / 1024 = 12 KiB</code></pre><p>两个结果都「对」，只是口径不同。注意 12 288 = 12 × 1024，所以二进制换算是干净的整数；这也是「挑数」的常见手法。</p><h3 id="s14">3.6 容量与文件大小</h3><p>课件区分两个概念：<b>存储容量</b>是设备能装多少；<b>文件大小</b>是某个文件需要多少空间。例：512 GB 的 SSD 与 25 MB 的图片集。</p><p>一个设备可以装很多文件，但受可用容量与文件系统限制。「文件系统限制」这句提示很实在：单个文件可能有上限（如 FAT32 单文件 4 GB），文件数也可能有上限。</p><h2 id="s15">四、存储的层次</h2><p>计算机用不同技术满足不同需求。课件给的规律是：<b>越往下，容量越大、每字节成本越低，但访问延迟通常越高</b>。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>层次</th><th>特点</th><th>典型规模</th></tr><tr><td>CPU 寄存器</td><td>极快、极小</td><td>几十到几百字节</td></tr><tr><td>CPU 缓存（cache）</td><td>很快、较小</td><td>几 MB</td></tr><tr><td>主存（RAM）</td><td>较快的工作区</td><td>几 GB 到几十 GB</td></tr><tr><td>SSD / HDD</td><td>持久、大容量</td><td>几百 GB 到几 TB</td></tr></table></div><p>课件特意声明这是一个概念性层次，不是对每个设备的精确排名。这句话是对的：NVMe SSD 的延迟已经远低于机械硬盘，某些场景甚至接近内存，但「寄存器 > cache > RAM > 外存」这个量级顺序仍然成立。</p><h2 id="s16">五、存储介质</h2><h3 id="s17">5.1 机械硬盘（HDD）</h3><ul><li>用磁记录方式把数据存在旋转的盘片上</li><li>靠机械部件访问数据（磁头寻道、盘片旋转）</li><li>通常容量大、每字节成本低</li><li>机械运动影响访问时间</li></ul><p>典型用途：大量文件、台式机、备份存储。</p><h3 id="s18">5.2 固态硬盘（SSD）</h3><ul><li>把数据存在闪存（flash memory）里</li><li>没有移动的机械部件</li><li>通常访问延迟更低</li><li>能提供高读写吞吐</li></ul><p>典型用途：操作系统、应用程序、笔记本、高速存储。</p><h3 id="s19">5.3 HDD 与 SSD 对比</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>特性</th><th>HDD</th><th>SSD</th></tr><tr><td>技术</td><td>磁盘（磁记录）</td><td>闪存</td></tr><tr><td>运动部件</td><td>有</td><td>无</td></tr><tr><td>访问延迟</td><td>通常更高</td><td>通常更低</td></tr><tr><td>每字节成本</td><td>通常更低</td><td>通常更高</td></tr><tr><td>常见优势</td><td>单位成本容量</td><td>速度与响应</td></tr></table></div><p>这条对比解释了现实中的组合方案：系统盘用 SSD 求快，资料盘用 HDD 求容量。</p><h3 id="s20">5.4 U 盘与存储卡</h3><ul><li>用非易失闪存</li><li>便携、方便</li><li>支持设备间传输数据</li><li>写入寿命有限，且可能丢失或损坏</li></ul><p>例子：USB 闪存盘、SD 卡、microSD 卡。</p><h3 id="s21">5.5 三种闪存设备的对比</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>特性</th><th>SSD</th><th>U 盘</th><th>SD 卡</th></tr><tr><td>存储技术</td><td>NAND 闪存</td><td>NAND 闪存</td><td>NAND 闪存</td></tr><tr><td>连接方式</td><td>SATA 或 PCIe/NVMe</td><td>USB 接口</td><td>读卡器或卡槽</td></tr><tr><td>读写速度</td><td>通常最高（尤其 NVMe）</td><td>差异大，通常远低于 SSD</td><td>取决于速度等级，通常远低于 SSD</td></tr><tr><td>访问性能</td><td>低延迟、高吞吐</td><td>取决于控制器与 USB 接口</td><td>取决于速度等级与读卡器</td></tr><tr><td>耐久性</td><td>无运动部件，内置型号受外壳保护</td><td>无运动部件，接口可能裸露</td><td>无运动部件，卡片小易丢失或损坏</td></tr><tr><td>典型用途</td><td>系统、应用、大数据集</td><td>文件传输与便携存储</td><td>相机、手机、无人机、嵌入式</td></tr><tr><td>主要优势</td><td>高性能与大容量</td><td>方便、兼容性好</td><td>小巧、为便携设备设计</td></tr></table></div><p>这张表值得记住的结构：<b>三者技术同源（NAND 闪存），差别在接口与控制器</b>。所以「U 盘能不能当系统盘」的答案不是「不能」，而是「通常不划算」——接口与主控决定了随机读写性能差距。</p><h3 id="s22">5.6 光盘</h3><p>用光学技术存数据，包括 CD、DVD、蓝光（Blu-ray）。适当保存时可用于分发或长期归档，但需要兼容的光驱。</p><p>课件补了两条限定：并非所有光盘都可重写；光盘寿命取决于介质质量与保存条件。</p><h3 id="s23">5.7 云存储</h3><p>云存储把数据放在远端设施上，通过网络访问。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 9，可横向滚动"><table><tr><th>优点</th><th>局限</th></tr><tr><td>可从不同设备访问</td><td>依赖网络与服务可用性</td></tr><tr><td>分享与协作更容易</td><td>可能有订阅费用</td></tr><tr><td>容量可扩展</td><td>需关注隐私、访问控制与服务条款</td></tr></table></div><p>最后一条是本课的安全伏笔：数据放在别人的机器上，「访问控制」与「服务条款」就是你必须读的部分。第 5 章讲加密时会回到这一点。</p><h3 id="s24">5.8 怎样选存储设备</h3><p>课件列了七个考虑因素：</p><span class="chip">容量</span> <span class="chip">访问速度与延迟</span> <span class="chip">成本</span> <span class="chip">便携性</span> <span class="chip">可靠性与耐久性</span> <span class="chip">功耗</span> <span class="chip">安全与备份需求</span><p>并给了两个例子：笔记本系统盘受益于 SSD；大型媒体归档则优先考虑容量与成本。</p><h2 id="s25">六、什么是文件</h2><h3 id="s26">6.1 定义</h3><p>文件（file）是<b>由操作系统或其他存储系统管理的、有名字的数据单元</b>。</p><p>一个文件里可能有：文本、数值数据、图像或音频数据、程序指令、结构化记录。文件提供了保存、取回、复制、分享数据的便利方式。</p><p>定义里三个要素要抓住：<b>有名字</b>（否则无法引用）、<b>有管理主体</b>（操作系统）、<b>是一个单元</b>（可作为整体复制、删除、移动）。</p><h3 id="s27">6.2 文件是字节序列</h3><p>在最底层，文件可以看成一串字节。课件的例子：</p><pre><code>01001000 01101001 00100001
+三个字节：十六进制 48 69 21</code></pre><p>在 ASCII 兼容的文本编码下，这三个字节表示 <b>Hi!</b>。</p><p>课件加了一句关键话：<b>光有字节不能说明数据是什么意思，我们需要一种解释</b>。这与第 4 讲的「字节不知道自己是什么编码」是同一个意思，只是扩大到了「文件类型」层面。</p><h3 id="s28">6.3 同一字节，不同含义</h3><p>课件取一个字节 <code>01000001</code>，指出它可能是：</p><ul><li>ASCII 字符 A</li><li>无符号整数 65</li><li>某个更大的二进制数据结构中的一个值</li></ul><p>解释取决于格式与上下文。课件强调：<b>字节序列没有唯一的含义</b>（"A byte sequence does not have one universal meaning"）。</p><h3 id="s29">6.4 文本文件与二进制文件</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 10，可横向滚动"><table><tr><th>类型</th><th>内容</th><th>例子</th><th>用文本编辑器打开</th></tr><tr><td>文本文件</td><td>用字符编码存的字符</td><td>.txt、.csv、.html、.json</td><td>正常显示（编码正确时）</td></tr><tr><td>二进制文件</td><td>不打算被当普通文本直接读的数据</td><td>JPEG 图像、MP3 音频、可执行程序、科研数据文件</td><td>可能出现不可读的符号</td></tr></table></div><p>课件强调：二进制文件<b>仍然是字节</b>，只是它的结构需要合适的解释方式。所以「文本 vs 二进制」不是两种物理存储，而是两种<b>约定</b>。</p><h3 id="s30">6.5 文件不只是内容</h3><p>一个文件还关联着：名字、位置或路径、大小、创建/修改时间戳、访问权限、文件类型或格式。</p><p>课件指出：其中一些信息存在<b>文件系统的元数据</b>里，而不在文件本身内部。并留了一个反问：<b>文件名一定是文件内容的一部分吗？</b>答案是否——改名不改内容，正是下一节「改名不换格式」的基础。</p><h3 id="s31">6.6 打开一个文件的四步</h3><ol class="steps"><li>用户选中一个文件</li><li>应用程序读取它的字节</li><li>应用程序按预期的格式解释这些字节</li><li>应用程序显示或处理数据</li></ol><p>课件补了一句：若应用用错格式，或文件损坏，结果可能不对，或根本打不开。这四步是所有「文件打不开」问题的排查框架。</p><h2 id="s32">七、文件格式</h2><h3 id="s33">7.1 定义</h3><p>文件格式规定数据在文件里怎样组织与解释。一个格式可能规定：</p><ul><li>文件的结构</li><li>值怎样表示</li><li>不同数据段放在哪里</li><li>数据应当怎样解释</li></ul><p>例子：TXT、CSV、PNG、JPEG、WAV、PDF。</p><h3 id="s34">7.2 扩展名</h3><p>文件扩展名是常用的类型标记后缀，如 <code>notes.txt</code>、<code>data.csv</code>、<code>photo.png</code>、<code>report.pdf</code>。扩展名帮用户与系统选择合适的应用。</p><p>课件加粗提醒：<b>扩展名只是标签，不保证文件实际内容</b>。</p><h3 id="s35">7.3 改名不会改变格式</h3><p>课件的例子：把 <code>photo.jpg</code> 改名为 <code>photo.txt</code>。改名只改了名字，并没有把 JPEG 数据变成文本。要真正改变格式，应用必须读取并转换数据。</p><p>课件把区分写成两行：<b>改名改变的是文件名；转换改变的是数据表示</b>。</p><h3 id="s36">7.4 文件签名与头部</h3><p>许多格式在文件开头附近带识别信息，可称文件签名（file signature），或属于文件头（header）的一部分。例子：</p><ul><li>PNG 文件以一个确定的签名开始</li><li>PDF 文件通常以 <code>%PDF-</code> 开头</li><li>其他格式各有自己的标识字节模式或结构</li></ul><p>应用可以用这些信息帮助识别与解释文件。课件加了两条限定：并非每种格式都有简单的签名；有签名也不等于文件有效或安全。</p><div class="callout tip"><b>为什么这条重要</b>改扩展名后打不开、或杀毒软件报「文件类型与扩展名不符」，都是因为签名与扩展名不一致。检查签名是判断真实格式的可靠办法。</div><h3 id="s37">7.5 元数据</h3><p>元数据（metadata）是<b>描述其他数据的数据</b>。课件给了四类例子：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 11，可横向滚动"><table><tr><th>对象</th><th>元数据例子</th></tr><tr><td>图像</td><td>宽、高、颜色信息、拍摄时间</td></tr><tr><td>音频</td><td>时长、采样率、声道数</td></tr><tr><td>文档</td><td>作者、标题、创建时间</td></tr><tr><td>文件系统</td><td>大小、时间戳、权限</td></tr></table></div><p>元数据能帮应用解释、组织、搜索与管理数据。第 9 讲的检索、第 5 讲的隐私问题都会用到它。</p><h3 id="s38">7.6 内容与元数据</h3><p>以一张照片为例：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>类别</th><th>内容</th></tr><tr><td>内容（content）</td><td>用来重建画面的编码图像数据</td></tr><tr><td>元数据（metadata）</td><td>图像尺寸、拍摄日期、相机设置（若记录）、位置信息（若有）</td></tr></table></div><p>元数据可以嵌在文件里，也可以单独存放。</p><p>课件留了一个讨论题：<b>为什么用户会在分享照片前删除位置元数据？</b>因为地理坐标会暴露住址、行程、作息；这类信息与照片本身无关，却会长期泄漏隐私。第 5 章讲「加密不是安全的全部」时，这是同一类问题的另一面。</p><h3 id="s39">7.7 格式、编解码器、容器</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 13，可横向滚动"><table><tr><th>概念</th><th>定义</th><th>例子</th></tr><tr><td>文件格式（file format）</td><td>规定信息在文件中怎样结构化</td><td>TXT、CSV、PNG</td></tr><tr><td>编解码器（codec）</td><td>编码与解码特定类型的媒体数据</td><td>H.264（视频）、AAC（音频）</td></tr><tr><td>容器（container）</td><td>把媒体流与相关信息打包在一起</td><td>MP4、MKV</td></tr></table></div><p>课件给的例子：MP4 常用作媒体容器，H.264 是视频编码标准，AAC 是音频编码格式；一个 MP4 文件里可以有 H.264 编码的视频与 AAC 编码的音频。</p><p>课件强调三者相关但<b>不能互换</b>。这条区分直接来自第 6 讲的「格式 ≠ 编解码器」，本讲把它补全成三方关系。</p><h3 id="s40">7.8 格式为什么重要</h3><p>文件格式影响：应用之间的兼容性、支持的数据类型与特性、存储大小与可用的压缩、原始数据能否被精确恢复、长期可访问性。</p><p>课件的例子：CSV 适合简单表格数据；大型科研数据集可能更适合专门的二进制格式。</p><p>「长期可访问性」这一条最容易被忽略：用冷门格式存的数据，十年后可能没有软件能打开。这也是归档领域偏好开放、简单格式的原因。</p><h2 id="s41">八、目录与文件操作</h2><h3 id="s42">8.1 为什么组织文件</h3><p>没有组织就很难找到某个文件。目录（directory，常称文件夹）帮用户：</p><ul><li>把相关文件分组</li><li>建立层次结构</li><li>避免无谓的杂乱</li><li>更容易定位与管理文件</li></ul><p>课件的例子分组：Documents、Images、Projects、Backups。</p><h3 id="s43">8.2 层次结构</h3><p>一个目录可以包含文件与其他目录，于是形成层次（hierarchy）。这个结构就是数据结构里的「树」——第 1 讲列过 Tree 这一项，这里是它的日常形态。</p><h3 id="s44">8.3 常见操作</h3><p>课件列了七种：</p><span class="chip">create</span> <span class="chip">open and read</span> <span class="chip">write and save</span> <span class="chip">rename</span> <span class="chip">copy</span> <span class="chip">move</span> <span class="chip">delete</span><p>课件提醒不同操作效果不同：复制文件通常会多出一个副本；移动文件改变的是位置或目录项。</p><p>这句「移动改变的是目录项」很精确：在同一分区内移动通常不搬数据，只改指向；跨分区移动才是真的复制再删除。这也解释了「移动大文件很快、复制大文件很慢」的现象。</p><h3 id="s45">8.4 良好实践</h3><ul><li>用有意义的文件名</li><li>按项目或用途分组</li><li>把相关数据与文档放在一起</li><li>避免 <code>final_final2_new</code> 这类含混名字</li><li>为重要文件保留备份</li></ul><p>课件给了一个具体的目录例子：</p><pre><code>BearingStudy/RawData/
 BearingStudy/ProcessedData/
-BearingStudy/Results/</code></pre><p>这个例子的价值在于「按数据流阶段分组」：原始数据、处理后数据、结果分开，任何一步出错都能回溯。</p><h2 id="s46">九、访问速度</h2><h3 id="s47">9.1 影响什么</h3><p>访问性能影响：应用启动时间、加载大数据集、检索记录、视频播放与流式传输、训练机器学习模型。</p><h3 id="s48">9.2 延迟与吞吐</h3><table><tr><th>指标</th><th>定义</th><th>类比</th></tr><tr><td>延迟（latency）</td><td>操作开始返回有用结果之前的时间</td><td>点菜到上第一道菜的等待</td></tr><tr><td>吞吐（throughput）</td><td>单位时间传输的数据量</td><td>每分钟能上几道菜</td></tr></table><p>课件给了一个反直觉的提醒：<b>吞吐高的设备，对小而分散的请求仍可能有明显延迟</b>。这解释了为什么大文件拷贝很快、而打开一堆小文件很慢——后者受延迟支配。</p><h2 id="s49">十、存储的数据为什么会丢</h2><h3 id="s50">10.1 六种原因</h3><ul><li>硬件故障</li><li>误删除</li><li>软件错误</li><li>恶意软件或勒索软件</li><li>断电或环境损坏</li><li>失去对在线服务的访问</li></ul><p>课件的关键句：<b>保存一次并不保证永远可用</b>（"Saving a file once does not guarantee that it will always be available"）。</p><h3 id="s51">10.2 备份与冗余</h3><p>课件把两个容易混的概念分开：</p><table><tr><th>概念</th><th>定义</th></tr><tr><td>备份（backup）</td><td>分开保存的另一份副本，用于在丢失或损坏后恢复</td></tr><tr><td>冗余（redundancy）</td><td>额外维护数据或部件，以提高可用性或可恢复性</td></tr></table><p>课件强调二者不相同：</p><ul><li>RAID 冗余能容忍某些硬盘故障</li><li>但它未必能防误删除、勒索软件，或影响整个系统的灾难</li><li>单独的备份提供另一条恢复路径</li></ul><p>良好实践：<b>把重要备份与主数据分开保存</b>。放在同一台机器、同一个房间、同一个账号下的「备份」，遇到火灾、进水、勒索软件会一起消失。</p><h2 id="s52">十一、课件复习题（附答案）</h2><ol><li>文件 5 242 880 字节，求 MiB 与十进制 MB。</li><li>RAM 与 SSD 哪个易失？HDD 与 SSD 哪个通常没有运动部件？哪个适合跨设备通过互联网访问文件？</li><li>解释三句话为什么错：「每个文件都是文本文件」「把 .jpg 改成 .txt 就把图像变成文本」「同一字节序列总是同一含义」。</li><li>一张照片含图像数据、尺寸、拍摄时间。指出哪些是重建图像所需的内容、两项元数据、一个分享前删除元数据的理由。</li></ol><p>这四道题的完整解答在本讲例题与练习里；核心口径是：<code>5 242 880 / 1 048 576 = 5 MiB</code>、<code>/ 10^6 ≈ 5.24 MB</code>。</p><h2 id="s53">十二、场景练习：选格式</h2><table><tr><th>任务</th><th>合适的选择</th></tr><tr><td>纯笔记</td><td>TXT</td></tr><tr><td>简单表格数据</td><td>CSV</td></tr><tr><td>照片</td><td>JPEG 或 PNG，取决于需求</td></tr><tr><td>需一致显示的文档</td><td>PDF</td></tr><tr><td>要精确恢复样本的音频</td><td>FLAC 等无损格式</td></tr><tr><td>视频分发</td><td>合适的容器 + 编解码器组合</td></tr></table><p>课件的结论：最佳选择取决于兼容性、体积、质量，以及是否需要精确恢复。这与第 7 讲「压缩是应用相关的」是同一条道理。</p></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>memory (RAM)</td><td>内存</td><td>Holds data currently in use; usually volatile.</td></tr><tr><td>storage</td><td>存储</td><td>Keeps data for later use; non-volatile, typically larger.</td></tr><tr><td>volatile</td><td>易失的</td><td>Data normally disappears when power is lost, e.g. RAM.</td></tr><tr><td>non-volatile</td><td>非易失的</td><td>Data remains without continuous power, e.g. SSD, HDD, USB flash.</td></tr><tr><td>bit / byte</td><td>位 / 字节</td><td>b means bit, B means byte; 8 bits = 1 byte.</td></tr><tr><td>KiB / MiB</td><td>二进制单位</td><td>1 KiB = 1 024 bytes; 1 MiB = 1 024 KiB.</td></tr><tr><td>storage hierarchy</td><td>存储层次</td><td>Registers → cache → RAM → SSD/HDD; lower levels are larger, cheaper per byte and slower.</td></tr><tr><td>HDD</td><td>机械硬盘</td><td>Magnetic rotating disks with moving parts; low cost per byte.</td></tr><tr><td>SSD</td><td>固态硬盘</td><td>Flash memory with no moving parts; low latency and high throughput.</td></tr><tr><td>file</td><td>文件</td><td>A named unit of data managed by the operating system.</td></tr><tr><td>file format</td><td>文件格式</td><td>Defines how data is organized and interpreted in a file.</td></tr><tr><td>file signature</td><td>文件签名</td><td>Identifying bytes near the start of a file, e.g. %PDF-.</td></tr><tr><td>metadata</td><td>元数据</td><td>Data that describes other data: size, timestamps, author, dimensions.</td></tr><tr><td>container</td><td>容器</td><td>Packages media streams and metadata together, e.g. MP4.</td></tr><tr><td>latency and throughput</td><td>延迟与吞吐</td><td>Time before results start versus data transferred per unit time.</td></tr><tr><td>backup and redundancy</td><td>备份与冗余</td><td>A separate copy for recovery versus extra data or components for availability.</td></tr></table></section>
+BearingStudy/Results/</code></pre><p>这个例子的价值在于「按数据流阶段分组」：原始数据、处理后数据、结果分开，任何一步出错都能回溯。</p><h2 id="s46">九、访问速度</h2><h3 id="s47">9.1 影响什么</h3><p>访问性能影响：应用启动时间、加载大数据集、检索记录、视频播放与流式传输、训练机器学习模型。</p><h3 id="s48">9.2 延迟与吞吐</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 14，可横向滚动"><table><tr><th>指标</th><th>定义</th><th>类比</th></tr><tr><td>延迟（latency）</td><td>操作开始返回有用结果之前的时间</td><td>点菜到上第一道菜的等待</td></tr><tr><td>吞吐（throughput）</td><td>单位时间传输的数据量</td><td>每分钟能上几道菜</td></tr></table></div><p>课件给了一个反直觉的提醒：<b>吞吐高的设备，对小而分散的请求仍可能有明显延迟</b>。这解释了为什么大文件拷贝很快、而打开一堆小文件很慢——后者受延迟支配。</p><h2 id="s49">十、存储的数据为什么会丢</h2><h3 id="s50">10.1 六种原因</h3><ul><li>硬件故障</li><li>误删除</li><li>软件错误</li><li>恶意软件或勒索软件</li><li>断电或环境损坏</li><li>失去对在线服务的访问</li></ul><p>课件的关键句：<b>保存一次并不保证永远可用</b>（"Saving a file once does not guarantee that it will always be available"）。</p><h3 id="s51">10.2 备份与冗余</h3><p>课件把两个容易混的概念分开：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 15，可横向滚动"><table><tr><th>概念</th><th>定义</th></tr><tr><td>备份（backup）</td><td>分开保存的另一份副本，用于在丢失或损坏后恢复</td></tr><tr><td>冗余（redundancy）</td><td>额外维护数据或部件，以提高可用性或可恢复性</td></tr></table></div><p>课件强调二者不相同：</p><ul><li>RAID 冗余能容忍某些硬盘故障</li><li>但它未必能防误删除、勒索软件，或影响整个系统的灾难</li><li>单独的备份提供另一条恢复路径</li></ul><p>良好实践：<b>把重要备份与主数据分开保存</b>。放在同一台机器、同一个房间、同一个账号下的「备份」，遇到火灾、进水、勒索软件会一起消失。</p><h2 id="s52">十一、课件复习题（附答案）</h2><ol><li>文件 5 242 880 字节，求 MiB 与十进制 MB。</li><li>RAM 与 SSD 哪个易失？HDD 与 SSD 哪个通常没有运动部件？哪个适合跨设备通过互联网访问文件？</li><li>解释三句话为什么错：「每个文件都是文本文件」「把 .jpg 改成 .txt 就把图像变成文本」「同一字节序列总是同一含义」。</li><li>一张照片含图像数据、尺寸、拍摄时间。指出哪些是重建图像所需的内容、两项元数据、一个分享前删除元数据的理由。</li></ol><p>这四道题的完整解答在本讲例题与练习里；核心口径是：<code>5 242 880 / 1 048 576 = 5 MiB</code>、<code>/ 10^6 ≈ 5.24 MB</code>。</p><h2 id="s53">十二、场景练习：选格式</h2><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 16，可横向滚动"><table><tr><th>任务</th><th>合适的选择</th></tr><tr><td>纯笔记</td><td>TXT</td></tr><tr><td>简单表格数据</td><td>CSV</td></tr><tr><td>照片</td><td>JPEG 或 PNG，取决于需求</td></tr><tr><td>需一致显示的文档</td><td>PDF</td></tr><tr><td>要精确恢复样本的音频</td><td>FLAC 等无损格式</td></tr><tr><td>视频分发</td><td>合适的容器 + 编解码器组合</td></tr></table></div><p>课件的结论：最佳选择取决于兼容性、体积、质量，以及是否需要精确恢复。这与第 7 讲「压缩是应用相关的」是同一条道理。</p><h3 id="s54">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/a0f27b1eb8f2c0f0cc5e.webp" loading="lazy" alt="Lecture8 p40" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p40.jpg"><figcaption>Lecture8 · 第 40 页</figcaption></figure><figure><img src="../../assets/optimized/d408e04bd33b0d29f5f1.webp" loading="lazy" alt="Lecture8 p14" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p14.jpg"><figcaption>Lecture8 · 第 14 页</figcaption></figure><figure><img src="../../assets/optimized/365e61d17a8347c8f765.webp" loading="lazy" alt="Lecture8 p17" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p17.jpg"><figcaption>Lecture8 · 第 17 页</figcaption></figure><figure><img src="../../assets/optimized/71a20fe82f787d834294.webp" loading="lazy" alt="Lecture8 p51" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p51.jpg"><figcaption>Lecture8 · 第 51 页</figcaption></figure><figure><img src="../../assets/optimized/8261136bf7d533c6ffe9.webp" loading="lazy" alt="Lecture8 p19" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p19.jpg"><figcaption>Lecture8 · 第 19 页</figcaption></figure><figure><img src="../../assets/optimized/284d6f01e21057579e9b.webp" loading="lazy" alt="Lecture8 p15" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p15.jpg"><figcaption>Lecture8 · 第 15 页</figcaption></figure><figure><img src="../../assets/img/86/slides/Lecture8-p20.jpg" loading="lazy" alt="Lecture8 p20" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p20.jpg"><figcaption>Lecture8 · 第 20 页</figcaption></figure><figure><img src="../../assets/img/86/slides/Lecture8-p01.jpg" loading="lazy" alt="Lecture8 p1" width="1392" height="783" decoding="async" data-full-src="../../assets/img/86/slides/Lecture8-p01.jpg"><figcaption>Lecture8 · 第 1 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 17，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>memory (RAM)</td><td>内存</td><td>Holds data currently in use; usually volatile.</td></tr><tr><td>storage</td><td>存储</td><td>Keeps data for later use; non-volatile, typically larger.</td></tr><tr><td>volatile</td><td>易失的</td><td>Data normally disappears when power is lost, e.g. RAM.</td></tr><tr><td>non-volatile</td><td>非易失的</td><td>Data remains without continuous power, e.g. SSD, HDD, USB flash.</td></tr><tr><td>bit / byte</td><td>位 / 字节</td><td>b means bit, B means byte; 8 bits = 1 byte.</td></tr><tr><td>KiB / MiB</td><td>二进制单位</td><td>1 KiB = 1 024 bytes; 1 MiB = 1 024 KiB.</td></tr><tr><td>storage hierarchy</td><td>存储层次</td><td>Registers → cache → RAM → SSD/HDD; lower levels are larger, cheaper per byte and slower.</td></tr><tr><td>HDD</td><td>机械硬盘</td><td>Magnetic rotating disks with moving parts; low cost per byte.</td></tr><tr><td>SSD</td><td>固态硬盘</td><td>Flash memory with no moving parts; low latency and high throughput.</td></tr><tr><td>file</td><td>文件</td><td>A named unit of data managed by the operating system.</td></tr><tr><td>file format</td><td>文件格式</td><td>Defines how data is organized and interpreted in a file.</td></tr><tr><td>file signature</td><td>文件签名</td><td>Identifying bytes near the start of a file, e.g. %PDF-.</td></tr><tr><td>metadata</td><td>元数据</td><td>Data that describes other data: size, timestamps, author, dimensions.</td></tr><tr><td>container</td><td>容器</td><td>Packages media streams and metadata together, e.g. MP4.</td></tr><tr><td>latency and throughput</td><td>延迟与吞吐</td><td>Time before results start versus data transferred per unit time.</td></tr><tr><td>backup and redundancy</td><td>备份与冗余</td><td>A separate copy for recovery versus extra data or components for availability.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　一个文件 5 242 880 字节，分别用 MiB 与十进制 MB 表示。</div><p><b>MiB：</b><code>5 242 880 / 1 048 576 =</code> <b>5 MiB</b>（正好整除，因为 5 242 880 = 5 × 1024 × 1024）。</p><p><b>十进制 MB：</b><code>5 242 880 / 1 000 000 ≈</code> <b>5.24 MB</b>。</p><p>两个答案都对，取决于口径。若题目写「MB」且给出「1 MB = 10^6 字节」，就用 10^6；若写「MiB」或用 1024，就用 1 048 576。</p><p>顺便算 KiB：<code>5 242 880 / 1024 = 5 120 KiB</code>。三级单位一次算清，是这类题的推荐做法。</p></div><div class="qa"><div class="q">例 2　一段字节 <code>48 69 21</code>（十六进制）是什么？如果把同一个文件当 32 位整数读，第一个值是多少？</div><p><b>第一步，按 ASCII 解释：</b><code>0x48 = 72 = H</code>、<code>0x69 = 105 = i</code>、<code>0x21 = 33 = !</code> → 文本 <b>Hi!</b>。</p><p><b>第二步，按 32 位小端整数解释：</b>取前四个字节需要补一个字节，假设文件只有三字节则读不完整；若后续还有字节，例如 <code>48 69 21 00</code>，按小端读得 <code>0x00216948 = 2 189 640</code>，按大端读得 <code>0x48692100 = 1 214 849 280</code>。</p><p>这说明两件事：① 同一串字节的解释取决于「用什么规则」；② 连「字节顺序」（大端/小端）也需要额外约定。</p><p>这道题的答题要点不在具体数值，而在说清「解释规则」这一层——这正是课件那句「字节序列没有唯一含义」的具体化。</p></div><div class="qa"><div class="q">例 3　一个 MP4 文件里可能有哪些东西？它与 H.264、AAC 是什么关系？</div><p><b>MP4 是容器：</b>它规定「怎样把多条流与元数据打包进一个文件」，本身不规定画面怎么压。</p><p><b>里面可能有：</b>视频流（例如用 H.264 编码）、音频流（例如用 AAC 编码）、元数据（时长、分辨率、创建时间、字幕轨、封面图）。</p><p><b>关系：</b>容器 = 箱子，编解码器 = 箱子里物品的压缩方式。同一个 MP4 可以装 H.264+AAC，也可以装 H.265+AAC；同一个 H.264 视频也可以封进 MKV 或 WebM。</p><p><b>为什么这个区分有用：</b>「MP4 播放不了」可能是容器不兼容，也可能是解码器缺失；「转成 MP4」可能只是换容器（无损、很快），也可能是重编码（有损、很慢）。分不清就会做出错误的技术判断。</p></div><div class="qa"><div class="q">例 4　某公司把备份放在与生产数据同一台服务器的另一块硬盘上，并配置了 RAID 1。请评价这个方案。</div><p><b>RAID 1 提供了什么：</b>两块盘互为镜像，一块坏了另一块还能读，于是「单盘故障」不会导致停机或数据丢失。这属于<b>冗余</b>。</p><p><b>它没有提供什么：</b>误删除会同时作用于两块盘；勒索软件加密的是文件系统层的文件，镜像会同步被加密；整机失火、进水、被盗会同时毁掉两块盘；管理员误操作同样穿透镜像。</p><p><b>结论：</b>这不是一个合格的备份方案，只是「高可用」方案。备份的核心特征是与主数据<b>分离</b>（不同设备、不同位置、最好不同权限/账号），并且要有历史版本以便回滚。</p><p><b>改进：</b>保留异地或离线的第二份副本；对备份做定期恢复演练（没验证过的备份不算备份）；对关键数据保留多个时间点版本。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>一个 8 GB 的 U 盘能装多少个 2 GB 的文件？若每个文件实际占 2.1 GB 呢？</li><li>厂商标称 1 TB 的硬盘，按二进制单位算约多少 TiB？在系统里大致显示为多少 GiB？</li><li>为什么把 <code>report.jpg</code> 改成 <code>report.txt</code> 不会得到文本文件？请从「数据表示」角度解释。</li><li>RAID 1 与「备份」有什么区别？请举一个 RAID 挡不住、备份能救的场景。</li><li>算 1920 × 1080、24 位 RGB 未压缩图像的 MiB 数，并说明它在内存里会占多少。</li><li>下列各项哪些属于元数据：图像的宽高、像素值本身、拍摄时间、文件大小、作者、修改时间？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> <code>8 / 2 = 4</code> 个。若每个 2.1 GB，则 <code>8 / 2.1 ≈ 3.8</code> → 只能装 <b>3 个</b>（不能装 4 个，因为没有 8.4 GB）。另外实际可用容量小于标称，系统文件也占空间，实际更少。</p><p><b>2.</b> <code>1 TB = 10^12</code> 字节；<code>10^12 / 1024^4 ≈ 0.909 TiB</code>；在按 TiB/GiB 显示的系统中约 <code>0.909 × 1024 ≈ 931 GiB</code>。这就是「1 TB 硬盘只有 931 GB」的来源。</p><p><b>3.</b> 改名只改变文件名（元数据的一部分），文件里的字节一点没变，仍然是 JPEG 的压缩数据。<b>格式由数据的组织结构决定</b>，不由名字决定。要真正变成文本，必须解码 JPEG 得到像素，再以某种文本形式（如每像素的数值）重新写出——那是转换，不是改名。</p><p><b>4.</b> RAID 1 是冗余：它保证「一块盘坏」时数据仍可读。备份是独立副本：它保证「数据被错误改写或删除」后还能回到从前。RAID 挡不住、备份能救的典型场景：误把整个项目目录删了（两块盘同步删除），或勒索软件把所有文件加密（镜像同步加密）。</p><p><b>5.</b> <code>1920 × 1080 × 3 = 6 220 800</code> 字节；<code>/ 1 048 576 ≈ 5.93 MiB</code>。在内存里通常按整块缓冲存放，可能还有对齐与额外通道（如 alpha），实际占用 ≥ 5.93 MiB。</p><p><b>6.</b> 属于元数据：宽高、拍摄时间、文件大小、作者、修改时间。不属于：<b>像素值本身</b>——那是内容，是重建图像所必需的数据。判据：删掉它，还能不能重建原对象？能 → 元数据；不能 → 内容。</p></div></details></section>
-<section id="sec-exam" class="card" data-type="exam"><table><tr><th>考点</th><th>要点</th></tr><tr><td>内存 vs 存储</td><td>易失 vs 非易失；RAM 不能作为唯一保存位置</td></tr><tr><td>单位换算</td><td>KB/MB/GB/TB 用 1000；KiB/MiB/GiB/TiB 用 1024；b 与 B 差 8 倍</td></tr><tr><td>存储层次</td><td>越往下容量越大、每字节越便宜、延迟越高</td></tr><tr><td>介质对比</td><td>HDD 有机械部件、单位成本低；SSD 无部件、延迟低；三者闪存差别在接口与主控</td></tr><tr><td>文件本质</td><td>有名字、由 OS 管理的数据单元；底层是字节序列，解释依赖格式</td></tr><tr><td>格式 vs 扩展名</td><td>扩展名只是标签；改名不换格式；签名与头部才是可靠判据</td></tr><tr><td>内容 vs 元数据</td><td>内容用于重建对象；元数据描述对象（尺寸、时间、作者、权限）</td></tr><tr><td>格式 / codec / 容器</td><td>MP4 是容器，H.264 是视频 codec，AAC 是音频 codec</td></tr><tr><td>延迟 vs 吞吐</td><td>小文件多受延迟影响，大文件多受吞吐影响</td></tr><tr><td>备份 vs 冗余</td><td>备份要分离且可回滚；RAID 不能替代备份</td></tr></table><div class="callout exam"><b>必考</b>必考：易失/非易失判断、单位换算（含 1024 与 1000）、文件是字节序列、扩展名不是保证、元数据的识别、格式与容器的区分、备份与冗余的差别。</div><div class="callout warn"><b>易错 1</b>把 1 KB 当 1024 字节。厂商口径是 1000；只有 KiB 才是 1024。题目给什么口径就用什么口径。</div><div class="callout warn"><b>易错 2</b>把元数据当成「不重要的数据」。元数据决定应用能否正确解释文件，缺了它文件可能完全打不开。</div><div class="callout warn"><b>易错 3</b>以为 SSD 与 U 盘是不同技术。三者都是 NAND 闪存，差别在接口、主控与耐久设计。</div><div class="callout tip"><b>进阶</b>① 「移动文件很快」是因为同分区内只改目录项；② 文件签名可用于判断真实格式，但签名正确不代表文件有效或安全；③ 冷门格式的长期可访问性风险，是归档领域偏好开放格式的原因；④ 云存储把「可用性」交给服务商，同时把「访问控制」的责任留给自己。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s54">方法清单</h2><h3 id="s55">换算存储单位（三步）</h3><ol class="steps"><li>先确认口径：1000（十进制）还是 1024（二进制）</li><li>分清 b（位）与 B（字节），需要时乘除 8</li><li>逐级换算并标注单位：KB/MB/GB 或 KiB/MiB/GiB</li></ol><h3 id="s56">判断一个文件到底是什么（四步）</h3><ol class="steps"><li>看扩展名（只是线索，不是证据）</li><li>看文件签名字节（PNG、PDF 等格式有固定开头）</li><li>用匹配的应用尝试打开，观察是否报错</li><li>必要时按十六进制查看前若干字节，人工核对</li></ol><h3 id="s57">区分内容与元数据（一问）</h3><ul class="checklist"><li>删掉它还能重建原对象吗？能 → 元数据；不能 → 内容</li><li>图像的宽高、拍摄时间、作者、权限 → 元数据</li><li>像素值、字符数据、音频样本 → 内容</li></ul><h3 id="s58">设计一个可靠的保存方案（四步）</h3><ol class="steps"><li>工作副本放在存储介质上（不要只留在 RAM）</li><li>保留历史版本，便于回滚误改</li><li>备份与主数据分离（设备、位置、账号）</li><li>定期做恢复演练，验证备份真的能用</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p2–p5</td><td>四个关键问题、四类文件都是字节、为什么需要存储的五条理由与反问</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p4–p6</td><td>内存与存储对照、易失与非易失、RAM 能否作为唯一保存位置的讨论</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p7–p12</td><td>位与字节（b vs B）、十进制单位表、二进制单位表、文件大小参照、N/1000 与 N/1024、12 288 的例子、容量与文件大小</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p13</td><td>存储层次：寄存器 → cache → RAM → SSD/HDD，容量/成本/延迟的规律</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p14–p18</td><td>HDD 的磁记录与机械部件、SSD 的闪存与无部件、HDD/SSD 对比表、U 盘与存储卡、SSD/U 盘/SD 卡三方对比</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p19–p22</td><td>光盘（CD/DVD/蓝光的限制）、云存储的优点与局限、选择设备的七个因素、存储技术配对小测</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p23–p30</td><td>文件的定义、文件是字节序列（48 69 21 = Hi!）、同一字节的不同解释、文本文件与二进制文件、文件不只内容、打开文件四步、文件表示小测</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p31–p38</td><td>文件格式的定义、扩展名、改名不换格式、签名与头部（PNG、%PDF-）、元数据四类、内容与元数据、格式/codec/容器、格式为什么重要</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p39–p45</td><td>为什么要组织文件、目录层次、七种文件操作、良好命名与分组、BearingStudy 目录例、访问速度的影响因素、延迟与吞吐、数据丢失的六种原因、备份与冗余</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p46–p50</td><td>四道复习题（MiB/MB、存储技术选择、三句错话、内容与元数据）、五种任务选格式的对照表</td></tr><tr><td>Week9- Information Retrieval/Exercise 5.pdf</td><td>第 1 题</td><td>文件元数据与内容的区别与两项元数据举例（本讲第七节与练习第 6 题已覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>厂商容量与系统显示的差额推算、文件签名与扩展名不符的判断、同分区移动只改目录项、备份演练、冷门格式的长期可访问性，均为衔接性拓展</td></tr></table></section><div class="lnav"><a class="prev" href="w7-data-compression.html">← Week 7 · 数据压缩：RLE、Huffman、无损与有损</a><a class="next" href="w9-information-retrieval.html">Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价 →</a></div></article></div>
+<section id="sec-exam" class="card" data-type="exam"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 18，可横向滚动"><table><tr><th>考点</th><th>要点</th></tr><tr><td>内存 vs 存储</td><td>易失 vs 非易失；RAM 不能作为唯一保存位置</td></tr><tr><td>单位换算</td><td>KB/MB/GB/TB 用 1000；KiB/MiB/GiB/TiB 用 1024；b 与 B 差 8 倍</td></tr><tr><td>存储层次</td><td>越往下容量越大、每字节越便宜、延迟越高</td></tr><tr><td>介质对比</td><td>HDD 有机械部件、单位成本低；SSD 无部件、延迟低；三者闪存差别在接口与主控</td></tr><tr><td>文件本质</td><td>有名字、由 OS 管理的数据单元；底层是字节序列，解释依赖格式</td></tr><tr><td>格式 vs 扩展名</td><td>扩展名只是标签；改名不换格式；签名与头部才是可靠判据</td></tr><tr><td>内容 vs 元数据</td><td>内容用于重建对象；元数据描述对象（尺寸、时间、作者、权限）</td></tr><tr><td>格式 / codec / 容器</td><td>MP4 是容器，H.264 是视频 codec，AAC 是音频 codec</td></tr><tr><td>延迟 vs 吞吐</td><td>小文件多受延迟影响，大文件多受吞吐影响</td></tr><tr><td>备份 vs 冗余</td><td>备份要分离且可回滚；RAID 不能替代备份</td></tr></table></div><div class="callout exam"><b>必考</b>必考：易失/非易失判断、单位换算（含 1024 与 1000）、文件是字节序列、扩展名不是保证、元数据的识别、格式与容器的区分、备份与冗余的差别。</div><div class="callout warn"><b>易错 1</b>把 1 KB 当 1024 字节。厂商口径是 1000；只有 KiB 才是 1024。题目给什么口径就用什么口径。</div><div class="callout warn"><b>易错 2</b>把元数据当成「不重要的数据」。元数据决定应用能否正确解释文件，缺了它文件可能完全打不开。</div><div class="callout warn"><b>易错 3</b>以为 SSD 与 U 盘是不同技术。三者都是 NAND 闪存，差别在接口、主控与耐久设计。</div><div class="callout tip"><b>进阶</b>① 「移动文件很快」是因为同分区内只改目录项；② 文件签名可用于判断真实格式，但签名正确不代表文件有效或安全；③ 冷门格式的长期可访问性风险，是归档领域偏好开放格式的原因；④ 云存储把「可用性」交给服务商，同时把「访问控制」的责任留给自己。</div></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s55">方法清单</h2><h3 id="s56">换算存储单位（三步）</h3><ol class="steps"><li>先确认口径：1000（十进制）还是 1024（二进制）</li><li>分清 b（位）与 B（字节），需要时乘除 8</li><li>逐级换算并标注单位：KB/MB/GB 或 KiB/MiB/GiB</li></ol><h3 id="s57">判断一个文件到底是什么（四步）</h3><ol class="steps"><li>看扩展名（只是线索，不是证据）</li><li>看文件签名字节（PNG、PDF 等格式有固定开头）</li><li>用匹配的应用尝试打开，观察是否报错</li><li>必要时按十六进制查看前若干字节，人工核对</li></ol><h3 id="s58">区分内容与元数据（一问）</h3><ul class="checklist"><li>删掉它还能重建原对象吗？能 → 元数据；不能 → 内容</li><li>图像的宽高、拍摄时间、作者、权限 → 元数据</li><li>像素值、字符数据、音频样本 → 内容</li></ul><h3 id="s59">设计一个可靠的保存方案（四步）</h3><ol class="steps"><li>工作副本放在存储介质上（不要只留在 RAM）</li><li>保留历史版本，便于回滚误改</li><li>备份与主数据分离（设备、位置、账号）</li><li>定期做恢复演练，验证备份真的能用</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 19，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p2–p5</td><td>四个关键问题、四类文件都是字节、为什么需要存储的五条理由与反问</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p4–p6</td><td>内存与存储对照、易失与非易失、RAM 能否作为唯一保存位置的讨论</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p7–p12</td><td>位与字节（b vs B）、十进制单位表、二进制单位表、文件大小参照、N/1000 与 N/1024、12 288 的例子、容量与文件大小</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p13</td><td>存储层次：寄存器 → cache → RAM → SSD/HDD，容量/成本/延迟的规律</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p14–p18</td><td>HDD 的磁记录与机械部件、SSD 的闪存与无部件、HDD/SSD 对比表、U 盘与存储卡、SSD/U 盘/SD 卡三方对比</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p19–p22</td><td>光盘（CD/DVD/蓝光的限制）、云存储的优点与局限、选择设备的七个因素、存储技术配对小测</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p23–p30</td><td>文件的定义、文件是字节序列（48 69 21 = Hi!）、同一字节的不同解释、文本文件与二进制文件、文件不只内容、打开文件四步、文件表示小测</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p31–p38</td><td>文件格式的定义、扩展名、改名不换格式、签名与头部（PNG、%PDF-）、元数据四类、内容与元数据、格式/codec/容器、格式为什么重要</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p39–p45</td><td>为什么要组织文件、目录层次、七种文件操作、良好命名与分组、BearingStudy 目录例、访问速度的影响因素、延迟与吞吐、数据丢失的六种原因、备份与冗余</td></tr><tr><td>Week8- Information Storage and File Representation/Lecture8.pdf</td><td>p46–p50</td><td>四道复习题（MiB/MB、存储技术选择、三句错话、内容与元数据）、五种任务选格式的对照表</td></tr><tr><td>Week9- Information Retrieval/Exercise 5.pdf</td><td>第 1 题</td><td>文件元数据与内容的区别与两项元数据举例（本讲第七节与练习第 6 题已覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>厂商容量与系统显示的差额推算、文件签名与扩展名不符的判断、同分区移动只改目录项、备份演练、冷门格式的长期可访问性，均为衔接性拓展</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="w7-data-compression.html"><span>上一讲</span><strong>Week 7 · 数据压缩：RLE、Huffman、无损与有损</strong></a><a data-sequence="parent" href="part-4.html"><span>返回目录</span><strong>第 4 章 信息存储、文件与检索</strong></a><a data-sequence="next" href="w9-information-retrieval.html"><span>下一讲</span><strong>Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

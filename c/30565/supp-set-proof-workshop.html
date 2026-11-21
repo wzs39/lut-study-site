@@ -8,204 +8,362 @@
 <title>补充专题 · 集合证明工作坊：从定义到完整论证 · 30565</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">BM20A9200 数学A</a> / <a href="part-6.html">补充专题与习题训练</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本讲定位与学习目标</a><a class="toc-l2" href="#s2">一、核心视角：集合由元素决定</a><a class="toc-l2" href="#s3">二、两套方向不同的规则</a><a class="toc-l2" href="#s4">三、把证明写成“假设表＋目标树”</a><a class="toc-l2" href="#s5">四、集合相等和逻辑等价不是同一层拆分</a><a class="toc-l2" href="#s6">五、幂集的类型检查</a><a class="toc-l2" href="#s7">六、如何校正看似明显的证明</a><a class="toc-l2" href="#s8">英文术语与表达</a><a class="toc-l2" href="#s9">例题：从拆解到收束</a><a class="toc-l2" href="#s10">独立练习与参考思路</a><a class="toc-l2" href="#s11">复习重点与常见失分点</a><a class="toc-l2" href="#s12">可迁移的证明清单</a><a class="toc-l2" href="#s13">来源与补充边界</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="sets-basics.html">第 1 讲 · 集合、属于关系与集合运算</a><a href="families-cartesian-relations.html">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</a><a href="relations-inverse-composition-logic.html">第 3 讲 · 逆关系与合成、命题逻辑与真值表</a><a href="formal-proofs-number-systems.html">第 4 讲 · 一阶逻辑、三类证明与数系进制</a><a href="proof-strategy-functions.html">第 5 讲 · 证明策略选择与函数</a><a href="cardinality-countable-sets.html">第 6 讲 · 基数、可数集与对角线法</a><a href="combinatorics-counting.html">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</a><a href="induction-and-stacked-implications.html">第 8 讲 · 堆叠蕴含与数学归纳法</a><a href="divisibility-euclidean-algorithm.html">第 9 讲 · 整除、最大公因数与欧几里得算法</a><a href="primes-and-modular-arithmetic.html">第 10 讲 · 素数分解与模运算</a><a href="modular-inverse-rsa-matrices-intro.html">第 11 讲 · 乘法逆元、RSA 与矩阵初步</a><a href="matrices-gauss-jordan.html">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</a><a href="exam-review-and-problem-types.html">第 13 讲 · 习题课与考试题型总览</a><a href="supp-exercises.html">补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><a class="toc-l3" href="supp-set-proof-workshop.html">▸ 补充专题 · 集合证明工作坊：从定义到完整论证</a></div></aside><article><h1>补充专题 · 集合证明工作坊：从定义到完整论证</h1><p class="lead">Set Proof Workshop: Definitions, Cases and Double Inclusion <span class="badge mute">30565</span> <span class="badge mute">第 15 / 15 讲</span></p><p class="chaptertag">所属章节：<a href="part-6.html">补充专题与习题训练</a></p><p class="src">原始文件：<code>070 Guide to Set Theory Proofs.pdf</code> <code>08-lesson-WB.pdf</code> <code>09-lesson-WB.pdf</code> <code>2_01-exercise-solutions.pdf</code> <code>1_03-exercise.pdf</code> <code>2_02-exercise-solutions.pdf</code> <code>1_04-exercise.pdf</code> <code>2_03-exercise-solutions.pdf</code> <code>1_05-exercise.pdf</code> <code>2_04-exercise-solutions.pdf</code> <code>1_06-exercise.pdf</code> <code>2_05-exercise-solutions.pdf</code> <code>1_07-exercise.pdf</code> <code>2_06-exercise-solutions.pdf</code> <code>1_08-exercise.pdf</code> <code>2_07-exercise-solutions.pdf</code> <code>1_09-exercise.pdf</code> <code>2_08-exercise-solutions.pdf</code> <code>1_10-exercise.pdf</code> <code>2_09-exercise-solutions.pdf</code> <code>1_11-exercise.pdf</code> <code>2_10-exercise-solutions.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位与学习目标</h2><p>本讲依据课程资料中保存的十页 Guide to Proofs on Sets 编写，承接集合运算、命题逻辑与证明方法，重点练习如何把直观理解写成逐步可检查的正式证明。它是原课知识的深化练习，不代表新增官方考点，也不改变课程评分要求。</p><p>复习时先读目标句，再决定证明结构；不要先写一串集合符号，最后才猜这串符号是否说明了结论。文氏图有助于猜测关系，正式论证则需要解释任意元素为什么满足目标条件。</p><ul class="checklist"><li>能够把子集、并集、交集、差集、对称差和幂集转换成元素层面的条件。</li><li>能够区分“已知某性质时可推出什么”与“为证明某性质必须完成什么”。</li><li>能够为并集条件建立覆盖所有情况的分类证明。</li><li>能够将集合相等拆成双向包含，将当且仅当拆成两个方向。</li><li>能够检查变量引入、假设作用范围、空集情况及循环论证。</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、核心视角：集合由元素决定</h2><p>指南第 1 页强调：集合完全由其中的元素决定。因此，证明集合关系时，常常需要引入题目中原本没有出现的元素变量 x。引入 x 不是增加一个额外条件，而是把一个整体命题展开成可以操作的元素命题。</p><p>S ⊆ T 的含义是：对任意 x，只要 x ∈ S，就有 x ∈ T。写作“取任意 x ∈ S”，意味着后续推理只依赖 x 属于 S 这一事实，不能偷偷选一个特别方便的元素。例如取 S 中最小的元素，既可能没有定义，也不能代表 S 的所有元素。</p><p>如果 S 是空集，则不存在反例元素，S ⊆ T 仍然成立。这里不需要另行断言 S 非空。若证明中出现“因为 S 非空，取 x”，就应检查题目是否真的给出了非空条件。</p><h2 id="s3">二、两套方向不同的规则</h2><table><tr><th>形式</th><th>作为已知条件使用</th><th>作为待证目标处理</th></tr><tr><td>S ⊆ T</td><td>已有 x ∈ S 时，推出 x ∈ T。</td><td>取任意 x ∈ S，证明 x ∈ T。</td></tr><tr><td>x ∈ S ∪ T</td><td>得到 x ∈ S 或 x ∈ T，通常分类讨论。</td><td>证明 x 至少属于其中一个集合。</td></tr><tr><td>x ∈ S ∩ T</td><td>同时得到 x ∈ S 与 x ∈ T。</td><td>分别证明两个成员条件。</td></tr><tr><td>x ∈ S − T</td><td>得到 x ∈ S 且 x ∉ T。</td><td>既要证明属于 S，也要排除属于 T。</td></tr><tr><td>x ∈ S Δ T</td><td>x 恰好属于 S、T 中的一个。</td><td>证明一个成员条件成立，另一个不成立。</td></tr><tr><td>S = T</td><td>成员与非成员关系可以在两集合之间替换。</td><td>证明 S ⊆ T 以及 T ⊆ S。</td></tr><tr><td>A ∈ P(B)</td><td>按幂集定义得到 A ⊆ B。</td><td>转而证明 A ⊆ B。</td></tr></table><p>这些规则不是可随意倒转的箭头。已知 x ∈ S ∪ T，不能指定 x 一定属于 S；目标为 x ∈ S ∩ T，也不能只完成属于 S 的一半。遇到卡住的证明，先检查是否把“或”读成了“且”，或把“足够的条件”误写成了“所有情况下都成立的事实”。</p><p>使用子集假设不必再引入新的任意元素。例如已经有 x ∈ B 且 B ⊆ D，直接推出同一个 x ∈ D。若这时另取 y ∈ B，再证明 y ∈ D，就丢失了当前需要追踪的元素。</p><h2 id="s4">三、把证明写成“假设表＋目标树”</h2><ol class="steps"><li>列出已知条件，例如 A ⊆ B ∪ C、B ⊆ D、C ⊆ E。</li><li>读目标最外层：要证 A ⊆ D ∪ E，先取任意 x ∈ A。</li><li>从已知条件向前推：得到 x ∈ B ∪ C，再得到 x ∈ B 或 x ∈ C。</li><li>按这个或条件分情况；两种情况都要回到同一个目标 x ∈ D ∪ E。</li><li>合并情况后，用 x 的任意性收束为集合包含关系。</li></ol><p>前向推理使用已有信息；后向拆解解释目标需要什么。两者应在中间接上。例如目标是进入 D ∪ E，于是只要能进入 D 或 E；假设恰好提供 B 到 D、C 到 E 的两条路径。这里的分类由来源 B ∪ C 决定，不是凭空增加一种限制。</p><p>分类不要求互斥。一个元素可能同时属于 B 和 C；只要所有可能都覆盖，且每个分支均能推出目标，证明就有效。不要为避免重叠，额外加入题目中不存在的 B ∩ C = ∅。</p><h2 id="s5">四、集合相等和逻辑等价不是同一层拆分</h2><p>集合等式 S = T 可以拆成两个包含关系，这是 double inclusion。逻辑等价 P ↔ Q 则拆成“假设 P 证明 Q”和“假设 Q 证明 P”。两种拆分可能嵌套：一个方向里的目标仍可能是集合等式，因此还要继续拆分。</p><p>例如 A ∩ B = A ↔ A ∈ P(B)，有两个逻辑方向。正向由等式推出 A ⊆ B；反向由 A ⊆ B 推出等式，后者又包括 A ∩ B ⊆ A 与 A ⊆ A ∩ B 两个子目标。所以正式证明共要完成三个包含论证，而不是写完一个方向就结束。</p><p>两个方向的临时假设必须隔离。正向可使用 A ∩ B = A；反向则只能使用 A ∈ P(B) 及共同定义。不能把正向已经假设的等式带入反向证明，否则就是直接假设了目标。</p><h2 id="s6">五、幂集的类型检查</h2><p>P(B) 的元素本身是集合，定义为 P(B) = {T | T ⊆ B}。因此 A ∈ P(B) 与 A ⊆ B 等价。元素属于与集合包含的符号不同，但幂集定义正好提供两者之间的桥梁。</p><p>取 B = {1, 2} 时，P(B) = {∅, {1}, {2}, {1, 2}}。于是 {1} ∈ P(B) 为真，1 ∈ P(B) 为假。∅ ∈ P(B) 永远成立，因为空集是任何集合的子集。P(B) 中的成员数量在有限情形为 2 的 |B| 次幂；这里的计数只是连接既有幂集知识，不是本指南证明步骤的替代。</p><p>写证明时在草稿边上标注对象类型：x 是元素、A 和 B 是集合、P(B) 是集合的集合。若你写出 x ⊆ B，就先检查 x 是否确实被定义成集合；若你写 A ∈ B，也不能仅凭 A ⊆ B 推出它。</p><h2 id="s7">六、如何校正看似明显的证明</h2><ul><li>“画图可知”只说明直观，不解释任意元素的条件。将图中的每一步改写为成员条件。</li><li>“由 A ⊆ B，可知 A ∩ B = A”可作为已证明定理使用；若题目本来要求证明此定理，就必须补上双向包含。</li><li>“取 x ∈ S ∪ T，因此 x ∈ S”遗漏另一种情况。修正为分类讨论，或者显式保留或命题。</li><li>“A ⊆ B，所以 A ∈ B”混淆层级。应检查目标是否其实是 A ∈ P(B)。</li><li>“任取 x，再设 x 满足结论”把目标偷放进了假设。开始时只假设定义允许的来源条件。</li></ul><div class="callout tip"><b>英文证明句型</b>Let x be an arbitrary element of A. / We proceed by cases. / Both cases imply that x belongs to D ∪ E. / We prove both inclusions. / Since x was arbitrary, the desired inclusion follows.</div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><h2 id="s8">英文术语与表达</h2><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>element chasing</td><td>逐元素追踪</td><td>跟踪同一个任意元素在集合之间的成员关系。</td></tr><tr><td>arbitrary</td><td>任意的</td><td>不施加题目未给出的特殊限制。</td></tr><tr><td>assumption / goal</td><td>假设／目标</td><td>假设供使用，目标需要证明。</td></tr><tr><td>proof by cases</td><td>分类证明</td><td>每个分支均须完成同一目标，全部情况要覆盖。</td></tr><tr><td>double inclusion</td><td>双向包含</td><td>S ⊆ T and T ⊆ S imply S = T.</td></tr><tr><td>power set</td><td>幂集</td><td>A ∈ P(B) if and only if A ⊆ B.</td></tr><tr><td>biconditional</td><td>双条件／当且仅当</td><td>证明正向与反向两个蕴含。</td></tr><tr><td>axiom of extensionality</td><td>外延公理</td><td>具有相同元素的两个集合相等。</td></tr><tr><td>symmetric difference</td><td>对称差</td><td>Elements belonging to exactly one of two sets.</td></tr></table></section>
-<section id="sec-examples" class="card" data-type="examples"><h2 id="s9">例题：从拆解到收束</h2><div class="qa"><div class="q">例 1 · 指南中的并集与子集链</div><p>已知 A ⊆ B ∪ C、B ⊆ D、C ⊆ E，证明 A ⊆ D ∪ E。</p><p>取任意 x ∈ A。由第一个包含关系，x ∈ B ∪ C，所以 x ∈ B 或 x ∈ C。情况一：若 x ∈ B，由 B ⊆ D 得 x ∈ D，进而 x ∈ D ∪ E。情况二：若 x ∈ C，由 C ⊆ E 得 x ∈ E，进而 x ∈ D ∪ E。</p><p>两种情况均得到同一个结论。因 x 任意，所以 A ⊆ D ∪ E。这里没有假设 B 与 C 不相交，也没有假设 A 非空。通用路径是：任取来源元素 → 展开并集 → 分支使用子集 → 放入目标并集。</p></div><div class="qa"><div class="q">例 2 · 指南中的等式、幂集和双条件</div><p>证明 A ∩ B = A 当且仅当 A ∈ P(B)。</p><p>正向：假设 A ∩ B = A。取任意 x ∈ A，由等式可得 x ∈ A ∩ B，因此 x ∈ B。于是 A ⊆ B，按定义得到 A ∈ P(B)。</p><p>反向：假设 A ∈ P(B)，则 A ⊆ B。先证 A ∩ B ⊆ A：任取 x ∈ A ∩ B，由交集定义即有 x ∈ A。再证 A ⊆ A ∩ B：任取 y ∈ A，由 A ⊆ B 得 y ∈ B，故 y ∈ A ∩ B。双向包含说明 A ∩ B = A。</p><p>两方向合在一起完成等价。注意反向中的第二个包含确实需要 A ⊆ B；一般情况下若 B = ∅、A 非空，它并不成立。</p></div><div class="qa"><div class="q">例 3 · 迁移练习：分配律的双向包含</div><p>证明 A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)。这是运用指南规则编写的补充例题。</p><p>左到右：取 x ∈ A ∩ (B ∪ C)，得到 x ∈ A，且 x ∈ B 或 x ∈ C。若 x ∈ B，则 x ∈ A ∩ B；若 x ∈ C，则 x ∈ A ∩ C。两种情况都给出 x ∈ (A ∩ B) ∪ (A ∩ C)。</p><p>右到左：取 y ∈ (A ∩ B) ∪ (A ∩ C)。若 y ∈ A ∩ B，则 y ∈ A 且 y ∈ B ∪ C；若 y ∈ A ∩ C，也有同一结论。故 y ∈ A ∩ (B ∪ C)。两向成立，等式成立。</p></div></section>
-<section id="sec-practice" class="card" data-type="practice"><h2 id="s10">独立练习与参考思路</h2><p>先独立写出证明开头、已知条件和目标，再展开答案核对。以下练习为本讲编写的迁移题，不是新增的官方作业。</p><div class="qa"><div class="q">练习 1 · 子集的传递性</div><p>已知 A ⊆ B 且 B ⊆ C，证明 A ⊆ C。</p><details><summary>答案与思路</summary><div class="ans"><p>取任意 x ∈ A。由 A ⊆ B 得 x ∈ B，再由 B ⊆ C 得 x ∈ C。因 x 任意，A ⊆ C。不能只写“包含关系具有传递性”，因为此题要求的正是解释传递性。</p></div></details></div><div class="qa"><div class="q">练习 2 · 交集的单调性</div><p>已知 A ⊆ B，证明 A ∩ C ⊆ B ∩ C。</p><details><summary>答案与思路</summary><div class="ans"><p>取任意 x ∈ A ∩ C，得到 x ∈ A 且 x ∈ C。由 A ⊆ B 得 x ∈ B，保留 x ∈ C，合并即得 x ∈ B ∩ C。最后用任意性收束。</p></div></details></div><div class="qa"><div class="q">练习 3 · 幂集判断</div><p>若 B = {1, 2}，判断 ∅ ∈ P(B)、{1} ∈ P(B)、1 ∈ P(B)、{{1}} ⊆ P(B)。</p><details><summary>答案与思路</summary><div class="ans"><p>依次为真、真、假、真。最后一个命题检查 {{1}} 的唯一元素 {1} 是否属于 P(B)，答案为是。不要把 {{1}} 与 {1} 当成同一集合。</p></div></details></div><div class="qa"><div class="q">练习 4 · 差集转换</div><p>证明 A − B = A 当且仅当 A ∩ B = ∅。</p><details><summary>答案与思路</summary><div class="ans"><p>正向：若交集有元素 x，则 x ∈ A 且 x ∈ B；由 A = A − B 又得 x ∉ B，矛盾，所以交集为空。反向：A − B ⊆ A 按定义成立；任取 x ∈ A，由交集为空得 x ∉ B，否则 x 属于交集。因此 x ∈ A − B。双向包含得等式。</p></div></details></div><div class="qa"><div class="q">练习 5 · 修复错误证明</div><p>错误论证：“取 x ∈ A ∪ B，则 x ∈ A，所以 A ∪ B ⊆ A。”指出缺失条件并给出反例。</p><details><summary>答案与思路</summary><div class="ans"><p>并集只给出或条件。取 A = ∅、B = {1}，则 A ∪ B = {1} 并非 A 的子集。若增加 B ⊆ A，则分类后两支都能得 x ∈ A，结论才成立。</p></div></details></div></section>
-<section id="sec-exam" class="card" data-type="exam"><h2 id="s11">复习重点与常见失分点</h2><p>下面按站点既有标签组织复习，不构成教师对出题范围或分值的承诺。</p><p><span class="badge bad">必考（基础复习）</span> 掌握元素法证明子集、并交差的逻辑翻译、集合相等的双向包含，以及 A ∈ P(B) 与 A ⊆ B 的转换。</p><p><span class="badge warn">易错</span> 从或条件擅选一个分支；交集目标只证一半；等价命题只证一个方向；把 ∈ 写成 ⊆；将一个方向的临时假设带入另一个方向；忽略空集。</p><p><span class="badge mute">进阶</span> 在同一题中嵌套使用双条件拆分、双向包含和分类证明；说明每一个局部结论依赖哪些假设，审查是否存在循环论证。</p></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s12">可迁移的证明清单</h2><ol class="steps"><li>圈出结论最外层符号：⊆、=、↔ 或 ∈ P(B)，先确定证明骨架。</li><li>把所有已知条件单列；每个方向新开一组局部假设。</li><li>证明子集时引入任意来源元素；保持跟踪同一个变量。</li><li>将集合运算逐层展开成且、或、非；遇到或考虑分类。</li><li>从已有成员关系与子集假设推到目标需要的成员关系。</li><li>逐一关闭分支、包含方向和蕴含方向，不能只完成最难的一支。</li><li>核对空集、交叠情况、元素层级和符号；检查没有假设目标。</li><li>最后明确写出：由任意性得到包含，由双向包含得到相等。</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s13">来源与补充边界</h2><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 1 页</td><td>元素视角；集合由其元素决定。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 2—5 页</td><td>子集证明与使用规则；并交差及对称差；分类证明；例 1。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 5—6 页</td><td>集合相等、外延性、双向包含与幂集定义。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 6—10 页</td><td>双条件与双向包含的嵌套；例 2 的完整论证。</td></tr><tr><td>本讲补充编写</td><td>类型检查、英文句型、例 3、练习 1—5</td><td>只迁移已给出的集合与证明规则；不是原卷题目或官方新增考点。</td></tr></table><p>来源为工作区既有 Moodle 资料归档，本轮未重新下载。指南第 9 页的一处解释把交集过滤的对象写成 B，本讲按实际目标 A ⊆ A ∩ B 解说为“没有 A 中元素被过滤”；正式证明按元素定义核对。</p></section><div class="lnav"><a class="prev" href="supp-exercises.html">← 补充 · 12 套习题课题目与解答册：六类题型与标准写法</a><span></span></div></article></div>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">BM20A9200 数学A</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-6.html">补充专题与习题训练</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">补充专题 · 集合证明工作坊：从定义到完整论证</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">补充专题 · 集合证明工作坊：从定义到完整论证 · 30565</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本讲定位与学习目标</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">一、核心视角：集合由元素决定</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">二、两套方向不同的规则</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">三、把证明写成“假设表＋目标树”</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">四、集合相等和逻辑等价不是同一层拆分</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">五、幂集的类型检查</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">六、如何校正看似明显的证明</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-9" aria-expanded="true" data-start-open="false" aria-label="展开或收起：六、如何校正看似明显的证明"><span aria-hidden="true">›</span></button></div><div id="directory-branch-9"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">证明集的两条铁律与四个模板（CS103 Guide to Proofs on Sets 落地）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">幂集与计数：证明里最常见的三个坑（Guide §Power Set / §Counterexamples）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">从证明到计数：|P(S)| = 2ⁿ 的证明骨架</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">等价与双向条件的证明落点</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-14" aria-expanded="true" data-start-open="false" aria-label="展开或收起：英文术语"><span aria-hidden="true">›</span></button></div><div id="directory-branch-14"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">英文术语与表达</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-16" aria-expanded="true" data-start-open="false" aria-label="展开或收起：例题解析"><span aria-hidden="true">›</span></button></div><div id="directory-branch-16"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">例题：从拆解到收束</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-18" aria-expanded="true" data-start-open="false" aria-label="展开或收起：练习与解答"><span aria-hidden="true">›</span></button></div><div id="directory-branch-18"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">独立练习与参考思路</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-20" aria-expanded="true" data-start-open="false" aria-label="展开或收起：考点与易错"><span aria-hidden="true">›</span></button></div><div id="directory-branch-20"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">复习重点与常见失分点</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-22" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-22"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">可迁移的证明清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：原始资料对照"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">来源与补充边界</span></a></div></li></ol></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">BM20A9200 数学A</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="true" aria-label="展开或收起：BM20A9200 数学A"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 集合、关系与逻辑</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 集合、关系与逻辑"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="sets-basics.html"><span class="directory-label">第 1 讲 · 集合、属于关系与集合运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="families-cartesian-relations.html"><span class="directory-label">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="relations-inverse-composition-logic.html"><span class="directory-label">第 3 讲 · 逆关系与合成、命题逻辑与真值表</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 证明、函数与基数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-31" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 证明、函数与基数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-31"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="formal-proofs-number-systems.html"><span class="directory-label">第 4 讲 · 一阶逻辑、三类证明与数系进制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="proof-strategy-functions.html"><span class="directory-label">第 5 讲 · 证明策略选择与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="cardinality-countable-sets.html"><span class="directory-label">第 6 讲 · 基数、可数集与对角线法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 计数与归纳</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-35" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 计数与归纳"><span aria-hidden="true">›</span></button></div><div id="directory-branch-35"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="combinatorics-counting.html"><span class="directory-label">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="induction-and-stacked-implications.html"><span class="directory-label">第 8 讲 · 堆叠蕴含与数学归纳法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 数论与模运算</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 数论与模运算"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="divisibility-euclidean-algorithm.html"><span class="directory-label">第 9 讲 · 整除、最大公因数与欧几里得算法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="primes-and-modular-arithmetic.html"><span class="directory-label">第 10 讲 · 素数分解与模运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="modular-inverse-rsa-matrices-intro.html"><span class="directory-label">第 11 讲 · 乘法逆元、RSA 与矩阵初步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 矩阵、复习与习题</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-42" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 矩阵、复习与习题"><span aria-hidden="true">›</span></button></div><div id="directory-branch-42"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="matrices-gauss-jordan.html"><span class="directory-label">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="exam-review-and-problem-types.html"><span class="directory-label">第 13 讲 · 习题课与考试题型总览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-exercises.html"><span class="directory-label">补充 · 12 套习题课题目与解答册：六类题型与标准写法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-6.html"><span class="directory-label">补充专题与习题训练</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-46" aria-expanded="true" data-start-open="true" aria-label="展开或收起：补充专题与习题训练"><span aria-hidden="true">›</span></button></div><div id="directory-branch-46"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="supp-set-proof-workshop.html" aria-current="page"><span class="directory-label">补充专题 · 集合证明工作坊：从定义到完整论证</span><span class="directory-current">当前页</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30565/supp-set-proof-workshop"><header class="lecture-head"><p class="lecture-kicker">BM20A9200 数学A · 第 15 / 15 讲</p><h1 id="lecture-title">补充专题 · 集合证明工作坊：从定义到完整论证</h1><p class="lecture-subtitle">Set Proof Workshop: Definitions, Cases and Double Inclusion</p><p class="chaptertag">所属章节：<a href="part-6.html">补充专题与习题训练</a></p><details class="lecture-sources"><summary>资料来源 · 22 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>41ff732bfc51</code>（用于识别内容变更）</dd></dl><ul><li><code>070 Guide to Set Theory Proofs.pdf</code> <span class="sub">未附原文件</span></li><li><code>08-lesson-WB.pdf</code> <span class="sub">未附原文件</span></li><li><code>09-lesson-WB.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_01-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_03-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_02-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_04-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_03-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_05-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_04-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_06-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_05-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_07-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_06-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_08-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_07-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_09-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_08-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_10-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_09-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li><li><code>1_11-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>2_10-exercise-solutions.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本讲定位与学习目标</h2><p>本讲依据课程资料中保存的十页 Guide to Proofs on Sets 编写，承接集合运算、命题逻辑与证明方法，重点练习如何把直观理解写成逐步可检查的正式证明。它是原课知识的深化练习，不代表新增官方考点，也不改变课程评分要求。</p><p>复习时先读目标句，再决定证明结构；不要先写一串集合符号，最后才猜这串符号是否说明了结论。文氏图有助于猜测关系，正式论证则需要解释任意元素为什么满足目标条件。</p><ul class="checklist"><li>能够把子集、并集、交集、差集、对称差和幂集转换成元素层面的条件。</li><li>能够区分“已知某性质时可推出什么”与“为证明某性质必须完成什么”。</li><li>能够为并集条件建立覆盖所有情况的分类证明。</li><li>能够将集合相等拆成双向包含，将当且仅当拆成两个方向。</li><li>能够检查变量引入、假设作用范围、空集情况及循环论证。</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、核心视角：集合由元素决定</h2><p>指南第 1 页强调：集合完全由其中的元素决定。因此，证明集合关系时，常常需要引入题目中原本没有出现的元素变量 x。引入 x 不是增加一个额外条件，而是把一个整体命题展开成可以操作的元素命题。</p><p>S ⊆ T 的含义是：对任意 x，只要 x ∈ S，就有 x ∈ T。写作“取任意 x ∈ S”，意味着后续推理只依赖 x 属于 S 这一事实，不能偷偷选一个特别方便的元素。例如取 S 中最小的元素，既可能没有定义，也不能代表 S 的所有元素。</p><p>如果 S 是空集，则不存在反例元素，S ⊆ T 仍然成立。这里不需要另行断言 S 非空。若证明中出现“因为 S 非空，取 x”，就应检查题目是否真的给出了非空条件。</p><h2 id="s3">二、两套方向不同的规则</h2><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>形式</th><th>作为已知条件使用</th><th>作为待证目标处理</th></tr><tr><td>S ⊆ T</td><td>已有 x ∈ S 时，推出 x ∈ T。</td><td>取任意 x ∈ S，证明 x ∈ T。</td></tr><tr><td>x ∈ S ∪ T</td><td>得到 x ∈ S 或 x ∈ T，通常分类讨论。</td><td>证明 x 至少属于其中一个集合。</td></tr><tr><td>x ∈ S ∩ T</td><td>同时得到 x ∈ S 与 x ∈ T。</td><td>分别证明两个成员条件。</td></tr><tr><td>x ∈ S − T</td><td>得到 x ∈ S 且 x ∉ T。</td><td>既要证明属于 S，也要排除属于 T。</td></tr><tr><td>x ∈ S Δ T</td><td>x 恰好属于 S、T 中的一个。</td><td>证明一个成员条件成立，另一个不成立。</td></tr><tr><td>S = T</td><td>成员与非成员关系可以在两集合之间替换。</td><td>证明 S ⊆ T 以及 T ⊆ S。</td></tr><tr><td>A ∈ P(B)</td><td>按幂集定义得到 A ⊆ B。</td><td>转而证明 A ⊆ B。</td></tr></table></div><p>这些规则不是可随意倒转的箭头。已知 x ∈ S ∪ T，不能指定 x 一定属于 S；目标为 x ∈ S ∩ T，也不能只完成属于 S 的一半。遇到卡住的证明，先检查是否把“或”读成了“且”，或把“足够的条件”误写成了“所有情况下都成立的事实”。</p><p>使用子集假设不必再引入新的任意元素。例如已经有 x ∈ B 且 B ⊆ D，直接推出同一个 x ∈ D。若这时另取 y ∈ B，再证明 y ∈ D，就丢失了当前需要追踪的元素。</p><h2 id="s4">三、把证明写成“假设表＋目标树”</h2><ol class="steps"><li>列出已知条件，例如 A ⊆ B ∪ C、B ⊆ D、C ⊆ E。</li><li>读目标最外层：要证 A ⊆ D ∪ E，先取任意 x ∈ A。</li><li>从已知条件向前推：得到 x ∈ B ∪ C，再得到 x ∈ B 或 x ∈ C。</li><li>按这个或条件分情况；两种情况都要回到同一个目标 x ∈ D ∪ E。</li><li>合并情况后，用 x 的任意性收束为集合包含关系。</li></ol><p>前向推理使用已有信息；后向拆解解释目标需要什么。两者应在中间接上。例如目标是进入 D ∪ E，于是只要能进入 D 或 E；假设恰好提供 B 到 D、C 到 E 的两条路径。这里的分类由来源 B ∪ C 决定，不是凭空增加一种限制。</p><p>分类不要求互斥。一个元素可能同时属于 B 和 C；只要所有可能都覆盖，且每个分支均能推出目标，证明就有效。不要为避免重叠，额外加入题目中不存在的 B ∩ C = ∅。</p><h2 id="s5">四、集合相等和逻辑等价不是同一层拆分</h2><p>集合等式 S = T 可以拆成两个包含关系，这是 double inclusion。逻辑等价 P ↔ Q 则拆成“假设 P 证明 Q”和“假设 Q 证明 P”。两种拆分可能嵌套：一个方向里的目标仍可能是集合等式，因此还要继续拆分。</p><p>例如 A ∩ B = A ↔ A ∈ P(B)，有两个逻辑方向。正向由等式推出 A ⊆ B；反向由 A ⊆ B 推出等式，后者又包括 A ∩ B ⊆ A 与 A ⊆ A ∩ B 两个子目标。所以正式证明共要完成三个包含论证，而不是写完一个方向就结束。</p><p>两个方向的临时假设必须隔离。正向可使用 A ∩ B = A；反向则只能使用 A ∈ P(B) 及共同定义。不能把正向已经假设的等式带入反向证明，否则就是直接假设了目标。</p><h2 id="s6">五、幂集的类型检查</h2><p>P(B) 的元素本身是集合，定义为 P(B) = {T | T ⊆ B}。因此 A ∈ P(B) 与 A ⊆ B 等价。元素属于与集合包含的符号不同，但幂集定义正好提供两者之间的桥梁。</p><p>取 B = {1, 2} 时，P(B) = {∅, {1}, {2}, {1, 2}}。于是 {1} ∈ P(B) 为真，1 ∈ P(B) 为假。∅ ∈ P(B) 永远成立，因为空集是任何集合的子集。P(B) 中的成员数量在有限情形为 2 的 |B| 次幂；这里的计数只是连接既有幂集知识，不是本指南证明步骤的替代。</p><p>写证明时在草稿边上标注对象类型：x 是元素、A 和 B 是集合、P(B) 是集合的集合。若你写出 x ⊆ B，就先检查 x 是否确实被定义成集合；若你写 A ∈ B，也不能仅凭 A ⊆ B 推出它。</p><h2 id="s7">六、如何校正看似明显的证明</h2><ul><li>“画图可知”只说明直观，不解释任意元素的条件。将图中的每一步改写为成员条件。</li><li>“由 A ⊆ B，可知 A ∩ B = A”可作为已证明定理使用；若题目本来要求证明此定理，就必须补上双向包含。</li><li>“取 x ∈ S ∪ T，因此 x ∈ S”遗漏另一种情况。修正为分类讨论，或者显式保留或命题。</li><li>“A ⊆ B，所以 A ∈ B”混淆层级。应检查目标是否其实是 A ∈ P(B)。</li><li>“任取 x，再设 x 满足结论”把目标偷放进了假设。开始时只假设定义允许的来源条件。</li></ul><div class="callout tip"><b>英文证明句型</b>Let x be an arbitrary element of A. / We proceed by cases. / Both cases imply that x belongs to D ∪ E. / We prove both inclusions. / Since x was arbitrary, the desired inclusion follows.</div><h3 id="s8">证明集的两条铁律与四个模板（CS103 Guide to Proofs on Sets 落地）</h3><p><b>原子假说（课程的指导思想）：</b>All sets are made of elements, and they're completely defined by their elements——集合没有「内在性质」，一切论证都落到元素归属上。写任何集合证明前先问：<b>我要操纵的元素是什么？它属于哪个集合？</b></p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>element-chasing proof</td><td>追元素法</td><td>证 x ∈ A∪B：拆成 x∈A 或 x∈B；证 x∈A∩B：两者都要</td></tr><tr><td>subset proof template</td><td>子集证明模板</td><td>证 A ⊆ B：任取 x ∈ A（let x be arbitrary）→ 一路推导 → x ∈ B；A=B 则证两个方向</td></tr><tr><td>set equality</td><td>集合相等</td><td>A = B ⟺ A ⊆ B 且 B ⊆ A；或用 x ∈ A ↔ x ∈ B 的双向推导</td></tr><tr><td>counterexample</td><td>反例法</td><td>证「不成立」只需一个反例：列出全部集合与元素，指明它满足条件却不满足结论</td></tr><tr><td>vacuous truth</td><td>空集真</td><td>∀x∈∅, P(x) 恒真——凡涉及空集的子集论证要主动说明</td></tr><tr><td>power set</td><td>幂集</td><td>P(S) 的元素是「S 的子集」；证 X ∈ P(S) 等价于证 X ⊆ S</td></tr></table></div><p><b>写作规范（Guide 原文风格）：</b>证明是写给读者的论证，不是计算流水账：开头一句方法声明（We prove A ⊆ B by picking an arbitrary element…），中间每步一句理由，结尾用 ∎ 或 Therefore 收束。变量必须先引入（<i>let x ∈ A be arbitrary</i>）再使用。</p><h3 id="s9">幂集与计数：证明里最常见的三个坑（Guide §Power Set / §Counterexamples）</h3><p>①<b>「∈ 与 ⊆ 混写」</b>：x ∈ A 与 X ⊆ A 是两个层次；P(S) 的元素是集合（X ∈ P(S) ⟺ X ⊆ S）。写 {{1}, 2} 这种「套娃」集合时，先问每一层的元素到底是什么。②<b>「∀ 推 ∃」的非法跳跃</b>：证明存在性必须给出具体对象（construct/explicit witness），对任意性的推导不能反过来当存在性证据。③<b>「画图代替证明」</b>：Venn 图是直觉检查工具，不能作为证明本身——图上没画出来的重叠区域（比如两集合不相交的情形）常是反例藏身处。计数类命题把逻辑转成映射：|A∪B| = |A| + |B| − |A∩B| 的每一项都要对应到「哪些元素被数了几次」。</p><h3 id="s10">从证明到计数：|P(S)| = 2ⁿ 的证明骨架</h3><p>Guide 的思路同样适用于计数论证。证明 |P(S)| = 2ⁿ（|S| = n）：①构造映射：S 的每个子集 ↔ 长度为 n 的 0/1 串（元素 i 在子集中记 1，不在记 0）；②证明它是双射：正向每个子集唯一对应一个串（由「元素完全决定集合」）；反向每个串唯一确定子集 { xᵢ : 第 i 位为 1 }；③计数：0/1 串共 2ⁿ 个，由双射得 |P(S)| = 2ⁿ。<b>可迁移套路：</b>凡是「数东西」的证明，先造双射或把集合拆成不相交片段再用加法原则——这正是 Week 8 组合计数的集合论根基。</p><div class="qa"><div class="q">练 · 双射练习</div><p>证明从 5 人小组选委员会（至少 1 人）的方法数 = 2⁵ − 1，并说明 −1 的组合含义。</p><details><summary>参考答案</summary><div class="ans"><p>每个「委员会」↔ 一个非空子集；全部子集 2⁵ 个中恰有一个是空集（无人入选），不合法，故 2⁵ − 1 = 31。−1 的含义就是排除空集这个唯一不合法子集——证明结构 = 双射 + 排除非法情形。</p></div></details></div><h3 id="s11">等价与双向条件的证明落点</h3><p>涉及 <b>⟺（当且仅当）</b>的命题必须证两个方向，且两个方向都不能偷懒：①(→) 假设 P 成立推出 Q；②(←) 假设 Q 成立推出 P。集合语境里 A = B 的「元素级」写法就是双向包含；逻辑语境里 p ↔ q 拆成 p → q 与 q → p。<b>常见省略错误：</b>把「可逆推导」写成单向然后写 ∎——评卷时双向少一个就是少一半分。答题模板：<i>We prove both directions. (→) … (←) … Hence p ↔ q. ∎</i></p></section>
+<section id="sec-keywords" class="card" data-type="keywords"><h2 id="s12">英文术语与表达</h2><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>element chasing</td><td>逐元素追踪</td><td>跟踪同一个任意元素在集合之间的成员关系。</td></tr><tr><td>arbitrary</td><td>任意的</td><td>不施加题目未给出的特殊限制。</td></tr><tr><td>assumption / goal</td><td>假设／目标</td><td>假设供使用，目标需要证明。</td></tr><tr><td>proof by cases</td><td>分类证明</td><td>每个分支均须完成同一目标，全部情况要覆盖。</td></tr><tr><td>double inclusion</td><td>双向包含</td><td>S ⊆ T and T ⊆ S imply S = T.</td></tr><tr><td>power set</td><td>幂集</td><td>A ∈ P(B) if and only if A ⊆ B.</td></tr><tr><td>biconditional</td><td>双条件／当且仅当</td><td>证明正向与反向两个蕴含。</td></tr><tr><td>axiom of extensionality</td><td>外延公理</td><td>具有相同元素的两个集合相等。</td></tr><tr><td>symmetric difference</td><td>对称差</td><td>Elements belonging to exactly one of two sets.</td></tr></table></div></section>
+<section id="sec-examples" class="card" data-type="examples"><h2 id="s13">例题：从拆解到收束</h2><div class="qa"><div class="q">例 1 · 指南中的并集与子集链</div><p>已知 A ⊆ B ∪ C、B ⊆ D、C ⊆ E，证明 A ⊆ D ∪ E。</p><p>取任意 x ∈ A。由第一个包含关系，x ∈ B ∪ C，所以 x ∈ B 或 x ∈ C。情况一：若 x ∈ B，由 B ⊆ D 得 x ∈ D，进而 x ∈ D ∪ E。情况二：若 x ∈ C，由 C ⊆ E 得 x ∈ E，进而 x ∈ D ∪ E。</p><p>两种情况均得到同一个结论。因 x 任意，所以 A ⊆ D ∪ E。这里没有假设 B 与 C 不相交，也没有假设 A 非空。通用路径是：任取来源元素 → 展开并集 → 分支使用子集 → 放入目标并集。</p></div><div class="qa"><div class="q">例 2 · 指南中的等式、幂集和双条件</div><p>证明 A ∩ B = A 当且仅当 A ∈ P(B)。</p><p>正向：假设 A ∩ B = A。取任意 x ∈ A，由等式可得 x ∈ A ∩ B，因此 x ∈ B。于是 A ⊆ B，按定义得到 A ∈ P(B)。</p><p>反向：假设 A ∈ P(B)，则 A ⊆ B。先证 A ∩ B ⊆ A：任取 x ∈ A ∩ B，由交集定义即有 x ∈ A。再证 A ⊆ A ∩ B：任取 y ∈ A，由 A ⊆ B 得 y ∈ B，故 y ∈ A ∩ B。双向包含说明 A ∩ B = A。</p><p>两方向合在一起完成等价。注意反向中的第二个包含确实需要 A ⊆ B；一般情况下若 B = ∅、A 非空，它并不成立。</p></div><div class="qa"><div class="q">例 3 · 迁移练习：分配律的双向包含</div><p>证明 A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)。这是运用指南规则编写的补充例题。</p><p>左到右：取 x ∈ A ∩ (B ∪ C)，得到 x ∈ A，且 x ∈ B 或 x ∈ C。若 x ∈ B，则 x ∈ A ∩ B；若 x ∈ C，则 x ∈ A ∩ C。两种情况都给出 x ∈ (A ∩ B) ∪ (A ∩ C)。</p><p>右到左：取 y ∈ (A ∩ B) ∪ (A ∩ C)。若 y ∈ A ∩ B，则 y ∈ A 且 y ∈ B ∪ C；若 y ∈ A ∩ C，也有同一结论。故 y ∈ A ∩ (B ∪ C)。两向成立，等式成立。</p></div><div class="qa"><div class="q">例 · 子集双向证明（模板化）</div><p>证明 A ∪ (A ∩ B) = A（吸收律）。</p><p><b>解：</b>① ⊆：let x ∈ A ∪ (A∩B) be arbitrary. 若 x∈A，右侧成立；若 x∈A∩B 则 x∈A 且 x∈B，同样 x∈A。故 x∈A。② ⊇：let x ∈ A be arbitrary. 则 x ∈ A∪(A∩B) 由并集定义成立。两方向合起来 A = A∪(A∩B)。∎——注意两个方向都用「任取元素」开头，这正是 Guide 的 element-chasing 风格。</p></div></section>
+<section id="sec-practice" class="card" data-type="practice"><h2 id="s14">独立练习与参考思路</h2><p>先独立写出证明开头、已知条件和目标，再展开答案核对。以下练习为本讲编写的迁移题，不是新增的官方作业。</p><div class="qa"><div class="q">练习 1 · 子集的传递性</div><p>已知 A ⊆ B 且 B ⊆ C，证明 A ⊆ C。</p><details><summary>答案与思路</summary><div class="ans"><p>取任意 x ∈ A。由 A ⊆ B 得 x ∈ B，再由 B ⊆ C 得 x ∈ C。因 x 任意，A ⊆ C。不能只写“包含关系具有传递性”，因为此题要求的正是解释传递性。</p></div></details></div><div class="qa"><div class="q">练习 2 · 交集的单调性</div><p>已知 A ⊆ B，证明 A ∩ C ⊆ B ∩ C。</p><details><summary>答案与思路</summary><div class="ans"><p>取任意 x ∈ A ∩ C，得到 x ∈ A 且 x ∈ C。由 A ⊆ B 得 x ∈ B，保留 x ∈ C，合并即得 x ∈ B ∩ C。最后用任意性收束。</p></div></details></div><div class="qa"><div class="q">练习 3 · 幂集判断</div><p>若 B = {1, 2}，判断 ∅ ∈ P(B)、{1} ∈ P(B)、1 ∈ P(B)、{{1}} ⊆ P(B)。</p><details><summary>答案与思路</summary><div class="ans"><p>依次为真、真、假、真。最后一个命题检查 {{1}} 的唯一元素 {1} 是否属于 P(B)，答案为是。不要把 {{1}} 与 {1} 当成同一集合。</p></div></details></div><div class="qa"><div class="q">练习 4 · 差集转换</div><p>证明 A − B = A 当且仅当 A ∩ B = ∅。</p><details><summary>答案与思路</summary><div class="ans"><p>正向：若交集有元素 x，则 x ∈ A 且 x ∈ B；由 A = A − B 又得 x ∉ B，矛盾，所以交集为空。反向：A − B ⊆ A 按定义成立；任取 x ∈ A，由交集为空得 x ∉ B，否则 x 属于交集。因此 x ∈ A − B。双向包含得等式。</p></div></details></div><div class="qa"><div class="q">练习 5 · 修复错误证明</div><p>错误论证：“取 x ∈ A ∪ B，则 x ∈ A，所以 A ∪ B ⊆ A。”指出缺失条件并给出反例。</p><details><summary>答案与思路</summary><div class="ans"><p>并集只给出或条件。取 A = ∅、B = {1}，则 A ∪ B = {1} 并非 A 的子集。若增加 B ⊆ A，则分类后两支都能得 x ∈ A，结论才成立。</p></div></details></div><div class="qa"><div class="q">练 · 反例设计</div><p>判断并证明：对任意集合 A, B，是否总有 A ∩ (B ∪ C) ⊆ B？若不成立给出反例。</p><details><summary>参考答案</summary><div class="ans"><p>不成立。反例：A = {1}, B = ∅, C = {1}。则 A∩(B∪C) = {1}，但 B = ∅，{1} ⊄ ∅。——反例要完整列出所有集合的元素，并明确指出「满足前件、违背后件」这一点。</p></div></details></div></section>
+<section id="sec-exam" class="card" data-type="exam"><h2 id="s15">复习重点与常见失分点</h2><p>下面按站点既有标签组织复习，不构成教师对出题范围或分值的承诺。</p><p><span class="badge bad">必考（基础复习）</span> 掌握元素法证明子集、并交差的逻辑翻译、集合相等的双向包含，以及 A ∈ P(B) 与 A ⊆ B 的转换。</p><p><span class="badge warn">易错</span> 从或条件擅选一个分支；交集目标只证一半；等价命题只证一个方向；把 ∈ 写成 ⊆；将一个方向的临时假设带入另一个方向；忽略空集。</p><p><span class="badge mute">进阶</span> 在同一题中嵌套使用双条件拆分、双向包含和分类证明；说明每一个局部结论依赖哪些假设，审查是否存在循环论证。</p></section>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s16">可迁移的证明清单</h2><ol class="steps"><li>圈出结论最外层符号：⊆、=、↔ 或 ∈ P(B)，先确定证明骨架。</li><li>把所有已知条件单列；每个方向新开一组局部假设。</li><li>证明子集时引入任意来源元素；保持跟踪同一个变量。</li><li>将集合运算逐层展开成且、或、非；遇到或考虑分类。</li><li>从已有成员关系与子集假设推到目标需要的成员关系。</li><li>逐一关闭分支、包含方向和蕴含方向，不能只完成最难的一支。</li><li>核对空集、交叠情况、元素层级和符号；检查没有假设目标。</li><li>最后明确写出：由任意性得到包含，由双向包含得到相等。</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><h2 id="s17">来源与补充边界</h2><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖内容</th></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 1 页</td><td>元素视角；集合由其元素决定。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 2—5 页</td><td>子集证明与使用规则；并交差及对称差；分类证明；例 1。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 5—6 页</td><td>集合相等、外延性、双向包含与幂集定义。</td></tr><tr><td>070 Guide to Set Theory Proofs.pdf</td><td>第 6—10 页</td><td>双条件与双向包含的嵌套；例 2 的完整论证。</td></tr><tr><td>本讲补充编写</td><td>类型检查、英文句型、例 3、练习 1—5</td><td>只迁移已给出的集合与证明规则；不是原卷题目或官方新增考点。</td></tr></table></div><p>来源为工作区既有 Moodle 资料归档，本轮未重新下载。指南第 9 页的一处解释把交集过滤的对象写成 B，本讲按实际目标 A ⊆ A ∩ B 解说为“没有 A 中元素被过滤”；正式证明按元素定义核对。</p></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="supp-exercises.html"><span>上一讲</span><strong>补充 · 12 套习题课题目与解答册：六类题型与标准写法</strong></a><a data-sequence="parent" href="part-6.html"><span>返回目录</span><strong>补充专题与习题训练</strong></a><span class="sequence-disabled" data-sequence="next" aria-disabled="true"><span>下一讲</span><strong>已到末尾</strong></span></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

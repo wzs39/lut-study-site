@@ -8,204 +8,362 @@
 <title>第 3 讲 · 钟点、星期与 Milloin 时间格 · 34583</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">K200DJ99 芬兰语2</a> / <a href="part-1.html">第 1 章 自我介绍与日常时间</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">3.1 三种问时间的说法</a><a class="toc-l3" href="#s3">3.2 数字时间（digitaalinen aika）</a><a class="toc-l3" href="#s4">3.3 传统时间（perinteinen aika）：yli 与 vailla</a><a class="toc-l3" href="#s5">3.4 加时段限定：区分同名时刻</a><a class="toc-l3" href="#s6">3.5 时间单位与换算</a><a class="toc-l3" href="#s7">3.6 Milloin 的四类时间格</a><a class="toc-l3" href="#s8">3.7 星期的写法与缩写</a><a class="toc-l3" href="#s9">3.8 日期与语序</a><a class="toc-l2" href="#s10">报时与时间格清单</a><a class="toc-l3" href="#s11">读任意时刻四步</a><a class="toc-l3" href="#s12">时间格四选一</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="t1-intro-numbers.html">第 1 讲 · 自我介绍、数字与存在句</a><a href="t2-weather-seasons-months.html">第 2 讲 · 天气、季节与月份</a><a class="toc-l3" href="t3-clock-time-expression.html">▸ 第 3 讲 · 钟点、星期与 Milloin 时间格</a><a href="t4-future-plans.html">第 4 讲 · 将来表达与周末计划</a><a href="t5-present-tense-vt1.html">第 5 讲 · 现在时与第一类动词</a><a href="t6-hobbies-partitive-object.html">第 6 讲 · 爱好、动名词与访谈任务</a><a href="t7-verb-types-1-6.html">第 7 讲 · 六类动词系统</a><a href="t8-food-shopping.html">第 8 讲 · 食物词汇与购物场景</a><a href="t9-nominative-genitive.html">第 9 讲 · 格系统与属格</a><a href="t10-partitive.html">第 10 讲 · 部分格的构成与用法</a><a href="t11-likes-meals-restaurant.html">第 11 讲 · 喜好表达、餐食与餐厅场景</a><a href="t12-review-exam.html">第 12 讲 · 复习与考试题型</a><a href="supp-interview-task.html">补充 · 食物访谈作业（haastattelu ruoka）</a></div></aside><article><h1>第 3 讲 · 钟点、星期与 Milloin 时间格</h1><p class="lead">Telling the Time, Weekdays and Time Cases <span class="badge mute">34583</span> <span class="badge mute">第 3 / 13 讲</span></p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 自我介绍与日常时间</a></p><p class="src">原始文件：<code>04_Tunti 3/1_Kertaa kello ja päivät.docx</code> <code>04_Tunti 3/2_VASTAUKSET- Kello ja päivät.pdf</code> <code>04_Tunti 3/3_kello.pdf</code> <code>04_Tunti 3/4_Viikonpäivät jne.pdf</code> <code>04_Tunti 3/5_Milloin.pdf</code> <code>04_Tunti 3/6_Puhu Milloin_.html</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第三讲把第 2 讲的时间格补完整：季节用 -lla、月份用 -ssa，这一讲再加两类——<b>星期用 -na</b>、<b>钟点用 -lta/-ltä</b>。四类合起来，才算把 <code>Milloin?</code> 这个问句答全。</p><p>同时它引入本课第一个「读法规则」：芬兰语有两套报时系统（传统与数字），传统系统的 <code>puoli</code>（半点）逻辑与汉语、英语都不同，是最容易在听力题里失分的地方，本讲会专门拆开讲。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用三种问法问时间，并按传统与数字两种方式读出任意时刻</li><li>解释 <code>puoli yksi</code> 为什么是 12:30，不把它读成 1:30</li><li>把星期写成 -na 形式、把钟点写成 -lta 形式，并用它们回答 <code>Milloin?</code></li><li>在时间句里加时段限定（aamulla、illalla、yöllä）区分同名的十二小时制时刻</li><li>说出日期与星期的书写规范，包括芬兰语不用大写这一点</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 三种问时间的说法</h3><p>问「现在几点」有三种说法，语气与场景不同：<code>Mitä kello on?</code>（最常用）、<code>Paljonko kello on?</code>（口语，偏「多少」）、<code>Kuinka paljon kello on?</code>（更完整、略正式）。三者的答句结构相同，都以 <code>Kello on …</code> 或口语的 <code>Se on …</code> 开头。</p><p>注意 <code>kello</code> 有两个意思：一是「钟、表」（名词），二是报时句里的固定成分（<code>Kello on viisi</code> = 五点了）。作为时间单位「小时」时它是 <code>tunti</code>：<code>kaksi tuntia</code> = 两小时。<b>报点用 kello，计时长用 tunti</b>。</p><h3 id="s3">3.2 数字时间（digitaalinen aika）</h3><p>数字时间按「小时 + 分钟」直接读，分钟读成两位数：<code>12.34</code> 读作 <code>Kello on kaksitoista kolmekymmentäneljä</code>；整点读作 <code>Kello on kolmetoista (nolla-nolla)</code>（13:00）。这种读法在火车站、机场、电视节目表里最常见。</p><table><tr><th>数字写法</th><th>数字时间读法</th><th>说明</th></tr><tr><td>13:00</td><td>Kello on kolmetoista (nolla-nolla).</td><td>整点直接读小时，可补 nolla-nolla</td></tr><tr><td>21:17</td><td>Kello on kaksikymmentäyksi seitsemäntoista.</td><td>小时 + 分钟两个数</td></tr><tr><td>5:25</td><td>Kello on viisi kaksikymmentäviisi.</td><td>小时不加「零」</td></tr><tr><td>17:30</td><td>Kello on seitsemäntoista kolmenkymmentä.</td><td>分钟 30 读 kolmenkymmentä</td></tr><tr><td>9:45</td><td>Kello on yhdeksän neljäkymmentäviisi.</td><td>分钟 45 读 neljäkymmentäviisi</td></tr><tr><td>11:55</td><td>Kello on yksitoista viisikymmentäviisi.</td><td>分钟 55 读 viisikymmentäviisi</td></tr></table><div class="callout tip"><b>小时数的读法</b>13–19 按 <code>kolmetoista … yhdeksäntoista</code>；20 以上按 <code>kaksikymmentäyksi</code> 这类复合数连写。注意 24 小时制里 21 读 <code>kaksikymmentäyksi</code>，不是 <code>yhdeksäntoista</code> 加别的。</div><h3 id="s4">3.3 传统时间（perinteinen aika）：yli 与 vailla</h3><p>传统系统以「下一个整点」或「上一个整点」为参照，用两个介词性词：<code>yli</code>（过）与 <code>vailla / vaille</code>（差）。规则如下：</p><p><b>规则一（过半点之前）：</b>分钟 + <code>yli</code> + <b>当前小时</b>。<code>12:10</code> = <code>kymmenen yli kaksitoista</code>；<code>12:15</code> = <code>viisitoista yli kaksitoista</code>，也可说 <code>vartin yli kaksitoista</code>。</p><p><b>规则二（过半点之后）：</b>剩余分钟 + <code>vailla / vaille</code> + <b>下一个小时</b>。<code>12:40</code> = <code>kaksikymmentä vailla yksi</code>（差二十分一点）；<code>12:45</code> = <code>varttia vailla yksi</code> 或 <code>viisitoista vailla yksi</code>。</p><p><b>规则三（半点）：</b><code>puoli</code> + <b>下一个小时</b>。<code>12:30</code> = <code>puoli yksi</code>。<b>这是全课最反直觉的一条</b>：芬兰语的 <code>puoli yksi</code> 直译是「一半的一点」，意思是「朝着一点走了一半」，即 12:30，不是 1:30。</p><p><b>规则四（整点）：</b><code>Kello on (tasan) yksi</code>，<code>tasan</code> 表示「整」。</p><table><tr><th>时刻</th><th>传统读法</th><th>关键点</th></tr><tr><td>12:00</td><td>Kello on (tasan) kaksitoista.</td><td>整点</td></tr><tr><td>12:10</td><td>kymmenen yli kaksitoista</td><td>yli + 当前小时</td></tr><tr><td>12:15</td><td>viisitoista yli kaksitoista / vartin yli kaksitoista</td><td>vartti = 一刻钟</td></tr><tr><td>12:30</td><td>puoli yksi</td><td>puoli + 下一个小时</td></tr><tr><td>12:40</td><td>kaksikymmentä vailla yksi</td><td>vailla + 下一个小时</td></tr><tr><td>12:45</td><td>varttia vailla yksi / viisitoista vailla yksi</td><td>两种说法都常见</td></tr><tr><td>11:55</td><td>viisi vailla kaksitoista</td><td>差五分十二点</td></tr><tr><td>5:25</td><td>kaksikymmentäviisi yli viisi</td><td>yli + 当前小时</td></tr><tr><td>9:45</td><td>varttia vailla kymmenen</td><td>差一刻十点</td></tr><tr><td>17:30</td><td>puoli kuusi</td><td>puoli + kuusi = 5:30</td></tr><tr><td>21:17</td><td>seitsemäntoista yli yhdeksän</td><td>yli + 当前小时</td></tr></table><div class="callout warn"><b>puoli 的逻辑</b>把 <code>puoli yksi</code> 理解成「十二点半」。凡是听到 <code>puoli</code>，先取后面那个数，<b>减一</b>，再想「那个小时的半点」。同理 <code>puoli kuusi</code> = 5:30，<code>puoli kymmenen</code> = 9:30。</div><p><code>vailla</code> 与 <code>vaille</code> 是同一词的两种形态，材料注明 <code>vailla = vaille</code>，两者都可使用；口语里 <code>vaille</code> 更常见。<code>vartti</code>（一刻钟）的部分格是 <code>varttia</code>，属格是 <code>vartin</code>，所以「一刻过」有两种说法：<code>vartin yli</code> 与 <code>varttia yli</code>。</p><h3 id="s5">3.4 加时段限定：区分同名时刻</h3><p>十二小时制里 12:30 与 00:30 都读 <code>puoli yksi</code>，靠时段词区分：<code>Kello on puoli yksi päivällä</code>（中午十二点半）／<code>Kello on puoli yksi yöllä</code>（夜里十二点半）。常用时段词：</p><table><tr><th>时段词</th><th>含义</th><th>例句</th></tr><tr><td>aamulla</td><td>早上</td><td>Kello on viisi aamulla.</td></tr><tr><td>päivällä</td><td>白天 / 中午</td><td>Kello on puoli yksi päivällä.</td></tr><tr><td>aamupäivällä</td><td>上午</td><td>Kello on kymmenen aamupäivällä.</td></tr><tr><td>iltapäivällä</td><td>下午</td><td>Kello on viisi iltapäivällä.</td></tr><tr><td>illalla</td><td>晚上</td><td>Kello on yhdeksän illalla.</td></tr><tr><td>yöllä</td><td>夜里</td><td>Kello on puoli yksi yöllä.</td></tr></table><p>这四个词全部是 -lla 形式，与第 2 讲的季节同理：把时段看作「时间表面」。</p><h3 id="s6">3.5 时间单位与换算</h3><ul><li><code>sekunti</code> 秒；<code>minuutti</code> 分；<code>tunti</code> 小时；<code>vuorokausi / päivä</code> 一天；<code>viikko</code> 一周。</li><li><code>60 sekuntia = minuutti</code>；<code>60 minuuttia = tunti</code>；<code>24 tuntia = vuorokausi</code>；<code>7 päivää = viikko</code>。</li><li><code>kuukausi</code> 月；<code>vuosi</code> 年；<code>vuosikymmen</code> 十年。</li></ul><p>注意数量表达：<code>kaksi tuntia</code>、<code>kolme päivää</code>、<code>viisi minuuttia</code> —— 2 以上的数词后面接<b>部分格单数</b>，这与第 1 讲的 <code>kaksikymmentä vuotta</code> 一致。</p><h3 id="s7">3.6 Milloin 的四类时间格</h3><p>把这一讲与第 2 讲合起来看，<code>Milloin?</code> 的答句按名词类别分成四种后缀，这是本课程时间表达的总纲：</p><table><tr><th>问什么</th><th>用的格</th><th>例子</th><th>记忆锚点</th></tr><tr><td>钟点（几点）</td><td>-lta/-ltä</td><td>yhdeltä, kahdelta, kolmelta, kuudelta, kymmeneltä</td><td>「从某个钟点起」→ 从格</td></tr><tr><td>星期（周几）</td><td>-na/-nä</td><td>maanantaina, tiistaina, keskiviikkona, torstaina, perjantaina, lauantaina, sunnuntaina</td><td>「作为那一天」→ 样格</td></tr><tr><td>月份（几月）</td><td>-ssa/-ssä</td><td>tammikuussa … joulukuussa</td><td>「在月份内部」→ 内格</td></tr><tr><td>季节（哪个季节）</td><td>-lla/-llä</td><td>keväällä, kesällä, syksyllä, talvella</td><td>「在时间表面」→ 上格</td></tr><tr><td>一天中的时段</td><td>-lla/-llä</td><td>aamulla, päivällä, illalla, yöllä</td><td>同上</td></tr><tr><td>周末 / 工作日</td><td>-na / -lla</td><td>viikonloppuna；arkena</td><td>viikonloppu 用 -na；arki 用 -na</td></tr></table><p>钟点的 -lta 形式要逐个记住，因为会发生辅音交替与词形变化：</p><table><tr><th>数字</th><th>Milloin 形式</th><th>备注</th></tr><tr><td>1</td><td>yhdeltä</td><td>yksi 的特殊词干 yhde-</td></tr><tr><td>2</td><td>kahdelta</td><td>kaksi → kahde-</td></tr><tr><td>3</td><td>kolmelta</td><td>kolme + lta</td></tr><tr><td>4</td><td>neljältä</td><td>neljä + ltä</td></tr><tr><td>5</td><td>viideltä</td><td>viisi → viide-</td></tr><tr><td>6</td><td>kuudelta</td><td>kuusi → kuude-</td></tr><tr><td>7</td><td>seitsemältä</td><td>seitsemän + ltä</td></tr><tr><td>8</td><td>kahdeksalta</td><td>kahdeksan + lta</td></tr><tr><td>9</td><td>yhdeksältä</td><td>yhdeksän + ltä</td></tr><tr><td>10</td><td>kymmeneltä</td><td>kymmenen + ltä</td></tr><tr><td>11</td><td>yhdeltätoista</td><td>11 = yksi + toista，词干仍 yhde-</td></tr><tr><td>12</td><td>kahdeltatoista</td><td>12 = kaksi + toista</td></tr></table><p>三个问法在语义上略有差别：<code>Milloin syöt lounasta?</code>（什么时候吃午饭，可答钟点、也可答时段）、<code>Mihin aikaan syöt lounasta?</code>（几点吃，要求钟点）、<code>Monelta / Moneltako syöt lounasta?</code>（几点，最口语，答句就是 -lta 形式）。</p><h3 id="s8">3.7 星期的写法与缩写</h3><p>七个星期词与缩写：<code>maanantai</code>(MA)、<code>tiistai</code>(TI)、<code>keskiviikko</code>(KE)、<code>torstai</code>(TO)、<code>perjantai</code>(PE)、<code>lauantai</code>(LA)、<code>sunnuntai</code>(SU)。全部小写；缩写只在表格、课表里用，句子里要写全。</p><p>问「今天星期几」用 <code>Mikä päivä nyt on?</code>，答 <code>Nyt on tiistai</code>（主格，因为是在「指认」哪一天）。问「星期几做某事」用 <code>Milloin …?</code> 或 <code>Minä päivänä …?</code>，答句用 -na：<code>Suomen tunti on tiistaina</code>。</p><p>注意区分 <code>päivä</code> 的两个用法：<code>Mikä päivä on?</code>（今天星期几）与 <code>Minä päivänä?</code>（在哪一天）。前者问「哪一天（星期）」，后者问「具体哪一天」。</p><h3 id="s9">3.8 日期与语序</h3><p>日期写作「日. 月份的部分格」：<code>14. helmikuuta</code>（2 月 14 日），读作 <code>neljästoista helmikuuta</code>。月份在此用部分格，因为日期是「月的一部分」。年份用 <code>vuonna 1999</code>。完整日期：<code>3. marraskuuta 1999</code>。</p><p>句子里时间词的位置比较自由：可以句首（<code>Maanantaina minä käyn salilla</code>）也可以句尾（<code>Minä käyn salilla maanantaina</code>）。句首位置通常用来强调时间，书面语更常见。</p><div class="callout warn"><b>高频错误 1</b><code>puoli kolmetoista</code> 是错的。传统系统只用 1–12 的小时数，13 以上只出现在数字时间读法里。</div><div class="callout warn"><b>高频错误 2</b><code>kello viideltä</code> 与 <code>Kello on viisi</code> 混淆。前者是「五点时（做事）」，后者是「现在五点」。前者必带 -lta，后者不带。</div><div class="callout tip"><b>听力策略</b>听到 <code>yli</code> 就往回取当前小时，听到 <code>vailla / vaille</code> 或 <code>puoli</code> 就往前取下一个小时。先定方向，再算分钟，最后核对时段词。</div><div class="callout idea" data-ext="t3-clock-time-expression-0"><b>发音提示</b><p>数字时间按「小时 + 分钟」两数直读：<code>17.30</code> 是 <code>seitsemäntoista kolmenkymmentä</code>。传统时间用三个钥匙：<code>yli</code>（过）取当前小时，<code>vailla/vaille</code>（差）取下一个小时，<code>puoli</code> 也取下一个小时但在其前减一——<code>puoli yksi</code> 是 12:30 而非 1:30，<code>puoli kuusi</code> 是 5:30，听到 puoli 先减一最稳。<code>vartti</code>（一刻）两形：<code>vartin yli</code> 与 <code>varttia vailla</code>。传统式只用 1–12 的小时数，<code>puoli kolmetoista</code> 错。报点用 <code>kello</code>（<code>Kello on viisi</code>），计时长用 <code>tunti</code>（<code>kaksi tuntia</code>），两者不可换。Milloin 四类格收拢成表：钟点 -lta（<code>yhdeltä, kahdelta</code>）、星期 -na（<code>tiistaina</code>）、月份 -ssa、季节与时段 -lla（<code>aamulla, illalla</code>）。日期写 <code>14. helmikuuta</code>，月份用部分格，因为是一月中的一部分。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>Suomi</th><th>中文</th><th>English 说明</th></tr><tr><td>Mitä kello on?</td><td>现在几点？</td><td>What time is it? Also Paljonko kello on?</td></tr><tr><td>digitaalinen aika</td><td>数字时间</td><td>Digital reading: 12.34 = kaksitoista kolmekymmentäneljä.</td></tr><tr><td>perinteinen aika</td><td>传统时间</td><td>Traditional reading with yli, vailla and puoli.</td></tr><tr><td>yli</td><td>过</td><td>Minutes past the hour: viisi yli kuusi = 6:05.</td></tr><tr><td>vailla / vaille</td><td>差</td><td>Minutes to the next hour: kymmenen vailla seitsemän = 6:50.</td></tr><tr><td>vartti</td><td>一刻钟</td><td>Quarter of an hour: vartin yli / varttia vailla.</td></tr><tr><td>puoli</td><td>半点（指向下一小时）</td><td>puoli yksi = 12:30, not 1:30.</td></tr><tr><td>tasan</td><td>整</td><td>Kello on tasan yksi = exactly one o’clock.</td></tr><tr><td>aamulla, päivällä, illalla, yöllä</td><td>早上、白天、晚上、夜里</td><td>Parts of the day take -lla.</td></tr><tr><td>maanantaina</td><td>周一（样格）</td><td>Weekdays take -na: tiistaina, keskiviikkona.</td></tr><tr><td>yhdeltä, kahdelta</td><td>一点、两点（从格）</td><td>Clock time in answers to Milloin takes -lta.</td></tr><tr><td>kuukausi</td><td>月</td><td>Month; kuukaudessa = in a month.</td></tr><tr><td>vuorokausi</td><td>一昼夜</td><td>24 tuntia = vuorokausi.</td></tr><tr><td>viikonpäivä</td><td>星期</td><td>Weekday; the seven names are written in lower case.</td></tr><tr><td>tunti</td><td>小时</td><td>Hour as a duration: kaksi tuntia.</td></tr><tr><td>Mihin aikaan?</td><td>几点？</td><td>Asks for a clock time: Mihin aikaan syöt?</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">K200DJ99 芬兰语2</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-1.html">第 1 章 自我介绍与日常时间</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 3 讲 · 钟点、星期与 Milloin 时间格</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 3 讲 · 钟点、星期与 Milloin 时间格 · 34583</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">3.1 三种问时间的说法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">3.2 数字时间（digitaalinen aika）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">3.3 传统时间（perinteinen aika）：yli 与 vailla</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">3.4 加时段限定：区分同名时刻</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">3.5 时间单位与换算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">3.6 Milloin 的四类时间格</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">3.7 星期的写法与缩写</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">3.8 日期与语序</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">听力与视频材料（本地可播）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-18" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-18"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">报时与时间格清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-19" aria-expanded="true" data-start-open="false" aria-label="展开或收起：报时与时间格清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-19"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">读任意时刻四步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">时间格四选一</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">K200DJ99 芬兰语2</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="true" aria-label="展开或收起：K200DJ99 芬兰语2"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="part-1.html"><span class="directory-label">第 1 章 自我介绍与日常时间</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 1 章 自我介绍与日常时间"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t1-intro-numbers.html"><span class="directory-label">第 1 讲 · 自我介绍、数字与存在句</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t2-weather-seasons-months.html"><span class="directory-label">第 2 讲 · 天气、季节与月份</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="t3-clock-time-expression.html" aria-current="page"><span class="directory-label">第 3 讲 · 钟点、星期与 Milloin 时间格</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t4-future-plans.html"><span class="directory-label">第 4 讲 · 将来表达与周末计划</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 动词系统与爱好</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 动词系统与爱好"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t5-present-tense-vt1.html"><span class="directory-label">第 5 讲 · 现在时与第一类动词</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t6-hobbies-partitive-object.html"><span class="directory-label">第 6 讲 · 爱好、动名词与访谈任务</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t7-verb-types-1-6.html"><span class="directory-label">第 7 讲 · 六类动词系统</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 食物、格与部分格</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 食物、格与部分格"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t8-food-shopping.html"><span class="directory-label">第 8 讲 · 食物词汇与购物场景</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t9-nominative-genitive.html"><span class="directory-label">第 9 讲 · 格系统与属格</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t10-partitive.html"><span class="directory-label">第 10 讲 · 部分格的构成与用法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 场景应用、复习与作业</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-37" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 场景应用、复习与作业"><span aria-hidden="true">›</span></button></div><div id="directory-branch-37"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t11-likes-meals-restaurant.html"><span class="directory-label">第 11 讲 · 喜好表达、餐食与餐厅场景</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t12-review-exam.html"><span class="directory-label">第 12 讲 · 复习与考试题型</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-interview-task.html"><span class="directory-label">补充 · 食物访谈作业（haastattelu ruoka）</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="34583/t3-clock-time-expression"><header class="lecture-head"><p class="lecture-kicker">K200DJ99 芬兰语2 · 第 03 / 13 讲</p><h1 id="lecture-title">第 3 讲 · 钟点、星期与 Milloin 时间格</h1><p class="lecture-subtitle">Telling the Time, Weekdays and Time Cases</p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 自我介绍与日常时间</a></p><details class="lecture-sources"><summary>资料来源 · 6 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>c3cd34b024dd</code>（用于识别内容变更）</dd></dl><ul><li><code>04_Tunti 3/1_Kertaa kello ja päivät.docx</code> <span class="sub">未附原文件</span></li><li><code>04_Tunti 3/2_VASTAUKSET- Kello ja päivät.pdf</code> <span class="sub">未附原文件</span></li><li><code>04_Tunti 3/3_kello.pdf</code> <span class="sub">未附原文件</span></li><li><code>04_Tunti 3/4_Viikonpäivät jne.pdf</code> <span class="sub">未附原文件</span></li><li><code>04_Tunti 3/5_Milloin.pdf</code> <span class="sub">未附原文件</span></li><li><code>04_Tunti 3/6_Puhu Milloin_.html</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第三讲把第 2 讲的时间格补完整：季节用 -lla、月份用 -ssa，这一讲再加两类——<b>星期用 -na</b>、<b>钟点用 -lta/-ltä</b>。四类合起来，才算把 <code>Milloin?</code> 这个问句答全。</p><p>同时它引入本课第一个「读法规则」：芬兰语有两套报时系统（传统与数字），传统系统的 <code>puoli</code>（半点）逻辑与汉语、英语都不同，是最容易在听力题里失分的地方，本讲会专门拆开讲。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用三种问法问时间，并按传统与数字两种方式读出任意时刻</li><li>解释 <code>puoli yksi</code> 为什么是 12:30，不把它读成 1:30</li><li>把星期写成 -na 形式、把钟点写成 -lta 形式，并用它们回答 <code>Milloin?</code></li><li>在时间句里加时段限定（aamulla、illalla、yöllä）区分同名的十二小时制时刻</li><li>说出日期与星期的书写规范，包括芬兰语不用大写这一点</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">3.1 三种问时间的说法</h3><p>问「现在几点」有三种说法，语气与场景不同：<code>Mitä kello on?</code>（最常用）、<code>Paljonko kello on?</code>（口语，偏「多少」）、<code>Kuinka paljon kello on?</code>（更完整、略正式）。三者的答句结构相同，都以 <code>Kello on …</code> 或口语的 <code>Se on …</code> 开头。</p><p>注意 <code>kello</code> 有两个意思：一是「钟、表」（名词），二是报时句里的固定成分（<code>Kello on viisi</code> = 五点了）。作为时间单位「小时」时它是 <code>tunti</code>：<code>kaksi tuntia</code> = 两小时。<b>报点用 kello，计时长用 tunti</b>。</p><h3 id="s3">3.2 数字时间（digitaalinen aika）</h3><p>数字时间按「小时 + 分钟」直接读，分钟读成两位数：<code>12.34</code> 读作 <code>Kello on kaksitoista kolmekymmentäneljä</code>；整点读作 <code>Kello on kolmetoista (nolla-nolla)</code>（13:00）。这种读法在火车站、机场、电视节目表里最常见。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>数字写法</th><th>数字时间读法</th><th>说明</th></tr><tr><td>13:00</td><td>Kello on kolmetoista (nolla-nolla).</td><td>整点直接读小时，可补 nolla-nolla</td></tr><tr><td>21:17</td><td>Kello on kaksikymmentäyksi seitsemäntoista.</td><td>小时 + 分钟两个数</td></tr><tr><td>5:25</td><td>Kello on viisi kaksikymmentäviisi.</td><td>小时不加「零」</td></tr><tr><td>17:30</td><td>Kello on seitsemäntoista kolmenkymmentä.</td><td>分钟 30 读 kolmenkymmentä</td></tr><tr><td>9:45</td><td>Kello on yhdeksän neljäkymmentäviisi.</td><td>分钟 45 读 neljäkymmentäviisi</td></tr><tr><td>11:55</td><td>Kello on yksitoista viisikymmentäviisi.</td><td>分钟 55 读 viisikymmentäviisi</td></tr></table></div><div class="callout tip"><b>小时数的读法</b>13–19 按 <code>kolmetoista … yhdeksäntoista</code>；20 以上按 <code>kaksikymmentäyksi</code> 这类复合数连写。注意 24 小时制里 21 读 <code>kaksikymmentäyksi</code>，不是 <code>yhdeksäntoista</code> 加别的。</div><h3 id="s4">3.3 传统时间（perinteinen aika）：yli 与 vailla</h3><p>传统系统以「下一个整点」或「上一个整点」为参照，用两个介词性词：<code>yli</code>（过）与 <code>vailla / vaille</code>（差）。规则如下：</p><p><b>规则一（过半点之前）：</b>分钟 + <code>yli</code> + <b>当前小时</b>。<code>12:10</code> = <code>kymmenen yli kaksitoista</code>；<code>12:15</code> = <code>viisitoista yli kaksitoista</code>，也可说 <code>vartin yli kaksitoista</code>。</p><p><b>规则二（过半点之后）：</b>剩余分钟 + <code>vailla / vaille</code> + <b>下一个小时</b>。<code>12:40</code> = <code>kaksikymmentä vailla yksi</code>（差二十分一点）；<code>12:45</code> = <code>varttia vailla yksi</code> 或 <code>viisitoista vailla yksi</code>。</p><p><b>规则三（半点）：</b><code>puoli</code> + <b>下一个小时</b>。<code>12:30</code> = <code>puoli yksi</code>。<b>这是全课最反直觉的一条</b>：芬兰语的 <code>puoli yksi</code> 直译是「一半的一点」，意思是「朝着一点走了一半」，即 12:30，不是 1:30。</p><p><b>规则四（整点）：</b><code>Kello on (tasan) yksi</code>，<code>tasan</code> 表示「整」。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>时刻</th><th>传统读法</th><th>关键点</th></tr><tr><td>12:00</td><td>Kello on (tasan) kaksitoista.</td><td>整点</td></tr><tr><td>12:10</td><td>kymmenen yli kaksitoista</td><td>yli + 当前小时</td></tr><tr><td>12:15</td><td>viisitoista yli kaksitoista / vartin yli kaksitoista</td><td>vartti = 一刻钟</td></tr><tr><td>12:30</td><td>puoli yksi</td><td>puoli + 下一个小时</td></tr><tr><td>12:40</td><td>kaksikymmentä vailla yksi</td><td>vailla + 下一个小时</td></tr><tr><td>12:45</td><td>varttia vailla yksi / viisitoista vailla yksi</td><td>两种说法都常见</td></tr><tr><td>11:55</td><td>viisi vailla kaksitoista</td><td>差五分十二点</td></tr><tr><td>5:25</td><td>kaksikymmentäviisi yli viisi</td><td>yli + 当前小时</td></tr><tr><td>9:45</td><td>varttia vailla kymmenen</td><td>差一刻十点</td></tr><tr><td>17:30</td><td>puoli kuusi</td><td>puoli + kuusi = 5:30</td></tr><tr><td>21:17</td><td>seitsemäntoista yli yhdeksän</td><td>yli + 当前小时</td></tr></table></div><div class="callout warn"><b>puoli 的逻辑</b>把 <code>puoli yksi</code> 理解成「十二点半」。凡是听到 <code>puoli</code>，先取后面那个数，<b>减一</b>，再想「那个小时的半点」。同理 <code>puoli kuusi</code> = 5:30，<code>puoli kymmenen</code> = 9:30。</div><p><code>vailla</code> 与 <code>vaille</code> 是同一词的两种形态，材料注明 <code>vailla = vaille</code>，两者都可使用；口语里 <code>vaille</code> 更常见。<code>vartti</code>（一刻钟）的部分格是 <code>varttia</code>，属格是 <code>vartin</code>，所以「一刻过」有两种说法：<code>vartin yli</code> 与 <code>varttia yli</code>。</p><h3 id="s5">3.4 加时段限定：区分同名时刻</h3><p>十二小时制里 12:30 与 00:30 都读 <code>puoli yksi</code>，靠时段词区分：<code>Kello on puoli yksi päivällä</code>（中午十二点半）／<code>Kello on puoli yksi yöllä</code>（夜里十二点半）。常用时段词：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>时段词</th><th>含义</th><th>例句</th></tr><tr><td>aamulla</td><td>早上</td><td>Kello on viisi aamulla.</td></tr><tr><td>päivällä</td><td>白天 / 中午</td><td>Kello on puoli yksi päivällä.</td></tr><tr><td>aamupäivällä</td><td>上午</td><td>Kello on kymmenen aamupäivällä.</td></tr><tr><td>iltapäivällä</td><td>下午</td><td>Kello on viisi iltapäivällä.</td></tr><tr><td>illalla</td><td>晚上</td><td>Kello on yhdeksän illalla.</td></tr><tr><td>yöllä</td><td>夜里</td><td>Kello on puoli yksi yöllä.</td></tr></table></div><p>这四个词全部是 -lla 形式，与第 2 讲的季节同理：把时段看作「时间表面」。</p><h3 id="s6">3.5 时间单位与换算</h3><ul><li><code>sekunti</code> 秒；<code>minuutti</code> 分；<code>tunti</code> 小时；<code>vuorokausi / päivä</code> 一天；<code>viikko</code> 一周。</li><li><code>60 sekuntia = minuutti</code>；<code>60 minuuttia = tunti</code>；<code>24 tuntia = vuorokausi</code>；<code>7 päivää = viikko</code>。</li><li><code>kuukausi</code> 月；<code>vuosi</code> 年；<code>vuosikymmen</code> 十年。</li></ul><p>注意数量表达：<code>kaksi tuntia</code>、<code>kolme päivää</code>、<code>viisi minuuttia</code> —— 2 以上的数词后面接<b>部分格单数</b>，这与第 1 讲的 <code>kaksikymmentä vuotta</code> 一致。</p><h3 id="s7">3.6 Milloin 的四类时间格</h3><p>把这一讲与第 2 讲合起来看，<code>Milloin?</code> 的答句按名词类别分成四种后缀，这是本课程时间表达的总纲：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>问什么</th><th>用的格</th><th>例子</th><th>记忆锚点</th></tr><tr><td>钟点（几点）</td><td>-lta/-ltä</td><td>yhdeltä, kahdelta, kolmelta, kuudelta, kymmeneltä</td><td>「从某个钟点起」→ 从格</td></tr><tr><td>星期（周几）</td><td>-na/-nä</td><td>maanantaina, tiistaina, keskiviikkona, torstaina, perjantaina, lauantaina, sunnuntaina</td><td>「作为那一天」→ 样格</td></tr><tr><td>月份（几月）</td><td>-ssa/-ssä</td><td>tammikuussa … joulukuussa</td><td>「在月份内部」→ 内格</td></tr><tr><td>季节（哪个季节）</td><td>-lla/-llä</td><td>keväällä, kesällä, syksyllä, talvella</td><td>「在时间表面」→ 上格</td></tr><tr><td>一天中的时段</td><td>-lla/-llä</td><td>aamulla, päivällä, illalla, yöllä</td><td>同上</td></tr><tr><td>周末 / 工作日</td><td>-na / -lla</td><td>viikonloppuna；arkena</td><td>viikonloppu 用 -na；arki 用 -na</td></tr></table></div><p>钟点的 -lta 形式要逐个记住，因为会发生辅音交替与词形变化：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>数字</th><th>Milloin 形式</th><th>备注</th></tr><tr><td>1</td><td>yhdeltä</td><td>yksi 的特殊词干 yhde-</td></tr><tr><td>2</td><td>kahdelta</td><td>kaksi → kahde-</td></tr><tr><td>3</td><td>kolmelta</td><td>kolme + lta</td></tr><tr><td>4</td><td>neljältä</td><td>neljä + ltä</td></tr><tr><td>5</td><td>viideltä</td><td>viisi → viide-</td></tr><tr><td>6</td><td>kuudelta</td><td>kuusi → kuude-</td></tr><tr><td>7</td><td>seitsemältä</td><td>seitsemän + ltä</td></tr><tr><td>8</td><td>kahdeksalta</td><td>kahdeksan + lta</td></tr><tr><td>9</td><td>yhdeksältä</td><td>yhdeksän + ltä</td></tr><tr><td>10</td><td>kymmeneltä</td><td>kymmenen + ltä</td></tr><tr><td>11</td><td>yhdeltätoista</td><td>11 = yksi + toista，词干仍 yhde-</td></tr><tr><td>12</td><td>kahdeltatoista</td><td>12 = kaksi + toista</td></tr></table></div><p>三个问法在语义上略有差别：<code>Milloin syöt lounasta?</code>（什么时候吃午饭，可答钟点、也可答时段）、<code>Mihin aikaan syöt lounasta?</code>（几点吃，要求钟点）、<code>Monelta / Moneltako syöt lounasta?</code>（几点，最口语，答句就是 -lta 形式）。</p><h3 id="s8">3.7 星期的写法与缩写</h3><p>七个星期词与缩写：<code>maanantai</code>(MA)、<code>tiistai</code>(TI)、<code>keskiviikko</code>(KE)、<code>torstai</code>(TO)、<code>perjantai</code>(PE)、<code>lauantai</code>(LA)、<code>sunnuntai</code>(SU)。全部小写；缩写只在表格、课表里用，句子里要写全。</p><p>问「今天星期几」用 <code>Mikä päivä nyt on?</code>，答 <code>Nyt on tiistai</code>（主格，因为是在「指认」哪一天）。问「星期几做某事」用 <code>Milloin …?</code> 或 <code>Minä päivänä …?</code>，答句用 -na：<code>Suomen tunti on tiistaina</code>。</p><p>注意区分 <code>päivä</code> 的两个用法：<code>Mikä päivä on?</code>（今天星期几）与 <code>Minä päivänä?</code>（在哪一天）。前者问「哪一天（星期）」，后者问「具体哪一天」。</p><h3 id="s9">3.8 日期与语序</h3><p>日期写作「日. 月份的部分格」：<code>14. helmikuuta</code>（2 月 14 日），读作 <code>neljästoista helmikuuta</code>。月份在此用部分格，因为日期是「月的一部分」。年份用 <code>vuonna 1999</code>。完整日期：<code>3. marraskuuta 1999</code>。</p><p>句子里时间词的位置比较自由：可以句首（<code>Maanantaina minä käyn salilla</code>）也可以句尾（<code>Minä käyn salilla maanantaina</code>）。句首位置通常用来强调时间，书面语更常见。</p><div class="callout warn"><b>高频错误 1</b><code>puoli kolmetoista</code> 是错的。传统系统只用 1–12 的小时数，13 以上只出现在数字时间读法里。</div><div class="callout warn"><b>高频错误 2</b><code>kello viideltä</code> 与 <code>Kello on viisi</code> 混淆。前者是「五点时（做事）」，后者是「现在五点」。前者必带 -lta，后者不带。</div><div class="callout tip"><b>听力策略</b>听到 <code>yli</code> 就往回取当前小时，听到 <code>vailla / vaille</code> 或 <code>puoli</code> 就往前取下一个小时。先定方向，再算分钟，最后核对时段词。</div><div class="callout idea" data-ext="t3-clock-time-expression-0"><b>发音提示</b><p>数字时间按「小时 + 分钟」两数直读：<code>17.30</code> 是 <code>seitsemäntoista kolmenkymmentä</code>。传统时间用三个钥匙：<code>yli</code>（过）取当前小时，<code>vailla/vaille</code>（差）取下一个小时，<code>puoli</code> 也取下一个小时但在其前减一——<code>puoli yksi</code> 是 12:30 而非 1:30，<code>puoli kuusi</code> 是 5:30，听到 puoli 先减一最稳。<code>vartti</code>（一刻）两形：<code>vartin yli</code> 与 <code>varttia vailla</code>。传统式只用 1–12 的小时数，<code>puoli kolmetoista</code> 错。报点用 <code>kello</code>（<code>Kello on viisi</code>），计时长用 <code>tunti</code>（<code>kaksi tuntia</code>），两者不可换。Milloin 四类格收拢成表：钟点 -lta（<code>yhdeltä, kahdelta</code>）、星期 -na（<code>tiistaina</code>）、月份 -ssa、季节与时段 -lla（<code>aamulla, illalla</code>）。日期写 <code>14. helmikuuta</code>，月份用部分格，因为是一月中的一部分。</p></div><div class="callout idea"><b>整点与半点的两种说法</b><p>芬兰语时间表达两套并行：<b>正式</b>（数字+时间词序）<i>kello kolme</i> 三点；<b>口语</b>（分+方向）<i>viisi yli kolme</i> 三点过五分、<i>kymmenen vaille neljä</i> 差十分四点。半点口语用 <i>puoli neljä</i> = 三点半（注意是「下半」逻辑：puoli neljä 指 3:30 不是 4:30，中国学生最常错）。写作业用正式式，口语听力练口语式。</p></div><h3 id="s10">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/cd57417a1d8b24975a50.webp" loading="lazy" alt="2_VASTAUKSET- Kello ja päivät p1" width="864" height="1221" decoding="async" data-full-src="../../assets/img/34583/slides/2_VASTAUKSET-_Kello_ja_päivät-p01.jpg"><figcaption>2_VASTAUKSET- Kello ja päivät · 第 1 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p01.jpg" loading="lazy" alt="3_kello p1" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p01.jpg"><figcaption>3_kello · 第 1 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p02.jpg" loading="lazy" alt="3_kello p2" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p02.jpg"><figcaption>3_kello · 第 2 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p03.jpg" loading="lazy" alt="3_kello p3" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p03.jpg"><figcaption>3_kello · 第 3 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p04.jpg" loading="lazy" alt="3_kello p4" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p04.jpg"><figcaption>3_kello · 第 4 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p05.jpg" loading="lazy" alt="3_kello p5" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p05.jpg"><figcaption>3_kello · 第 5 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/3_kello-p06.jpg" loading="lazy" alt="3_kello p6" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/3_kello-p06.jpg"><figcaption>3_kello · 第 6 页</figcaption></figure><figure><img src="../../assets/img/34583/slides/4_Viikonpäivät_jne-p02.jpg" loading="lazy" alt="4_Viikonpäivät jne p2" width="1392" height="783" decoding="async" data-full-src="../../assets/img/34583/slides/4_Viikonpäivät_jne-p02.jpg"><figcaption>4_Viikonpäivät jne · 第 2 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div><h3 id="s11">听力与视频材料（本地可播）</h3><div class="audiolist" data-mediabatch="1"><div class="audioitem"><audio controls preload="none" src="../../assets/media/34583/t3-kellonajat.m4a"></audio><div class="audiocap">听力 · Junabussi &amp; kellonajat（火车/巴士与钟点——复习卷听力）</div></div></div><div class="callout tip"><b>听力材料</b>播放器可直接播放；<code>preload="none"</code> 表示打开页面不会自动下载，点播放才开始加载。听力技巧：第一遍抓大意，第二遍跟读，第三遍听写关键词。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>Suomi</th><th>中文</th><th>English 说明</th></tr><tr><td>Mitä kello on?</td><td>现在几点？</td><td>What time is it? Also Paljonko kello on?</td></tr><tr><td>digitaalinen aika</td><td>数字时间</td><td>Digital reading: 12.34 = kaksitoista kolmekymmentäneljä.</td></tr><tr><td>perinteinen aika</td><td>传统时间</td><td>Traditional reading with yli, vailla and puoli.</td></tr><tr><td>yli</td><td>过</td><td>Minutes past the hour: viisi yli kuusi = 6:05.</td></tr><tr><td>vailla / vaille</td><td>差</td><td>Minutes to the next hour: kymmenen vailla seitsemän = 6:50.</td></tr><tr><td>vartti</td><td>一刻钟</td><td>Quarter of an hour: vartin yli / varttia vailla.</td></tr><tr><td>puoli</td><td>半点（指向下一小时）</td><td>puoli yksi = 12:30, not 1:30.</td></tr><tr><td>tasan</td><td>整</td><td>Kello on tasan yksi = exactly one o’clock.</td></tr><tr><td>aamulla, päivällä, illalla, yöllä</td><td>早上、白天、晚上、夜里</td><td>Parts of the day take -lla.</td></tr><tr><td>maanantaina</td><td>周一（样格）</td><td>Weekdays take -na: tiistaina, keskiviikkona.</td></tr><tr><td>yhdeltä, kahdelta</td><td>一点、两点（从格）</td><td>Clock time in answers to Milloin takes -lta.</td></tr><tr><td>kuukausi</td><td>月</td><td>Month; kuukaudessa = in a month.</td></tr><tr><td>vuorokausi</td><td>一昼夜</td><td>24 tuntia = vuorokausi.</td></tr><tr><td>viikonpäivä</td><td>星期</td><td>Weekday; the seven names are written in lower case.</td></tr><tr><td>tunti</td><td>小时</td><td>Hour as a duration: kaksi tuntia.</td></tr><tr><td>Mihin aikaan?</td><td>几点？</td><td>Asks for a clock time: Mihin aikaan syöt?</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　把 17:30 用传统与数字两种方式读出来。</div><p><b>解：</b>传统：<code>puoli kuusi</code>（朝着六点走了一半 → 5:30），若要限定可说 <code>puoli kuusi iltapäivällä</code>。数字：<code>Kello on seitsemäntoista kolmenkymmentä</code>。</p><p><b>易错点：</b>不要读成 <code>puoli seitsemän</code>（那是 6:30），也不要读 <code>puoli seitsemäntoista</code>。</p></div><div class="qa"><div class="q">例 2　把 9:45 读成传统时间，并说明为什么用 vailla 而不是 yli。</div><p><b>解：</b>45 分已经过了半点，按规则要往下一个整点（10 点）数差多少：差 15 分。所以是 <code>varttia vailla kymmenen</code> 或 <code>viisitoista vailla kymmenen</code>。</p><p><b>判断口诀：</b>分钟 ≤ 30 用 <code>yli</code> + 当前小时；分钟 &gt; 30 用 <code>vailla</code> + 下一小时；正好 30 用 <code>puoli</code> + 下一小时。</p></div><div class="qa"><div class="q">例 3　回答 <code>Milloin sinä heräät?</code>，设定 6:40 起床。</div><p><b>解：</b>6:40 的分钟大于 30，用 vailla 加下一个小时：差 20 分七点 → <code>Herään kaksikymmentä vailla seitsemän</code>。也可加时段：<code>Herään kaksikymmentä vailla seitsemän aamulla</code>。</p><p><b>语法点：</b>答句的动词用第一人称（herään），时间短语放在句尾，<b>时间词本身不再加 -lta</b>，因为 vailla 结构已经表示「差多少到几点」。</p></div><div class="qa"><div class="q">例 4　把「星期二我在校园，从九点到十二点有芬兰语课」译成两句芬兰语。</div><p><b>解：</b>第一句：<code>Tiistaina olen kampuksella.</code>（星期 -na，地点 -lla，kampusi → kampuksella 有 k→ks 的变化）。第二句：<code>Suomen tunti on yhdeksästä kahteentoista.</code></p><p><b>要点：</b>表示时间段「从几点到几点」用 <code>-sta … -hVn</code>（elative + illative）：<code>yhdeksästä</code>（从九点）、<code>kahteentoista</code>（到十二点）。这与单点时刻的 -lta 不同，材料正文只给了单点，属衔接性拓展。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>用传统时间读出：7:15、11:40、14:30、18:55、22:05。</li><li>用数字时间读出：8:30、13:00、16:45、19:10。</li><li>把七个星期写成 -na 形式，并用其中三个各造一句 <code>Milloin …?</code> 的答句。</li><li>翻译：「我每天早上七点起床，晚上十一点睡觉。」</li><li>改错：<code>Kello on puoli kolmetoista.</code> / <code>Kello on viisi yli kaksitoista</code>（想表达 11:55）/ <code>Menen nukkumaan kello yksitoista.</code></li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 7:15 <code>vartin yli seitsemän</code>；11:40 <code>kaksikymmentä vailla kaksitoista</code>；14:30 <code>puoli kolme</code>（下午两点半）；18:55 <code>viisi vailla seitsemän</code>；22:05 <code>viisi yli kymmenen</code>（晚上）。</p><p><b>2.</b> 8:30 <code>kahdeksan kolmenkymmentä</code>；13:00 <code>kolmetoista (nolla-nolla)</code>；16:45 <code>kuusitoista neljäkymmentäviisi</code>；19:10 <code>yhdeksäntoista kymmenen</code>。</p><p><b>3.</b> <code>maanantaina, tiistaina, keskiviikkona, torstaina, perjantaina, lauantaina, sunnuntaina</code>。答句示例：<code>Minä urheilen maanantaina ja torstaina.</code> / <code>Suomen tunti on keskiviikkona.</code> / <code>Käyn salilla lauantaina.</code></p><p><b>4.</b> <code>Herään joka päivä seitsemältä aamulla ja menen nukkumaan yhdeltätoista illalla.</code> 注意两个钟点都用 -lta，「每天」用 <code>joka päivä</code>（joka 后不加格）。</p><p><b>5.</b> 三处：<code>puoli kolmetoista</code> → <code>puoli yksi</code>（12:30）或按需 <code>puoli kaksi</code>；11:55 应说 <code>viisi vailla kaksitoista</code>；<code>kello yksitoista</code> → <code>yhdeltätoista</code>。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>传统时间的 <code>yli / vailla / puoli</code> 三件套、星期 -na 与钟点 -lta 的形式、<code>Milloin?</code> 四类时间格的分工。听力题几乎必出报时。</div><div class="callout warn"><b>易错 1</b><code>puoli</code> 指向下一个小时：<code>puoli yksi</code> = 12:30，写反是最常见的失分点。</div><div class="callout warn"><b>易错 2</b>小时数超过 12 时仍用传统系统：<code>puoli neljätoista</code> 不成立。</div><div class="callout warn"><b>易错 3</b>星期写成 -ssa 或 -lla：<code>maanantaissa</code>、<code>maanantailla</code> 都错，应为 <code>maanantaina</code>。</div><div class="callout tip"><b>进阶</b>能用 <code>-sta … -hVn</code> 表达时间段（<code>yhdeksästä kahteentoista</code>），并解释它与单点 -lta 的语义差别。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s10">报时与时间格清单</h2><h3 id="s11">读任意时刻四步</h3><ol class="steps"><li>先判分钟段：≤ 30 用 yli，= 30 用 puoli，&gt; 30 用 vailla</li><li>yli：分钟 + yli + 当前小时</li><li>puoli：puoli + 下一小时</li><li>vailla：差值 + vailla + 下一小时</li><li>需要时补时段词 aamulla / päivällä / illalla / yöllä</li></ol><h3 id="s12">时间格四选一</h3><ol class="steps"><li>钟点 → -lta：yhdeltä、kahdelta</li><li>星期 → -na：tiistaina、viikonloppuna</li><li>月份 → -ssa：huhtikuussa</li><li>季节与时段 → -lla：kesällä、illalla</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>位置</th><th>覆盖知识点</th></tr><tr><td>04_Tunti 3/1_Kertaa kello ja päivät.docx</td><td>全篇 4 题</td><td>传统与数字时间书写练习、星期缩写 MA–SU、六类 Milloin 问答</td></tr><tr><td>04_Tunti 3/2_VASTAUKSET- Kello ja päivät.pdf</td><td>p1–p2</td><td>12 组时刻的标准答案、星期全名、-lta/-na/-ssa 答句范例</td></tr><tr><td>04_Tunti 3/3_kello.pdf</td><td>p2–p6</td><td>三种问时间、数字时间、传统时间 yli/vailla/vartti/puoli、时段词、时间单位</td></tr><tr><td>04_Tunti 3/4_Viikonpäivät jne.pdf</td><td>p2–p4</td><td>七个星期、十二个月、四季、芬兰语不大写</td></tr><tr><td>04_Tunti 3/5_Milloin.pdf</td><td>p2–p6</td><td>Milloin 的四类答句：钟点 -lta、星期 -na、时段 -lla、月份 -ssa、季节 -lla</td></tr><tr><td>04_Tunti 3/6_Puhu Milloin_.html</td><td>全篇</td><td>口语问句模板：Milloin syöt / heräät / menet nukkumaan / urheilet</td></tr><tr><td>（补充）</td><td>3.8</td><td>日期写法与 <code>-sta … -hVn</code> 时间段表达为衔接性拓展，原文只给单点时刻</td></tr><tr><td>（跳过）</td><td>—</td><td>1_Kertaa kello ja päivät 的表格式空行属练习版面，无新增语言点</td></tr></table></section><div class="lnav"><a class="prev" href="t2-weather-seasons-months.html">← 第 2 讲 · 天气、季节与月份</a><a class="next" href="t4-future-plans.html">第 4 讲 · 将来表达与周末计划 →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s12">报时与时间格清单</h2><h3 id="s13">读任意时刻四步</h3><ol class="steps"><li>先判分钟段：≤ 30 用 yli，= 30 用 puoli，&gt; 30 用 vailla</li><li>yli：分钟 + yli + 当前小时</li><li>puoli：puoli + 下一小时</li><li>vailla：差值 + vailla + 下一小时</li><li>需要时补时段词 aamulla / päivällä / illalla / yöllä</li></ol><h3 id="s14">时间格四选一</h3><ol class="steps"><li>钟点 → -lta：yhdeltä、kahdelta</li><li>星期 → -na：tiistaina、viikonloppuna</li><li>月份 → -ssa：huhtikuussa</li><li>季节与时段 → -lla：kesällä、illalla</li></ol></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖知识点</th></tr><tr><td>04_Tunti 3/1_Kertaa kello ja päivät.docx</td><td>全篇 4 题</td><td>传统与数字时间书写练习、星期缩写 MA–SU、六类 Milloin 问答</td></tr><tr><td>04_Tunti 3/2_VASTAUKSET- Kello ja päivät.pdf</td><td>p1–p2</td><td>12 组时刻的标准答案、星期全名、-lta/-na/-ssa 答句范例</td></tr><tr><td>04_Tunti 3/3_kello.pdf</td><td>p2–p6</td><td>三种问时间、数字时间、传统时间 yli/vailla/vartti/puoli、时段词、时间单位</td></tr><tr><td>04_Tunti 3/4_Viikonpäivät jne.pdf</td><td>p2–p4</td><td>七个星期、十二个月、四季、芬兰语不大写</td></tr><tr><td>04_Tunti 3/5_Milloin.pdf</td><td>p2–p6</td><td>Milloin 的四类答句：钟点 -lta、星期 -na、时段 -lla、月份 -ssa、季节 -lla</td></tr><tr><td>04_Tunti 3/6_Puhu Milloin_.html</td><td>全篇</td><td>口语问句模板：Milloin syöt / heräät / menet nukkumaan / urheilet</td></tr><tr><td>（补充）</td><td>3.8</td><td>日期写法与 <code>-sta … -hVn</code> 时间段表达为衔接性拓展，原文只给单点时刻</td></tr><tr><td>（跳过）</td><td>—</td><td>1_Kertaa kello ja päivät 的表格式空行属练习版面，无新增语言点</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="t2-weather-seasons-months.html"><span>上一讲</span><strong>第 2 讲 · 天气、季节与月份</strong></a><a data-sequence="parent" href="part-1.html"><span>返回目录</span><strong>第 1 章 自我介绍与日常时间</strong></a><a data-sequence="next" href="t4-future-plans.html"><span>下一讲</span><strong>第 4 讲 · 将来表达与周末计划</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

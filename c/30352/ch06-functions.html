@@ -8,204 +8,362 @@
 <title>⑥ 函数与参数传递 · 30352</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,40 +464,216 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A0250 编程基础</a> / <a href="part-5.html">第 5 章 函数</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l2" href="#s2">一、函数是什么，为什么要用</a><a class="toc-l3" href="#s3">1.1 内置函数与自定义函数</a><a class="toc-l2" href="#s4">二、用 def 定义函数</a><a class="toc-l3" href="#s5">2.1 骨架的五个部分</a><a class="toc-l3" href="#s6">2.2 一个最小可运行函数</a><a class="toc-l2" href="#s7">三、return：函数唯一的出口</a><a class="toc-l3" href="#s8">3.1 return 结束执行并交回一个值</a><a class="toc-l3" href="#s9">3.2 return 与 print 不是一回事</a><a class="toc-l3" href="#s10">3.3 没有 return 的函数返回 None</a><a class="toc-l2" href="#s11">四、调用函数：把值送进去</a><a class="toc-l2" href="#s12">五、参数：位置、数量、顺序</a><a class="toc-l3" href="#s13">5.1 按位置对应</a><a class="toc-l3" href="#s14">5.2 为什么必须用参数，而不是靠外面的变量</a><a class="toc-l3" href="#s15">5.3 默认参数</a><a class="toc-l2" href="#s16">六、作用域：函数里的名字是独立的</a><a class="toc-l3" href="#s17">6.1 局部变量</a><a class="toc-l3" href="#s18">6.2 值传递：改参数不影响外面的不可变对象</a><a class="toc-l3" href="#s19">6.3 例外：传入可变对象时会被改到</a><a class="toc-l2" href="#s20">七、从需求到函数：设计五问</a><a class="toc-l2" href="#s21">八、用函数组织一个完整程序</a><a class="toc-l2" href="#s22">九、常见错误与调试</a><a class="toc-l2" href="#s23">操作清单</a><a class="toc-l3" href="#s24">写函数之前，先回答五个问题</a><a class="toc-l3" href="#s25">写完之后的检查</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="ch01-env-basics.html">① 环境、变量与数据类型</a><a href="ch02-operators-io.html">② 运算符、输入输出与 f-string</a><a href="ch03-strings-comments.html">③ 注释、字符串与输出控制</a><a href="ch04-conditionals.html">④ 条件分支与 match-case</a><a href="ch05-loops.html">⑤ 循环与迭代</a><a class="toc-l3" href="ch06-functions.html">▸ ⑥ 函数与参数传递</a><a href="ch07-classes.html">⑦ 类与对象入门</a><a href="ch08-lists-tuples.html">⑧ 列表、矩阵与元组</a><a href="ch09-files-csv.html">⑨ 文件读写与 CSV</a><a href="ch10-modules.html">⑩ 模块、标准库与包</a><a href="ch11-errors.html">⑪ 错误、异常与调试</a><a href="ch12-dicts-sets-json.html">⑫ 字典、集合与 JSON</a><a href="ch11-tuples-sets-packages-numpy.html">Chapter 11 · 元组、集合、类型转换、包与 NumPy</a><a href="ch12-not-open.html">Chapter 12 · 未开放（源课程为空）</a><a href="ch13-not-open.html">Chapter 13 · 未开放（源课程为空）</a><a href="appendix-course-map.html">附录 A · 课程全景、评分与视频索引</a><a href="supp-setup-and-project.html">补充 · 安装、AI 使用准则与汽车租赁项目</a><a href="supp-code-examples.html">补充 · 章节代码示例、项目说明与练习卷</a></div></aside><article><h1>⑥ 函数与参数传递</h1><p class="lead">Functions, Parameters and Scope <span class="badge mute">30352</span> <span class="badge mute">第 6 / 18 讲</span></p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 函数</a></p><p class="src">原始文件：<code>What_is_ a_funtion.pdf</code> <code>Self_defined_functions.pdf</code> <code>Parameters.pdf</code> <code>Example_writing_a_function.pdf</code> <code>Mutable_vs _immutable .pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前五讲的代码都是「一条一条往下写」。程序一变长，重复的片段就会出现，改一处要改十处。这一讲把代码打包成函数：给名字、留入口（参数）、留出口（返回值），以后随时调用。</p><p>循环与函数是这门课的两根支柱：循环解决「重复」，函数解决「复用与结构」。后面第 7 讲的类、第 9 讲的文件处理、第 12 讲的项目作业，都是「若干函数 + 一个主流程」的形态。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 <code>def</code> 写出带参数、带返回值的函数，并解释五个组成部分</li><li>说清 <code>return</code> 与 <code>print</code> 的区别，知道没有 return 时函数返回 <code>None</code></li><li>按位置正确传参，解释为什么参数个数与顺序都不能错</li><li>用默认参数给可选参数设默认值，并避开「可变默认参数」陷阱</li><li>解释局部变量的独立性，以及为什么列表传进函数会被改到</li><li>按「定名称 → 定输入 → 定输出 → 定判定 → 定累加」五步设计一个函数</li></ul></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A0250 编程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-5.html">第 5 章 函数</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">⑥ 函数与参数传递</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">⑥ 函数与参数传递 · 30352</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">一、函数是什么，为什么要用</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-4" aria-expanded="true" data-start-open="false" aria-label="展开或收起：一、函数是什么，为什么要用"><span aria-hidden="true">›</span></button></div><div id="directory-branch-4"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">1.1 内置函数与自定义函数</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">二、用 def 定义函数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-6" aria-expanded="true" data-start-open="false" aria-label="展开或收起：二、用 def 定义函数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-6"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">2.1 骨架的五个部分</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.2 一个最小可运行函数</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">三、return：函数唯一的出口</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-9" aria-expanded="true" data-start-open="false" aria-label="展开或收起：三、return：函数唯一的出口"><span aria-hidden="true">›</span></button></div><div id="directory-branch-9"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">3.1 return 结束执行并交回一个值</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">3.2 return 与 print 不是一回事</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">3.3 没有 return 的函数返回 None</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">四、调用函数：把值送进去</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">五、参数：位置、数量、顺序</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-14" aria-expanded="true" data-start-open="false" aria-label="展开或收起：五、参数：位置、数量、顺序"><span aria-hidden="true">›</span></button></div><div id="directory-branch-14"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">5.1 按位置对应</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">5.2 为什么必须用参数，而不是靠外面的变量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">5.3 默认参数</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">六、作用域：函数里的名字是独立的</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-18" aria-expanded="true" data-start-open="false" aria-label="展开或收起：六、作用域：函数里的名字是独立的"><span aria-hidden="true">›</span></button></div><div id="directory-branch-18"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">6.1 局部变量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">6.2 值传递：改参数不影响外面的不可变对象</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">6.3 例外：传入可变对象时会被改到</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">七、从需求到函数：设计五问</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s21"><span class="directory-label">八、用函数组织一个完整程序</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s22"><span class="directory-label">九、常见错误与调试</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：九、常见错误与调试"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s23"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s24"><span class="directory-label">操作清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-31" aria-expanded="true" data-start-open="false" aria-label="展开或收起：操作清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-31"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s25"><span class="directory-label">写函数之前，先回答五个问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s26"><span class="directory-label">写完之后的检查</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A0250 编程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-35" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A0250 编程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-35"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 入门：类型、运算与输入输出</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 入门：类型、运算与输入输出"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch01-env-basics.html"><span class="directory-label">① 环境、变量与数据类型</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch02-operators-io.html"><span class="directory-label">② 运算符、输入输出与 f-string</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 字符串与打印</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 字符串与打印"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch03-strings-comments.html"><span class="directory-label">③ 注释、字符串与输出控制</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 条件与布尔逻辑</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 条件与布尔逻辑"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch04-conditionals.html"><span class="directory-label">④ 条件分支与 match-case</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 循环</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-43" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 循环"><span aria-hidden="true">›</span></button></div><div id="directory-branch-43"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch05-loops.html"><span class="directory-label">⑤ 循环与迭代</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-5.html"><span class="directory-label">第 5 章 函数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-45" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 5 章 函数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-45"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="ch06-functions.html" aria-current="page"><span class="directory-label">⑥ 函数与参数传递</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">第 6 章 类、列表与矩阵</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-47" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 6 章 类、列表与矩阵"><span aria-hidden="true">›</span></button></div><div id="directory-branch-47"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch07-classes.html"><span class="directory-label">⑦ 类与对象入门</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch08-lists-tuples.html"><span class="directory-label">⑧ 列表、矩阵与元组</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-7.html"><span class="directory-label">第 7 章 文本文件与 CSV</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-50" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 7 章 文本文件与 CSV"><span aria-hidden="true">›</span></button></div><div id="directory-branch-50"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch09-files-csv.html"><span class="directory-label">⑨ 文件读写与 CSV</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-8.html"><span class="directory-label">第 8 章 Python 模块</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-52" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 8 章 Python 模块"><span aria-hidden="true">›</span></button></div><div id="directory-branch-52"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch10-modules.html"><span class="directory-label">⑩ 模块、标准库与包</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-9.html"><span class="directory-label">第 9 章 错误与异常</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-54" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 9 章 错误与异常"><span aria-hidden="true">›</span></button></div><div id="directory-branch-54"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch11-errors.html"><span class="directory-label">⑪ 错误、异常与调试</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-10.html"><span class="directory-label">第 10 章 数据、字典、JSON 与自有模块</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-56" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 10 章 数据、字典、JSON 与自有模块"><span aria-hidden="true">›</span></button></div><div id="directory-branch-56"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch12-dicts-sets-json.html"><span class="directory-label">⑫ 字典、集合与 JSON</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-11.html"><span class="directory-label">第 11 章 元组、集合、包与 NumPy</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-58" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 11 章 元组、集合、包与 NumPy"><span aria-hidden="true">›</span></button></div><div id="directory-branch-58"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch11-tuples-sets-packages-numpy.html"><span class="directory-label">Chapter 11 · 元组、集合、类型转换、包与 NumPy</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-12.html"><span class="directory-label">第 12 章 未开放</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-60" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 12 章 未开放"><span aria-hidden="true">›</span></button></div><div id="directory-branch-60"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch12-not-open.html"><span class="directory-label">Chapter 12 · 未开放（源课程为空）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-13.html"><span class="directory-label">第 13 章 未开放</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-62" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 13 章 未开放"><span aria-hidden="true">›</span></button></div><div id="directory-branch-62"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch13-not-open.html"><span class="directory-label">Chapter 13 · 未开放（源课程为空）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-14.html"><span class="directory-label">附录 A 课程全景</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-64" aria-expanded="true" data-start-open="false" aria-label="展开或收起：附录 A 课程全景"><span aria-hidden="true">›</span></button></div><div id="directory-branch-64"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="appendix-course-map.html"><span class="directory-label">附录 A · 课程全景、评分与视频索引</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-15.html"><span class="directory-label">附录 B 环境、项目与代码示例</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-66" aria-expanded="true" data-start-open="false" aria-label="展开或收起：附录 B 环境、项目与代码示例"><span aria-hidden="true">›</span></button></div><div id="directory-branch-66"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="supp-setup-and-project.html"><span class="directory-label">补充 · 安装、AI 使用准则与汽车租赁项目</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-code-examples.html"><span class="directory-label">补充 · 章节代码示例、项目说明与练习卷</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30352/ch06-functions"><header class="lecture-head"><p class="lecture-kicker">CT60A0250 编程基础 · 第 06 / 18 讲</p><h1 id="lecture-title">⑥ 函数与参数传递</h1><p class="lecture-subtitle">Functions, Parameters and Scope</p><p class="chaptertag">所属章节：<a href="part-5.html">第 5 章 函数</a></p><details class="lecture-sources"><summary>资料来源 · 5 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>11e06d644c20</code>（用于识别内容变更）</dd></dl><ul><li><code>What_is_ a_funtion.pdf</code> <span class="sub">未附原文件</span></li><li><code>Self_defined_functions.pdf</code> <span class="sub">未附原文件</span></li><li><code>Parameters.pdf</code> <span class="sub">未附原文件</span></li><li><code>Example_writing_a_function.pdf</code> <span class="sub">未附原文件</span></li><li><code>Mutable_vs _immutable .pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前五讲的代码都是「一条一条往下写」。程序一变长，重复的片段就会出现，改一处要改十处。这一讲把代码打包成函数：给名字、留入口（参数）、留出口（返回值），以后随时调用。</p><p>循环与函数是这门课的两根支柱：循环解决「重复」，函数解决「复用与结构」。后面第 7 讲的类、第 9 讲的文件处理、第 12 讲的项目作业，都是「若干函数 + 一个主流程」的形态。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>用 <code>def</code> 写出带参数、带返回值的函数，并解释五个组成部分</li><li>说清 <code>return</code> 与 <code>print</code> 的区别，知道没有 return 时函数返回 <code>None</code></li><li>按位置正确传参，解释为什么参数个数与顺序都不能错</li><li>用默认参数给可选参数设默认值，并避开「可变默认参数」陷阱</li><li>解释局部变量的独立性，以及为什么列表传进函数会被改到</li><li>按「定名称 → 定输入 → 定输出 → 定判定 → 定累加」五步设计一个函数</li></ul></section>
 <section id="sec-detail" class="card" data-type="detail"><h2 id="s2">一、函数是什么，为什么要用</h2><p>课件给的定义很短：函数是一个「小程序」，专门完成某一件事（What is a function p2）。它把一段代码打包、起名字、留出入口（参数）与出口（返回值），以后在程序任何地方都能再叫它一次。</p><p>用函数有三层收益：</p><ul><li>结构：把长程序切成若干块，每块只做一件事，读代码时不必一次装进脑子；</li><li>复用：定义一次，调用无数次，改一处就全改；</li><li>协作：把一组函数写成一个库（library），别人 <code>import</code> 就能用——这正是第 10 讲「模块」的由来。</li></ul><p>课件还提到一个特殊情形：函数可以调用自己，叫递归（recursion）。这门课不深入递归，但要知道它是函数机制自然允许的。</p><h3 id="s3">1.1 内置函数与自定义函数</h3><p>前几讲一直在用<b>内置函数</b>（built-in functions）：<code>print()</code>、<code>input()</code>、<code>len()</code>、<code>int()</code>、<code>float()</code>、<code>str()</code>、<code>round()</code>、<code>range()</code>。它们随 Python 一起装好，不用导入就能用。</p><p>这门课的重点是<b>自定义函数</b>（user-defined functions）：为了解决自己的问题而写的函数（What is a function p5）。两者用法完全一样——都是「给输入、拿输出」。</p><p>课件的 <code>round()</code> 例子值得细看（p4）：它接受两个输入，第一个是要处理的数，第二个是保留几位小数，<b>顺序不能反</b>。</p><pre><code>print(round(3.14159, 2))
 print(round(6.7, 0))
 print(round(3.14159))</code></pre><pre><code>3.14
 7.0
 3</code></pre><p><code>round(6.7, 0)</code> 得 <code>7.0</code> 而不是 <code>7</code>：只要给了第二个参数，返回类型就是 float。这提醒我们：<b>函数的返回值有类型</b>，用之前要知道拿到的是什么。</p><h2 id="s4">二、用 def 定义函数</h2><h3 id="s5">2.1 骨架的五个部分</h3><p>定义函数的语法（Self-defined functions p2–p5）可以拆成五块：</p><pre><code>def function_name(parameters):
     # function body
-    return result</code></pre><table><tr><th>部分</th><th>作用</th><th>规则</th></tr><tr><td><code>def</code></td><td>声明「这里开始定义一个函数」</td><td>关键字，不能拼错</td></tr><tr><td><code>function_name</code></td><td>函数的名字</td><td>小写、用下划线分词，描述它做什么</td></tr><tr><td><code>(parameters)</code></td><td>参数列表，函数的输入</td><td>逗号分隔；没有参数也要写一对空括号</td></tr><tr><td><code>:</code></td><td>函数头结束，函数体开始</td><td>漏了就是 SyntaxError</td></tr><tr><td>缩进的函数体</td><td>函数真正执行的代码</td><td>整块必须比 def 多缩进</td></tr><tr><td><code>return result</code></td><td>把结果交回调用者</td><td>可以没有，也可以在中间提前返回</td></tr></table><p>命名规范与变量一致：只能字母、数字、下划线，不能有空格，不能以数字开头；习惯全小写 + 下划线（<code>count_vowels</code>），而不是 <code>CountVowels</code> 或 <code>cv</code>。名字要让人只看名字就知道它做什么。</p><h3 id="s6">2.2 一个最小可运行函数</h3><pre><code>def greet(name):
+    return result</code></pre><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>部分</th><th>作用</th><th>规则</th></tr><tr><td><code>def</code></td><td>声明「这里开始定义一个函数」</td><td>关键字，不能拼错</td></tr><tr><td><code>function_name</code></td><td>函数的名字</td><td>小写、用下划线分词，描述它做什么</td></tr><tr><td><code>(parameters)</code></td><td>参数列表，函数的输入</td><td>逗号分隔；没有参数也要写一对空括号</td></tr><tr><td><code>:</code></td><td>函数头结束，函数体开始</td><td>漏了就是 SyntaxError</td></tr><tr><td>缩进的函数体</td><td>函数真正执行的代码</td><td>整块必须比 def 多缩进</td></tr><tr><td><code>return result</code></td><td>把结果交回调用者</td><td>可以没有，也可以在中间提前返回</td></tr></table></div><p>命名规范与变量一致：只能字母、数字、下划线，不能有空格，不能以数字开头；习惯全小写 + 下划线（<code>count_vowels</code>），而不是 <code>CountVowels</code> 或 <code>cv</code>。名字要让人只看名字就知道它做什么。</p><h3 id="s6">2.2 一个最小可运行函数</h3><pre><code>def greet(name):
     message = "Hello, " + name + "!"
     return message
 
@@ -467,8 +799,8 @@ elif choice == 3:
     c = float(input("Side 3: "))
     print("Area:", round(triangle_area(a, b, c), 2))
 else:
-    print("Bye!")</code></pre><p>结构上的三个要点：每个函数只做一件事（单一职责）；菜单函数既打印又返回选择，把「读输入」与「决定流程」分开；主程序只负责调度，不写计算细节。三角形面积用海伦公式（Heron's formula）：半周长 <code>s = (a+b+c)/2</code>，面积 <code>√(s(s−a)(s−b)(s−c))</code>，开方用 <code>** 0.5</code>。</p><div class="callout tip"><b>docstring 放在函数第一行</b>每个函数开头写一句 <code>"""Returns the area of a circle."""</code>，既是注释又能被 <code>help()</code> 读出来（第 3 讲）。项目作业里评分的可读性就看这个。</div><h2 id="s22">九、常见错误与调试</h2><div class="callout warn"><b>print 当 return 用</b>屏幕上有输出、调用处拿到 None。凡是题目要求「返回」，就只能 <code>return</code>；要同时看结果，在调用处 print 返回值。</div><div class="callout warn"><b>参数个数不对</b><code>TypeError: f() takes 2 positional arguments but 3 were given</code>。数一遍 <code>def</code> 括号里的参数与调用括号里的值。</div><div class="callout warn"><b>UnboundLocalError</b>函数里既用又给某个变量赋值时，Python 把它当局部变量，于是「用」的那一步发现它还没赋值。解决办法：把值作为参数传进来，或在函数内先初始化。</div><div class="callout warn"><b>只在函数里改了不可变参数，以为外面会变</b><code>def inc(n): n = n + 1</code> 改的是副本。要「改到外面」，得 <code>return</code> 新值并让调用处重新赋值：<code>x = inc(x)</code>。</div><div class="callout idea" data-ext="ch06-functions-0"><b>常见误解</b><p><code>print()</code> 只把文字显示在屏幕，<strong>不产生值</strong>；<code>return</code> 才交回值。函数只 print 不 return，调用处拿到 None（CodeGrade 报 <em>The function should return a value</em> 就是这个错）。另一个陷阱是<strong>可变默认参数</strong>：<code>box=[]</code> 只在定义时创建一次，多次调用共用；正确写法是默认 None，进函数再 <code>if box is None: box = []</code>。</p></div><div class="callout tip" data-ext="ch06-functions-1"><b>推导补充</b><p>参数传递的差别来自可变性：不可变对象（数字、字符串）传进函数，改的是副本，外面不变；可变对象（列表、字典）传的是引用，改元素会反映到外面。由此推出设计原则——外部信息用参数传进来，别偷读全局变量，函数才独立可复用。判断 None 用 <code>is None</code> 而非 <code>== None</code>；函数必须先定义后调用。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>function</td><td>函数</td><td>A named block of code that performs one task.</td></tr><tr><td>def</td><td>定义函数的关键字</td><td>def area(r): starts a function definition.</td></tr><tr><td>parameter</td><td>形参</td><td>A variable listed in the parentheses of the definition.</td></tr><tr><td>argument</td><td>实参</td><td>The value passed in when the function is called.</td></tr><tr><td>function body</td><td>函数体</td><td>The indented statements inside the function.</td></tr><tr><td>return</td><td>返回</td><td>Sends a value back to the caller and ends the function.</td></tr><tr><td>None</td><td>空值</td><td>The value a function returns when it has no return statement.</td></tr><tr><td>function call</td><td>函数调用</td><td>greet("Bob") executes the function.</td></tr><tr><td>scope</td><td>作用域</td><td>Variables inside a function are local to it.</td></tr><tr><td>local variable</td><td>局部变量</td><td>A variable that exists only inside the function.</td></tr><tr><td>default parameter</td><td>默认参数</td><td>def greet(name, greeting="Hello") can be called with one argument.</td></tr><tr><td>mutable object</td><td>可变对象</td><td>A list passed to a function can be modified inside it.</td></tr><tr><td>docstring</td><td>文档字符串</td><td>A string on the first line of a function, read by help().</td></tr><tr><td>recursion</td><td>递归</td><td>A function that calls itself.</td></tr></table></section>
+    print("Bye!")</code></pre><p>结构上的三个要点：每个函数只做一件事（单一职责）；菜单函数既打印又返回选择，把「读输入」与「决定流程」分开；主程序只负责调度，不写计算细节。三角形面积用海伦公式（Heron's formula）：半周长 <code>s = (a+b+c)/2</code>，面积 <code>√(s(s−a)(s−b)(s−c))</code>，开方用 <code>** 0.5</code>。</p><div class="callout tip"><b>docstring 放在函数第一行</b>每个函数开头写一句 <code>"""Returns the area of a circle."""</code>，既是注释又能被 <code>help()</code> 读出来（第 3 讲）。项目作业里评分的可读性就看这个。</div><h2 id="s22">九、常见错误与调试</h2><div class="callout warn"><b>print 当 return 用</b>屏幕上有输出、调用处拿到 None。凡是题目要求「返回」，就只能 <code>return</code>；要同时看结果，在调用处 print 返回值。</div><div class="callout warn"><b>参数个数不对</b><code>TypeError: f() takes 2 positional arguments but 3 were given</code>。数一遍 <code>def</code> 括号里的参数与调用括号里的值。</div><div class="callout warn"><b>UnboundLocalError</b>函数里既用又给某个变量赋值时，Python 把它当局部变量，于是「用」的那一步发现它还没赋值。解决办法：把值作为参数传进来，或在函数内先初始化。</div><div class="callout warn"><b>只在函数里改了不可变参数，以为外面会变</b><code>def inc(n): n = n + 1</code> 改的是副本。要「改到外面」，得 <code>return</code> 新值并让调用处重新赋值：<code>x = inc(x)</code>。</div><div class="callout idea" data-ext="ch06-functions-0"><b>常见误解</b><p><code>print()</code> 只把文字显示在屏幕，<strong>不产生值</strong>；<code>return</code> 才交回值。函数只 print 不 return，调用处拿到 None（CodeGrade 报 <em>The function should return a value</em> 就是这个错）。另一个陷阱是<strong>可变默认参数</strong>：<code>box=[]</code> 只在定义时创建一次，多次调用共用；正确写法是默认 None，进函数再 <code>if box is None: box = []</code>。</p></div><div class="callout tip" data-ext="ch06-functions-1"><b>推导补充</b><p>参数传递的差别来自可变性：不可变对象（数字、字符串）传进函数，改的是副本，外面不变；可变对象（列表、字典）传的是引用，改元素会反映到外面。由此推出设计原则——外部信息用参数传进来，别偷读全局变量，函数才独立可复用。判断 None 用 <code>is None</code> 而非 <code>== None</code>；函数必须先定义后调用。</p></div><h3 id="s23">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/8ebda52eb6e58fde25a8.webp" loading="lazy" alt="What_is_ a_funtion p3" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30352/slides/What_is__a_funtion-p03.jpg"><figcaption>What_is_ a_funtion · 第 3 页</figcaption></figure><figure><img src="../../assets/optimized/e7809531011ccb960cf8.webp" loading="lazy" alt="Mutable_vs _immutable  p3" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30352/slides/Mutable_vs__immutable_-p03.jpg"><figcaption>Mutable_vs _immutable  · 第 3 页</figcaption></figure><figure><img src="../../assets/optimized/860519bac197d3845c94.webp" loading="lazy" alt="Mutable_vs _immutable  p5" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30352/slides/Mutable_vs__immutable_-p05.jpg"><figcaption>Mutable_vs _immutable  · 第 5 页</figcaption></figure><figure><img src="../../assets/optimized/86a22fa26af66cb3b082.webp" loading="lazy" alt="Mutable_vs _immutable  p6" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30352/slides/Mutable_vs__immutable_-p06.jpg"><figcaption>Mutable_vs _immutable  · 第 6 页</figcaption></figure><figure><img src="../../assets/optimized/39a1198fd4150b1516aa.webp" loading="lazy" alt="Mutable_vs _immutable  p7" width="1392" height="783" decoding="async" data-full-src="../../assets/img/30352/slides/Mutable_vs__immutable_-p07.jpg"><figcaption>Mutable_vs _immutable  · 第 7 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>function</td><td>函数</td><td>A named block of code that performs one task.</td></tr><tr><td>def</td><td>定义函数的关键字</td><td>def area(r): starts a function definition.</td></tr><tr><td>parameter</td><td>形参</td><td>A variable listed in the parentheses of the definition.</td></tr><tr><td>argument</td><td>实参</td><td>The value passed in when the function is called.</td></tr><tr><td>function body</td><td>函数体</td><td>The indented statements inside the function.</td></tr><tr><td>return</td><td>返回</td><td>Sends a value back to the caller and ends the function.</td></tr><tr><td>None</td><td>空值</td><td>The value a function returns when it has no return statement.</td></tr><tr><td>function call</td><td>函数调用</td><td>greet("Bob") executes the function.</td></tr><tr><td>scope</td><td>作用域</td><td>Variables inside a function are local to it.</td></tr><tr><td>local variable</td><td>局部变量</td><td>A variable that exists only inside the function.</td></tr><tr><td>default parameter</td><td>默认参数</td><td>def greet(name, greeting="Hello") can be called with one argument.</td></tr><tr><td>mutable object</td><td>可变对象</td><td>A list passed to a function can be modified inside it.</td></tr><tr><td>docstring</td><td>文档字符串</td><td>A string on the first line of a function, read by help().</td></tr><tr><td>recursion</td><td>递归</td><td>A function that calls itself.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写函数 <code>count_vowels(s)</code> 返回元音个数，并解释每一行的作用。</div><p>先按设计五问定好名称、输入、输出、判定、累加，再写代码。</p><pre><code>def count_vowels(s):
     count = 0                  # 计数器：初值 0
     for ch in s.lower():       # 遍历每个字符，统一转小写
@@ -514,11 +846,170 @@ print("Triangle area:", round(triangle_area(a, b, c), 2))</code></pre><p>输入 
 Triangle area: 6.0</code></pre><p>解释：圆面积 3.14159×4 = 12.56636 → 12.57；三角形三边 3、4、5 是直角三角形，面积 6，海伦公式给出 <code>s=6</code>、<code>6×3×2×1=36</code>、开方得 6。若三边构不成三角形（如 1、2、10），<code>s−a</code> 会为负，开方得到复数——真实程序应先校验三边关系。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>写 <code>max_of_three(a, b, c)</code>，返回三者中的最大值（不许用 <code>max()</code>）。</li><li>写 <code>count_char(s, ch)</code>，返回 <code>ch</code> 在 <code>s</code> 中出现的次数（不许用 <code>count()</code>）。</li><li>写 <code>is_even(n)</code> 返回布尔值；再写一段代码，用它打印 1–10 中的偶数。</li><li>写 <code>to_celsius(f)</code> 把华氏温度转成摄氏温度（公式 C = (F − 32) × 5 / 9），返回保留一位小数的值。</li><li>把第 5 讲的「反复读成绩、输出平均分与及格人数」改写成函数 <code>average(scores)</code>，参数是一个分数列表。</li></ol><details><summary>答案与思路</summary><div class="ans"><p><b>1.</b> 先假设 <code>a</code> 最大，再依次比较：<code>best = a</code>；<code>if b &gt; best: best = b</code>；<code>if c &gt; best: best = c</code>；<code>return best</code>。这是「找极值」模式，初值必须是<b>列表里真实存在的元素</b>，不能写 0（全负数时出错）。</p><p><b>2.</b> <code>count = 0</code>，<code>for c in s: if c == ch: count += 1</code>，<code>return count</code>。若 <code>ch</code> 长度大于 1，这个写法按字符比会永远不相等——要按子串计数得用 <code>s.count(ch)</code> 或滑动窗口，题目限定单字符才有上面的简单解。</p><p><b>3.</b> <code>def is_even(n): return n % 2 == 0</code>。函数体只有一行时，返回的就是这个布尔表达式，不必写 if。调用处：<code>for i in range(1, 11): if is_even(i): print(i, end=" ")</code>。</p><p><b>4.</b> <code>return round((f - 32) * 5 / 9, 1)</code>。注意运算顺序：先减再乘除；写成 <code>f - 32 * 5 / 9</code> 会因为乘除优先而算错。</p><p><b>5.</b> <code>def average(scores): if not scores: return None</code>（空列表要单独处理，否则 <code>sum/0</code> 报 ZeroDivisionError），否则 <code>return sum(scores) / len(scores)</code>。及格人数另写一个函数 <code>count_passed(scores)</code>，每个函数只做一件事。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b><code>def</code> 定义、<code>return</code> 与 <code>print</code> 的区别、参数按位置传递、无 return 时得 <code>None</code>、局部变量的独立性。</div><div class="callout warn"><b>易错 1　该 return 却 print</b>CodeGrade 的 <code>The function should return a value</code> 就是这个。看到题目写「返回」，第一反应写 <code>return</code>。</div><div class="callout warn"><b>易错 2　默认参数位置与可变默认值</b><code>def f(a=1, b)</code> 是语法错误；<code>def f(box=[])</code> 会让所有调用共享同一个列表，必须改用 <code>None</code> 哨兵。</div><div class="callout warn"><b>易错 3　把列表参数当成副本</b>函数里 <code>my_list[0] = 1000</code> 会改到外面的列表。想保留原数据，调用前先 <code>L[:]</code> 复制（第 8 讲）或 <code>list(L)</code>。</div><div class="callout tip"><b>进阶</b>递归写法（函数调用自己）在阶乘、斐波那契里常见，但必须有终止条件；另外记住 <code>return</code> 一次只能返回一个对象，要返回多个值请用元组（第 8 讲）。</div></section>
-<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s23">操作清单</h2><h3 id="s24">写函数之前，先回答五个问题</h3><ol class="steps"><li>函数叫什么名字？用动词开头、全小写下划线</li><li>参数有哪些？每个参数的类型与含义写清楚</li><li>返回什么？一个值还是多个值，类型是什么</li><li>判定的条件是什么？写成布尔表达式</li><li>要不要循环？需要累积就用「计数器/累加器 + 循环」模板</li></ol><h3 id="s25">写完之后的检查</h3><ul class="checklist"><li>每个要「返回」的路径都写了 <code>return</code></li><li>调用时参数个数、顺序与定义一致</li><li>函数里没有偷偷依赖全局变量</li><li>默认参数只用于「可选」的尾部参数，且没有用可变对象</li><li>函数体只做一件事，超过 20 行就该考虑拆开</li></ul></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>What_is_ a_funtion.pdf</td><td>p2–p5</td><td>函数的定义与动机、复用/结构化/库、递归提及、内置函数与自定义函数、round() 两参数示例</td></tr><tr><td>Self_defined_functions.pdf</td><td>p2–p7</td><td><code>def</code> 五个组成部分、命名规范、函数体缩进、<code>return</code> 结束执行、return ≠ print、调用方式</td></tr><tr><td>Parameters.pdf</td><td>p2–p5</td><td>按位置传参、参数数量与顺序、局部变量独立、值复制、为什么必须用参数、默认参数</td></tr><tr><td>Example_writing_a_function.pdf</td><td>p2</td><td>元音计数题的设计五问：命名、参数、返回、判定、计数、是否需要循环</td></tr><tr><td>Mutable_vs _immutable .pdf</td><td>p2–p8</td><td>可变/不可变类型、<code>B = A</code> 指向同一对象、列表参数会被函数改到（list_parameter.py）</td></tr><tr><td>add_one.py</td><td>全文</td><td>值复制追踪：函数内改参数不影响外部变量</td></tr><tr><td>greeting.py</td><td>全文</td><td>默认参数的调用方式</td></tr><tr><td>none.py / returning_none.py</td><td>全文</td><td>无 return 返回 None、用 is None 判断</td></tr><tr><td>example_with_menu.py</td><td>全文</td><td>用多个函数组织菜单程序、docstring、海伦公式</td></tr></table><p><b>跳过项：</b>课件中只给出文件名而无正文的截图页（Example1.py 等）已按代码文件内容吸收到正文与示例；Moodle 的作业说明与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b>可变默认参数陷阱、<code>is None</code> 判断、函数必须先定义后调用、UnboundLocalError 的成因，都是围绕原知识点的边界补充，不引入新语法考点。</p></section><div class="lnav"><a class="prev" href="ch05-loops.html">← ⑤ 循环与迭代</a><a class="next" href="ch07-classes.html">⑦ 类与对象入门 →</a></div></article></div>
+<section id="sec-checklist" class="card" data-type="checklist"><h2 id="s24">操作清单</h2><h3 id="s25">写函数之前，先回答五个问题</h3><ol class="steps"><li>函数叫什么名字？用动词开头、全小写下划线</li><li>参数有哪些？每个参数的类型与含义写清楚</li><li>返回什么？一个值还是多个值，类型是什么</li><li>判定的条件是什么？写成布尔表达式</li><li>要不要循环？需要累积就用「计数器/累加器 + 循环」模板</li></ol><h3 id="s26">写完之后的检查</h3><ul class="checklist"><li>每个要「返回」的路径都写了 <code>return</code></li><li>调用时参数个数、顺序与定义一致</li><li>函数里没有偷偷依赖全局变量</li><li>默认参数只用于「可选」的尾部参数，且没有用可变对象</li><li>函数体只做一件事，超过 20 行就该考虑拆开</li></ul></section>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>What_is_ a_funtion.pdf</td><td>p2–p5</td><td>函数的定义与动机、复用/结构化/库、递归提及、内置函数与自定义函数、round() 两参数示例</td></tr><tr><td>Self_defined_functions.pdf</td><td>p2–p7</td><td><code>def</code> 五个组成部分、命名规范、函数体缩进、<code>return</code> 结束执行、return ≠ print、调用方式</td></tr><tr><td>Parameters.pdf</td><td>p2–p5</td><td>按位置传参、参数数量与顺序、局部变量独立、值复制、为什么必须用参数、默认参数</td></tr><tr><td>Example_writing_a_function.pdf</td><td>p2</td><td>元音计数题的设计五问：命名、参数、返回、判定、计数、是否需要循环</td></tr><tr><td>Mutable_vs _immutable .pdf</td><td>p2–p8</td><td>可变/不可变类型、<code>B = A</code> 指向同一对象、列表参数会被函数改到（list_parameter.py）</td></tr><tr><td>add_one.py</td><td>全文</td><td>值复制追踪：函数内改参数不影响外部变量</td></tr><tr><td>greeting.py</td><td>全文</td><td>默认参数的调用方式</td></tr><tr><td>none.py / returning_none.py</td><td>全文</td><td>无 return 返回 None、用 is None 判断</td></tr><tr><td>example_with_menu.py</td><td>全文</td><td>用多个函数组织菜单程序、docstring、海伦公式</td></tr></table></div><p><b>跳过项：</b>课件中只给出文件名而无正文的截图页（Example1.py 等）已按代码文件内容吸收到正文与示例；Moodle 的作业说明与评分页属于行政信息，不进入本讲。</p><p><b>拓展项：</b>可变默认参数陷阱、<code>is None</code> 判断、函数必须先定义后调用、UnboundLocalError 的成因，都是围绕原知识点的边界补充，不引入新语法考点。</p></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="ch05-loops.html"><span>上一讲</span><strong>⑤ 循环与迭代</strong></a><a data-sequence="parent" href="part-5.html"><span>返回目录</span><strong>第 5 章 函数</strong></a><a data-sequence="next" href="ch07-classes.html"><span>下一讲</span><strong>⑦ 类与对象入门</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
+<title>课程合订本</title>
+<style>:root{
+  color-scheme:light dark;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
+}
+/* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+  }
+}
+/* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
+:root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
+pre code{background:none;color:inherit;padding:0}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
+p{margin:.55em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
+.lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
+.sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
+section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
+section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
+section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
+section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
+section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
+section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
+.callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
+.callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
+.checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:22px;line-height:1.3}
+.stat span{font-size:12.6px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
+  font-size:15px;background:var(--card);margin-bottom:20px}
+.search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
+.ccard h3{margin:.1em 0 .3em}
+.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li:first-child{border-top:none}
+.lec-list .t{flex:1}
+.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list li.dim{opacity:.62}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
+.thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.thbtn:hover{color:var(--accent);border-color:var(--accent)}
+.thbtn .th-light,.thbtn .th-dark{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
+:root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
+sup,sub{line-height:0;font-size:.78em}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
+.extsrc{font-size:13px;color:var(--muted)}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
+.usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
+.ticklist li:first-child{border-top:none}
+.ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.ticklist input{margin-top:.35em}
+.chapter{margin:0 0 24px}
+.chapter>h2 a{color:var(--fg)}
+.chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
+.chapters{list-style:none;padding:0;margin:.4em 0 0}
+.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch:first-child{border-top:none;padding-top:2px}
+.chapters .ch-t{font-weight:600}
+.chapters .n{float:right;color:var(--muted);font-size:12.6px}
+.chapters .lec-list{margin:.15em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
+  padding:8px 14px;margin:20px 0 2px;font-weight:600}
+.revpart .badge{font-weight:400;margin-left:8px}
+.chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
+.chapters-tick>li:first-child{border-top:none}
+.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
+.howto summary{cursor:pointer;font-weight:600}
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
+  border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
+.alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
+.revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+.revlec:first-of-type{border-top:none;margin-top:6px}
+.revlec>h3{margin-top:0}
+.revbody>h4:first-child{margin-top:.2em}
+.stat b#tickprog{font-size:16px}
+
+/* ---------- 实时资料 & 上传 UI ---------- */
+.mat-panel{border-left:4px solid var(--ok)}
+.mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
+.mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
+.mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
+.mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.mat-hint{font-size:12.5px;color:var(--muted)}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
+.mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mat-form{display:flex;flex-direction:column;gap:12px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-field input,.mat-field select,.mat-field textarea{
+  font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+.mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+.mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.mat-file-input{display:none}
+.mat-drop-text{font-size:14.5px}
+.mat-drop-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
+  font-weight:600;cursor:pointer;text-decoration:none}
+.mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-btn.primary:hover{filter:brightness(.94);color:#fff}
+.mat-btn.ghost{background:transparent;color:var(--muted)}
+.mat-btn:disabled{opacity:.6;cursor:not-allowed}
+.mat-status{font-size:13.5px;color:var(--muted)}
+.mat-status.ok{color:var(--ok);font-weight:600}
+.mat-status.err{color:var(--bad);font-weight:600}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
+.mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
+.mat-item-main{flex:1;min-width:220px}
+.mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.mat-item-title{font-size:15px}
+.mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
+.mat-item-meta{font-size:12.6px;color:var(--muted)}
+.mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.mat-modal.open{display:flex}
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
+  width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.mat-close:hover{color:var(--fg)}
+.mat-modal-body{padding:18px;overflow:auto;flex:1}
+.mat-preview-frame{width:100%;height:72vh;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+.mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
+@media print{
+  #pbar,#btt{display:none}
+  .mat-panel,.mat-modal{display:none}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
+  .card{break-inside:avoid;box-shadow:none}
+  .page-layout{display:block}
+  .rvlec,.revlec{break-inside:avoid}
+  details{display:block}
+  details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
+}
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
+</style>
+</head>
+<body id="top" data-module="reader">
+<a class="skip-link" href="#page-content">跳到正文</a>
+<header class="topbar"><div class="topbar-in">
+<a class="brand" href="../../index.html">课程讲义站</a>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html" aria-current="true">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
+<button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
+<span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
+</button>
+</div>
+</div></header>
+<main id="main-content" tabindex="-1" class="wrap " data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">课程合订本</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">课程合订本</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#c-29428"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">LUT digital orientation 数字导览</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：LUT digital orientation 数字导览"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#p-29428-1"><span class="directory-label">第 1 章 数字导览与学习支持</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-2" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 数字导览与学习支持"><span aria-hidden="true">›</span></button></div><div id="directory-branch-2"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#l-29428-digital-orientation"><span class="directory-label">第 1 讲 · 数字导览：LUT 学习环境与支持服务</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#p-29428-2"><span class="directory-label">第 2 章 平等与伦理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-4" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 平等与伦理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-4"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#l-29428-speaking-up"><span class="directory-label">第 2 讲 · Speaking up：遇到不当行为怎么开口</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><div class="reader-toolbar reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+</div><h1>LUT digital orientation 数字导览 · 课程合订本</h1><p class="lead">1 门课 / 2 章 / 2 讲，按「课程 → 章节」顺序连排；每章有标题，每讲之后可直接跳回独立页或章节页。适合通读、打印、离线放到手机里看。</p><section class="allcourse" id="c-29428"><h1>LUT digital orientation 数字导览</h1><p class="lead">以图片为唯一素材的入学数字导览：eLUT 首页与六个主题、四个最重要的系统（Sisu/Moodle/Time-Edit/Tuudo）、八个辅导主题周、学生生活、学习能力四要素模型、Neo 聊天机器人的使用规则，以及 LTKY 的 Speaking up 处置步骤。 · 2 章 · 2 讲</p></section><h2 class="allpart" id="p-29428-1">第 1 章 数字导览与学习支持 <span class="badge mute">1 讲</span> <a class="sub" href="../../c/29428/part-1.html">章节页 →</a></h2><article class="alllec" id="l-29428-digital-orientation"><h3>第 1 讲 · 数字导览：LUT 学习环境与支持服务</h3><p class="lead">LUT Digital Orientation: Study Environment and Support Services <span class="badge mute">第 1 章 数字导览与学习支持</span></p><section class="card" data-type="overview"><h2>本讲定位</h2><p>LUT Digital Orientation（数字导览）没有课件文本，它本身就是一组图：一张 eLUT 首页、一张“六个主题”的导航图、一张“四个最重要的系统”、一张辅导主题周、一张学生生活拼图、一张学习能力模型、一张聊天机器人界面，以及一份“Speaking up”指引。本讲把这些图里的服务名称、顺序与流程逐个拆开，变成你第一周就能照着做的动作。</p><p>它与 CT10A9900、CT30A1000 的关系是“同一套系统的另一视角”：导览告诉你<b>有哪些东西、按什么顺序接触</b>；那两门课告诉你<b>每个系统具体怎么用、作业怎么交</b>。三讲合起来，才是一张完整的入学地图。</p><p>学完本讲你应当能够：</p><ul class="checklist"><li>说出 Sisu、Moodle、Time-Edit、Tuudo 四个系统各自解决什么问题</li><li>按辅导主题周的八个主题安排入学前两个月的关注点</li><li>用学习能力模型的四块定位“我卡在哪一环”</li><li>按 Neo 的四条使用规则提问，并对回答做核实</li><li>遇到不当言行时，按 Speaking up 的步骤处理并留下记录</li></ul></section>
+<section class="card" data-type="detail"><h2>一、导览的入口：eLUT 首页</h2><p>eLUT 首页的结构在图中很清楚：左侧是 LUT University 标识；顶部四个菜单项依次是 <b>SEARCH</b>、<b>LANGUAGE MENU</b>、<b>QUICK LINKS</b>、<b>MAIN MENU</b>；页面中部是一张校园照片与一块黑色说明区，标题是 <b>“Welcome to eLUT!”</b>。</p><p>说明区的文字给出三件事：eLUT 是 LUT 学生的信息页（info page for LUT students），在这里可以找到面向全体学生的最重要新闻与活动（the most important news and events for all students）；可以订阅学生支持与指导服务的通讯（subscribe to support and guidance service newsletter for students），图中还加了一句 “Don’t miss this info.”；站内有一个聊天机器人服务，但要查看对话，<b>Neo bot 需要你同意分析（Analytics consent）</b>。</p><p>页面底部有一个搜索框（Search）与放大镜图标。结合顶部菜单，可以看出一套典型的三层入口：<b>搜索</b>用于已知关键词的精确查找，<b>快捷链接</b>用于每天都要点的常用服务，<b>主菜单</b>用于浏览全部服务与说明。</p><div class="callout tip"><b>先订阅，再搜索</b>导览把“订阅通讯”放在首页说明区，说明它承载的是“会变的信息”（截止日期、活动、服务时间）。先把通讯订阅上，再用搜索查具体规则，两条腿走路才不漏消息。</div><h2>二、六个主题：导览的目录结构</h2><p>另一张图用六块并列的卡片给出导览的六个主题，顺序是：<b>Information channels</b>（信息渠道）、<b>Planning &amp; completing studies</b>（规划与完成学业）、<b>Study ability &amp; support</b>（学习能力与支持）、<b>Campuses</b>（校区）、<b>Student life</b>（学生生活）、<b>Equality &amp; Ethics</b>（平等与伦理）。</p><p>这个顺序不是随意的：先解决“消息从哪来”，再解决“学业怎么排”，然后才是“人撑不撑得住”“在哪个校区”“生活怎么过”，最后是“遇到不当对待怎么办”。它其实是一条从“事务”到“人”的路径。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>顺序</th><th>主题（图中原文）</th><th>本讲对应内容</th></tr><tr><td>1</td><td>Information channels</td><td>第一节 eLUT 与首页菜单、第七节 Neo 机器人</td></tr><tr><td>2</td><td>Planning &amp; completing studies</td><td>第三节 Sisu 与 Time-Edit、第四节辅导主题周</td></tr><tr><td>3</td><td>Study ability &amp; support</td><td>第六节学习能力模型</td></tr><tr><td>4</td><td>Campuses</td><td>第三节校区与通勤相关信息（导览中以主题出现）</td></tr><tr><td>5</td><td>Student life</td><td>第五节学生生活</td></tr><tr><td>6</td><td>Equality &amp; Ethics</td><td>第八节 Speaking up 指引</td></tr></table></div><div class="callout warn"><b>不要跳过第 6 块</b>很多新生只看“怎么选课、去哪上课”，把 Equality &amp; Ethics 留到最后。但这一块给的是“遇到问题时怎么做”的具体话术与流程，真遇到事时再找已经来不及。</div><h2>三、四个最重要的系统</h2><p>导览用一张四象限图给出“学生最重要的系统与工具”，中心写着 <b>“Most important systems and tools for students”</b>，四个角分别是四个系统，每个系统下面一行说明它管什么。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>系统</th><th>图中说明</th><th>它解决的问题</th><th>什么时候打开</th></tr><tr><td>Sisu</td><td>Student information system（学生信息系统）</td><td>学习计划、选课与报名、学分与成绩记录</td><td>做 PSP、选课、报名考试、查学分</td></tr><tr><td>Moodle</td><td>Online learning platform（在线学习平台）</td><td>课程材料、作业提交、测验与讨论</td><td>每次上课前后、交作业、看反馈</td></tr><tr><td>Time-Edit</td><td>Schedules（课表）</td><td>课程时间、教室、考试安排</td><td>每天出门前、课表变动时</td></tr><tr><td>Tuudo</td><td>Makes your daily study life easier（让日常学习生活更轻松）</td><td>日常学习生活的随身入口（图中只给这一句定位）</td><td>日常查日程、找服务、跑校区</td></tr></table></div><p>四者的关系可以用一句话记住：<b>Sisu 管“我的学业状态”，Moodle 管“课程内容”，Time-Edit 管“什么时候在哪”，Tuudo 管“每天怎么过”。</b>它们不是互相替代的四个 App，而是一条链上的四段。</p><div class="callout warn"><b>图里没有说的，不要替它说</b>导览对 Tuudo 只给了“makes your daily study life easier”这一句定位，没有列出具体功能。本讲因此只把它放在“日常入口”的位置，不虚构它有哪些按钮或服务。需要具体功能时，以 Tuudo 应用内的说明为准。</div><h3>3.1 一条日常链：从起床到交作业</h3><ol class="steps"><li>早上先看 Time-Edit：今天几点、哪间教室、有没有考试</li><li>打开 Moodle：这门课本周要读什么、要交什么</li><li>需要改计划或报名时进 Sisu：选课、考试报名、看学分</li><li>日常琐事（日程、校区服务）用 Tuudo 处理</li><li>晚上回到 Moodle 提交，并在 Sisu 确认报名状态</li></ol><p>这条链的关键是“不跳步”：先看时间地点，再看内容，最后才动学业记录。顺序颠倒的典型后果是“在 Moodle 里找到了作业，却不知道今天在哪上课”。</p><h2>四、辅导主题周：八周的接触顺序</h2><p>导览用一张“路标”图给出辅导（tutoring）的主题周，左侧竖排写着 <b>TUTORING THEME / WEEKS</b>，右侧八个箭头从上到下依次是：<b>Orientation</b>、<b>Student’s wellbeing</b>、<b>Living in Finland</b>、<b>Activities and hobbies</b>、<b>Healthcare and safety</b>、<b>Career Services and employment in Finland</b>、<b>Exam rules, academic misconduct, and study tips</b>、<b>Fun things to do with the group</b>。图的右上角同时有 LUT University 与 LAB University of Applied Sciences 两个标识。</p><p>这八个主题的顺序本身就是一份“入学适应时间表”：先 orientation（把系统与规则讲清），再 wellbeing（人先稳住），然后才是生活与娱乐、医疗与安全、就业、考试规则，最后以“和小组一起做点好玩的事”收尾。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>周次（按图中顺序）</th><th>主题</th><th>这一周要拿到的东西</th></tr><tr><td>1</td><td>Orientation</td><td>系统账号、课表、课程页、辅导小组联系方式</td></tr><tr><td>2</td><td>Student’s wellbeing</td><td>校内支持服务的位置与预约方式</td></tr><tr><td>3</td><td>Living in Finland</td><td>住宿、交通、日常生活的基本规则</td></tr><tr><td>4</td><td>Activities and hobbies</td><td>一个可长期参加的社团或活动</td></tr><tr><td>5</td><td>Healthcare and safety</td><td>学生健康服务与紧急情况下的求助路径</td></tr><tr><td>6</td><td>Career Services and employment in Finland</td><td>就业服务入口、实习与求职的基本信息</td></tr><tr><td>7</td><td>Exam rules, academic misconduct, and study tips</td><td>考试规则、学术不端界限、学习技巧</td></tr><tr><td>8</td><td>Fun things to do with the group</td><td>与辅导小组的一次共同活动</td></tr></table></div><p>注意两点：第一，图里用的是“主题周”，不是“课程周”，所以它更像辅导活动的节奏，具体日期以辅导小组的通知为准；第二，LUT 与 LAB 两个标识同时出现，说明这套主题周是两校共同的辅导安排，遇到跨校活动不必惊讶。</p><h2>五、学生生活：三类画面</h2><p>学生生活那张拼图配了三句文案：<b>“Student life is about events and fun time,”</b>、<b>“outdoor activities and hangouts,”</b>、<b>“and studying together with friends, of course!”</b> 三句对应三类画面。</p><ul><li>活动与欢乐时光：户外集市式的聚会、水边活动、草地上的集体游戏、露天演出；</li><li>户外活动与聚会：滑雪、林间骑行、湖边日落、草地上的人群；</li><li>与朋友一起学习：室内小组讨论、共享桌上的笔记与电脑、休息区里各自看书。</li></ul><p>图片右下角标注了摄影者：<b>© Teemu Leinonen, Linnea Varamaki, Meermaria Ketokulta</b>。这句话本身也是一个提醒：校园活动的照片有版权，做社团宣传或课程展示时，转载要注明来源。</p><p>把这张图与辅导主题周对照，会发现它们讲的是同一件事的两面：主题周给你“什么时候该去找什么”，学生生活图告诉你“找的东西长什么样”。两者都指向一个结论——<b>入学适应不是把课修完，而是把人和关系建立起来</b>。</p><h2>六、学习能力：四块互相作用</h2><p>导览给出一张模型图，顶部一句总纲：<b>“The ability to study forms and evolves in a dynamic interaction between the student and the study environment.”</b> 中间是 <b>ABILITY TO STUDY</b>，四周是四个板块，板块之间用双向箭头连接，说明它们互相影响。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>板块</th><th>图中列出的条目</th></tr><tr><td>Personal resources（个人资源）</td><td>Health and health-related behaviour；Socioemotional skills；Cognitive skills；Social relationships；Identity development；Life situation and conditions</td></tr><tr><td>Study skills（学习技能）</td><td>Prior knowledge；Study motivation；Study-related emotions；Planning, time management and achievement；Study technique；Interaction skills</td></tr><tr><td>Study environment（学习环境）</td><td>Physical study environment；Digital study environment；Psychosocial study environment；Cultural study environment；Pedagogic environment</td></tr><tr><td>Teaching and counselling（教学与辅导）</td><td>Student-oriented approach；Constructively aligned teaching；Assessment and feedback；Achievability；Student-oriented guidance；Commitment and involvement</td></tr></table></div><p>图里还画了几个小场景，正好对应四块：左侧一个人牵着狗、抱着书，旁边有植物（个人资源）；右上两个人一起看书，旁边有钟表与“I was able to read on time.”“Remember the exam!”（学习技能）；下方一群人围在一起（学习环境）；右下一位教师在与学生交谈（教学与辅导）。</p><div class="callout tip"><b>用它做诊断，不做评判</b>当你说“我学不进去”，先问是哪一块：睡不好是个人资源；不会拆任务是学习技能；环境太吵是学习环境；不知道评分标准是教学与辅导。找到那一块，才知道该改什么。</div><h2>七、Neo：eLUT 的聊天机器人</h2><p>最后一张图是聊天窗口：顶部写着 <b>eLUT bot</b>，窗口里是机器人 <b>Neo</b>，身份标注为 <b>eLUT assistant</b>。它的开场白是：</p><p>“Hi! I am the new chatbot for LUT. I am still learning and practicing, so please verify the accuracy of the information. Ask clearly and precisely to help me to understand you better (e.g. tell city of your study, your degree etc.). Use natural language and avoid abbreviations. Please do not tell me your personal information.”</p><p>这段话可以拆成四条使用规则与一条免责声明：</p><ol><li><b>核实准确性</b>：它自己在学习与练习中，你要验证信息；</li><li><b>问得清楚具体</b>：告诉它你在哪个城市学习、读什么学位等背景；</li><li><b>用自然语言、避免缩写</b>：缩写是它最容易误解的输入；</li><li><b>不要提供个人信息</b>：这是隐私边界，不是客气话。</li></ol><p>免责声明是“I am still learning and practicing”，也就是它可能答错。把它当“第一轮检索”，把 eLUT 页面与课程说明当“最终依据”。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>不好的问法</th><th>为什么不好</th><th>好的问法</th></tr><tr><td>“DD 的 PSP 咋弄？”</td><td>缩写 + 口语 + 没有城市/学位背景</td><td>“I am a first-year double degree student in Lahti. How do I create my personal study plan in Sisu?”</td></tr><tr><td>“我的学号是（此处为示例号码），帮我查成绩”</td><td>提供了个人信息，且它不该处理这类查询</td><td>“Where can I see my completed credits in Sisu?”（自己去 Sisu 查）</td></tr><tr><td>“明天上课吗”</td><td>缺少课程与日期，答案无法核实</td><td>“I have CT30A1000 on Tuesday. Where can I check the room?”</td></tr></table></div><h2>八、Speaking up：遇到不当行为的步骤</h2><p>平等与伦理这一块的素材是一份 LTKY 的指引（Speaking up_instructions_LTKY）。它的前提写在最上方：<b>“If you have a problem with someone’s behavior, speak up!”</b> 未解决的问题与没说出口的事会不断累积（unsolved problems and unspoken issues tend to multiply），所以要尽早解决。</p><p>指引同时给了一个关键定性：<b>把问题提出来不是评判或批评</b>（not judgment or criticism），而是以中立、尊重的方式进行，目标是共同找到解决办法；有时问题只是双方对情境的理解不同。理想的沟通是双向的，双方都感到被听见、被理解。</p><h3>8.1 六步操作</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>步骤</th><th>图中做法</th><th>可直接用的句子</th></tr><tr><td>1 保持冷静</td><td>深呼吸，整理思绪；感到不快是正常的，但保持镇定能让你更有效地表达</td><td>（先停三秒，不在这时回击）</td></tr><tr><td>2 引起对方注意</td><td>把对话从公开场合拉到私下</td><td>“Can I talk to you in private for a minute?” / “How do you think you’re behaving right now?” / “That comment was not actually nice.”</td></tr><tr><td>3 使用非语言信号</td><td>如果直接说让你不舒服，可以用摇头、抱臂、后退等信号</td><td>（后退半步、摇头、停止微笑）</td></tr><tr><td>4 保持眼神接触</td><td>显示自信与坚定，表明你在设定边界、不容忍骚扰</td><td>（平视对方，不低头看手机）</td></tr><tr><td>5 明确指出具体行为</td><td>说清“哪一句话、哪个动作”让你不适，而不是评价对方的人格</td><td>“Your comments about my appearance are inappropriate and make me uncomfortable. I need you to stop making such remarks.”</td></tr><tr><td>6 用“我”而不是“你”</td><td>表达自己的感受，而不是给对方定性</td><td>“I feel uncomfortable when you make those comments,” 而不是 “You are making me uncomfortable.”</td></tr></table></div><p>如果行为持续，还有两步收尾：<b>说明后果</b>——“If this continues, I will have to report it to the HCP.”（HCP 是图中用到的机构缩写，指处理骚扰事务的联络人）；<b>记录事件</b>——记下日期、时间、地点与发生了什么，这些信息之后对 HCP 有用。</p><p>指引最后一句很重要：如果事情在当下就被讨论清楚，可能就不需要联系 HCP。也就是说，这套步骤的目标是“解决问题”，不是“升级冲突”。</p><div class="callout warn"><b>记录不是报复</b>记录日期、时间、地点、原话，是为了在需要时能准确陈述事实。不要把它变成情绪日记或对他人的评价清单；事实越具体，越有用。</div><h2>九、把导览落到第一周</h2><p>导览的价值不在“看完”，而在“按顺序做完”。把六块主题、四个系统与八个主题周压成一张两周行动表：</p><ol class="steps"><li>第 1 天：登录 eLUT，订阅支持与指导服务的通讯；把 Sisu、Moodle、Time-Edit、Tuudo 各打开一次</li><li>第 2 天：在 Time-Edit 找到本周课表，在 Moodle 打开每门课，在 Sisu 确认选课状态</li><li>第 3 天：找到辅导小组的联系方式，记下主题周的顺序与第一场活动</li><li>第 1 周内：用 Neo 问一个具体问题，并回到 eLUT 页面核实答案</li><li>第 2 周内：参加一次学生活动或社团，认识两个可以一起学习的人</li><li>第 2 周内：读完 Speaking up 指引，把 HCP 的求助方式存进手机</li></ol><p>做完这六步，你就把“数字导览”变成了“可用的地图”：知道消息从哪来、课在哪上、作业在哪交、遇到事找谁。</p><div class="callout idea" data-ext="digital-orientation-0"><b>前后衔接</b><p>把本讲的四系统放进一门课的完整周期会更清楚：<strong>Time-Edit</strong> 回答“何时何地”，<strong>Moodle</strong> 承载“学什么、交什么”，<strong>Sisu</strong> 记录“学分与报名”，<strong>Tuudo</strong> 是日常随身入口。数字导览只告诉你四段各管什么；到了 CT10A9900 与 CT30A1000，它们才被逐个展开成操作——PSP 在 Sisu 里做，作业在 Moodle 里交。</p><p>学习能力四要素则是贯穿三年的诊断语言：<em>The ability to study forms and evolves in a dynamic interaction between the student and the study environment.</em> 说“学不进去”时先定位是哪一块，而不是笼统归因为“不努力”。</p></div><div class="callout idea"><b>LUT 数字服务速查表</b><p>日常高频服务的入口与用途：<b>Moodle</b> 课程材料与作业提交；<b>Sisu</b> 注册、成绩、PSP；<b>LUT 账号</b>（Lukey/学生邮箱）登录一切校园系统；<b>eduroam</b> 校园 Wi-Fi（全球高校通用）；<b>打印机</b>走 PaperCut（手机/电脑都可通过打印门户提交）；<b>图书馆</b>数据库用 Finna+ 各出版社代理，校外访问走 VPN 或 EZProxy。密码重置与账号问题找 IT Service Desk（服务台工单系统），别把密码发给任何人——学校不会索要。</p></div><h3>原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/ed15339f023b4a0a34d0.webp" loading="lazy" alt="eLUT frontpage" width="1413" height="822" decoding="async" data-full-src="../../assets/img/29428/slides/eLUT frontpage.png"><figcaption>eLUT frontpage</figcaption></figure><figure><img src="../../assets/optimized/1d21ec827f4afc15ba93.webp" loading="lazy" alt="koostedigiperh" width="1800" height="177" decoding="async" data-full-src="../../assets/img/29428/slides/koostedigiperh.png"><figcaption>koostedigiperh</figcaption></figure><figure><img src="../../assets/img/29428/slides/Opiskelijan tärkeimmät järjestelmät ja työkalut (2).png" loading="lazy" alt="Opiskelijan tärkeimmät järjestelmät ja t" width="1920" height="1080" decoding="async" data-full-src="../../assets/img/29428/slides/Opiskelijan tärkeimmät järjestelmät ja työkalut (2).png"><figcaption>Opiskelijan tärkeimmät järjestelmät ja t</figcaption></figure><figure><img src="../../assets/optimized/d995fb026ffa1b9f331e.webp" loading="lazy" alt="Tuutoroinnin teemaviikot en1 (2)" width="1272" height="1800" decoding="async" data-full-src="../../assets/img/29428/slides/Tuutoroinnin teemaviikot en1 (2).png"><figcaption>Tuutoroinnin teemaviikot en1 (2)</figcaption></figure><figure><img src="../../assets/optimized/194f80c9fbe7a2e0d66c.webp" loading="lazy" alt="Student life_digiorient_ENG" width="1414" height="1231" decoding="async" data-full-src="../../assets/img/29428/slides/Student life_digiorient_ENG.png"><figcaption>Student life_digiorient_ENG</figcaption></figure><figure><img src="../../assets/optimized/97ed7c8c42dba393b0d8.webp" loading="lazy" alt="ENG-Opiskelukyky-lauseella-1536x864" width="1536" height="864" decoding="async" data-full-src="../../assets/img/29428/slides/ENG-Opiskelukyky-lauseella-1536x864.png"><figcaption>ENG-Opiskelukyky-lauseella-1536x864</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
+<section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>eLUT</td><td>学生信息门户</td><td>The info page for LUT students; news, events and quick links.</td></tr><tr><td>Neo</td><td>eLUT 聊天机器人</td><td>The eLUT assistant chatbot; answers must be verified.</td></tr><tr><td>Analytics consent</td><td>分析同意</td><td>Needed before the chat window can be shown.</td></tr><tr><td>Sisu</td><td>学生信息系统</td><td>Student information system: study plan, enrolments, credits.</td></tr><tr><td>Moodle</td><td>在线学习平台</td><td>Online learning platform: materials, submissions, quizzes.</td></tr><tr><td>Time-Edit</td><td>课表系统</td><td>Schedules: course times, rooms and exam dates.</td></tr><tr><td>Tuudo</td><td>日常学习生活应用</td><td>Makes your daily study life easier (as described in the orientation figure).</td></tr><tr><td>tutoring</td><td>辅导</td><td>Peer and staff guidance for new students, organised in theme weeks.</td></tr><tr><td>theme weeks</td><td>主题周</td><td>Eight tutoring themes from orientation to fun with the group.</td></tr><tr><td>study ability</td><td>学习能力</td><td>Formed in the interaction between the student and the study environment.</td></tr><tr><td>personal resources</td><td>个人资源</td><td>Health, socioemotional and cognitive skills, relationships, identity, life situation.</td></tr><tr><td>study environment</td><td>学习环境</td><td>Physical, digital, psychosocial, cultural and pedagogic environments.</td></tr><tr><td>constructively aligned teaching</td><td>建构一致的教学</td><td>Teaching, assessment and outcomes designed to support each other.</td></tr><tr><td>speaking up</td><td>发声</td><td>Raising a problem with someone’s behaviour neutrally and respectfully.</td></tr><tr><td>HCP</td><td>骚扰联络人</td><td>The contact person to whom persistent harassment is reported.</td></tr><tr><td>document the incident</td><td>记录事件</td><td>Note dates, times, locations and details for later use.</td></tr></table></div></section>
+<section class="card" data-type="examples"><div class="qa"><div class="q">例 1　第一周用四个系统跑通一条链</div><p><b>第 1 步（Time-Edit）：</b>打开本周课表，记下今天的时间、教室与课程代码。导览把 Time-Edit 标为 “Schedules”，它解决的就是“什么时候、在哪”。</p><p><b>第 2 步（Moodle）：</b>按课程代码打开课程页，看本周材料与作业，确认提交入口。</p><p><b>第 3 步（Sisu）：</b>确认这门课已注册、学分显示正常；若要报名考试，在 Sisu 完成。</p><p><b>第 4 步（Tuudo）：</b>把今天的日程与校区服务信息放到随手可查的位置。</p><p><b>判断标准：</b>四步之间没有互相矛盾——课表上的课在 Moodle 有页面，在 Sisu 有注册记录；任何一处缺失，当天就去补。</p></div><div class="qa"><div class="q">例 2　按八个主题周安排入学前两个月</div><p>把主题周当成“关注点清单”，每周只做一件与之对应的动作：第 1 周 orientation——把四个系统各打开一次并收藏；第 2 周 wellbeing——找到校内支持服务的预约方式；第 3 周 living in Finland——把住宿与交通的规则问清；第 4 周 activities——加入一个社团。</p><p>第 5 周 healthcare and safety——记下学生健康服务与紧急求助路径；第 6 周 career services——看一次就业服务的入口与实习信息；第 7 周 exam rules——读完考试规则与学术不端的界限；第 8 周 fun with the group——参加一次小组活动。</p><p><b>为什么按这个顺序：</b>导览的箭头就是从 orientation 到 fun 的单向顺序，前面的主题是后面的前提（不知道规则就谈不上安全与就业）。</p><p><b>注意：</b>具体日期以辅导小组通知为准，图给的是主题顺序，不是日历。</p></div><div class="qa"><div class="q">例 3　向 Neo 提一个能被核实的问题</div><p><b>不好的写法：</b>“PSP 怎么弄？”——没有城市、学位、系统名，还用了缩写。</p><p><b>好的写法：</b>“I am a first-year double degree student in Lahti. Where can I find the instructions for creating my personal study plan in Sisu?”——给了身份、城市、系统与动作。</p><p><b>拿到回答后：</b>按 Neo 自己的提示“please verify the accuracy of the information”，回到 eLUT 的页面或课程说明核对；对不上就以页面为准。</p><p><b>边界：</b>不要输入学号、电话、住址等个人信息，Neo 的开场白明确要求不要提供 personal information。</p></div><div class="qa"><div class="q">例 4　遇到不当评论，按六步处理并记录</div><p><b>场景：</b>小组讨论中，一位同学反复评论你的外貌，你已明确表示不适，对方仍继续。</p><p><b>当场（步骤 1–3）：</b>先深呼吸三秒，不在这时争吵；说“Can I talk to you in private for a minute?”，把对话移到私下；如果不想直接说，用摇头、后退、停止回应等非语言信号。</p><p><b>明确（步骤 4–6）：</b>保持眼神接触；指出具体行为——“Your comments about my appearance are inappropriate and make me uncomfortable. I need you to stop making such remarks.”；用“我”表达感受，而不是“你这人有问题”。</p><p><b>收尾：</b>若继续，说明后果——“If this continues, I will have to report it to the HCP.”；同时记录日期、时间、地点、原话与在场的人。</p><p><b>判断标准：</b>你说了“具体行为 + 我的感受 + 要求停止”三件事；若对方停止，事情可能就到此为止；若继续，记录足以支撑后续向 HCP 说明。</p></div></section>
+<section class="card" data-type="practice"><ol><li>说出 Sisu、Moodle、Time-Edit、Tuudo 各自解决的问题，并举一个“该打开它”的场景。</li><li>按顺序写出辅导主题周的八个主题，并说明为什么 orientation 排在第一。</li><li>用学习能力模型的四块，分析“我总是赶在截止前才交作业”的可能原因（至少两块）。</li><li>写出 Neo 的四条使用规则，并把“DD 的 PSP 咋弄？”改写成一条合格提问。</li><li>按 Speaking up 的步骤，为“同学在群里反复开你玩笑”设计一段当面沟通（写出你会说的三句话）。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> Sisu 管学业状态（选课、报名、学分）；Moodle 管课程内容（材料、提交、测验）；Time-Edit 管时间地点（课表、教室、考试）；Tuudo 是日常学习生活的随身入口。场景示例：出门前看 Time-Edit；交作业用 Moodle；改学习计划用 Sisu；查校区日常服务用 Tuudo。</p><p><b>2.</b> Orientation、Student’s wellbeing、Living in Finland、Activities and hobbies、Healthcare and safety、Career Services and employment in Finland、Exam rules and academic misconduct and study tips、Fun things to do with the group。orientation 排第一，因为后面的主题都预设你已知系统、规则与自己的小组。</p><p><b>3.</b> 学习技能：不会把任务拆成可验收的小块、时间估计过于乐观；个人资源：睡眠不足或生活事件占用精力；学习环境：宿舍干扰多、通知常驻。干预要选最便宜的一块先做（例如先拆任务 + 开勿扰）。</p><p><b>4.</b> 规则：核实准确性；问得清楚具体（给城市、学位等背景）；用自然语言、避免缩写；不要提供个人信息。改写示例：“I am a first-year double degree student in Lahti. How do I create my personal study plan in Sisu?”</p><p><b>5.</b> 示例三句：“Can I talk to you in private for a minute?”；“I feel uncomfortable when you make those jokes about me — please stop.”；“If this continues, I will report it to the HCP.” 说完记录时间、地点与原话。</p></div></details></section>
+<section class="card" data-type="exam"><div class="callout exam"><b>必考</b>四个系统的对应关系；六个主题板块；八个主题周的顺序；学习能力四块；Neo 的四条规则；Speaking up 的六个步骤与两句关键话术。</div><div class="callout warn"><b>易错 1</b><b>把 Tuudo 当学习平台。</b>导览对它的定位只有“让日常学习生活更轻松”，材料、提交与测验在 Moodle。</div><div class="callout warn"><b>易错 2</b><b>把主题周当课程周。</b>它是辅导活动的主题顺序，不是教学日历；具体日期看辅导小组通知。</div><div class="callout warn"><b>易错 3</b><b>用缩写问 Neo，或把个人信息发给它。</b>开场白明确要求自然语言、避免缩写、不要提供个人信息。</div><div class="callout warn"><b>易错 4</b><b>用“你”指责对方。</b>指引要求用“我”表达感受，并指出具体行为，而不是评价人格。</div><div class="callout tip"><b>进阶</b>能解释“为什么导览先讲信息渠道、最后讲平等与伦理”：前者决定你能否找到规则，后者决定你在规则失效时怎么办。</div></section>
+<section class="card" data-type="checklist"><h2>第一周（照着做）</h2><ul class="checklist"><li>登录 eLUT，订阅支持与指导服务的通讯</li><li>在 Sisu 确认本学期选课与学分状态</li><li>在 Moodle 打开每门课，收藏课程页</li><li>在 Time-Edit 找到本周课表与教室</li><li>在 Tuudo 里放好日常日程入口</li><li>找到辅导小组的联系方式与第一次活动时间</li></ul><h2>前两个月（按主题周）</h2><ul class="checklist"><li>orientation：四个系统各用过一次</li><li>wellbeing：知道校内支持服务怎么预约</li><li>living in Finland：住宿、交通、日常规则已问清</li><li>activities：加入一个社团或固定活动</li><li>healthcare and safety：存好学生健康服务与紧急求助方式</li><li>career services：看过一次就业与实习信息</li><li>exam rules：读完考试规则与学术不端界限</li><li>fun with the group：参加过一次小组活动</li></ul><h2>用 Neo 与维权时</h2><ul class="checklist"><li>提问含城市、学位、系统名，不用缩写</li><li>不向 Neo 提供学号、电话、住址等个人信息</li><li>对 Neo 的回答回到 eLUT 页面核实</li><li>遇到不当行为，先说具体行为与感受，再说要求</li><li>必要时说明后果并记录日期、时间、地点、原话</li><li>知道 HCP 是谁、怎么联系</li></ul></section>
+<section class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>来源</th><th>素材</th><th>提取到的信息</th></tr><tr><td>来源：图片</td><td>eLUT frontpage.png</td><td>顶部 SEARCH / LANGUAGE MENU / QUICK LINKS / MAIN MENU；欢迎语；新闻与活动；订阅通讯；Neo 需要 Analytics consent；搜索框</td></tr><tr><td>来源：图片</td><td>koostedigiperh.png</td><td>六个主题：Information channels、Planning &amp; completing studies、Study ability &amp; support、Campuses、Student life、Equality &amp; Ethics</td></tr><tr><td>来源：图片</td><td>Opiskelijan tärkeimmät järjestelmät ja työkalut (2).png</td><td>Sisu（学生信息系统）、Moodle（在线学习平台）、Time-Edit（课表）、Tuudo（日常学习生活）；中心语 Most important systems and tools for students</td></tr><tr><td>来源：图片</td><td>Tuutoroinnin teemaviikot en1 (2).png</td><td>TUTORING THEME WEEKS 八个箭头主题及顺序；LUT 与 LAB 双标识</td></tr><tr><td>来源：图片</td><td>Student life_digiorient_ENG.png</td><td>三句文案（events and fun time / outdoor activities and hangouts / studying together with friends）；摄影者署名</td></tr><tr><td>来源：图片</td><td>ENG-Opiskelukyky-lauseella-1536x864.png</td><td>学习能力总纲句；四个板块及全部条目；四个小场景</td></tr><tr><td>来源：图片</td><td>image.png</td><td>eLUT bot / Neo / eLUT assistant；开场白的四条规则与“仍在学习”声明</td></tr><tr><td>来源：图片</td><td>Speaking up_instructions_LTKY.pdf</td><td>发声的前提与定性；六步做法与原句；后果说明与事件记录；HCP</td></tr><tr><td>（跳过）</td><td>—</td><td>无文本课件；导览目录中的 LUT-LOGO-WHITE.png 仅为标识，未提供额外信息</td></tr><tr><td>（补充）</td><td>—</td><td>第一节“三层入口”、第三节“日常链”、第九节两周行动表，属于把图中信息组织成操作顺序的整理，非图中原文</td></tr><tr><td>（缺口）</td><td>—</td><td>导览图未给出 Tuudo 的具体功能清单、主题周的具体日期、校区通勤细节；本讲未作推测</td></tr></table></div></section><p class="sub">返回：<a href="../../c/29428/digital-orientation.html">本讲独立页</a> · <a href="../../c/29428/part-1.html">本章节页</a> · <a href="#c-29428">本课目录</a></p></article><h2 class="allpart" id="p-29428-2">第 2 章 平等与伦理 <span class="badge mute">1 讲</span> <a class="sub" href="../../c/29428/part-2.html">章节页 →</a></h2><article class="alllec" id="l-29428-speaking-up"><h3>第 2 讲 · Speaking up：遇到不当行为怎么开口</h3><p class="lead">Speaking Up: Addressing Unacceptable Behaviour <span class="badge mute">第 2 章 平等与伦理</span></p><section class="card" data-type="overview"><h2>本节定位</h2><p>LUT 的平等与伦理指南里有一页 Speaking up：当你遇到歧视、骚扰或不当言论时，如何当场、私下或事后处理。这是新生数字导览里唯一的「人际安全」内容。</p><ul class="checklist"><li>判断哪些行为属于不当行为</li><li>用三句话开场进行私下沟通</li><li>知道什么时候停止对话并走正式渠道</li><li>作为旁观者能做什么</li></ul></section>
+<section class="card" data-type="detail"><h3>2.1 先稳住自己</h3><p>指南第一条是 <b>Try to stay calm</b>：深呼吸、整理思路。感到 upset 是正常的，但保持 composure 才能把话说清楚。</p><p>第二条是心态：指出问题<b>不是 judgement or criticism</b>，而是中性、尊重地一起找解决方案；有时只是双方对同一情境理解不同。</p><h3>2.2 开口的三句模板</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 9，可横向滚动"><table><tr><th>目的</th><th>英文原句</th><th>中文</th></tr><tr><td>争取私下时间</td><td>Can I talk to you in private for a minute?</td><td>能私下聊一分钟吗？</td></tr><tr><td>指出当下行为</td><td>How do you think you're behaving right now?</td><td>你觉得你现在的行为合适吗？</td></tr><tr><td>直接点明</td><td>That comment was not actually nice.</td><td>那句话其实并不友善。</td></tr></table></div><p>三句的强度递增：先给对话空间，再让对方自省，最后直接陈述感受。按情境选择，不必三句都用。</p><h3>2.3 非语言信号</h3><ul><li>保持平静的语调与稳定的目光接触；</li><li>不要笑着说出严肃的话，避免对方误解为玩笑；</li><li>选择相对私密、双方都能离开的场合；</li><li>如果对方情绪升级，先结束对话，改走正式渠道。</li></ul><h3>2.4 什么时候停止对话、走正式渠道</h3><p>出现以下情况不要再自行处理：对方否认并继续、涉及肢体接触或威胁、反复发生、你是旁观者而非当事人。此时记录时间、地点、原话、在场人，向课程的 responsible teacher、学校 equality 联系人或不当时刻的 reporting channel 报告。</p><h3>2.5 作为旁观者</h3><p>旁观者最有效的动作往往不是正面冲突，而是：转移话题、把当事人带离现场、事后私下支持并陪同报告。</p><div class="callout tip"><b>边界</b>本讲只讲沟通方法与报告路径，不评判具体个案；遇到紧急或安全风险，直接联系校园安全与应急渠道。</div><div class="callout idea"><b>不适情形的升级路径</b><p>遇到骚扰、歧视或学术不当行为，升级顺序：<b>课程老师/导师 → 系里负责教授 → 学生会 LTKY 的权益干事 → 学校指定的 harassment contact person → 正式纪律流程</b>。前两步解决不了的不要停；所有沟通留书面记录（邮件，不要只微信）。芬兰的处理文化是「先书面事实、再会谈」，把时间、地点、原话记下来会大大加速处理。</p></div><h3>原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/img/29428/slides/1_Speaking_up_instructions_LTKY-p01.jpg" loading="lazy" alt="1_Speaking up_instructions_LTKY p1" width="1221" height="864" decoding="async" data-full-src="../../assets/img/29428/slides/1_Speaking_up_instructions_LTKY-p01.jpg"><figcaption>1_Speaking up_instructions_LTKY · 第 1 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div><h3>2.x Speaking up 八步法（LTKY 指引原文落地）</h3><p><b>原则（原文）：</b>提出问题不是评判或批评——neutral and respectful，目标是<b>一起找解决方案</b>；有时问题只是双方对情境的理解不同。没说出口的问题会越积越多（unsolved problems tend to multiply），当场谈开了，可能就不需要去找 HCP（harassment contact person）。</p><ol class="steps"><li>保持冷静</li><li>深呼吸、整理思路；情绪正常，但冷静让表达更有效</li><li>引起注意</li><li>用开场句拿到私下谈话的机会：Can I talk to you in private for a minute? / How do you think you're behaving right now? / That comment was not actually nice</li><li>善用非语言信号</li><li>不方便直说时：摇头、抱臂、退后半步——传递「这个玩笑到此为止」</li><li>保持眼神接触</li><li>眼神接触传递自信与严肃：我在划界，不是在抱怨</li><li>说出具体行为</li><li>点名具体行为而非给人定性：Your comments about my appearance are inappropriate and make me uncomfortable. I need you to stop.</li><li>用「我」开头</li><li>I feel uncomfortable when… 而不是 You are making me…——减少对方的防御反应</li><li>说清后果</li><li>If this continues, I will have to report it to the HCHCP.</li><li>记录事件</li><li>持续发生就记录日期、时间、地点、原话与细节——这些是 HCP 处理时的证据</li></ol><p><b>什么时候升级到 HCP：</b>当场沟通无效、行为持续、或事件严重到不便当面谈（见本讲第 1 部分的升级路径）。留存记录 + 明确后果句，是升级前必须做的两件事。</p><h3>2.y 三个场景演练（把八步法用起来）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 10，可横向滚动"><table><tr><th>场景</th><th>当场台词（I-statement + 具体行为 + 后果）</th><th>若无效的下一步</th></tr><tr><td>小组作业里有人长期不交分工</td><td>I've noticed the last two parts arrived after the deadline. I feel the workload is unbalanced, and I need us to agree on a new split today.</td><td>组内书面分工表 → 找导师说明情况</td></tr><tr><td>群里有人反复开外貌玩笑</td><td>Those jokes about my accent make me uncomfortable. I need you to stop. If this continues, I will report it to the HCP.</td><td>截图记录 → HCP</td></tr><tr><td>宿舍噪音影响休息</td><td>I have an exam at 8 am. Could you keep the volume down after 11 pm? I'd appreciate it.</td><td>跟宿舍管理员（tutor）反映 → 换协商时间</td></tr></table></div><div class="callout idea"><b>进阶</b>跨文化场景里，直接点名行为在芬兰语境是正常且被尊重的；不确定对方意图时先问一句 <i>Can I ask what you meant by that?</i>——很多冲突在提问这一步就化解了，这正是原文说的 "the problem is simply understanding a situation differently"。</div><h3>2.z 常见疑问与进阶情形</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 11，可横向滚动"><table><tr><th>情形</th><th>指引的处理方式</th></tr><tr><td>对方是老师/上级</td><td>流程相同，措辞更正式：先用邮件预约 15 分钟面谈（说明主题），面谈按「具体行为 + 影响 + 请求」三段说；老师也是学校社区成员，指引适用于所有人</td></tr><tr><td>担心报复</td><td> Finland 的高校有正式的反报复规范——书面记录 + 尽早联系 HCP，不需要先「忍到学期末」</td></tr><tr><td>目击他人被针对（旁观者）</td><td>当场可以用的轻量介入：<i>「We should let them finish their point.</i>」或把话题接走；事后私下问当事人是否需要支持——旁观者的一句话往往是成本最低的干预</td></tr><tr><td>自己就是被质疑的一方</td><td>停下来先听：Ask, don't assume——确认对方指的具体行为，能改就当场改，误会就当场澄清；这正是双向沟通的意义</td></tr><tr><td>事后跟进</td><td>当面谈过后 1–2 天发一封简短邮件感谢并确认共识（书面留痕）；若对方履约，明确表达认可</td></tr></table></div><h3>2.w 与课程资源的衔接（从「敢开口」到「有支持」）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>资源</th><th>能帮你什么</th><th>怎么用</th></tr><tr><td>Tutor（学生导师）</td><td>过渡期日常问题的第一站：室友矛盾、小组分工卡壳</td><td>WhatsApp/LTKY tuutor 页面直接联系，匿名也可</td></tr><tr><td>课程老师</td><td>学术相关的压力与冲突</td><td>课后或邮件预约；说明事实与影响，不带情绪描述</td></tr><tr><td>LTKY 学生会</td><td>权益、正式申诉的陪跑</td><td>权益干事（trustee）流程在官网上有模板</td></tr><tr><td>HCHCP</td><td>骚扰与不当行为的正式受理</td><td>邮件预约；带上你的事件记录</td></tr><tr><td>FSHS 学生健康服务</td><td>心理压力过大时的专业支持</td><td>先网上登记，首次沟通即保密</td></tr></table></div><p><b>一句话总结（原文立场）：</b>Bring it up early —— 开口越早，需要的支持越少；这套材料的目的不是教你「投诉」，而是让小问题停留成小问题。</p><h3>2.v 指引原文的两个提醒（容易被忽略的细节）</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 13，可横向滚动"><table><tr><th>原文提醒</th><th>为什么重要</th><th>落地做法</th></tr><tr><td>Sometimes the problem is simply understanding a situation differently</td><td>很多冲突源于信息差而非恶意——先核对事实再定性</td><td>开口第一句换成提问：Can I ask what you meant when you said…?</td></tr><tr><td>If the matter is discussed right in the moment, there might not be need to contact a HCP</td><td>当场解决的性价比最高：不耗时间、不留案底、关系可修复</td><td>24 小时内处理；过了 48 小时仍未谈 → 走记录 + HCP 路线</td></tr></table></div><p><b>练习建议：</b>把八步法与两个提醒合并成一张「开口前 10 秒检查卡」——①这是误会还是冒犯？②我的第一句话是什么？③我要的具体改变是什么？④如果没效果，下一步找谁？四问都有答案，就可以开口。</p></section>
+<section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 14，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明</th></tr><tr><td>speaking up</td><td>开口指出问题</td><td>中性、尊重</td></tr><tr><td>harassment</td><td>骚扰</td><td>不受欢迎的行为</td></tr><tr><td>discrimination</td><td>歧视</td><td>基于身份的差别对待</td></tr><tr><td>composure</td><td>镇定</td><td>stay calm</td></tr><tr><td>non-verbal cue</td><td>非语言信号</td><td>语调、目光、距离</td></tr><tr><td>bystander</td><td>旁观者</td><td>转移话题、陪同报告</td></tr><tr><td>reporting channel</td><td>报告渠道</td><td>教师/平等联系人</td></tr></table></div><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 15，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>speak up</td><td>开口提出问题</td><td>Bring it up early — unsolved problems multiply.</td></tr><tr><td>harassment contact person (HCP)</td><td>反骚扰联络人</td><td>学校指定的正式受理角色；升级路径的终点</td></tr><tr><td>I-statement</td><td>「我」陈述句</td><td>I feel uncomfortable when…（降低对方防御）</td></tr><tr><td>non-verbal cue</td><td>非语言信号</td><td>摇头、抱臂、后退——不便开口时的表达</td></tr><tr><td>establish consequences</td><td>明确后果</td><td>If this continues, I will report it.</td></tr><tr><td>document the incident</td><td>记录事件</td><td>日期、时间、地点、原话——升级时的证据</td></tr><tr><td>two-way communication</td><td>双向沟通</td><td>Both parties feel heard and understood.</td></tr><tr><td>redress / escalation</td><td>申诉 / 升级</td><td>老师 → 系 → LTKY → HCP → 纪律流程</td></tr></table></div></section>
+<section class="card" data-type="examples"><h2>例题 1：私下开场</h2><div class="qa"><div class="q">同学在小组讨论里反复打断你，怎么开口？</div><p><code>Can I talk to you in private for a minute? I noticed I couldn't finish my point twice. Could we agree on a turn-taking signal?</code></p><p>要点：描述可观察行为（打断两次），不贴标签（你没礼貌），给具体方案（轮流发言信号）。</p></div><h2>例题 2：直接点明</h2><div class="qa"><div class="q">同事开了带有地域刻板印象的玩笑，你怎么回应？</div><p><code>That comment was not actually nice. I'd prefer we keep jokes out of work topics.</code></p><p>直接、短、不解释太多；把边界说清楚即可。</p></div></section>
+<section class="card" data-type="practice"><h2>练习</h2><p>1. 写出你所在文化里「沉默」通常表示什么，以及在芬兰语境可能被如何理解。</p><details><summary>提示</summary><div class="ans"><p>很多人用沉默表示保留；芬兰语境常把沉默读作「同意/可以继续」，需要主动说明。</p></div></details><p>2. 设计一句既不指责又能制止的话。</p><details><summary>提示</summary><div class="ans"><p>句式：I noticed + 具体行为 + I'd prefer + 具体请求。</p></div></details><div class="qa"><div class="q">练 · 把指责改成 I-statement</div><p>改写：① You are so rude. ② You always interrupt me. ③ You made the meeting pointless.</p><details><summary>参考答案</summary><div class="ans"><p>① I felt uncomfortable when the comment was made about my accent — I'd appreciate it if we kept feedback about the work.② I find it hard to finish my point when I'm interrupted; can I finish and then hear yours?③ I felt the meeting lost focus when side topics took over — could we keep to the agenda next time?——三句都符合「具体行为 + 我的感受 + 可执行请求」的模板。</p></div></details></div></section>
+<section class="card" data-type="exam"><h2>考点与难点</h2><div class="callout exam"><b>必考</b><ul><li>三句开场模板</li><li>不当行为的判断</li><li>何时转正式渠道</li><li>旁观者策略</li></ul></div><div class="callout warn"><b>易错</b><ul><li>用玩笑语气说严肃内容</li><li>在公开场合让对方下不来台</li><li>只描述感受不描述行为</li></ul></div><div class="callout tip"><b>进阶</b><p>把「行为-影响-请求」三步说清，比争论动机更有效。</p></div><div class="callout warn"><b>易错</b>① 把「提出问题」当成冲突——指引原文明确它是中性、尊重、共同解决；② 只口头反映不留记录，升级时没有证据；③ 用 You-statement 指责人而非描述行为，触发防御反应。</div><div class="callout idea"><b>进阶</b>Speaking up 的成熟用法是「预防性反馈」：问题刚冒头（第一次玩笑、第一次拖延）就用轻量 I-statement 提出来，成本最低；等情绪积累后再开口，既难措辞也伤关系。把八步法前两步（冷静 + 引起注意）练成条件反射，是本讲最高阶的目标。</div></section>
+<section class="card" data-type="checklist"><h2>方法清单</h2><ol class="steps"><li>先稳住情绪</li><li>选私下场合</li><li>描述具体行为与影响</li><li>提出可执行请求</li><li>无效则记录并报告</li><li> bystander 先转移再陪同</li></ol></section>
+<section class="card" data-type="mapping"><h2>源文件对应</h2><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 16，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖内容</th></tr><tr><td>1_Speaking up_instructions_LTKY.pdf</td><td>p1</td><td>2.1–2.5 全部要点与三句模板</td></tr></table></div><p>说明：原文为单页英文信息图，本讲按原句重组并补充了报告渠道与旁观者策略的说明。</p></section><p class="sub">返回：<a href="../../c/29428/speaking-up.html">本讲独立页</a> · <a href="../../c/29428/part-2.html">本章节页</a> · <a href="#c-29428">本课目录</a></p></article></div></div>
+</main>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script>
+(function(){
+  var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
+  function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }
+  function setMeta(v){ m.content=v||'light dark'; }
+  function sysDark(){ return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches; }
+  function label(){ var s=stored(); b.title='配色：'+(s==='light'?'浅色':s==='dark'?'深色':'跟随系统')+'（点击切换）'; }
+  setMeta(stored()); label();
+  b.addEventListener('click',function(){
+    var cur=stored() || (sysDark()?'dark':'light');   /* 当前真正渲染的配色 */
+    var next = cur==='dark' ? 'light' : 'dark';        /* 三态：系统 → 相反值；再次点回系统 */
+    var sys = sysDark()?'dark':'light';
+    var v = (next===sys) ? null : next;                /* 目标若等于系统偏好，则回到跟随系统 */
+    try{ if(v) localStorage.setItem(KEY,v); else localStorage.removeItem(KEY); }catch(e){}
+    setMeta(v); label();
+  });
+  window.addEventListener('storage',function(e){ if(e.key===KEY){ setMeta(stored()); label(); } });
+})();
+</script>
+</body>
+</html>

@@ -8,204 +8,362 @@
 <title>第 9 讲 · 软件项目管理与计划 · 30361</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-3.html">第 3 章 测试、演化与项目管理</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">9.1 项目管理管什么</a><a class="toc-l3" href="#s3">9.2 软件项目管理的三个特殊性</a><a class="toc-l3" href="#s4">9.3 五类管理活动</a><a class="toc-l3" href="#s5">9.4 风险管理：为什么软件特别需要</a><a class="toc-l3" href="#s6">9.5 风险管理四步</a><a class="toc-l3" href="#s7">9.6 人员管理</a><a class="toc-l3" href="#s8">9.7 项目计划：把工作拆开并预判问题</a><a class="toc-l3" href="#s9">9.8 计划驱动开发：优点与代价</a><a class="toc-l3" href="#s10">9.9 敏捷计划</a><a class="toc-l3" href="#s11">9.10 AI 与软件项目管理</a><a class="toc-l3" href="#s12">9.11 估算：我们知道的与不知道的</a><a class="toc-l2" href="#s13">做项目计划的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a class="toc-l3" href="l09-project-management-and-planning.html">▸ 第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a href="l12-case-studies.html">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 9 讲 · 软件项目管理与计划</h1><p class="lead">Software Project Management and Planning <span class="badge mute">30361</span> <span class="badge mute">第 9 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 测试、演化与项目管理</a></p><p class="src">原始文件：<code>18_Week 12/1_SE - Lecture 9 - 2026.pdf</code> <code>What we do and dont know about software development effort estimation. .pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前八讲谈「怎么把软件做好」，这一讲谈「怎么把项目管住」：在预算与工期的约束下按时交付、控制风险、带好团队、做出可执行的计划。课件把管理活动归为五类（风险管理、人员管理、项目计划、报告、提案写作），重点展开前三类，并对比计划驱动与敏捷两种计划方式。最后用 Jørgensen 的实证综述补充「估算为什么总是不准」。</p><p>与前后的衔接：第 2 讲的「敏捷项目管理」在此落地为 release/iteration planning；第 3 讲的「过程度量」是本讲风险监控与进度衡量的基础；第 13 讲的项目计划书（任务、进度、检查点、成本、风险、质量、变更、组织）直接套用本讲的结构。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出项目管理的定义与四条成功标准</li><li>按「项目风险 / 产品风险 / 业务风险」对风险分类，并完成识别、分析、计划、监控四步</li><li>为一个风险写出避免、最小化、应急三套策略</li><li>区分提案阶段、启动阶段、开发过程中的计划，各自的精度与用途</li><li>对比计划驱动与敏捷计划的差异，写出 release planning 与 iteration planning 的分工</li><li>说明估算的七条已知结论与三条未知，并解释「赢家的诅咒」</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">9.1 项目管理管什么</h3><p>课件定义：软件项目管理关注「确保软件按时、按进度、并符合开发与采购组织的需求被交付」所涉及的活动。英文原句是：“Concerned with activities involved in ensuring that software is delivered on time and on schedule and in accordance with the requirements of the organisations developing and procuring the software.”为什么需要它？因为软件开发总是受组织设定的<b>预算与进度约束</b>。</p><p>四条成功标准（可用于验收一个项目）：</p><ol><li>在约定时间把软件交付给客户；</li><li>把总体成本控制在预算内；</li><li>交付满足客户期望的软件；</li><li>维持一个连贯、运作良好的开发团队。</li></ol><p>注意第四条：团队状态也是成功标准。一个「按时交付但团队散了」的项目，在课件标准下并不完全成功。</p><h3 id="s3">9.2 软件项目管理的三个特殊性</h3><table><tr><th>特殊性</th><th>英文</th><th>含义</th><th>管理含义</th></tr><tr><td>产品无形</td><td>the product is intangible</td><td>软件看不见摸不着，管理者无法通过「看工地」判断进展</td><td>必须用可交付物、度量与演示代替「目视检查」</td></tr><tr><td>多为一次性项目</td><td>many projects are one-off</td><td>大型项目与以往项目总有不同，经验丰富者也难预判问题</td><td>不能简单套用历史模板，要重新做风险识别</td></tr><tr><td>过程多变且组织特定</td><td>processes are variable and organization specific</td><td>仍无法可靠预测某个过程何时会导致问题</td><td>需要用度量与复盘逐步建立本地基线</td></tr></table><p>影响项目管理的因素（六个）：公司规模、软件客户、软件规模、软件类型、组织文化、软件开发过程。课件结论：这些因素意味着不同组织的项目经理可能以很不同的方式工作。</p><h3 id="s4">9.3 五类管理活动</h3><table><tr><th>活动</th><th>英文</th><th>内容</th></tr><tr><td>风险管理</td><td>risk management</td><td>评估可能影响项目的风险、监控风险，并在问题出现时采取行动</td></tr><tr><td>人员管理</td><td>people management</td><td>选人、建立能带来有效团队绩效的工作方式</td></tr><tr><td>项目计划</td><td>project planning</td><td>计划、估算、排期，并把人员分配到任务</td></tr><tr><td>报告</td><td>reporting</td><td>向客户与公司管理层报告进展</td></tr><tr><td>提案写作</td><td>proposal writing</td><td>项目第一阶段可能是写提案以赢得合同，描述项目目标与实施方式</td></tr></table><h3 id="s5">9.4 风险管理：为什么软件特别需要</h3><p>风险管理是「识别风险并制定计划以最小化其对项目影响」的过程：“Risk management is concerned with identifying risks and drawing up plans to minimise their effect on a project.”课件指出软件风险管理重要，是因为软件开发内在的<b>不确定性</b>，来源包括：需求定义松散；客户需求变化导致需求变更；开发所需时间与资源难以估算；个体技能差异。</p><p>管理者的任务是：预期风险、理解风险对项目/产品/业务的影响、采取措施避免风险。</p><p>风险分类有两个维度：<b>风险类型</b>（技术、组织等）与<b>受影响对象</b>：</p><table><tr><th>类别</th><th>英文</th><th>影响</th><th>例子</th></tr><tr><td>项目风险</td><td>project risks</td><td>影响进度或资源</td><td>关键人员离职导致进度延误</td></tr><tr><td>产品风险</td><td>product risks</td><td>影响软件质量或性能</td><td>采用未验证的框架导致性能不达标</td></tr><tr><td>业务风险</td><td>business risks</td><td>影响开发或采购软件的组织</td><td>客户预算被削减 20%</td></tr></table><h3 id="s6">9.5 风险管理四步</h3><ol><li><b>风险识别</b>（risk identification）：识别项目、产品与业务风险；可由团队活动完成，也可基于项目经理个人经验；可用常见风险清单（checklist）识别。</li><li><b>风险分析</b>（risk analysis）：评估每个风险的概率与严重性。概率可分为 very low / low / moderate / high / very high；后果可分为 catastrophic / serious / tolerable / insignificant。</li><li><b>风险计划</b>（risk planning）：为每个风险制定管理策略——避免（avoidance，降低发生概率）、最小化（minimization，降低影响）、应急计划（contingency plan，风险发生时的应对方案）。</li><li><b>风险监控</b>（risk monitoring）：定期评估每个已识别风险是变得更可能还是更不可能，并评估其影响是否变化；每个关键风险应在管理进展会议上讨论。</li></ol><p>风险识别清单的五类：技术风险、组织风险、人员风险、需求风险、估算风险。这五类可以直接作为项目计划书风险表的分类框架（第 13 讲）。</p><p>课件的「what-if」问题很适合训练风险思维：</p><ul><li>如果几名工程师同时病倒怎么办？</li><li>如果经济下行导致项目预算削减 20% 怎么办？</li><li>如果某开源软件性能不达标，而唯一熟悉它的专家离职了怎么办？</li><li>如果供应并维护软件构件的公司倒闭了怎么办？</li><li>如果客户未能按预期交付修订后的需求怎么办？</li></ul><div class="callout tip"><b>技巧</b>写风险表时，一个风险只写一条「原因—事件—影响」链，例如「唯一熟悉 Kafka 的工程师离职（原因）→ 消息链路无人能改（事件）→ 支付对账延迟上线（影响）」。这样概率与严重性才有可评估的对象。</div><h3 id="s7">9.6 人员管理</h3><p>课件开篇的判断很直接：人是组织最重要的资产；管理任务本质上是「面向人的」；缺乏对人的理解，管理不会成功；<b>人员管理不善是项目失败的重要贡献因素</b>。</p><p>四条人员管理原则：</p><table><tr><th>原则</th><th>英文</th><th>含义</th></tr><tr><td>一致性</td><td>consistency</td><td>团队成员应被以可比的方式对待，无偏袒与歧视</td></tr><tr><td>尊重</td><td>respect</td><td>成员技能不同，这些差异应被尊重</td></tr><tr><td>包容</td><td>inclusion</td><td>让所有成员参与，确保其观点被考虑</td></tr><tr><td>诚实</td><td>honesty</td><td>对项目哪些顺利、哪些不顺，始终诚实</td></tr></table><p><b>激励</b>是管理者的重要职责：激励意味着组织工作与工作环境，使人愿意有效工作。若人没有被激励，就不会对工作感兴趣，会做得慢、更易出错、也不会为团队与组织的更大目标做贡献。</p><p>课件用 Maslow 需求层次解释软件团队的激励落点：在软件团队中，基本生理与安全需求通常不是问题，因此重点在：</p><table><tr><th>层次</th><th>在软件团队中的落点</th><th>管理动作</th></tr><tr><td>生理</td><td>公平薪酬、舒适工作条件、充分休息；提供必要的工具、设备与技术</td><td>保证资源到位</td></tr><tr><td>安全</td><td>清晰期望、一致反馈、工作安全感；明确的计划、时间线与风险管理</td><td>减少不确定性带来的焦虑</td></tr><tr><td>归属</td><td>正向团队文化、协作、开放沟通、团建；认可贡献</td><td>让人感到被重视与连结</td></tr><tr><td>尊重</td><td>成长机会、认可与奖励成就、建设性反馈；授权任务与责任</td><td>提升自我评价</td></tr><tr><td>自我实现</td><td>挑战性任务、鼓励创新、职业发展机会；持续学习的文化</td><td>让人发挥潜能</td></tr></table><p>课件同时提醒：需求层次「几乎肯定是过度简化」。因此还要考虑<b>人格类型</b>：</p><ul><li><b>任务导向</b>（task-oriented）：被工作本身激励——软件工程师中常见；</li><li><b>互动导向</b>（interaction-oriented）：被同事的存在与行动激励；</li><li><b>自我导向</b>（self-oriented）：主要被个人成功与认可激励。</li></ul><h3 id="s8">9.7 项目计划：把工作拆开并预判问题</h3><p>项目计划是「把工作拆成部分、分配给团队成员、预判可能出现的问题并准备初步解决方案」。项目开始时制定的计划用于向团队与客户沟通工作将如何完成，并帮助评估进展。</p><p>三个计划时机，精度与用途不同：</p><table><tr><th>阶段</th><th>已知信息</th><th>目的</th></tr><tr><td>提案阶段 proposal stage</td><td>只有概要需求</td><td>为定价提供信息；项目定价需估算开发成本，考虑人员、硬件、软件成本</td></tr><tr><td>启动阶段 startup phase</td><td>更了解需求，但无设计与实现信息</td><td>做出足以决定预算与人员的计划；作为资源分配的基础；定义项目监控机制；<b>敏捷开发也需要启动计划</b>以便分配资源</td></tr><tr><td>开发过程中 periodically</td><td>已获得经验与进展信息</td><td>按经验修订进度、成本估算与风险</td></tr></table><h3 id="s9">9.8 计划驱动开发：优点与代价</h3><p>计划驱动（plan-based）开发是「开发过程被详细计划」的方式，基于工程项目管理技术，是管理大型软件项目的传统方式。项目计划记录：要做的工作、谁来做、开发进度、工作产物。管理者用计划支持决策并衡量进展。</p><p>支持理由：早期计划使组织性问题（人员可用性、其他项目冲突）被细致考虑；潜在问题与依赖在项目开始前就被发现，而不是开工后才发现。</p><p>反对理由：许多早期决策必须被修订，因为软件开发与使用环境会变化。</p><p>项目计划的七个部分（考试常考「计划应包含什么」）：</p><ol><li>引言（introduction）；</li><li>项目组织（project organization）；</li><li>风险分析（risk analysis）；</li><li>硬件与软件资源需求（hardware and software resource requirements）；</li><li>工作分解（work breakdown）；</li><li>项目进度（project schedule）；</li><li>监控与报告机制（monitoring and reporting mechanisms）。</li></ol><p>计划过程是<b>迭代</b>的：启动阶段创建初始计划，随项目推进不断修订；业务目标变化也会导致所有项目重新计划。</p><p>计划假设要「现实而非乐观」：项目中总会出现各种问题导致延期，因此初始假设与排期必须把意外问题计入；计划中应包含<b>应急余量</b>（contingency），使事情出错时交付进度不被严重打乱。</p><p>风险缓解（risk mitigation）：若开发工作出现可能导致重大延误的严重问题，需要启动风险缓解行动以降低项目失败风险；同时必须<b>重新计划</b>，这可能涉及与客户重新协商约束与交付物，并建立新的、与客户达成一致的完成时间表。</p><h3 id="s10">9.9 敏捷计划</h3><p>敏捷开发是迭代方法，软件以增量交付。与计划驱动不同，<b>增量的功能不预先计划</b>，而是在开发中决定：一个增量包含什么，取决于进展与客户优先级。客户优先级与需求会变，因此灵活的、能容纳变化的计划才合理。</p><p>两个层次的计划：</p><table><tr><th>层次</th><th>英文</th><th>时间跨度</th><th>决定什么</th></tr><tr><td>发布计划</td><td>release planning</td><td>向前看数月</td><td>一次系统发布应包含哪些特性</td></tr><tr><td>迭代计划</td><td>iteration planning</td><td>短期，通常 2–4 周</td><td>下一次增量做什么</td></tr></table><p>软件交付规则（必须记住）：每个项目迭代结束时总要交付一个软件增量；<b>若增量包含的功能无法在允许时间内完成，则缩减工作范围；交付日期绝不延长</b>。这条规则是敏捷承诺的核心机制。</p><p>敏捷计划的困难：依赖客户参与与可用性，而客户代表常要优先处理其他工作，无法参加计划活动（planning game）；部分客户熟悉传统项目计划，难以投入敏捷计划过程。</p><p>适用性：敏捷计划适合小型、稳定的开发团队，大家可以坐在一起讨论要实现的故事；团队很大、地理分布、成员频繁变动时，让所有人参与协作计划实际上不可能。</p><h3 id="s11">9.10 AI 与软件项目管理</h3><p>课件的第四节给出四个变化方向：</p><table><tr><th>方向</th><th>具体表现</th></tr><tr><td>增强的计划与估算</td><td>智能排期（分析历史数据、技能与资源可用性生成更现实的进度）；预测性分析（在延期、超支、资源短缺发生前预警）</td></tr><tr><td>任务自动化与效率</td><td>自动化的进度跟踪与状态更新、报告与文档生成、按技能与容量自动分配任务、用 NLP 做会议摘要与转写；AI 辅助编码（如 Copilot）、标记缺陷、自动化部分测试</td></tr><tr><td>改进的风险与资源管理</td><td>主动风险缓解（扫描项目文档、历史数据甚至外部市场状况，发现人可能忽略的风险；模拟 what-if 场景测试应急计划）；优化资源分配（实时可见的资源利用，匹配人与任务，平衡负载，防止倦怠或闲置）</td></tr><tr><td>项目经理角色转变</td><td>从管理者到战略者（重复任务自动化后，专注于干系人管理、教练团队、解决复杂冲突、推动创新）；数据驱动决策（用 AI 洞察与实时数据分析替代直觉与手工计算）</td></tr></table><h3 id="s12">9.11 估算：我们知道的与不知道的</h3><p>Jørgensen 的实证综述是本周阅读材料，它回答一个项目管理中最痛的问题：为什么估算总是不准？</p><p>开篇的事实：大量证据表明软件项目存在成本与工作量超支倾向，平均约 <b>30%</b>；把 1980 年代的估算精度与近期调查相比，精度<b>没有明显改善</b>；估算方法也没有大变——尽管有大量形式化估算模型研究，<b>主导方法仍是专家估算</b>（expert estimation）。</p><p>七条有充分证据支持的结论：</p><ol><li><b>没有「最好的」估算模型或方法</b>：不同研究里赢家各不相同；核心关系（如工作量与规模的关系）随情境而变，影响最大的变量也在变。因此公司应建立<b>自己的</b>估算模型，而不是指望通用模型在本地准确。</li><li><b>客户对低价的偏好是超支的主因</b>：在价格竞争激烈的情境（投标）中，低估尤其明显；在非价格竞争情境（内部开发）没有这种倾向，甚至相反。推论：低估的提案更容易中标，于是「赢家的诅咒」发生。</li><li><b>最小—最大区间太窄</b>：诸如 90% 置信区间，系统性偏窄，无法反映真实不确定性；PERT（三点估算）等方法仍假设人能给出可靠的最值。建议用<b>历史估算误差</b>来设定区间，而不是凭专家判断。</li><li><b>估算容易被误导，且很难从被误导中恢复</b>：所有估算都需要专家判断，而专家判断极易被<b>锚定</b>（estimation anchors）影响——在估算前或估算中知道预算、客户期望、可用时间，估算就会不自觉靠近这些锚；带倾向性的措辞（「这个又小又简单的项目要多少钱？」）也会误导。目前没有可靠方法中和这些偏差，唯一可行的是<b>不让估算者接触误导性信息</b>。</li><li><b>相关的历史数据与检查清单能提高精度</b>：当历史数据相关、清单按公司定制时，活动不易被遗漏，风险余量更可能被加入，经验更可能被复用；用类似项目做<b>类比估算</b>（analogy / reference class estimation）尤其有效。但许多公司两者都不用。</li><li><b>组合独立估算能提高精度</b>：不同来源估算的平均值通常比多数单个估算更准；关键假设是<b>独立性</b>（来源在专长、背景、估算过程上不同）。类似 Delphi 的过程——如<b>规划扑克</b>（Planning Poker），开发者同时亮出各自独立得出的估算——在软件估算中特别有用。群体过程还因知识共享而增值；「群体思维」与群体更高风险偏好的负面效应在软件估算中未被证实。</li><li><b>估算可能有害</b>：估算不仅预测未来，也经常影响未来。过低估算导致质量下降、后期返工、失败风险上升；过高估算则按<b>帕金森定律</b>（Parkinson’s law：工作会膨胀以填满可用时间）降低生产率。因此要问「是否真的需要估算」；若不需要或可推迟，等到信息更多时再估算更安全。敏捷只规划下一个冲刺或发布，正是避免过早估算之害的方式。</li></ol><p>三条「我们不知道」：</p><ul><li>如何准确估算<b>超大型复杂项目</b>：赌注更大，但相关经验与历史数据更少；这类项目的活动常涉及业务流程变更与复杂干系人互动，极难估算；</li><li>如何度量<b>软件规模与复杂度</b>以支持准确估算：多年研究提出的度量都不够好，能准确估算的情境似乎很少；</li><li>如何度量并预测<b>生产率</b>：即使有了规模与复杂度，还要预测个人或团队的生产率；开发者与团队之间的生产率差异常常大得惊人；除「真实编程测试」（trialsourcing）外没有好方法。此外，我们甚至不知道软件项目是<b>规模经济</b>还是<b>规模不经济</b>：多数实证研究支持规模经济，而实践者通常相信规模不经济，且研究结果很可能是分析方法造成的假象。</li></ul><p>综述给出的六条可执行建议：建立并使用贴合本地情境的简单模型，并与专家估算结合；用历史估算误差设定最小—最大区间；避免接触误导性与无关信息；使用按本组织定制的检查清单；使用保证估算独立性的结构化群体过程；避免基于高度不完整信息的早期估算。</p><div class="callout idea" data-ext="l09-project-management-and-planning-0"><b>背景</b><p>软件项目管理的特殊性源于三件事：产品无形，不能靠看工地判断进展，须用可交付物、度量与演示代替目视检查；多为一次性项目，历史模板不可照搬，要重新识别风险；过程多变且组织特定，只能靠度量与复盘建立本地基线。四条成功标准里有一条常被漏掉——维持连贯、运作良好的团队，所以按时交付但团队散了并不算完全成功。风险管理四步是识别、分析（概率乘严重性）、计划（避免、最小化、应急、转移）与监控，软件的不确定性来自需求松散、变更、估算难与个体技能差异。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>project management</td><td>项目管理</td><td>Ensuring software is delivered on time, on schedule and in accordance with requirements.</td></tr><tr><td>success criteria</td><td>成功标准</td><td>Agreed time, budget, customer expectations, coherent team.</td></tr><tr><td>intangible product</td><td>无形产品</td><td>Software cannot be seen or touched, so progress cannot be judged by looking at it.</td></tr><tr><td>project risk</td><td>项目风险</td><td>Risk affecting the schedule or resources.</td></tr><tr><td>product risk</td><td>产品风险</td><td>Risk affecting the quality or performance of the software.</td></tr><tr><td>business risk</td><td>业务风险</td><td>Risk affecting the organisation developing or procuring the software.</td></tr><tr><td>risk planning</td><td>风险计划</td><td>Avoidance, minimisation and contingency strategies for each risk.</td></tr><tr><td>contingency plan</td><td>应急计划</td><td>What to do if the risk actually arises.</td></tr><tr><td>people management</td><td>人员管理</td><td>Choosing people and establishing ways of working that lead to effective performance.</td></tr><tr><td>Maslow’s hierarchy</td><td>需求层次</td><td>Physiological, safety, belonging, esteem, self-actualisation needs.</td></tr><tr><td>project plan</td><td>项目计划</td><td>Resources, work breakdown and schedule; seven standard sections.</td></tr><tr><td>plan-driven development</td><td>计划驱动开发</td><td>The development process is planned in detail before work starts.</td></tr><tr><td>release planning</td><td>发布计划</td><td>Looks ahead several months and decides the features in a release.</td></tr><tr><td>effort estimation</td><td>工作量估算</td><td>Predicting effort; expert estimation still dominates practice.</td></tr><tr><td>planning poker</td><td>规划扑克</td><td>A Delphi-like process where estimators reveal independent estimates simultaneously.</td></tr><tr><td>winner’s curse</td><td>赢家的诅咒</td><td>The most optimistic bid wins, leading to overruns and lower quality.</td></tr></table></section>
-<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写一张风险表</div><p>情境：某 5 人团队要在 4 个月内为一所学校做「选课与排课」系统，客户是教务处，学校 IT 只提供一台旧服务器，团队中只有一人懂排课算法。请识别 5 个风险，给出类别、概率、严重性、原因与应对。</p><p><b>分析：</b>先按五类清单扫一遍（技术、组织、人员、需求、估算），再为每个风险写「原因—事件—影响」。</p><table><tr><th>风险</th><th>类别</th><th>概率 / 严重性</th><th>原因</th><th>应对</th></tr><tr><td>排课算法专家离职或病假</td><td>项目风险（人员）</td><td>中 / 严重</td><td>单点知识，无备份</td><td>避免：结对 + 文档化算法决策；应急：外部顾问名单</td></tr><tr><td>旧服务器性能不足，排课计算超时</td><td>产品风险（技术）</td><td>高 / 严重</td><td>硬件老旧，算法复杂度高</td><td>最小化：先做性能原型验证；应急：申请云资源或降低排课频次</td></tr><tr><td>教务处需求在开发中期大改（如增加走班制）</td><td>产品风险（需求）</td><td>高 / 严重</td><td>政策变化；客户未参与早期评审</td><td>避免：每两周演示 + 需求基线；应急：用范围置换而非延期</td></tr><tr><td>开发工作量低估（4 个月实际需 6 个月）</td><td>项目风险（估算）</td><td>高 / 严重</td><td>新团队、无历史数据</td><td>避免：用类比估算 + 规划扑克；应急：砍可选功能</td></tr><tr><td>学校 IT 无法提供接口文档</td><td>业务风险（组织）</td><td>中 / 可容忍</td><td>对方运维人力不足</td><td>最小化：提前约定接口清单与责任人；应急：用数据导入导出兜底</td></tr></table><p><b>要点：</b>每条风险都要有「应对」，且应对要区分避免（降概率）与应急（降影响）；只有「注意一下」不算风险计划。</p></div><div class="qa"><div class="q">例 2　规划扑克的正确做法</div><p>情境：团队 6 人要用规划扑克估算一个用户故事「学生可在线申请缓考」。请写出流程，并说明为什么不能先说出「大概 5 天」再让大家出牌。</p><p><b>流程：</b>① 产品负责人朗读故事并说明验收标准，团队提问澄清；② 每人私下选一张牌（斐波那契数列：1、2、3、5、8、13…），<b>同时</b>亮牌；③ 若数值差异大，请最大与最小者各说明理由（尤其是低值者的隐含假设与高值者看到的风险）；④ 澄清后重新出牌；⑤ 重复至收敛，取共识值；⑥ 记录该故事的估算与讨论要点（作为后续类比估算的依据）。</p><p><b>为什么不能先说数字：</b>因为那会成为<b>估算锚点</b>。Jørgensen 指出，人在估算前或估算中知道预算、期望或其他数值，会不自觉地把估算拉向该值；且一旦被锚定，很难通过讨论完全恢复。同时亮牌保证估算<b>独立</b>，而独立估算的平均值通常比单个估算更准。</p><p><b>常见错误：</b>让最资深的人先出牌（锚定）；只取平均而不讨论分歧（丢掉分歧背后的信息）；把故事点当工时（故事点是相对度量）。</p></div><div class="qa"><div class="q">例 3　估算区间与承诺</div><p>情境：团队历史数据显示，过去 10 个项目的实际工作量相对估算的中位偏差为 +35%，且偏差分布很宽（−10% 到 +120%）。本次估算为 200 人日。客户要求「给出 90% 把握的上限」。请给出一个务实的回答，并说明为什么不能用「200 × 1.1」。</p><p><b>分析：</b>先看历史：中位偏差 +35% 说明系统性低估；分布很宽说明不确定性大。用历史误差设定区间，而不是用专家的乐观判断（这正是 Jørgensen 的建议）。</p><p><b>计算：</b>若按中位偏差校正，期望值约为 200 × 1.35 = 270 人日；90% 上限应取历史分布的高分位，而不是中位数。若历史上有 1/10 的项目超过 +120%，则 90% 上限至少应覆盖 200 × 2.2 = 440 人日这一量级。</p><p><b>为什么不能用 200 × 1.1：</b>因为 1.1 是一个「乐观的、凭感觉的」缓冲，既没有覆盖系统性低估（+35%），也没有覆盖尾部风险（+120%）；PERT 式三点估算同样常给出过窄区间。</p><p><b>回答方式：</b>「按历史数据，50% 把握约 270 人日，90% 把握约 440 人日；若必须承诺一个日期，建议以 270 为计划值，并把范围裁剪到 270 能覆盖的部分。」这既诚实又可执行。</p></div><div class="qa"><div class="q">例 4　敏捷计划与「日期不减」</div><p>情境：某团队 2 周一个冲刺，velocity 约 30 点。发布计划承诺 6 个冲刺交付 12 个特性（共 200 点）。到第 3 个冲刺末，只完成 70 点，客户要求「加人赶工，日期不变」。请给出你的处理方案。</p><p><b>分析：</b>先算现实：3 个冲刺完成 70 点 → velocity ≈ 23 点/冲刺，而非 30。剩余 3 个冲刺可完成约 69 点，合计约 139 点，距 200 点差 61 点。</p><p><b>处理：</b>① 按「范围可减、日期不减」原则，与客户按优先级裁剪约 60 点（约 3–4 个低优先级特性），把发布内容调整为 140 点左右；② 「加人」在敏捷里通常短期降低 velocity（新人需要带教、沟通成本上升），不应作为主要手段；③ 分析 velocity 下降原因（是否技术债、是否故事拆分过大、是否环境不稳定），并在回顾中改进；④ 把被裁剪的特性移入下一次发布，并明确新的发布计划。</p><p><b>考点：</b>这道题同时考 velocity 计算、范围/日期权衡、以及「加人不能线性加速」的工程常识（《人月神话》的经验，课件未直接提，但逻辑一致）。</p></div></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A4050 软件工程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-3.html">第 3 章 测试、演化与项目管理</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 9 讲 · 软件项目管理与计划</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 9 讲 · 软件项目管理与计划 · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">9.1 项目管理管什么</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">9.2 软件项目管理的三个特殊性</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">9.3 五类管理活动</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">9.4 风险管理：为什么软件特别需要</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">9.5 风险管理四步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">9.6 人员管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">9.7 项目计划：把工作拆开并预判问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">9.8 计划驱动开发：优点与代价</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">9.9 敏捷计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">9.10 AI 与软件项目管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">9.11 估算：我们知道的与不知道的</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-19" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-19"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">做项目计划的清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-22" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-22"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l04-requirements-engineering.html"><span class="directory-label">第 4 讲 · 需求工程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-31" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-31"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="l09-project-management-and-planning.html" aria-current="page"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l10-quality-and-configuration-management.html"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l12-case-studies.html"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-project-docs.html"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/l09-project-management-and-planning"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 09 / 14 讲</p><h1 id="lecture-title">第 9 讲 · 软件项目管理与计划</h1><p class="lecture-subtitle">Software Project Management and Planning</p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 测试、演化与项目管理</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>d9026f97b10a</code>（用于识别内容变更）</dd></dl><ul><li><code>18_Week 12/1_SE - Lecture 9 - 2026.pdf</code> <span class="sub">未附原文件</span></li><li><code>What we do and dont know about software development effort estimation. .pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>前八讲谈「怎么把软件做好」，这一讲谈「怎么把项目管住」：在预算与工期的约束下按时交付、控制风险、带好团队、做出可执行的计划。课件把管理活动归为五类（风险管理、人员管理、项目计划、报告、提案写作），重点展开前三类，并对比计划驱动与敏捷两种计划方式。最后用 Jørgensen 的实证综述补充「估算为什么总是不准」。</p><p>与前后的衔接：第 2 讲的「敏捷项目管理」在此落地为 release/iteration planning；第 3 讲的「过程度量」是本讲风险监控与进度衡量的基础；第 13 讲的项目计划书（任务、进度、检查点、成本、风险、质量、变更、组织）直接套用本讲的结构。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出项目管理的定义与四条成功标准</li><li>按「项目风险 / 产品风险 / 业务风险」对风险分类，并完成识别、分析、计划、监控四步</li><li>为一个风险写出避免、最小化、应急三套策略</li><li>区分提案阶段、启动阶段、开发过程中的计划，各自的精度与用途</li><li>对比计划驱动与敏捷计划的差异，写出 release planning 与 iteration planning 的分工</li><li>说明估算的七条已知结论与三条未知，并解释「赢家的诅咒」</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">9.1 项目管理管什么</h3><p>课件定义：软件项目管理关注「确保软件按时、按进度、并符合开发与采购组织的需求被交付」所涉及的活动。英文原句是：“Concerned with activities involved in ensuring that software is delivered on time and on schedule and in accordance with the requirements of the organisations developing and procuring the software.”为什么需要它？因为软件开发总是受组织设定的<b>预算与进度约束</b>。</p><p>四条成功标准（可用于验收一个项目）：</p><ol><li>在约定时间把软件交付给客户；</li><li>把总体成本控制在预算内；</li><li>交付满足客户期望的软件；</li><li>维持一个连贯、运作良好的开发团队。</li></ol><p>注意第四条：团队状态也是成功标准。一个「按时交付但团队散了」的项目，在课件标准下并不完全成功。</p><h3 id="s3">9.2 软件项目管理的三个特殊性</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>特殊性</th><th>英文</th><th>含义</th><th>管理含义</th></tr><tr><td>产品无形</td><td>the product is intangible</td><td>软件看不见摸不着，管理者无法通过「看工地」判断进展</td><td>必须用可交付物、度量与演示代替「目视检查」</td></tr><tr><td>多为一次性项目</td><td>many projects are one-off</td><td>大型项目与以往项目总有不同，经验丰富者也难预判问题</td><td>不能简单套用历史模板，要重新做风险识别</td></tr><tr><td>过程多变且组织特定</td><td>processes are variable and organization specific</td><td>仍无法可靠预测某个过程何时会导致问题</td><td>需要用度量与复盘逐步建立本地基线</td></tr></table></div><p>影响项目管理的因素（六个）：公司规模、软件客户、软件规模、软件类型、组织文化、软件开发过程。课件结论：这些因素意味着不同组织的项目经理可能以很不同的方式工作。</p><h3 id="s4">9.3 五类管理活动</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>活动</th><th>英文</th><th>内容</th></tr><tr><td>风险管理</td><td>risk management</td><td>评估可能影响项目的风险、监控风险，并在问题出现时采取行动</td></tr><tr><td>人员管理</td><td>people management</td><td>选人、建立能带来有效团队绩效的工作方式</td></tr><tr><td>项目计划</td><td>project planning</td><td>计划、估算、排期，并把人员分配到任务</td></tr><tr><td>报告</td><td>reporting</td><td>向客户与公司管理层报告进展</td></tr><tr><td>提案写作</td><td>proposal writing</td><td>项目第一阶段可能是写提案以赢得合同，描述项目目标与实施方式</td></tr></table></div><h3 id="s5">9.4 风险管理：为什么软件特别需要</h3><p>风险管理是「识别风险并制定计划以最小化其对项目影响」的过程：“Risk management is concerned with identifying risks and drawing up plans to minimise their effect on a project.”课件指出软件风险管理重要，是因为软件开发内在的<b>不确定性</b>，来源包括：需求定义松散；客户需求变化导致需求变更；开发所需时间与资源难以估算；个体技能差异。</p><p>管理者的任务是：预期风险、理解风险对项目/产品/业务的影响、采取措施避免风险。</p><p>风险分类有两个维度：<b>风险类型</b>（技术、组织等）与<b>受影响对象</b>：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>类别</th><th>英文</th><th>影响</th><th>例子</th></tr><tr><td>项目风险</td><td>project risks</td><td>影响进度或资源</td><td>关键人员离职导致进度延误</td></tr><tr><td>产品风险</td><td>product risks</td><td>影响软件质量或性能</td><td>采用未验证的框架导致性能不达标</td></tr><tr><td>业务风险</td><td>business risks</td><td>影响开发或采购软件的组织</td><td>客户预算被削减 20%</td></tr></table></div><h3 id="s6">9.5 风险管理四步</h3><ol><li><b>风险识别</b>（risk identification）：识别项目、产品与业务风险；可由团队活动完成，也可基于项目经理个人经验；可用常见风险清单（checklist）识别。</li><li><b>风险分析</b>（risk analysis）：评估每个风险的概率与严重性。概率可分为 very low / low / moderate / high / very high；后果可分为 catastrophic / serious / tolerable / insignificant。</li><li><b>风险计划</b>（risk planning）：为每个风险制定管理策略——避免（avoidance，降低发生概率）、最小化（minimization，降低影响）、应急计划（contingency plan，风险发生时的应对方案）。</li><li><b>风险监控</b>（risk monitoring）：定期评估每个已识别风险是变得更可能还是更不可能，并评估其影响是否变化；每个关键风险应在管理进展会议上讨论。</li></ol><p>风险识别清单的五类：技术风险、组织风险、人员风险、需求风险、估算风险。这五类可以直接作为项目计划书风险表的分类框架（第 13 讲）。</p><p>课件的「what-if」问题很适合训练风险思维：</p><ul><li>如果几名工程师同时病倒怎么办？</li><li>如果经济下行导致项目预算削减 20% 怎么办？</li><li>如果某开源软件性能不达标，而唯一熟悉它的专家离职了怎么办？</li><li>如果供应并维护软件构件的公司倒闭了怎么办？</li><li>如果客户未能按预期交付修订后的需求怎么办？</li></ul><div class="callout tip"><b>技巧</b>写风险表时，一个风险只写一条「原因—事件—影响」链，例如「唯一熟悉 Kafka 的工程师离职（原因）→ 消息链路无人能改（事件）→ 支付对账延迟上线（影响）」。这样概率与严重性才有可评估的对象。</div><h3 id="s7">9.6 人员管理</h3><p>课件开篇的判断很直接：人是组织最重要的资产；管理任务本质上是「面向人的」；缺乏对人的理解，管理不会成功；<b>人员管理不善是项目失败的重要贡献因素</b>。</p><p>四条人员管理原则：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>原则</th><th>英文</th><th>含义</th></tr><tr><td>一致性</td><td>consistency</td><td>团队成员应被以可比的方式对待，无偏袒与歧视</td></tr><tr><td>尊重</td><td>respect</td><td>成员技能不同，这些差异应被尊重</td></tr><tr><td>包容</td><td>inclusion</td><td>让所有成员参与，确保其观点被考虑</td></tr><tr><td>诚实</td><td>honesty</td><td>对项目哪些顺利、哪些不顺，始终诚实</td></tr></table></div><p><b>激励</b>是管理者的重要职责：激励意味着组织工作与工作环境，使人愿意有效工作。若人没有被激励，就不会对工作感兴趣，会做得慢、更易出错、也不会为团队与组织的更大目标做贡献。</p><p>课件用 Maslow 需求层次解释软件团队的激励落点：在软件团队中，基本生理与安全需求通常不是问题，因此重点在：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>层次</th><th>在软件团队中的落点</th><th>管理动作</th></tr><tr><td>生理</td><td>公平薪酬、舒适工作条件、充分休息；提供必要的工具、设备与技术</td><td>保证资源到位</td></tr><tr><td>安全</td><td>清晰期望、一致反馈、工作安全感；明确的计划、时间线与风险管理</td><td>减少不确定性带来的焦虑</td></tr><tr><td>归属</td><td>正向团队文化、协作、开放沟通、团建；认可贡献</td><td>让人感到被重视与连结</td></tr><tr><td>尊重</td><td>成长机会、认可与奖励成就、建设性反馈；授权任务与责任</td><td>提升自我评价</td></tr><tr><td>自我实现</td><td>挑战性任务、鼓励创新、职业发展机会；持续学习的文化</td><td>让人发挥潜能</td></tr></table></div><p>课件同时提醒：需求层次「几乎肯定是过度简化」。因此还要考虑<b>人格类型</b>：</p><ul><li><b>任务导向</b>（task-oriented）：被工作本身激励——软件工程师中常见；</li><li><b>互动导向</b>（interaction-oriented）：被同事的存在与行动激励；</li><li><b>自我导向</b>（self-oriented）：主要被个人成功与认可激励。</li></ul><h3 id="s8">9.7 项目计划：把工作拆开并预判问题</h3><p>项目计划是「把工作拆成部分、分配给团队成员、预判可能出现的问题并准备初步解决方案」。项目开始时制定的计划用于向团队与客户沟通工作将如何完成，并帮助评估进展。</p><p>三个计划时机，精度与用途不同：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>阶段</th><th>已知信息</th><th>目的</th></tr><tr><td>提案阶段 proposal stage</td><td>只有概要需求</td><td>为定价提供信息；项目定价需估算开发成本，考虑人员、硬件、软件成本</td></tr><tr><td>启动阶段 startup phase</td><td>更了解需求，但无设计与实现信息</td><td>做出足以决定预算与人员的计划；作为资源分配的基础；定义项目监控机制；<b>敏捷开发也需要启动计划</b>以便分配资源</td></tr><tr><td>开发过程中 periodically</td><td>已获得经验与进展信息</td><td>按经验修订进度、成本估算与风险</td></tr></table></div><h3 id="s9">9.8 计划驱动开发：优点与代价</h3><p>计划驱动（plan-based）开发是「开发过程被详细计划」的方式，基于工程项目管理技术，是管理大型软件项目的传统方式。项目计划记录：要做的工作、谁来做、开发进度、工作产物。管理者用计划支持决策并衡量进展。</p><p>支持理由：早期计划使组织性问题（人员可用性、其他项目冲突）被细致考虑；潜在问题与依赖在项目开始前就被发现，而不是开工后才发现。</p><p>反对理由：许多早期决策必须被修订，因为软件开发与使用环境会变化。</p><p>项目计划的七个部分（考试常考「计划应包含什么」）：</p><ol><li>引言（introduction）；</li><li>项目组织（project organization）；</li><li>风险分析（risk analysis）；</li><li>硬件与软件资源需求（hardware and software resource requirements）；</li><li>工作分解（work breakdown）；</li><li>项目进度（project schedule）；</li><li>监控与报告机制（monitoring and reporting mechanisms）。</li></ol><p>计划过程是<b>迭代</b>的：启动阶段创建初始计划，随项目推进不断修订；业务目标变化也会导致所有项目重新计划。</p><p>计划假设要「现实而非乐观」：项目中总会出现各种问题导致延期，因此初始假设与排期必须把意外问题计入；计划中应包含<b>应急余量</b>（contingency），使事情出错时交付进度不被严重打乱。</p><p>风险缓解（risk mitigation）：若开发工作出现可能导致重大延误的严重问题，需要启动风险缓解行动以降低项目失败风险；同时必须<b>重新计划</b>，这可能涉及与客户重新协商约束与交付物，并建立新的、与客户达成一致的完成时间表。</p><h3 id="s10">9.9 敏捷计划</h3><p>敏捷开发是迭代方法，软件以增量交付。与计划驱动不同，<b>增量的功能不预先计划</b>，而是在开发中决定：一个增量包含什么，取决于进展与客户优先级。客户优先级与需求会变，因此灵活的、能容纳变化的计划才合理。</p><p>两个层次的计划：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 7，可横向滚动"><table><tr><th>层次</th><th>英文</th><th>时间跨度</th><th>决定什么</th></tr><tr><td>发布计划</td><td>release planning</td><td>向前看数月</td><td>一次系统发布应包含哪些特性</td></tr><tr><td>迭代计划</td><td>iteration planning</td><td>短期，通常 2–4 周</td><td>下一次增量做什么</td></tr></table></div><p>软件交付规则（必须记住）：每个项目迭代结束时总要交付一个软件增量；<b>若增量包含的功能无法在允许时间内完成，则缩减工作范围；交付日期绝不延长</b>。这条规则是敏捷承诺的核心机制。</p><p>敏捷计划的困难：依赖客户参与与可用性，而客户代表常要优先处理其他工作，无法参加计划活动（planning game）；部分客户熟悉传统项目计划，难以投入敏捷计划过程。</p><p>适用性：敏捷计划适合小型、稳定的开发团队，大家可以坐在一起讨论要实现的故事；团队很大、地理分布、成员频繁变动时，让所有人参与协作计划实际上不可能。</p><h3 id="s11">9.10 AI 与软件项目管理</h3><p>课件的第四节给出四个变化方向：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>方向</th><th>具体表现</th></tr><tr><td>增强的计划与估算</td><td>智能排期（分析历史数据、技能与资源可用性生成更现实的进度）；预测性分析（在延期、超支、资源短缺发生前预警）</td></tr><tr><td>任务自动化与效率</td><td>自动化的进度跟踪与状态更新、报告与文档生成、按技能与容量自动分配任务、用 NLP 做会议摘要与转写；AI 辅助编码（如 Copilot）、标记缺陷、自动化部分测试</td></tr><tr><td>改进的风险与资源管理</td><td>主动风险缓解（扫描项目文档、历史数据甚至外部市场状况，发现人可能忽略的风险；模拟 what-if 场景测试应急计划）；优化资源分配（实时可见的资源利用，匹配人与任务，平衡负载，防止倦怠或闲置）</td></tr><tr><td>项目经理角色转变</td><td>从管理者到战略者（重复任务自动化后，专注于干系人管理、教练团队、解决复杂冲突、推动创新）；数据驱动决策（用 AI 洞察与实时数据分析替代直觉与手工计算）</td></tr></table></div><h3 id="s12">9.11 估算：我们知道的与不知道的</h3><p>Jørgensen 的实证综述是本周阅读材料，它回答一个项目管理中最痛的问题：为什么估算总是不准？</p><p>开篇的事实：大量证据表明软件项目存在成本与工作量超支倾向，平均约 <b>30%</b>；把 1980 年代的估算精度与近期调查相比，精度<b>没有明显改善</b>；估算方法也没有大变——尽管有大量形式化估算模型研究，<b>主导方法仍是专家估算</b>（expert estimation）。</p><p>七条有充分证据支持的结论：</p><ol><li><b>没有「最好的」估算模型或方法</b>：不同研究里赢家各不相同；核心关系（如工作量与规模的关系）随情境而变，影响最大的变量也在变。因此公司应建立<b>自己的</b>估算模型，而不是指望通用模型在本地准确。</li><li><b>客户对低价的偏好是超支的主因</b>：在价格竞争激烈的情境（投标）中，低估尤其明显；在非价格竞争情境（内部开发）没有这种倾向，甚至相反。推论：低估的提案更容易中标，于是「赢家的诅咒」发生。</li><li><b>最小—最大区间太窄</b>：诸如 90% 置信区间，系统性偏窄，无法反映真实不确定性；PERT（三点估算）等方法仍假设人能给出可靠的最值。建议用<b>历史估算误差</b>来设定区间，而不是凭专家判断。</li><li><b>估算容易被误导，且很难从被误导中恢复</b>：所有估算都需要专家判断，而专家判断极易被<b>锚定</b>（estimation anchors）影响——在估算前或估算中知道预算、客户期望、可用时间，估算就会不自觉靠近这些锚；带倾向性的措辞（「这个又小又简单的项目要多少钱？」）也会误导。目前没有可靠方法中和这些偏差，唯一可行的是<b>不让估算者接触误导性信息</b>。</li><li><b>相关的历史数据与检查清单能提高精度</b>：当历史数据相关、清单按公司定制时，活动不易被遗漏，风险余量更可能被加入，经验更可能被复用；用类似项目做<b>类比估算</b>（analogy / reference class estimation）尤其有效。但许多公司两者都不用。</li><li><b>组合独立估算能提高精度</b>：不同来源估算的平均值通常比多数单个估算更准；关键假设是<b>独立性</b>（来源在专长、背景、估算过程上不同）。类似 Delphi 的过程——如<b>规划扑克</b>（Planning Poker），开发者同时亮出各自独立得出的估算——在软件估算中特别有用。群体过程还因知识共享而增值；「群体思维」与群体更高风险偏好的负面效应在软件估算中未被证实。</li><li><b>估算可能有害</b>：估算不仅预测未来，也经常影响未来。过低估算导致质量下降、后期返工、失败风险上升；过高估算则按<b>帕金森定律</b>（Parkinson’s law：工作会膨胀以填满可用时间）降低生产率。因此要问「是否真的需要估算」；若不需要或可推迟，等到信息更多时再估算更安全。敏捷只规划下一个冲刺或发布，正是避免过早估算之害的方式。</li></ol><p>三条「我们不知道」：</p><ul><li>如何准确估算<b>超大型复杂项目</b>：赌注更大，但相关经验与历史数据更少；这类项目的活动常涉及业务流程变更与复杂干系人互动，极难估算；</li><li>如何度量<b>软件规模与复杂度</b>以支持准确估算：多年研究提出的度量都不够好，能准确估算的情境似乎很少；</li><li>如何度量并预测<b>生产率</b>：即使有了规模与复杂度，还要预测个人或团队的生产率；开发者与团队之间的生产率差异常常大得惊人；除「真实编程测试」（trialsourcing）外没有好方法。此外，我们甚至不知道软件项目是<b>规模经济</b>还是<b>规模不经济</b>：多数实证研究支持规模经济，而实践者通常相信规模不经济，且研究结果很可能是分析方法造成的假象。</li></ul><p>综述给出的六条可执行建议：建立并使用贴合本地情境的简单模型，并与专家估算结合；用历史估算误差设定最小—最大区间；避免接触误导性与无关信息；使用按本组织定制的检查清单；使用保证估算独立性的结构化群体过程；避免基于高度不完整信息的早期估算。</p><div class="callout idea" data-ext="l09-project-management-and-planning-0"><b>背景</b><p>软件项目管理的特殊性源于三件事：产品无形，不能靠看工地判断进展，须用可交付物、度量与演示代替目视检查；多为一次性项目，历史模板不可照搬，要重新识别风险；过程多变且组织特定，只能靠度量与复盘建立本地基线。四条成功标准里有一条常被漏掉——维持连贯、运作良好的团队，所以按时交付但团队散了并不算完全成功。风险管理四步是识别、分析（概率乘严重性）、计划（避免、最小化、应急、转移）与监控，软件的不确定性来自需求松散、变更、估算难与个体技能差异。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 9，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>project management</td><td>项目管理</td><td>Ensuring software is delivered on time, on schedule and in accordance with requirements.</td></tr><tr><td>success criteria</td><td>成功标准</td><td>Agreed time, budget, customer expectations, coherent team.</td></tr><tr><td>intangible product</td><td>无形产品</td><td>Software cannot be seen or touched, so progress cannot be judged by looking at it.</td></tr><tr><td>project risk</td><td>项目风险</td><td>Risk affecting the schedule or resources.</td></tr><tr><td>product risk</td><td>产品风险</td><td>Risk affecting the quality or performance of the software.</td></tr><tr><td>business risk</td><td>业务风险</td><td>Risk affecting the organisation developing or procuring the software.</td></tr><tr><td>risk planning</td><td>风险计划</td><td>Avoidance, minimisation and contingency strategies for each risk.</td></tr><tr><td>contingency plan</td><td>应急计划</td><td>What to do if the risk actually arises.</td></tr><tr><td>people management</td><td>人员管理</td><td>Choosing people and establishing ways of working that lead to effective performance.</td></tr><tr><td>Maslow’s hierarchy</td><td>需求层次</td><td>Physiological, safety, belonging, esteem, self-actualisation needs.</td></tr><tr><td>project plan</td><td>项目计划</td><td>Resources, work breakdown and schedule; seven standard sections.</td></tr><tr><td>plan-driven development</td><td>计划驱动开发</td><td>The development process is planned in detail before work starts.</td></tr><tr><td>release planning</td><td>发布计划</td><td>Looks ahead several months and decides the features in a release.</td></tr><tr><td>effort estimation</td><td>工作量估算</td><td>Predicting effort; expert estimation still dominates practice.</td></tr><tr><td>planning poker</td><td>规划扑克</td><td>A Delphi-like process where estimators reveal independent estimates simultaneously.</td></tr><tr><td>winner’s curse</td><td>赢家的诅咒</td><td>The most optimistic bid wins, leading to overruns and lower quality.</td></tr></table></div></section>
+<section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写一张风险表</div><p>情境：某 5 人团队要在 4 个月内为一所学校做「选课与排课」系统，客户是教务处，学校 IT 只提供一台旧服务器，团队中只有一人懂排课算法。请识别 5 个风险，给出类别、概率、严重性、原因与应对。</p><p><b>分析：</b>先按五类清单扫一遍（技术、组织、人员、需求、估算），再为每个风险写「原因—事件—影响」。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 10，可横向滚动"><table><tr><th>风险</th><th>类别</th><th>概率 / 严重性</th><th>原因</th><th>应对</th></tr><tr><td>排课算法专家离职或病假</td><td>项目风险（人员）</td><td>中 / 严重</td><td>单点知识，无备份</td><td>避免：结对 + 文档化算法决策；应急：外部顾问名单</td></tr><tr><td>旧服务器性能不足，排课计算超时</td><td>产品风险（技术）</td><td>高 / 严重</td><td>硬件老旧，算法复杂度高</td><td>最小化：先做性能原型验证；应急：申请云资源或降低排课频次</td></tr><tr><td>教务处需求在开发中期大改（如增加走班制）</td><td>产品风险（需求）</td><td>高 / 严重</td><td>政策变化；客户未参与早期评审</td><td>避免：每两周演示 + 需求基线；应急：用范围置换而非延期</td></tr><tr><td>开发工作量低估（4 个月实际需 6 个月）</td><td>项目风险（估算）</td><td>高 / 严重</td><td>新团队、无历史数据</td><td>避免：用类比估算 + 规划扑克；应急：砍可选功能</td></tr><tr><td>学校 IT 无法提供接口文档</td><td>业务风险（组织）</td><td>中 / 可容忍</td><td>对方运维人力不足</td><td>最小化：提前约定接口清单与责任人；应急：用数据导入导出兜底</td></tr></table></div><p><b>要点：</b>每条风险都要有「应对」，且应对要区分避免（降概率）与应急（降影响）；只有「注意一下」不算风险计划。</p></div><div class="qa"><div class="q">例 2　规划扑克的正确做法</div><p>情境：团队 6 人要用规划扑克估算一个用户故事「学生可在线申请缓考」。请写出流程，并说明为什么不能先说出「大概 5 天」再让大家出牌。</p><p><b>流程：</b>① 产品负责人朗读故事并说明验收标准，团队提问澄清；② 每人私下选一张牌（斐波那契数列：1、2、3、5、8、13…），<b>同时</b>亮牌；③ 若数值差异大，请最大与最小者各说明理由（尤其是低值者的隐含假设与高值者看到的风险）；④ 澄清后重新出牌；⑤ 重复至收敛，取共识值；⑥ 记录该故事的估算与讨论要点（作为后续类比估算的依据）。</p><p><b>为什么不能先说数字：</b>因为那会成为<b>估算锚点</b>。Jørgensen 指出，人在估算前或估算中知道预算、期望或其他数值，会不自觉地把估算拉向该值；且一旦被锚定，很难通过讨论完全恢复。同时亮牌保证估算<b>独立</b>，而独立估算的平均值通常比单个估算更准。</p><p><b>常见错误：</b>让最资深的人先出牌（锚定）；只取平均而不讨论分歧（丢掉分歧背后的信息）；把故事点当工时（故事点是相对度量）。</p></div><div class="qa"><div class="q">例 3　估算区间与承诺</div><p>情境：团队历史数据显示，过去 10 个项目的实际工作量相对估算的中位偏差为 +35%，且偏差分布很宽（−10% 到 +120%）。本次估算为 200 人日。客户要求「给出 90% 把握的上限」。请给出一个务实的回答，并说明为什么不能用「200 × 1.1」。</p><p><b>分析：</b>先看历史：中位偏差 +35% 说明系统性低估；分布很宽说明不确定性大。用历史误差设定区间，而不是用专家的乐观判断（这正是 Jørgensen 的建议）。</p><p><b>计算：</b>若按中位偏差校正，期望值约为 200 × 1.35 = 270 人日；90% 上限应取历史分布的高分位，而不是中位数。若历史上有 1/10 的项目超过 +120%，则 90% 上限至少应覆盖 200 × 2.2 = 440 人日这一量级。</p><p><b>为什么不能用 200 × 1.1：</b>因为 1.1 是一个「乐观的、凭感觉的」缓冲，既没有覆盖系统性低估（+35%），也没有覆盖尾部风险（+120%）；PERT 式三点估算同样常给出过窄区间。</p><p><b>回答方式：</b>「按历史数据，50% 把握约 270 人日，90% 把握约 440 人日；若必须承诺一个日期，建议以 270 为计划值，并把范围裁剪到 270 能覆盖的部分。」这既诚实又可执行。</p></div><div class="qa"><div class="q">例 4　敏捷计划与「日期不减」</div><p>情境：某团队 2 周一个冲刺，velocity 约 30 点。发布计划承诺 6 个冲刺交付 12 个特性（共 200 点）。到第 3 个冲刺末，只完成 70 点，客户要求「加人赶工，日期不变」。请给出你的处理方案。</p><p><b>分析：</b>先算现实：3 个冲刺完成 70 点 → velocity ≈ 23 点/冲刺，而非 30。剩余 3 个冲刺可完成约 69 点，合计约 139 点，距 200 点差 61 点。</p><p><b>处理：</b>① 按「范围可减、日期不减」原则，与客户按优先级裁剪约 60 点（约 3–4 个低优先级特性），把发布内容调整为 140 点左右；② 「加人」在敏捷里通常短期降低 velocity（新人需要带教、沟通成本上升），不应作为主要手段；③ 分析 velocity 下降原因（是否技术债、是否故事拆分过大、是否环境不稳定），并在回顾中改进；④ 把被裁剪的特性移入下一次发布，并明确新的发布计划。</p><p><b>考点：</b>这道题同时考 velocity 计算、范围/日期权衡、以及「加人不能线性加速」的工程常识（《人月神话》的经验，课件未直接提，但逻辑一致）。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>项目管理的四条成功标准是什么？为什么「团队状态」也算成功标准？</li><li>风险分类的两个维度是什么？各举一例。</li><li>为一个「关键供应商倒闭」的风险写出避免、最小化、应急三套策略。</li><li>Maslow 的五层需求分别对应软件团队的什么管理动作？</li><li>计划驱动的项目计划包含哪七个部分？为什么计划必须是迭代的？</li><li>release planning 与 iteration planning 的区别是什么？「范围可减、日期不减」的含义是什么？</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 按时交付、成本在预算内、满足客户期望、维持连贯且运作良好的团队。因为项目是由人完成的；若交付后团队瓦解、知识流失，组织长期交付能力受损，下一项目会为此付出代价。</p><p><b>2.</b> 维度一：风险类型（技术、组织等）；维度二：受影响对象（项目/产品/业务）。例：技术类项目风险「采用新框架导致开发延期」；组织类业务风险「客户预算被削减」。</p><p><b>3.</b> 避免：合同中要求源码托管（escrow）与至少 5 年支持承诺；最小化：把该构件的接口封装在适配层，便于替换；应急：预先评估两个替代供应商并保留迁移脚本。</p><p><b>4.</b> 生理——保证工具、设备、环境；安全——清晰期望、一致反馈、明确计划与风险管理；归属——协作文化、开放沟通、认可贡献；尊重——成长机会、奖励、建设性反馈、授权；自我实现——挑战性任务、创新空间、职业发展。</p><p><b>5.</b> 引言、项目组织、风险分析、资源需求、工作分解、项目进度、监控与报告机制。因为信息随项目推进而增加，业务目标也会变化，计划不修订就会迅速失真。</p><p><b>6.</b> 发布计划看数月、决定一次发布包含哪些特性；迭代计划看 2–4 周、决定下一增量。含义是：当功能做不完时，减内容而不推迟交付日；这样交付节奏可预测，范围成为变量。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>四条成功标准、三个特殊性、三类风险、风险管理四步、七段项目计划、release/iteration planning、范围可减日期不减、估算的 30% 平均超支与七条结论。</div><div class="callout warn"><b>易错 1</b>把「风险」写成「问题」。风险是尚未发生的事件；已发生的是问题，进入问题管理而非风险管理。</div><div class="callout warn"><b>易错 2</b>把「避免」与「最小化」混用。避免降低发生概率，最小化降低影响。</div><div class="callout warn"><b>易错 3</b>认为敏捷不需要计划。课件明确：敏捷也需要启动计划以分配资源，只是增量功能不预先计划。</div><div class="callout warn"><b>易错 4</b>把估算区间当成承诺。区间表达不确定性；承诺需要范围与日期的显式权衡。</div><div class="callout tip"><b>进阶</b>能引用「赢家的诅咒」解释为什么投标越低越容易中标却越容易失败，并提出「客户少看价格多看能力」的对策，是本讲最能体现深度的一笔。</div></section>
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s13">做项目计划的清单</h2><ol class="steps"><li>写清四条成功标准，并与客户确认优先级（时间/成本/范围/质量）</li><li>按五类清单识别风险，每条写「原因—事件—影响」</li><li>为每个风险标概率与严重性，并写避免/最小化/应急三套策略</li><li>做工作分解，标注依赖与检查点（前置/后置条件）</li><li>估算用两种独立方法交叉验证（类比 + 规划扑克）</li><li>用历史误差设定最小—最大区间，不用感觉设缓冲</li><li>选计划方式：计划驱动（详细前置）或敏捷（release + iteration）</li><li>约定交付规则：范围可减、日期不减；变更走范围置换</li><li>定义监控与报告机制：进度、velocity、缺陷、风险复评节奏</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p4–p8</td><td>项目管理定义、四条成功标准、三个特殊性、六个影响因素、五类管理活动</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p9–p16</td><td>风险管理定义与不确定性来源、三类风险、四步流程、识别清单、分析与计划、what-if、监控</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p17–p23</td><td>人员管理原则、激励、Maslow 五层、三种人格类型</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p24–p35</td><td>项目计划定义与三阶段、定价、计划驱动优缺点、七段计划、迭代计划过程、现实假设与应急、风险缓解与重新计划</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p36–p40</td><td>敏捷计划、release/iteration planning、交付规则、困难与适用性</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p41–p44</td><td>AI 与项目管理四个方面</td></tr><tr><td>What we do and dont know about software development effort estimation. .pdf</td><td>p1–p4</td><td>30% 平均超支、专家估算主导、七条已知结论、三条未知、六条建议、赢家的诅咒</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>风险表示例与 velocity 计算属应用性练习，不引入新考点</td></tr></table></section><div class="lnav"><a class="prev" href="l08-evolution-and-maintenance.html">← 第 8 讲 · 软件演化、维护与遗留系统</a><a class="next" href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理 →</a></div></article></div>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 11，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p4–p8</td><td>项目管理定义、四条成功标准、三个特殊性、六个影响因素、五类管理活动</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p9–p16</td><td>风险管理定义与不确定性来源、三类风险、四步流程、识别清单、分析与计划、what-if、监控</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p17–p23</td><td>人员管理原则、激励、Maslow 五层、三种人格类型</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p24–p35</td><td>项目计划定义与三阶段、定价、计划驱动优缺点、七段计划、迭代计划过程、现实假设与应急、风险缓解与重新计划</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p36–p40</td><td>敏捷计划、release/iteration planning、交付规则、困难与适用性</td></tr><tr><td>18_Week 12/1_SE - Lecture 9 - 2026.pdf</td><td>p41–p44</td><td>AI 与项目管理四个方面</td></tr><tr><td>What we do and dont know about software development effort estimation. .pdf</td><td>p1–p4</td><td>30% 平均超支、专家估算主导、七条已知结论、三条未知、六条建议、赢家的诅咒</td></tr><tr><td>（跳过）</td><td>—</td><td>本周无纯图片或行政页需跳过</td></tr><tr><td>（补充）</td><td>—</td><td>风险表示例与 velocity 计算属应用性练习，不引入新考点</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l08-evolution-and-maintenance.html"><span>上一讲</span><strong>第 8 讲 · 软件演化、维护与遗留系统</strong></a><a data-sequence="parent" href="part-3.html"><span>返回目录</span><strong>第 3 章 测试、演化与项目管理</strong></a><a data-sequence="next" href="l10-quality-and-configuration-management.html"><span>下一讲</span><strong>第 10 讲 · 软件质量与配置管理</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

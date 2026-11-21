@@ -13,19 +13,82 @@
 - `review.html` — 期末总复习考点提醒清单（可勾选，进度存在浏览器 localStorage）
 - `extend.html` — 知识拓展汇总页：全站「拓展框」与 mapping 补充条目按课程集中，点击回讲次
 - `all.html` — 全站合订本，所有讲次连排，适合打印/通读
+- `c/<课程ID>/reader.html` — 单门课合订本，减少一次加载的内容
 - `upload.html` — 实时资料上传中心：支持按「课程 → 章节」上传 PDF/PPTX/DOCX/图片/代码文件或撰写 Markdown 补充笔记
 
 ## 在线托管与实时更新（GitHub Pages + Supabase）
 
 - 本仓库已配置 `.github/workflows/deploy.yml`：每次推送到 `main` 分支自动校验、构建并部署到 GitHub Pages。
 - 每个课程页（`c/<课程ID>/index.html`）、章节页（`c/<课程ID>/part-N.html`）以及 `upload.html` 都内置了章节资料上传与实时展示面板。
-- 开启全员免登录实时同步只需 2 分钟，详见 [SETUP_REALTIME.md](SETUP_REALTIME.md)。
+- 云端配置与只读连接检查详见 [SETUP_REALTIME.md](SETUP_REALTIME.md)。未配置项目时仅保存到本机，配置字段默认留空。
 
-全站右上角 `◐` 按钮切换配色（跟随系统 → 浅色 → 深色）；每讲正文上方有八个板块的快捷跳转条。
+全站右上角 `◐` 按钮切换配色。各模块统一使用「顶部模块导航 → 当前位置 → 页面目录 → 正文」的导航结构。
+
+### 统一导航与讲义阅读界面
+
+- 顶部始终按相同顺序显示「课程总览 / 期末考点清单 / 知识拓展 / 全站合订本 / 上传资料」，当前模块有底线和加粗标记；手机端完整换行显示。
+- 所有页面共用同一种「页面目录」：桌面显示在左侧，屏宽不超过 980px 时收为可展开的吸顶按钮。编号、缩进、展开箭头、键盘操作和阅读位置高亮一致。
+- 课程、章节和讲义页共享相同的课程树。面包屑完整显示「课程总览 → 课程 → 章节 → 讲义」；「本页内容」用于页内定位，「课程目录」用于打开其他页面，当前页显示文字标记。点击文字跳转，点击右侧箭头展开子目录。
+- 讲义的八个板块、知识点小节，以及合订本和拓展页目录均归入统一目录；章节与讲义页共用「上一章/讲 → 返回目录 → 下一章/讲」导航。
+- 首页全文搜索覆盖正文、术语、例题与折叠答案，可按课程/板块筛选；摘要高亮并链接到真实小节。查询保留在地址栏，离线直接打开也可搜索。
+- 讲义页集中显示课程、讲次、章节和中英文标题；原始文件清单可展开查看。
+- 宽表格在独立区域横向滚动，键盘用户可通过 Tab 聚焦后使用方向键滚动。
+- 界面继续支持离线打开、浅色/深色配色及系统减少动态效果设置。
+
+导航由 `site_navigation.py` 统一生成，交互来自 `assets/navigation.js`（构建时内联，无需 CDN）。修改源码后运行 `python build.py` 更新生成的 HTML。验证命令：
+
+```bash
+python -m unittest discover -s tests -v
+python build.py --check
+```
+
+### 学习记录、阅读与错题
+
+- 讲义有「未开始 / 学习中 / 待复习 / 已掌握」四种状态，与复习页勾选及课程进度共用记录；首页提供继续学习入口。
+- 自动保存上次阅读小节；整理正文发生变化后保留学习状态，并提示重新定位。字号、行距和专注模式也可保存。
+- 支持复制代码、键盘打开图片大图、Esc 关闭；练习提供逐题自评与收藏，首页可筛选错题/待重做/收藏并回到原题。练习不自动判分。
+- 记录保存在 `lut-learning-v1`，兼容原 `lut-review-v1`，不清空旧记录。首页支持导出 JSON 备份与合并导入；保存失败会提示。不同浏览器不会自动同步个人记录，跨设备请导出/导入。
+- 讲义来源面板显示真实登记的版本、核对日期和附件；未知项显示「未记录 / 未附原文件」。不使用生成日期代替复核日期。
+
+### 资料来源与图片维护
+
+真实来源可登记到 `data/source-metadata.json`，键为 `<课程ID>/<讲义slug>`：
+
+```json
+{
+  "version": 1,
+  "lectures": {
+    "COURSE/LECTURE": {
+      "source_version": "原文件标注的版本",
+      "reviewed_at": "2026-11-21",
+      "sources": [{"name": "original.pdf", "path": "sources/COURSE/original.pdf", "page": 3}]
+    }
+  }
+}
+```
+
+示例键需换成实际讲义，日期填实际核对日期；`path` 必须指向仓库内存在的 `sources/` 或 `uploads/` 文件，或改用 HTTPS `url`。只有 PDF 登记页码时才生成 `#page=N`。不自动发布工作区外的原始资料。
+
+`assets/media-manifest.json` 记录原图 SHA256、预览尺寸与大小。生成页使用优化预览及固有尺寸，并保留大图原件入口；原图不覆盖。更新图片后执行 `python tools/optimize_media.py`（需要 Pillow），再构建。
+
+### 自动检查
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m playwright install chromium
+python -m unittest discover -s tests -p "test_*.py" -v
+node --test tests/*.test.cjs
+python build.py --check
+python build.py
+python tools/check_site.py
+python tests/browser_smoke.py
+```
+
+CI 在部署前执行单元、链接/媒体与浏览器检查。浏览器检查覆盖 320/768/1024/1440 宽度，验证搜索、记录、阅读、错题、本地发布与模拟服务读写；模拟服务通过不表示真实云端已启用。详细契约见 [docs/LEARNING_UPGRADE.md](docs/LEARNING_UPGRADE.md)。
 
 ## 规模
 
-15 门课 · 67 章 · 132 讲。每讲固定 8 个板块：
+15 门课 · 68 章 · 133 讲。每讲固定 8 个板块：
 
 `overview`（本节定位与学习目标）→ `detail`（知识点主体）→ `keywords`（英文术语表）→ `examples`（例题与完整解法）→ `practice`（练习，答案折叠）→ `exam`（必考 / 易错 / 进阶）→ `checklist`（方法清单）→ `mapping`（与原始文件的对应）。
 

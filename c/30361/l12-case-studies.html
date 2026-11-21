@@ -8,204 +8,362 @@
 <title>第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise · 30361</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --radius:12px;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --radius:14px;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --measure:68rem;
+  --topbar-height:86px;
+  --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-    --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-    --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-    --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-    --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-    --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-    --callout-bg:#222a34; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-    --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+    --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+    --callout-bg:#212933; --callout-line:#3c4856;
+    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f5f7fa; --fg:#1d232a; --muted:#5d6875; --line:#e3e8ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd;
-  --ok:#1a7f4b; --ok-soft:#e7f6ed; --warn:#a9611a; --warn-soft:#fdf2e4;
-  --bad:#ad2f2a; --bad-soft:#fdecea; --purple:#6b4ec9; --purple-soft:#f0ecfd;
-  --code-bg:#eef1f5; --code-fg:#243044; --pre-bg:#1f2430; --pre-fg:#e8ecf3;
-  --th-bg:#f2f5f9; --th-fg:#33404f; --even-bg:#fafbfd;
-  --callout-bg:#f2f5f9; --callout-line:#b9c3cf;
-  --ov-bg:linear-gradient(180deg,#f7faff,#ffffff); --ov-line:#d6e4fb;
-  --map-bg:#fbfcfd; --map-fg:#3a4654; --chip-bg:#eef1f5; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fdfefe; --detail-bg:#fbfcfe;
+  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
+  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
+  --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
+  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
+  --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
+  --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
+  --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
+  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
+  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
+  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#14181e; --fg:#dbe2ea; --muted:#8b96a5; --line:#2a323d;
-  --card:#1b2129; --accent:#5b9bf0; --accent-soft:#20304a;
-  --ok:#4bbf83; --ok-soft:#1c2f26; --warn:#d99a4e; --warn-soft:#33291c;
-  --bad:#e2726b; --bad-soft:#36201f; --purple:#9c86e8; --purple-soft:#282440;
-  --code-bg:#242c37; --code-fg:#c6d2e0; --pre-bg:#0f1319; --pre-fg:#dbe2ea;
-  --th-bg:#222a34; --th-fg:#dbe2ea; --even-bg:#1e242d;
-  --callout-bg:#222a34; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1c2330,#1b2129); --ov-line:#2c3d58;
-  --map-bg:#1a2027; --map-fg:#a9b4c2; --chip-bg:#242c37; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(20,24,30,.92); --qa-bg:#1d242d; --detail-bg:#1e242d;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
+  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
+  --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
+  --callout-bg:#212933; --callout-line:#3c4856;
+  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
+  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
+  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
 }
-code{background:var(--code-bg);color:var(--code-fg)}
-pre{background:var(--pre-bg);color:var(--pre-fg)}
-th{background:var(--th-bg);color:var(--th-fg)}
-tbody tr:nth-child(even){background:var(--even-bg)}
-.callout{background:var(--callout-bg);border-left-color:var(--callout-line)}
-section[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
-section[data-type="mapping"]{background:var(--map-bg);color:var(--map-fg)}
-.chip,.badge.mute{background:var(--chip-bg);color:var(--chip-fg)}
-details{background:var(--detail-bg);border-color:var(--line)}
-.topbar{background:var(--topbar-bg)}
-.qa{background:var(--qa-bg)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
 body{margin:0;background:var(--bg);color:var(--fg);
-  font:16px/1.8 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased}
+  font:16.5px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;font-size:.92em}
-code{background:#eef1f5;padding:.1em .38em;border-radius:5px;color:#243044}
-pre{background:#1f2430;color:#e8ecf3;padding:14px 16px;border-radius:10px;overflow:auto;line-height:1.6}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+code,kbd,pre,samp{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace}
+code,kbd,samp{font-size:.9em}
+code{background:var(--code-bg);padding:.1em .4em;border-radius:5px;color:var(--code-fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:15px 18px;border-radius:11px;overflow:auto;line-height:1.65;font-size:.92em;border:1px solid var(--line)}
 pre code{background:none;color:inherit;padding:0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1220px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:17px;color:var(--fg)}
-.crumb{color:var(--muted);font-size:13.5px}
-.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 60px}
-.foot{max-width:1220px;margin:0 auto;padding:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-h1{font-size:28px;line-height:1.4;margin:.2em 0 .35em}
-h2{font-size:21px;margin:1.6em 0 .5em;padding-left:11px;border-left:4px solid var(--accent)}
-h3{font-size:17.5px;margin:1.3em 0 .4em}
-h4{font-size:16px;margin:1.1em 0 .3em;color:#33404f}
+kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.navigation-ready .topbar{position:sticky}
+.topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
+.brand{font-weight:800;font-size:17px;color:var(--fg);letter-spacing:.01em}
+.brand:hover{text-decoration:none;color:var(--accent)}
+.skip-link{position:fixed;inset-block-start:-100px;inset-inline-start:16px;z-index:100;
+  padding:10px 16px;background:var(--card);color:var(--accent);border:2px solid currentColor;border-radius:8px}
+.skip-link:focus{inset-block-start:8px}
+.page-content :focus-visible,.page-side :focus-visible,.breadcrumbs :focus-visible,.topbar :focus-visible,.skip-link:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- 页面骨架 ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding:26px 24px 64px}
+.foot{max-width:1320px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+h1{font-size:30px;line-height:1.38;margin:.15em 0 .4em;letter-spacing:-.01em}
+h2{font-size:21.5px;line-height:1.5;margin:1.5em 0 .55em;position:relative;padding-left:13px}
+h2::before{content:"";position:absolute;left:0;top:.14em;bottom:.14em;width:4.5px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple))}
+h3{font-size:17.5px;margin:1.35em 0 .45em;color:var(--fg)}
+h3::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:9px;
+  background:var(--accent);opacity:.55;transform:rotate(45deg) translateY(-1px)}
+h4{font-size:16px;margin:1.1em 0 .3em;color:var(--th-fg)}
 p{margin:.55em 0}
-ul,ol{margin:.5em 0 .7em;padding-left:1.5em}
-li{margin:.25em 0}
+ul,ol{margin:.5em 0 .75em;padding-left:1.55em}
+li{margin:.28em 0}
+li::marker{color:var(--accent)}
+strong,b{font-weight:650}
+hr{border:none;border-top:1px dashed var(--line);margin:1.4em 0}
 .lead{color:var(--muted);font-size:15.5px;margin:.2em 0 1.2em}
 .sub{color:var(--muted);font-size:14px}
+
+/* ---------- 卡片（八段结构） ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 24px;margin:0 0 20px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
+  padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow)}
 section[data-type],.card[data-type]{background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px 22px;margin:0 0 18px;box-shadow:0 1px 2px rgba(20,30,45,.04)}
-section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.1em}
-section[data-type="overview"],.card[data-type="overview"]{background:linear-gradient(180deg,#f7faff,#ffffff);border-color:#d6e4fb}
+  border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
+  scroll-margin-top:86px}
+section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
+/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+section[data-type]::before,.card[data-type]::before{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  padding:3px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
 section[data-type="checklist"],.card[data-type="checklist"]{border-left:4px solid var(--ok)}
 section[data-type="practice"],.card[data-type="practice"]{border-left:4px solid var(--warn)}
 section[data-type="examples"],.card[data-type="examples"]{border-left:4px solid var(--accent)}
-section[data-type="mapping"],.card[data-type="mapping"]{background:#fbfcfd;font-size:14.5px;color:#3a4654}
-.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 9px;border-radius:99px;
-  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
-.badge.ok{background:var(--ok-soft);color:var(--ok)}
-.badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge.bad{background:var(--bad-soft);color:var(--bad)}
-.badge.mute{background:#eef1f5;color:var(--muted)}
-.chip{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:#eef1f5;
-  color:#38445a;margin:3px 6px 3px 0;font-family:Consolas,monospace}
-table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.6px}
-th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
-th{background:#f2f5f9;font-weight:600}
-tbody tr:nth-child(even){background:#fafbfd}
-.callout{border-radius:10px;padding:12px 16px;margin:.9em 0;background:#f2f5f9;border-left:4px solid #b9c3cf}
+section[data-type="mapping"],.card[data-type="mapping"]{background:var(--map-bg);font-size:14.5px;color:var(--map-fg)}
+section[data-type="mapping"]::before{color:var(--muted);background:var(--chip-bg)}
+
+/* ---------- 表格 ---------- */
+table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:14.6px;line-height:1.6}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--th-bg);color:var(--th-fg);font-weight:650;white-space:nowrap}
+tbody tr{transition:background-color .12s}
+tbody tr:nth-child(even){background:var(--even-bg)}
+tbody tr:hover{background:var(--accent-soft)}
+section[data-type="keywords"] table td:first-child{font-weight:600}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:11px;padding:13px 17px;margin:1em 0;background:var(--callout-bg);border-left:4px solid var(--callout-line)}
 .callout.exam{background:var(--bad-soft);border-left-color:var(--bad)}
 .callout.tip{background:var(--ok-soft);border-left-color:var(--ok)}
 .callout.warn{background:var(--warn-soft);border-left-color:var(--warn)}
 .callout.idea{background:var(--purple-soft);border-left-color:var(--purple)}
-.callout b:first-child{display:block;margin-bottom:2px}
+.callout b:first-child{display:block;margin-bottom:3px}
+.callout.tip>b:first-child::before{content:"💡 "}
+.callout.warn>b:first-child::before{content:"⚠️ "}
+.callout.exam>b:first-child::before{content:"🎯 "}
+.callout.idea>b:first-child::before{content:"🔍 "}
+.callout>b:first-child::before{content:"📌 "}
+
+/* ---------- 徽标 / 胶囊 ---------- */
+.badge{display:inline-block;font-size:12px;line-height:1.7;padding:0 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;margin-right:6px;vertical-align:2px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.mute{background:var(--chip-bg);color:var(--muted)}
+.badge.purple{background:var(--purple-soft);color:var(--purple)}
+.chip{display:inline-block;font-size:13px;padding:2.5px 11px;border-radius:99px;background:var(--chip-bg);
+  color:var(--chip-fg);margin:3px 6px 3px 0;font-family:Consolas,monospace}
+.chip:hover{color:var(--accent);text-decoration:none}
+
+/* ---------- 例题 / 练习 / 折叠 ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin:1em 0;background:var(--qa-bg);
+  box-shadow:var(--shadow)}
+.qa .q{font-weight:650}
+.qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
+details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
+details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:.45em}
+details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
-.checklist li{position:relative;padding-left:28px;margin:.4em 0}
+.checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
 .steps{counter-reset:st;list-style:none;padding-left:0}
-.steps li{position:relative;padding-left:34px;margin:.45em 0}
-.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.15em;
-  width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+.steps li{position:relative;padding-left:35px;margin:.5em 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:.13em;
+  width:23px;height:23px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
   display:flex;align-items:center;justify-content:center;font-weight:700}
-.qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:.9em 0;background:#fdfefe}
-.qa .q{font-weight:600}
-details{border:1px dashed #ccd5e0;border-radius:10px;padding:8px 14px;margin:.7em 0;background:#fbfcfe}
-details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none}
-details[open] summary{margin-bottom:.4em}
-details .ans{border-top:1px dashed #d8e0ea;margin-top:.5em;padding-top:.5em}
-.lec{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
-.lec .side{position:sticky;top:66px}
-.toc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
-  max-height:calc(100vh - 110px);overflow:auto;font-size:14.4px}
-.toc .toc-t{font-weight:700;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
-.toc a{display:block;padding:3px 0;color:#3c4855}
-.toc a:hover{color:var(--accent)}
-.toc-l3{padding-left:14px !important;font-size:13.6px;color:#68737f !important}
-@media(max-width:960px){.lec{grid-template-columns:1fr}.lec .side{position:static}.toc{max-height:none}}
-.lnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-.lnav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14.5px}
-.lnav a.next{text-align:right}
-.src{font-size:13.4px;color:var(--muted)}
-.src code{font-size:12.6px}
+
+/* ---------- 图片 ---------- */
+img{max-width:100%;height:auto;border-radius:10px}
+a img{text-decoration:none}
+figure{margin:1.1em 0;text-align:center}
+figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
+.imggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:1em 0}
+.imggrid img{width:100%;display:block;border:1px solid var(--line);background:#fff;
+  transition:transform .15s,box-shadow .15s}
+.imggrid img:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.imgcap{font-size:12.5px;color:var(--muted);text-align:center;padding:5px 2px 0}
+
+/* ---------- 全站统一目录与页面布局 ---------- */
+.page-layout{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:2rem;align-items:start}
+.page-content{min-width:0;overflow-wrap:anywhere}
+.page-side{position:sticky;top:calc(var(--topbar-height) + 16px);min-width:0}
+.page-directory{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  display:flex;flex-direction:column;max-height:calc(100vh - var(--topbar-height) - 32px);
+  max-height:calc(100dvh - var(--topbar-height) - 32px);box-shadow:var(--shadow)}
+.directory-heading{padding:1rem;margin:0;font-size:.875rem;font-weight:700}
+.navigation-ready .directory-heading{display:none}
+.directory-toggle{display:flex;align-items:center;gap:.5rem;width:100%;min-height:3.25rem;
+  padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
+  border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
+.directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
+#directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
+.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.6}
+.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-group-title:not(:first-child){margin-block-start:.5rem}
+.directory-list{list-style:none;margin:0;padding:0}
+.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
+.directory-row{display:flex;align-items:stretch;min-width:0}
+.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
+.directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.directory-link.ancestor{font-weight:650}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
+.page-directory [hidden]{display:none}
+.directory-tree[data-scrollspy]{scroll-target-group:auto}
+.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+  border-inline-start-color:var(--accent);font-weight:650}
+.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
+.sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
+.sequence-nav [data-sequence="parent"]{text-align:center}
+.sequence-nav [data-sequence="next"]{text-align:end}
+.sequence-nav span span,.sequence-nav a>span{display:block;font-size:.75rem;color:var(--muted);margin-block-end:.375rem}
+.sequence-nav strong{display:block;font-size:.8125rem;font-weight:600}
+.sequence-disabled{color:var(--muted);background:var(--detail-bg)}
+.related-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem 1.5rem}
+.related-nav a{padding:.5rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:.8125rem}
+.related-nav a:hover{border-color:var(--accent);text-decoration:none}
+.breadcrumbs{font-size:.8125rem;color:var(--muted);margin-block:0 1.25rem}
+.breadcrumbs ol{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem 0;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:baseline;min-width:0;margin:0}
+.breadcrumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.breadcrumbs [aria-current="page"]{color:var(--fg);font-weight:650;overflow-wrap:anywhere}
+.breadcrumb-separator{margin-inline:.625rem;color:var(--muted);flex-shrink:0}
+:where(.topbar,.page-side,.page-content,.breadcrumbs) :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:980px){
+  .page-layout{display:block}
+  .page-side{position:static;top:calc(var(--topbar-height) + 8px);z-index:20;margin-block-end:1rem}
+  .navigation-ready .page-side{position:sticky}
+  .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
+  .page-content{margin-block-start:1rem}
+}
+.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
+.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
+.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head .chaptertag{margin:0;font-size:.8125rem}
+.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
+.lecture-sources .src{margin:.625rem 0 0}
+.lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
+.lecture-page :is(h2,h3){scroll-margin-top:0}
+.lecture-page pre{max-inline-size:100%;overflow-wrap:normal;tab-size:4}
+.table-scroll{max-inline-size:100%;overflow:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px;
+  scrollbar-width:thin}
+.table-scroll table{margin:0;min-inline-size:28rem;border-style:hidden}
+.table-scroll:focus-visible{outline-offset:2px}
+.src{font-size:13.2px;color:var(--muted)}
+.src code{font-size:12.4px;word-break:break-all}
+
+/* ---------- 总览页组件 ---------- */
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;line-height:1.3}
 .stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #ccd5e0;border-radius:10px;
+.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
   font-size:15px;background:var(--card);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
+  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
 .ccard h3{margin:.1em 0 .3em}
 .ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
 .lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #f0f3f7;display:flex;gap:8px;justify-content:space-between}
+.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
 .lec-list li:first-child{border-top:none}
 .lec-list .t{flex:1}
 .lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
-.navlink{font-size:13.5px;font-weight:600;color:var(--bad);background:var(--bad-soft);
-  padding:3px 12px;border-radius:99px}
-.navlink:hover{text-decoration:none;filter:brightness(.96)}
-.navlink.ext{color:var(--purple);background:var(--purple-soft)}
-.navlink.alt{color:var(--accent);background:var(--accent-soft)}
-.navlink.up{color:var(--ok);background:var(--ok-soft)}
-.badge.purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ---------- 全站统一模块导航 ---------- */
+.global-nav{display:flex;gap:.25rem;align-items:center;min-width:0}
+.navlink{display:flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.375rem .75rem;
+  border:1px solid transparent;border-block-end:3px solid transparent;border-radius:7px;
+  font-size:.8125rem;font-weight:500;white-space:nowrap;color:var(--muted);background:transparent}
+.navlink:hover{color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.navlink[aria-current]{color:var(--accent-deep);background:var(--accent-soft);border-block-end-color:var(--accent);font-weight:700}
 .thbtn{margin-left:auto;font-size:16px;line-height:1;padding:4px 11px;border-radius:99px;
   border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .thbtn:hover{color:var(--accent);border-color:var(--accent)}
 .thbtn .th-light,.thbtn .th-dark{display:none}
-/* meta 未覆盖（跟随系统）时显示 ◐；显式浅色显示 ☀；显式深色显示 ☾ */
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-sys,
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-sys{display:none}
 :root:has(>head>meta[name="color-scheme"][content="light"]) .thbtn .th-light{display:inline}
 :root:has(>head>meta[name="color-scheme"][content="dark"]) .thbtn .th-dark{display:inline}
 sup,sub{line-height:0;font-size:.78em}
-.snavs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0 18px}
-.snav{font-size:12.8px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.snav:hover{text-decoration:none;filter:brightness(.94)}
-.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:10px;padding:6px 14px;margin:10px 0}
-.extidea .callout{margin:.3em 0}
+
+/* ---------- 阅读进度 & 回到顶部（JS 注入） ---------- */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:0 3px 3px 0;
+  transition:width .08s linear}
+#btt{position:fixed;right:22px;bottom:26px;z-index:55;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:17px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow-lift);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .2s,transform .2s,visibility .2s}
+#btt.show{opacity:1;visibility:visible;transform:none}
+#btt:hover{border-color:var(--accent)}
+
+/* ---------- 知识拓展页 ---------- */
+.extidea{border-left:4px solid var(--purple);background:var(--card);border-radius:11px;padding:6px 15px;margin:11px 0;
+  box-shadow:var(--shadow)}
+.extidea .callout{margin:.35em 0}
 .extsrc{font-size:13px;color:var(--muted)}
-.totop{margin-left:10px}
-@media(max-width:760px){.snavs{top:88px}}
+.totop{margin-left:10px;color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- 考点清单 / 合订本 / 上传中心 ---------- */
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
-  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+  border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
 .ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #f2f5f9}
+.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
 .ticklist input{margin-top:.35em}
@@ -223,38 +381,36 @@ sup,sub{line-height:0;font-size:.78em}
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #f2f5f9}
+.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
 .chapters-tick>li:first-child{border-top:none}
 .chapters-tick .qp{font-weight:600;font-size:13.6px}
-.allpart{font-size:19px;margin:30px 0 8px;padding-left:11px;border-left:4px solid var(--accent)}
+.allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 20px;margin:22px 0 0}
+  padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.alltoc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px 22px;margin:0 0 26px}
-.alltoc ol.steps{margin:.4em 0 0}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d6e4fb;
+.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
-.allcourse h1{margin:.1em 0}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
 .revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
 .stat b#tickprog{font-size:16px}
-/* Real-time Chapter Materials & Upload UI */
+
+/* ---------- 实时资料 & 上传 UI ---------- */
 .mat-panel{border-left:4px solid var(--ok)}
 .mat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mat-head h2{margin:0;border-left:none;padding-left:0}
+.mat-head h2::before{display:none}
 .mat-sub,.mat-hub-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .mat-live-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--ok-soft);color:var(--ok)}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -265,7 +421,7 @@ sup,sub{line-height:0;font-size:.78em}
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
   border-radius:8px;background:var(--card);color:var(--fg);width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
-.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:10px;padding:22px 16px;
+.mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
   text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
@@ -286,19 +442,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
 .mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px}
+.mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--qa-bg)}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
 .mat-item-main{flex:1;min-width:220px}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
 .mat-item-meta{font-size:12.6px;color:var(--muted)}
 .mat-item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,24,.65);
+.mat-modal{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.62);
   display:none;align-items:center;justify-content:center;padding:20px}
 .mat-modal.open{display:flex}
-.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;
+.mat-modal-box{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:15px;
   width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .mat-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
 .mat-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
@@ -308,43 +464,378 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-preview-img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
 .mat-meta-line{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .mat-md-view{line-height:1.8}
+
+/* ---------- 深色下的局部修正 ---------- */
+@media (prefers-color-scheme:dark){
+  .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+  .imggrid img{background:#0e1218}
+  code{background:var(--code-bg)}
+}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .allcourse{background:linear-gradient(180deg,#1b2230,#1a2028);border-color:#2c3d58}
+:root:has(>head>meta[name="color-scheme"][content="dark"]) .imggrid img{background:#0e1218}
+
+/* ---------- 打印 ---------- */
 @media print{
+  #pbar,#btt{display:none}
   .mat-panel,.mat-modal{display:none}
-section[data-type],.card{break-inside:avoid}
-.topbar,.side,.lnav,.search,.foot,.usebar{display:none}
-  body{background:#fff}
+  section[data-type],.card{break-inside:avoid}
+  .topbar,.side,.lnav,.search,.foot,.usebar,#btt{display:none}
+  body{background:#fff;color:#111}
   .card{break-inside:avoid;box-shadow:none}
-  .lec{display:block}
+  .page-layout{display:block}
   .rvlec,.revlec{break-inside:avoid}
   details{display:block}
   details>.ans{display:block}
+  section[data-type]::before{border:1px solid #999}
+  .imggrid{grid-template-columns:repeat(3,1fr)}
+  .skip-link,.page-side,.breadcrumbs,.sequence-nav,.related-nav{display:none}
+  .lecture-head{border:0;padding:0}
+  .lecture-page section[data-type]{padding:12px;box-shadow:none}
+  .table-scroll{overflow:visible;border:0}
+  .table-scroll table{min-inline-size:0}
 }
+/* ---------- 小屏 ---------- */
+@media(max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding:18px 14px 50px}
+  .card,section[data-type]{padding:15px 16px}
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .topbar-in{padding:9px 14px;gap:9px}
+  #btt{right:14px;bottom:16px}
+  .lecture-head,.lecture-page section[data-type]{padding:1rem}
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
+  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .sequence-nav{grid-template-columns:1fr;gap:.5rem}
+  .sequence-nav [data-sequence]{text-align:start}
+  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
+
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #pbar,#btt{transition:none}
+}
+
+/* ---------- 听力/视频嵌入 ---------- */
+.audiolist{margin:1em 0}
+.audioitem{background:var(--qa-bg);border:1px solid var(--line);border-radius:11px;
+  padding:10px 14px;margin:9px 0}
+.audioitem audio{width:100%;height:36px}
+.audioitem video{width:100%;max-width:640px;display:block;border-radius:8px;background:#000}
+.audiocap{font-size:13px;color:var(--muted);margin-top:6px}
+
+@media(min-width:641px) and (max-width:980px){
+  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
+  .global-nav{grid-column:1/-1;grid-row:2;justify-content:space-between}
+}
+@media(forced-colors:active){
+  .navlink[aria-current],.directory-link[aria-current]{border-color:Highlight;color:LinkText}
+  .breadcrumbs [aria-current="page"]{text-decoration:underline}
+}
+
+/* Learning controls share the site's semantic tokens and navigation language. */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
+  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
+  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+.study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
+.learning-home h2,.site-search h2{margin-block-start:0}
+.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
+.learning-home details{margin-block-end:0}
+.study-backup .study-button{margin-block-end:.625rem}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import input{max-width:100%;font:inherit}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
+.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
+.course-progress span{white-space:nowrap}
+.site-search{display:block}
+.site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
+.search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
+.search-query .search{margin:0;max-width:none;min-width:0;min-height:2.75rem;color:var(--fg);border-color:var(--callout-line);font-size:1rem}
+.study-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:.75rem}
+.study-filters label{display:flex;flex-direction:column;gap:.375rem;min-width:0;font-size:.8125rem;color:var(--muted)}
+.study-filters select,.practice-controls select{font:inherit;font-size:1rem;min-width:0;width:100%;min-height:2.75rem;
+  padding:.375rem .5rem;background:var(--card);color:var(--fg);border:1px solid var(--callout-line);border-radius:7px}
+#search-result-list{list-style:none;padding:0;margin:1rem 0}
+#search-result-list>li{margin:0;padding:1rem 0;border-block-start:1px solid var(--line)}
+#search-result-list>li>a{font-weight:650;color:var(--accent-deep)}
+#search-result-list p{font-size:.875rem;margin:.375rem 0;overflow-wrap:anywhere}
+#search-result-list .search-context{color:var(--muted);font-size:.75rem}
+mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline;text-underline-offset:2px}
+::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
+.search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
+.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
+.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
+.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
+.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
+.study-status input{accent-color:var(--accent);margin:0}
+.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
+.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
+.reader-options summary{font-size:.875rem}
+.reader-options .study-filters{min-width:min(20rem,100%)}
+.study-storage-note{font-size:.6875rem;margin:0}
+.lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
+.lecture-page section[data-type]>p{max-inline-size:80ch}
+.focus-reading .page-layout{display:block}
+.focus-reading .page-side,.focus-reading .global-nav{display:none}
+.focus-reading .page-content{max-width:58rem;margin-inline:auto}
+.focus-exit{position:fixed;inset-inline-start:1rem;inset-block-end:calc(1rem + env(safe-area-inset-bottom));z-index:56;box-shadow:var(--shadow)}
+.code-block{position:relative;max-width:100%;margin-block:1rem}
+.code-block pre{margin:0;padding-block-start:3rem;max-inline-size:100%}
+.copy-code{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;min-height:2rem;padding:.25rem .625rem;
+  border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
+.clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
+.image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.image-zoom img{display:block}
+.image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
+  margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
+.image-viewer::backdrop{background:rgba(0,0,0,.78)}
+.image-viewer img{display:block;max-inline-size:100%;max-block-size:80dvh;object-fit:contain;margin:.75rem auto 0}
+.image-viewer .image-close{position:sticky;inset-block-start:0;float:inline-end}
+.practice-controls{display:flex;align-items:flex-end;gap:.75rem;flex-wrap:wrap;border-block-start:1px dashed var(--line);padding-block-start:.625rem;margin-block-start:.75rem}
+.practice-controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.75rem;color:var(--muted);min-width:8rem}
+.practice-controls select{font-size:.875rem}
+.practice-anchor{display:block}
+.practice-book-item{border-block-start:1px solid var(--line);padding-block:1rem}
+.practice-book-item>a{font-weight:650;font-size:.875rem}
+.practice-book-item p{font-size:.875rem}
+.study-notice{position:fixed;inset-inline:1rem;inset-block-end:calc(4.75rem + env(safe-area-inset-bottom));z-index:90;
+  max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
+.study-notice[hidden]{display:none}
+@media(max-width:640px){
+  .search-query{grid-template-columns:minmax(0,1fr) auto}
+  #search-clear{grid-column:2;min-height:2.25rem}
+  .reader-actions{align-items:stretch}
+  .reader-options{max-width:100%}
+  .study-button{font-size:.8125rem}
+  .practice-controls{align-items:stretch}
+}
+@media print{
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .code-block pre{padding-block-start:1rem}
+  .image-zoom{display:contents}
+  .image-viewer{display:none}
+}
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.source-metadata { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .4rem 1rem; }
+.source-metadata dd { margin: 0; overflow-wrap: anywhere; }
+.lecture-sources li { overflow-wrap: anywhere; }
+.reader-toolbar { margin-block: 1rem; }
+.mat-item[hidden] { display: none; }
+#sharing-setup input { font: inherit; padding: .6rem; min-width: 0; width: 100%; box-sizing: border-box; }
+#sharing-setup label { flex: 1 1 16rem; }
+dialog.mat-modal { inset: 0; margin: auto; padding: 0; border: 0; background: var(--card); color: var(--fg); width: min(62rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); border-radius: 15px; }
+dialog.mat-modal[open] { display: block; }
+dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
+dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
+dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
+dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </style>
 </head>
-<body>
+<body id="top" data-module="courses">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
-<a class="navlink" href="../../review.html">期末考点清单</a>
-<a class="navlink ext" href="../../extend.html">知识拓展</a>
-<a class="navlink alt" href="../../all.html">全站合订本</a>
-<a class="navlink up" href="../../upload.html">上传资料</a>
-<span class="crumb"><a href="../../index.html">总览</a> / <a href="index.html">CT60A4050 软件工程基础</a> / <a href="part-4.html">第 4 章 实践、案例与课程项目</a></span>
+<nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap " data-site-prefix="../../">
-<div class="lec"><aside class="side"><div class="toc"><div class="toc-t">本页目录</div><a class="toc-l2" href="#s1">本节定位</a><a class="toc-l3" href="#s2">12.1 案例法：没有标准答案，但有证据标准</a><a class="toc-l3" href="#s3">12.2 IBM：迭代末期的范围决策</a><a class="toc-l3" href="#s4">12.3 Sasken：离岸产品开发的三重压力</a><a class="toc-l3" href="#s5">12.4 EXCEED：用数据区分相关与因果</a><a class="toc-l3" href="#s6">12.5 Catalise：速度、偏差与伦理</a><a class="toc-l3" href="#s7">12.6 跨案例的三条规律</a><a class="toc-l2" href="#s8">案例分析的清单</a></div><div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div><a href="l01-course-and-se-overview.html">第 1 讲 · 课程导论与软件工程概览</a><a href="l02-sdlc-models-and-agile.html">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</a><a href="l03-process-activities-and-improvement.html">第 3 讲 · 软件过程、过程活动与过程改进</a><a href="l04-requirements-engineering.html">第 4 讲 · 需求工程</a><a href="l05-system-modelling.html">第 5 讲 · 系统建模与 UML</a><a href="l06-architectural-design.html">第 6 讲 · 软件体系结构设计</a><a href="l07-testing-and-quality.html">第 7 讲 · 软件测试与质量管理</a><a href="l08-evolution-and-maintenance.html">第 8 讲 · 软件演化、维护与遗留系统</a><a href="l09-project-management-and-planning.html">第 9 讲 · 软件项目管理与计划</a><a href="l10-quality-and-configuration-management.html">第 10 讲 · 软件质量与配置管理</a><a href="l11-agile-practices-workshop.html">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a class="toc-l3" href="l12-case-studies.html">▸ 第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</a><a href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作</a><a href="supp-project-docs.html">补充 · 项目文档模板、Honor Code 与案例讨论</a></div></aside><article><h1>第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</h1><p class="lead">Case Studies: IBM, Sasken, EXCEED and Ethical AI at Catalise <span class="badge mute">30361</span> <span class="badge mute">第 12 / 14 讲</span></p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 实践、案例与课程项目</a></p><p class="src">原始文件：<code>16_Week 10/2_Case Study/data/IBM.pdf</code> <code>Sasken.pdf</code> <code>16_Week 10/2_Case Study/data/EXCEED.pdf</code> <code>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</code></p><nav class="snavs"><a class="snav" href="#sec-overview">定位</a><a class="snav" href="#sec-detail">知识点</a><a class="snav" href="#sec-keywords">术语表</a><a class="snav" href="#sec-examples">例题</a><a class="snav" href="#sec-practice">练习</a><a class="snav" href="#sec-exam">考点</a><a class="snav" href="#sec-checklist">方法清单</a><a class="snav" href="#sec-mapping">溯源</a></nav><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这一讲把四个真实组织放在一起，用同一套分析框架检验前面十讲的概念：需求变更（第 4 讲）、迭代与阶段（第 2、3 讲）、质量与度量（第 7、10 讲）、分布式团队与过程纪律（第 8 讲）、伦理（第 1 讲）。案例课的目的不是「知道这几家公司发生了什么」，而是练出一种可迁移的判断：面对不完整信息，如何给出有证据支撑的立场。</p><p>四个案例的互补性：IBM 考「迭代末期的范围决策」；Sasken 考「离岸产品开发的过程纪律与质量体系」；EXCEED 考「用数据区分相关与因果」；Catalise 考「速度与伦理的冲突」。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用案例法三步（阅读准备、小组讨论、全班讨论）分析一个管理决策，并给出有证据的立场</li><li>解释 IBM 六周迭代的节奏安排，并分析「末期插入需求」的三种选项与代价</li><li>说明 Sasken 案例中「产品成熟度、过程纪律、质量、离岸协作、文化差异」如何相互作用</li><li>用 EXCEED 的测试与网络数据判断「低生产率」的多种可能原因，并指出哪些是相关而非因果</li><li>分析 AI 产品中的数据偏差、精确率与召回率的取舍，并援引 ACM/IEEE 原则给出行动方案</li><li>从四个案例中提炼三条跨案例的规律，并用证据支持</li></ul></section>
-<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">12.1 案例法：没有标准答案，但有证据标准</h3><p>课件的案例课采用三步法：</p><ol><li><b>案例阅读与准备</b>：案例是对某组织领导所面对真实情境的详细描述，除背景信息外，还包含一个<b>必须做出的关键决策</b>；你的任务是分析所给信息（这些信息是<b>故意不完整</b>的），判断你会怎么做。</li><li><b>小组讨论</b>：把想法带到一个背景多样的小组，讨论发现，从不同视角理解案例。</li><li><b>全班讨论</b>：在小范围讨论后，准备在与全班讨论时修正自己的想法；要求主动倾听与参与，设身处地考虑「如果我是案例主角」，并解释推理。</li></ol><p>八条阅读指南（可直接作为考试答题的步骤清单）：先读案例的首尾两节定位核心情境；快速扫读其他章节与图表，知道信息在哪而不背细节；先看讨论题并记下初读得到的要点（核心情境、主角目标、重大不确定性）；列出「要理解情境、达成目标还缺哪些关键信息」；边读边标记与清单对应的信息；仔细分析这些信息如何帮助理解主要问题；目标是形成一个有充分支持的立场（案例通常没有客观正确答案，最好的方案是证据最强的方案）；随着新信息出现，不断问「它如何改变我对主要问题的理解」，并考虑替代观点。</p><h3 id="s3">12.2 IBM：迭代末期的范围决策</h3><p>情境：2010 年 11 月，IBM Rational 产品开发负责人 John Lalonde 收到 WebSphere 产品开发负责人 Neil Mayor 的请求：为一个客户需求在 Rational 产品中增加一项功能，使 WebSphere 能交付某个特性。该客户需求潜在带来 <b>4000 万美元</b>收入（WebSphere 3000 万 + Rational 1000 万），但提出得<b>非常晚</b>——两个产品的开发周期都已进入<b>最后几个迭代</b>。</p><p>背景：IBM 2010 年营收 998 亿美元、利润 148 亿美元，五大业务板块（全球技术服务、全球商业服务、软件、系统与技术、全球融资）。软件板块毛利率约 80%，竞争激烈。RAD（Rational Application Developer）与 WAS（WebSphere Application Server）高度互相依赖，IBM 总在同一天发布两者的大版本，但它们由<b>独立业务单元</b>管理，预算、人员、资源各自独立。RAD 2005 年由收购的 Rational 平台与 IBM 自有平台合并而成；两者都由美洲、亚洲、欧洲的数百名开发者开发。</p><p>IBM 的迭代方法（关键细节）：项目周期 3–15 个月；RAD 这次是 18 个月（2009-06-25 起），与 WAS 同在 2010-12-22 发布；<b>每个迭代 6 周 = 4 周计划/设计/实现 + 2 周测试</b>；前 4 周内架构师与开发者写设计文档，后段开发者写代码，测试者用设计文档开发测试计划与场景，测试计划需干系人批准；2 周测试期内修缺陷；<b>若某缺陷在本次迭代内无法修复且导致某特性不可用，则把该特性的全部代码整体回退（back out）</b>，缺陷修复与该特性推迟到下一迭代；所有特性完成并测试后进入<b>代码冻结</b>（code freeze），此后不得新增代码。</p><p>这个「回退」规则是案例的技术核心：它保证「任何迭代交付的特性都像可发布一样完整」，代价是可能浪费已完成的代码，并把压力转移到下一迭代的计划与设计团队。</p><p>案例对瀑布的批评也值得引用：支持者认为瀑布迫使团队彻底理解需求、把设计定死，从而省时省钱；反对者认为不可能在进入下一阶段前把当前阶段做到完美——设计阶段无法预见实现阶段的困难，需求会演化，且测试只能在实现完全结束后才开始，导致缺陷发现极晚、极难修。</p><p>三个选项（答题时必须都摆出来）：</p><table><tr><th>选项</th><th>做法</th><th>收益</th><th>代价与风险</th></tr><tr><td>接受需求</td><td>申请在最后迭代写代码，开发该功能</td><td>拿下 4000 万美元；避免客户流向 Oracle/HP 等竞品</td><td>可能破坏质量、延误发布（IBM 对客户有发布日承诺）；末期改动可能引入回归缺陷</td></tr><tr><td>做原型子集</td><td>交付只含部分功能的原型，完整功能后续交付</td><td>降低延期与缺陷风险；挽回部分收入</td><td>需说服客户接受原型并等待；客户若拒绝则可能丢掉 4000 万</td></tr><tr><td>拒绝或推迟</td><td>不在本版本做，排入下一版本</td><td>保护质量与发布日</td><td>直接损失收入；客户关系与 2015 路线图受影响</td></tr></table><p>分析框架：先算「不做的代价」（4000 万 + 客户终身价值 + 竞品替代风险），再算「做的代价」（末期改动的回归风险 × 发布延误的合同违约风险），最后看「有没有第三条路」（原型、功能开关、灰度、只在特定配置下提供）。课件没有给答案，但给了判断所需的全部数字与约束——这正是案例法的训练目标。</p><h3 id="s4">12.3 Sasken：离岸产品开发的三重压力</h3><p>情境：Sasken 是印度的通信软件公司（1989 年成立，2009 年约 3300 人，21 项美国专利），为全球无线设备厂商提供研发外包。2006 年，它受日本一家领先手机厂商委托，为高端手机开发<b>高级多媒体播放器</b>；项目在班加罗尔离岸中心执行，而日本是当时全球最先进的移动服务市场。</p><p>为什么难：日本市场在手机功能与服务上领先世界（iMode 1999 年即提供常驻互联网接入；2001 年 10 月即商用 3G；2006 年日本手机市场销售额 112 亿美元、4730 万部）；日本运营商以「价值网络」（value network）方式与设备商、内容商、平台商紧密协作，<b>接口规范由运营商制定并持续升级</b>，这与西方以标准委员会为中心的松散模式不同。Sasken 必须满足这些由运营商层层传递下来的接口与质量标准。</p><p>两个项目的对比（这是案例最有教学价值的结构）：</p><table><tr><th>维度</th><th>codec 项目（2001 起）</th><th>media player 项目（2007 起）</th></tr><tr><td>技术层次</td><td>多媒体子系统<b>底层</b>（codec/driver 层）</td><td>多媒体子系统<b>上层</b>（应用、控制器、协议栈）</td></tr><tr><td>规格明确度</td><td>协议/软件层次的下层定义得相对清楚；Sasken 已有可移植的 RCI 架构，软件成熟稳定</td><td>上层规格常常不如下层明确</td></tr><tr><td>主要挑战</td><td>按客户性能目标做定制（编解码速度、内存占用）</td><td>功能完整性与规格理解；流媒体与 DRM；媒体传输协议移植</td></tr><tr><td>结果</td><td>质量与时间完全可控；客户随后追加多个芯片平台的移植订单</td><td>挑战大得多，暴露了产品成熟度、过程纪律、需求演化、质量与协作的全部问题</td></tr></table><p>五个压力源（可作为分析框架）：</p><ol><li><b>产品成熟度</b>：产品开发地点应靠近用户所在地；离用户与市场远，就难以完整构想特性并纳入架构。团队可能「漏掉重要功能却不自知」，而客户期望的是<b>完整产品</b>，并把「基础功能集」视为理所当然——对 Sasken 团队而言，客户眼中的基础功能往往变成「定制与变更请求」，导致周期与工作量上升。日本市场还领先 1–2 年，进一步加剧了这种差距。</li><li><b>过程纪律</b>：客户频繁修改需求却仍期望不延期，团队容易通过压缩评审与测试来缩短周期；在短周期里做的许多变更叠加严格接口约束，会使实现逐渐偏离原设计，使后续修改越来越贵，并降低可维护性、可移植性与可复用性。过程管理要求：使用公司成熟过程并按情境裁剪；使用配置管理系统与集中缺陷库；度量、分析并采取纠正措施。</li><li><b>需求演化</b>：欧美客户习惯以详尽书面协议明确需求；日本客户偏好<b>隐性、持续协商</b>的协议，且常在产品发布前才签约，供应商需前期投入并承担质量与时间风险。</li><li><b>质量</b>：日本项目缺陷率中位数为 <b>0.020</b>，欧洲 0.225、印度 0.263、美国 0.400（每千行代码的缺陷密度口径）。缺陷分「测试缺陷」（实验室内发现并修复）与「现场缺陷」（客户在运行现场报告），后者是重要的可靠性度量。缺陷从运营商 → 客户测试团队 → Sasken 测试团队逐级下传，修复反向回流；<b>所有现场缺陷修完前产品不被接受，且每一层测试都接受修复后，测试请求才算关闭</b>；客户还要求详细的根因分析报告与预防措施。</li><li><b>离岸协作与文化</b>：Sasken 在日本派驻测试工程师作为联络（而非传统由销售市场人员组成的 bridgehead），他们有目标测试设施；但完整的测试平台因运营商对客户的限制条款无法提供给印度团队，因此印度团队常需「想象」缺陷场景才能修，导致多次往返。缺陷登记从简单表格膨胀为含解决时间、迭代次数的度量表，客户用它做跟踪分析，但团队认为交换笨重的表格效率低。语言与文化的直接后果是：邮件沟通易误解；客户希望有位能流利说日语、且文化契合的日本本地项目经理；日本工作时长显著更长（每周 60 小时以上者约占非农业劳动力 12%）；Sasken 团队偏年轻（许多人首次做产品开发），客户项目经理则有 20–25 年经验，期望极高。</li></ol><p>商业模式的反差也值得注意：Sasken 起家于产品开发，但服务业务已占收入 90% 以上，其中 90% 以上是「时间与材料」（time and materials）计费——资源按人天计费，投入与支出极小，因而「主动的项目管理」需求不明显；而产品开发是<b>固定价格</b>，必须靠有效管理与监控才能在预算内完成并取得正回报。这解释了为什么产品项目对项目经理的要求远高于服务项目。</p><p>结局：2008 年 5 月，含音频、视频、流媒体的播放器在客户捆绑手机上上线；2008 年 8 月，约 25 名工程师继续开发与支持 codec，另 25 人支持播放器；Sasken 把这段经验复用到欧美客户项目。项目经理的总结很精辟：「日本在移动多媒体与互联网应用上总比世界其他地方领先 1–2 年，因此为日本客户开发产品很有挑战——必须在最严格的质量管理下使用最新技术，并具备随需求变化的敏捷性；但这段经验让我们后来能复用到欧美客户。」</p><h3 id="s5">12.4 EXCEED：用数据区分相关与因果</h3><p>情境：2017 年 2 月，Exceed Communications（2013 年成立，36 人，总部中东 + 班加罗尔离岸中心）的总经理 Karamath 收到客户 H&amp;K 的升级投诉：某软件包的系统测试进展缓慢，且测试阶段发现多个缺陷。该客户投诉频率明显高于其他客户。项目按<b>时间与材料</b>计费，客户密切监控人员规模与生产率；开发采用 <b>V 过程模型</b>（需求 → 概设 → 详设 → 编码 → 单元/集成/系统/验收测试，测试用例与各设计文档同步开发）。项目 2016 年 8 月启动，2017 年 2 月处于客户测试环境的系统测试阶段；前期因需求收集延误而滞后，开发阶段已追回。</p><p>数据：系统测试用例执行统计按每 2 小时窗口记录，共 20 个工作日 × 5 个窗口 = 100 个观测。我们可算出的基本统计是：<b>均值约 82.3 个用例/2 小时，最小 72、最大 92</b>；按日平均，最低的三天是 1 月 12 日（76.6）、1 月 17 日（79.2）、1 月 31 日（79.2），最高为 2 月 2 日（84.4）。网络响应时间在 210–236 毫秒之间波动。</p><p>团队会上给出的一堆「同样合理」的原因：测试数据难找（需复杂 SQL 才能定位可测数据）；开发团队常在 11 点才部署修复后的新包（约定是 9 点前），压缩了上午的测试窗口；测试机内存不足；访问客户测试环境有网络延迟；测试是手工的、无法复用（重测失败场景要重新录入数据），而上一项目有自动化、客户可能期待同样标准；非正式议论还包括「板球系列赛分散注意力」「主管早退时离岸成员会放松」。</p><p>分析要点（这是案例的核心训练）：</p><ul><li>均值 82.3、极差 20（约 24%）说明波动<b>存在但不大</b>；「某几天低」不足以证明「过程失控」，需要看<b>是否超出正常波动范围</b>（如控制图的上下限），而不是凭印象挑出最低的三天；</li><li>网络延迟 210–236 ms 的波动幅度很小，且与测试用例执行的波动未必同步——「相关」不等于「因果」；要证明因果，需要把同一时段、同一包版本、同一测试集下的执行数与网络指标配对分析；</li><li>「11 点才部署」是一条<b>可验证的机制性原因</b>：它直接减少上午可用窗口，可用「首次部署时间 vs 当日上午执行数」的散点图验证；</li><li>「手工测试导致重测成本高」是<b>结构性原因</b>：它不解释日间波动，但解释整体生产率水平；两类原因要分开处理；</li><li>「注意力分散」属观察性证据，不能作为管理决策的主要依据，但在 1 对 1 沟通中可作为线索。</li></ul><p>课件给出的质量工具正是为此准备的：因果图（鱼骨图）用于把众多原因归类（人、机、料、法、环、测）；帕累托图用于挑出贡献最大的 20%；控制图用于区分「正常波动」与「异常波动」；五个为什么用于追根因。案例要求「系统地筛选众多问题与原因，找出最佳行动」，而不是「把所有原因都改一遍」。</p><p>测试自动化的决策必须带商业论证：自动化投入高，但能消除重测的数据录入开销、提高回归频率；对时间与材料合同，客户是否愿意为自动化付费、自动化后人力如何计费，都是必须先谈清的问题——这正是「不能没有商业论证就推荐自动化」的含义。</p><h3 id="s6">12.5 Catalise：速度、偏差与伦理</h3><p>情境：Catalise 是一家用语音分析诊断精神疾病的初创公司。其产品 Catalisence 通过分析语音模式诊断精神分裂症，被约 <b>40%</b> 的美国精神健康诊所采用，带来超过 3 亿美元风投，并吸引医院与大学合作。新任高级产品经理 Taylor 接手 Catalisten——一款通过语音诊断<b>重度抑郁障碍（MDD）</b>的 AI 产品，预计是公司未来数年最赚钱的产品；CEO 要求提前发布以抢在竞品之前。</p><p>问题：Taylor 审查测试结果时发现，AI 把<b>女性</b>语音样本误判为 MDD 的比例为 <b>19%</b>，而男性仅 <b>2.1%</b>。假阳性诊断会导致不必要的治疗与费用，而女性本就更容易被过度诊断 MDD 并被过度处方精神药物。首席 AI 工程师 Eduardo 说，若要修正女性假阳性率，至少要多花 <b>6 周</b>，会得罪 CEO 并可能危及竞争优势，劝 Taylor「放过这个问题」。</p><p>根因（案例给出的两个拐点）：</p><ol><li><b>数据准备阶段</b>：团队难以编出男女样本均衡的训练集——可获取的患者数据源中男性比例显著更高；又因防泄密被隔离，数据科学家无法向健康系统或研究伙伴索取更好的数据。团队首席数据科学家曾在工作流聊天中确认数据存在性别偏差，并指出样本中女性 MDD 比例高于平均，警告「若用这些数据训练，模型会更倾向过度诊断女性」；但时任临时产品负责人 Eduardo 因时间压力指示继续使用该数据集，并承诺在测试与验证阶段解决。</li><li><b>测试与验证阶段</b>：工程师确认女性假阳性率更高，随后在聊天中就是否优先 <b>precision</b> 还是 <b>recall</b> 发生激烈争论。precision 回答「模型做出预测时，这个预测有多可能正确」，= 真阳性 ÷ 全部阳性，假阳性少则高；recall 回答「模型识别真实病例的能力有多好」，= 真阳性 ÷（真阳性 + 假阴性），假阴性少则高。二者常相互张力：优先 precision → 更保守、假阳性低但漏诊多；优先 recall → 覆盖更多病例但误诊多。产品当时是<b>高 recall</b>：正确诊断了所有 MDD 病例，也把一些没有 MDD 的人诊断为 MDD。</li></ol><p>争论的两方立场（都要能复述）：支持高 recall 的工程师认为「确保所有需要治疗的人都得到治疗」是好事，而且对生意有利——诊所客户会看到诊断量上升，从而带来更多诊疗与处方收入；反对者指出，误诊（尤其对女性）会导致不必要用药，影响情绪稳定、社会互动甚至法律权利。Eduardo 的最终决定是维持高 recall，并写下这段话（原句）：“Let’s not draw any more attention to the 19% false-positive rate for women … Any fallout effect from the false-positive discrepancy isn’t our problem. It’s in the hands of our customers who write the prescriptions … Our job is to get this product to market as fast as we can.”（不要再让人注意女性 19% 的假阳性率……这一差异带来的任何后果不是我们的问题，而在开处方的客户手里……我们的工作就是尽快把产品推向市场。）随后写道：「不要再让人注意女性 19% 的假阳性率。假阳性差异带来的任何后果不是我们的问题，而是在开处方的客户手里——他们知道所有技术都有风险。我们的工作就是尽快把产品推向市场。」</p><p>AI 产品开发流程（案例图 1 的六步，可作为答题骨架）：界定问题（UX 研究访谈用户，形成问题陈述）→ 收集与准备数据（选择与问题陈述匹配的数据集，注意不要被种族、性别等类别偏斜；清洗缺失与错误；标注以平衡类别分布）→ 设计模型（AI 工程师写模型代码）→ 训练模型（让模型在清洗标注后的数据上发现模式，逐步形成预测）→ 测试与验证（用更接近真实世界脏数据的数据集测试，精度下降就回到补充训练数据）→ 部署。这个流程的关键含义是：<b>偏差在第一步和第二步就被引入，之后每一步都只能缓解而不能免费消除</b>。</p><p>伦理分析（用第 1 讲的框架）：</p><table><tr><th>原则</th><th>在本案中的含义</th></tr><tr><td>Public</td><td>女性患者会被不必要地用药，涉及人身健康与法律权利，公众利益优先于上市速度</td></tr><tr><td>Client and Employer</td><td>看似「为公司好」的快速上市，实际会带来声誉与法律风险；真正的最佳利益是可持续的产品</td></tr><tr><td>Product</td><td>明知 19% vs 2.1% 的偏差仍发布，不符合「达到最高专业标准」</td></tr><tr><td>Judgment</td><td>工程师与产品经理应保持专业判断的独立，不因 CEO 压力放弃技术结论</td></tr><tr><td>Profession</td><td>若公开后被揭露「知情仍发布」，损害整个 AI 医疗产品行业的信任</td></tr></table><p>行动方案（Taylor 可以做的，按成本从低到高）：① 用数据说话——把「19% vs 2.1%」换算成绝对人数（如每 1000 名女性使用者多出多少误诊、多少不必要的处方与费用），并附文献支持；② 提出「有条件发布」——限定适用人群（如仅用于男性或作为「辅助提示」而非诊断）、在界面标注置信度与局限、要求临床复核；③ 提出「分期修复」——先修数据重采样与阈值调整（可能只需数天），再排 6 周的完整修正；④ 升级到有权限的人（首席医疗官、合规/法务），并书面留痕；⑤ 准备「不发布」的替代方案与时间表，供决策者比较。</p><p>案例留下的问题（也是考试可能问的）：「如果你要说服首席产品官推迟发布，你会怎么做？」好的答案不是「坚持伦理」，而是「把伦理翻译成商业语言」：误诊导致的诉讼与监管风险、被媒体揭露后的信任崩塌、以及「先修偏差再发布」其实可能只需数周而非六周。</p><h3 id="s7">12.6 跨案例的三条规律</h3><p>把四个案例放在一起，可以提炼出三条反复出现的规律，考试时用它们做「综合」最有说服力：</p><ol><li><b>变更的成本取决于它发生的位置，而不是它的金额。</b>IBM 的 4000 万美元需求之所以难，不是因为钱多，而是因为它出现在最后迭代；Sasken 的「基础功能」之所以变成变更请求，是因为它出现在离用户最远的地方；EXCEED 的投诉之所以难处理，是因为它出现在系统测试阶段。</li><li><b>过程纪律不是官僚，而是让不确定性可承受的机制。</b>IBM 用「回退整个特性 + 代码冻结」保证迭代交付质量；Sasken 用配置管理、集中缺陷库、根因分析报告维持高标准的客户信任；EXCEED 的困境恰恰是缺少自动化与可复现的测试数据，使波动无法被解释。</li><li><b>伦理不是附加项，而是需求的一部分。</b>Catalise 的偏差本质是「非功能需求（公平性、安全性）没有被写进规格」；一旦写进去，它就会像性能或可靠性一样，成为架构与测试的对象，而不是发布前的道德辩论。</li></ol><p>这三条也正好回扣第 1 讲的四属性、第 3 讲的变更代价、第 4 讲的非功能需求——案例课的价值就在于让你看到：这些抽象词在真实组织里长什么样。</p><div class="callout idea" data-ext="l12-case-studies-0"><b>背景</b><p>案例课没有标准答案，但有证据标准：目标不是猜出题人意图，而是在故意不完整的信息里形成证据最强的立场，并在新信息出现时不断修正。读案例可先抓首尾的核心情境与主角目标，再列出还缺哪些关键信息。IBM 案例的技术核心是迭代回退规则：某特性在本迭代内修不好就整体回退代码、推迟下轮，以保证任何交付特性都像可发布一样完整，代价是浪费已完成代码。分析末期范围决策时，先算不做的代价（收入、客户终身价值、竞品替代），再算做的代价（回归风险与发布延误）。</p></div></section>
-<section id="sec-keywords" class="card" data-type="keywords"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>iterative development</td><td>迭代开发</td><td>Development in iterations so evolving requirements can be accommodated.</td></tr><tr><td>code freeze</td><td>代码冻结</td><td>A stage where no new code may be added, protecting a stable system before release.</td></tr><tr><td>back out</td><td>整体回退</td><td>Removing all code for a feature that cannot be fixed within the iteration.</td></tr><tr><td>value network</td><td>价值网络</td><td>Closely tied operators, vendors, content and platform providers with operator-specified interfaces.</td></tr><tr><td>product maturity</td><td>产品成熟度</td><td>The completeness, modularity and quality a client expects as the baseline feature set.</td></tr><tr><td>defect density</td><td>缺陷密度</td><td>Defects per thousand lines of code; Japan 0.020 vs US 0.400 in the cited study.</td></tr><tr><td>field defect</td><td>现场缺陷</td><td>A problem reported from the operational site, an important reliability measure.</td></tr><tr><td>root cause analysis</td><td>根因分析</td><td>Reports explaining how a bug was resolved and how recurrence is prevented.</td></tr><tr><td>V-process</td><td>V 过程</td><td>Test cases developed alongside requirements, high-level and detailed design.</td></tr><tr><td>control chart</td><td>控制图</td><td>Distinguishes normal variation from abnormal variation over time.</td></tr><tr><td>pareto chart</td><td>帕累托图</td><td>Ranks causes so the few contributing most can be addressed first.</td></tr><tr><td>data bias</td><td>数据偏差</td><td>Skewed training data leading to systematically different error rates across groups.</td></tr><tr><td>precision</td><td>精确率</td><td>True positives divided by all positives; higher when false positives are low.</td></tr><tr><td>recall</td><td>召回率</td><td>True positives divided by true positives plus false negatives.</td></tr><tr><td>ethical AI</td><td>伦理 AI</td><td>Developing AI products consistent with public interest, professional standards and human judgment.</td></tr></table></section>
+<main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
+<nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A4050 软件工程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-4.html">第 4 章 实践、案例与课程项目</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></li></ol></nav>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">12.1 案例法：没有标准答案，但有证据标准</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">12.2 IBM：迭代末期的范围决策</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">12.3 Sasken：离岸产品开发的三重压力</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">12.4 EXCEED：用数据区分相关与因果</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">12.5 Catalise：速度、偏差与伦理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">12.6 跨案例的三条规律</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-14" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-14"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">案例分析的清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-17" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-17"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-18" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-18"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-22" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-22"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l04-requirements-engineering.html"><span class="directory-label">第 4 讲 · 需求工程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l09-project-management-and-planning.html"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l10-quality-and-configuration-management.html"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-31" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-31"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="l12-case-studies.html" aria-current="page"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-project-docs.html"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/l12-case-studies"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 12 / 14 讲</p><h1 id="lecture-title">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</h1><p class="lecture-subtitle">Case Studies: IBM, Sasken, EXCEED and Ethical AI at Catalise</p><p class="chaptertag">所属章节：<a href="part-4.html">第 4 章 实践、案例与课程项目</a></p><details class="lecture-sources"><summary>资料来源 · 4 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>19fa12425788</code>（用于识别内容变更）</dd></dl><ul><li><code>16_Week 10/2_Case Study/data/IBM.pdf</code> <span class="sub">未附原文件</span></li><li><code>Sasken.pdf</code> <span class="sub">未附原文件</span></li><li><code>16_Week 10/2_Case Study/data/EXCEED.pdf</code> <span class="sub">未附原文件</span></li><li><code>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这一讲把四个真实组织放在一起，用同一套分析框架检验前面十讲的概念：需求变更（第 4 讲）、迭代与阶段（第 2、3 讲）、质量与度量（第 7、10 讲）、分布式团队与过程纪律（第 8 讲）、伦理（第 1 讲）。案例课的目的不是「知道这几家公司发生了什么」，而是练出一种可迁移的判断：面对不完整信息，如何给出有证据支撑的立场。</p><p>四个案例的互补性：IBM 考「迭代末期的范围决策」；Sasken 考「离岸产品开发的过程纪律与质量体系」；EXCEED 考「用数据区分相关与因果」；Catalise 考「速度与伦理的冲突」。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>用案例法三步（阅读准备、小组讨论、全班讨论）分析一个管理决策，并给出有证据的立场</li><li>解释 IBM 六周迭代的节奏安排，并分析「末期插入需求」的三种选项与代价</li><li>说明 Sasken 案例中「产品成熟度、过程纪律、质量、离岸协作、文化差异」如何相互作用</li><li>用 EXCEED 的测试与网络数据判断「低生产率」的多种可能原因，并指出哪些是相关而非因果</li><li>分析 AI 产品中的数据偏差、精确率与召回率的取舍，并援引 ACM/IEEE 原则给出行动方案</li><li>从四个案例中提炼三条跨案例的规律，并用证据支持</li></ul></section>
+<section id="sec-detail" class="card" data-type="detail"><h3 id="s2">12.1 案例法：没有标准答案，但有证据标准</h3><p>课件的案例课采用三步法：</p><ol><li><b>案例阅读与准备</b>：案例是对某组织领导所面对真实情境的详细描述，除背景信息外，还包含一个<b>必须做出的关键决策</b>；你的任务是分析所给信息（这些信息是<b>故意不完整</b>的），判断你会怎么做。</li><li><b>小组讨论</b>：把想法带到一个背景多样的小组，讨论发现，从不同视角理解案例。</li><li><b>全班讨论</b>：在小范围讨论后，准备在与全班讨论时修正自己的想法；要求主动倾听与参与，设身处地考虑「如果我是案例主角」，并解释推理。</li></ol><p>八条阅读指南（可直接作为考试答题的步骤清单）：先读案例的首尾两节定位核心情境；快速扫读其他章节与图表，知道信息在哪而不背细节；先看讨论题并记下初读得到的要点（核心情境、主角目标、重大不确定性）；列出「要理解情境、达成目标还缺哪些关键信息」；边读边标记与清单对应的信息；仔细分析这些信息如何帮助理解主要问题；目标是形成一个有充分支持的立场（案例通常没有客观正确答案，最好的方案是证据最强的方案）；随着新信息出现，不断问「它如何改变我对主要问题的理解」，并考虑替代观点。</p><h3 id="s3">12.2 IBM：迭代末期的范围决策</h3><p>情境：2010 年 11 月，IBM Rational 产品开发负责人 John Lalonde 收到 WebSphere 产品开发负责人 Neil Mayor 的请求：为一个客户需求在 Rational 产品中增加一项功能，使 WebSphere 能交付某个特性。该客户需求潜在带来 <b>4000 万美元</b>收入（WebSphere 3000 万 + Rational 1000 万），但提出得<b>非常晚</b>——两个产品的开发周期都已进入<b>最后几个迭代</b>。</p><p>背景：IBM 2010 年营收 998 亿美元、利润 148 亿美元，五大业务板块（全球技术服务、全球商业服务、软件、系统与技术、全球融资）。软件板块毛利率约 80%，竞争激烈。RAD（Rational Application Developer）与 WAS（WebSphere Application Server）高度互相依赖，IBM 总在同一天发布两者的大版本，但它们由<b>独立业务单元</b>管理，预算、人员、资源各自独立。RAD 2005 年由收购的 Rational 平台与 IBM 自有平台合并而成；两者都由美洲、亚洲、欧洲的数百名开发者开发。</p><p>IBM 的迭代方法（关键细节）：项目周期 3–15 个月；RAD 这次是 18 个月（2009-06-25 起），与 WAS 同在 2010-12-22 发布；<b>每个迭代 6 周 = 4 周计划/设计/实现 + 2 周测试</b>；前 4 周内架构师与开发者写设计文档，后段开发者写代码，测试者用设计文档开发测试计划与场景，测试计划需干系人批准；2 周测试期内修缺陷；<b>若某缺陷在本次迭代内无法修复且导致某特性不可用，则把该特性的全部代码整体回退（back out）</b>，缺陷修复与该特性推迟到下一迭代；所有特性完成并测试后进入<b>代码冻结</b>（code freeze），此后不得新增代码。</p><p>这个「回退」规则是案例的技术核心：它保证「任何迭代交付的特性都像可发布一样完整」，代价是可能浪费已完成的代码，并把压力转移到下一迭代的计划与设计团队。</p><p>案例对瀑布的批评也值得引用：支持者认为瀑布迫使团队彻底理解需求、把设计定死，从而省时省钱；反对者认为不可能在进入下一阶段前把当前阶段做到完美——设计阶段无法预见实现阶段的困难，需求会演化，且测试只能在实现完全结束后才开始，导致缺陷发现极晚、极难修。</p><p>三个选项（答题时必须都摆出来）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>选项</th><th>做法</th><th>收益</th><th>代价与风险</th></tr><tr><td>接受需求</td><td>申请在最后迭代写代码，开发该功能</td><td>拿下 4000 万美元；避免客户流向 Oracle/HP 等竞品</td><td>可能破坏质量、延误发布（IBM 对客户有发布日承诺）；末期改动可能引入回归缺陷</td></tr><tr><td>做原型子集</td><td>交付只含部分功能的原型，完整功能后续交付</td><td>降低延期与缺陷风险；挽回部分收入</td><td>需说服客户接受原型并等待；客户若拒绝则可能丢掉 4000 万</td></tr><tr><td>拒绝或推迟</td><td>不在本版本做，排入下一版本</td><td>保护质量与发布日</td><td>直接损失收入；客户关系与 2015 路线图受影响</td></tr></table></div><p>分析框架：先算「不做的代价」（4000 万 + 客户终身价值 + 竞品替代风险），再算「做的代价」（末期改动的回归风险 × 发布延误的合同违约风险），最后看「有没有第三条路」（原型、功能开关、灰度、只在特定配置下提供）。课件没有给答案，但给了判断所需的全部数字与约束——这正是案例法的训练目标。</p><h3 id="s4">12.3 Sasken：离岸产品开发的三重压力</h3><p>情境：Sasken 是印度的通信软件公司（1989 年成立，2009 年约 3300 人，21 项美国专利），为全球无线设备厂商提供研发外包。2006 年，它受日本一家领先手机厂商委托，为高端手机开发<b>高级多媒体播放器</b>；项目在班加罗尔离岸中心执行，而日本是当时全球最先进的移动服务市场。</p><p>为什么难：日本市场在手机功能与服务上领先世界（iMode 1999 年即提供常驻互联网接入；2001 年 10 月即商用 3G；2006 年日本手机市场销售额 112 亿美元、4730 万部）；日本运营商以「价值网络」（value network）方式与设备商、内容商、平台商紧密协作，<b>接口规范由运营商制定并持续升级</b>，这与西方以标准委员会为中心的松散模式不同。Sasken 必须满足这些由运营商层层传递下来的接口与质量标准。</p><p>两个项目的对比（这是案例最有教学价值的结构）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>维度</th><th>codec 项目（2001 起）</th><th>media player 项目（2007 起）</th></tr><tr><td>技术层次</td><td>多媒体子系统<b>底层</b>（codec/driver 层）</td><td>多媒体子系统<b>上层</b>（应用、控制器、协议栈）</td></tr><tr><td>规格明确度</td><td>协议/软件层次的下层定义得相对清楚；Sasken 已有可移植的 RCI 架构，软件成熟稳定</td><td>上层规格常常不如下层明确</td></tr><tr><td>主要挑战</td><td>按客户性能目标做定制（编解码速度、内存占用）</td><td>功能完整性与规格理解；流媒体与 DRM；媒体传输协议移植</td></tr><tr><td>结果</td><td>质量与时间完全可控；客户随后追加多个芯片平台的移植订单</td><td>挑战大得多，暴露了产品成熟度、过程纪律、需求演化、质量与协作的全部问题</td></tr></table></div><p>五个压力源（可作为分析框架）：</p><ol><li><b>产品成熟度</b>：产品开发地点应靠近用户所在地；离用户与市场远，就难以完整构想特性并纳入架构。团队可能「漏掉重要功能却不自知」，而客户期望的是<b>完整产品</b>，并把「基础功能集」视为理所当然——对 Sasken 团队而言，客户眼中的基础功能往往变成「定制与变更请求」，导致周期与工作量上升。日本市场还领先 1–2 年，进一步加剧了这种差距。</li><li><b>过程纪律</b>：客户频繁修改需求却仍期望不延期，团队容易通过压缩评审与测试来缩短周期；在短周期里做的许多变更叠加严格接口约束，会使实现逐渐偏离原设计，使后续修改越来越贵，并降低可维护性、可移植性与可复用性。过程管理要求：使用公司成熟过程并按情境裁剪；使用配置管理系统与集中缺陷库；度量、分析并采取纠正措施。</li><li><b>需求演化</b>：欧美客户习惯以详尽书面协议明确需求；日本客户偏好<b>隐性、持续协商</b>的协议，且常在产品发布前才签约，供应商需前期投入并承担质量与时间风险。</li><li><b>质量</b>：日本项目缺陷率中位数为 <b>0.020</b>，欧洲 0.225、印度 0.263、美国 0.400（每千行代码的缺陷密度口径）。缺陷分「测试缺陷」（实验室内发现并修复）与「现场缺陷」（客户在运行现场报告），后者是重要的可靠性度量。缺陷从运营商 → 客户测试团队 → Sasken 测试团队逐级下传，修复反向回流；<b>所有现场缺陷修完前产品不被接受，且每一层测试都接受修复后，测试请求才算关闭</b>；客户还要求详细的根因分析报告与预防措施。</li><li><b>离岸协作与文化</b>：Sasken 在日本派驻测试工程师作为联络（而非传统由销售市场人员组成的 bridgehead），他们有目标测试设施；但完整的测试平台因运营商对客户的限制条款无法提供给印度团队，因此印度团队常需「想象」缺陷场景才能修，导致多次往返。缺陷登记从简单表格膨胀为含解决时间、迭代次数的度量表，客户用它做跟踪分析，但团队认为交换笨重的表格效率低。语言与文化的直接后果是：邮件沟通易误解；客户希望有位能流利说日语、且文化契合的日本本地项目经理；日本工作时长显著更长（每周 60 小时以上者约占非农业劳动力 12%）；Sasken 团队偏年轻（许多人首次做产品开发），客户项目经理则有 20–25 年经验，期望极高。</li></ol><p>商业模式的反差也值得注意：Sasken 起家于产品开发，但服务业务已占收入 90% 以上，其中 90% 以上是「时间与材料」（time and materials）计费——资源按人天计费，投入与支出极小，因而「主动的项目管理」需求不明显；而产品开发是<b>固定价格</b>，必须靠有效管理与监控才能在预算内完成并取得正回报。这解释了为什么产品项目对项目经理的要求远高于服务项目。</p><p>结局：2008 年 5 月，含音频、视频、流媒体的播放器在客户捆绑手机上上线；2008 年 8 月，约 25 名工程师继续开发与支持 codec，另 25 人支持播放器；Sasken 把这段经验复用到欧美客户项目。项目经理的总结很精辟：「日本在移动多媒体与互联网应用上总比世界其他地方领先 1–2 年，因此为日本客户开发产品很有挑战——必须在最严格的质量管理下使用最新技术，并具备随需求变化的敏捷性；但这段经验让我们后来能复用到欧美客户。」</p><h3 id="s5">12.4 EXCEED：用数据区分相关与因果</h3><p>情境：2017 年 2 月，Exceed Communications（2013 年成立，36 人，总部中东 + 班加罗尔离岸中心）的总经理 Karamath 收到客户 H&amp;K 的升级投诉：某软件包的系统测试进展缓慢，且测试阶段发现多个缺陷。该客户投诉频率明显高于其他客户。项目按<b>时间与材料</b>计费，客户密切监控人员规模与生产率；开发采用 <b>V 过程模型</b>（需求 → 概设 → 详设 → 编码 → 单元/集成/系统/验收测试，测试用例与各设计文档同步开发）。项目 2016 年 8 月启动，2017 年 2 月处于客户测试环境的系统测试阶段；前期因需求收集延误而滞后，开发阶段已追回。</p><p>数据：系统测试用例执行统计按每 2 小时窗口记录，共 20 个工作日 × 5 个窗口 = 100 个观测。我们可算出的基本统计是：<b>均值约 82.3 个用例/2 小时，最小 72、最大 92</b>；按日平均，最低的三天是 1 月 12 日（76.6）、1 月 17 日（79.2）、1 月 31 日（79.2），最高为 2 月 2 日（84.4）。网络响应时间在 210–236 毫秒之间波动。</p><p>团队会上给出的一堆「同样合理」的原因：测试数据难找（需复杂 SQL 才能定位可测数据）；开发团队常在 11 点才部署修复后的新包（约定是 9 点前），压缩了上午的测试窗口；测试机内存不足；访问客户测试环境有网络延迟；测试是手工的、无法复用（重测失败场景要重新录入数据），而上一项目有自动化、客户可能期待同样标准；非正式议论还包括「板球系列赛分散注意力」「主管早退时离岸成员会放松」。</p><p>分析要点（这是案例的核心训练）：</p><ul><li>均值 82.3、极差 20（约 24%）说明波动<b>存在但不大</b>；「某几天低」不足以证明「过程失控」，需要看<b>是否超出正常波动范围</b>（如控制图的上下限），而不是凭印象挑出最低的三天；</li><li>网络延迟 210–236 ms 的波动幅度很小，且与测试用例执行的波动未必同步——「相关」不等于「因果」；要证明因果，需要把同一时段、同一包版本、同一测试集下的执行数与网络指标配对分析；</li><li>「11 点才部署」是一条<b>可验证的机制性原因</b>：它直接减少上午可用窗口，可用「首次部署时间 vs 当日上午执行数」的散点图验证；</li><li>「手工测试导致重测成本高」是<b>结构性原因</b>：它不解释日间波动，但解释整体生产率水平；两类原因要分开处理；</li><li>「注意力分散」属观察性证据，不能作为管理决策的主要依据，但在 1 对 1 沟通中可作为线索。</li></ul><p>课件给出的质量工具正是为此准备的：因果图（鱼骨图）用于把众多原因归类（人、机、料、法、环、测）；帕累托图用于挑出贡献最大的 20%；控制图用于区分「正常波动」与「异常波动」；五个为什么用于追根因。案例要求「系统地筛选众多问题与原因，找出最佳行动」，而不是「把所有原因都改一遍」。</p><p>测试自动化的决策必须带商业论证：自动化投入高，但能消除重测的数据录入开销、提高回归频率；对时间与材料合同，客户是否愿意为自动化付费、自动化后人力如何计费，都是必须先谈清的问题——这正是「不能没有商业论证就推荐自动化」的含义。</p><h3 id="s6">12.5 Catalise：速度、偏差与伦理</h3><p>情境：Catalise 是一家用语音分析诊断精神疾病的初创公司。其产品 Catalisence 通过分析语音模式诊断精神分裂症，被约 <b>40%</b> 的美国精神健康诊所采用，带来超过 3 亿美元风投，并吸引医院与大学合作。新任高级产品经理 Taylor 接手 Catalisten——一款通过语音诊断<b>重度抑郁障碍（MDD）</b>的 AI 产品，预计是公司未来数年最赚钱的产品；CEO 要求提前发布以抢在竞品之前。</p><p>问题：Taylor 审查测试结果时发现，AI 把<b>女性</b>语音样本误判为 MDD 的比例为 <b>19%</b>，而男性仅 <b>2.1%</b>。假阳性诊断会导致不必要的治疗与费用，而女性本就更容易被过度诊断 MDD 并被过度处方精神药物。首席 AI 工程师 Eduardo 说，若要修正女性假阳性率，至少要多花 <b>6 周</b>，会得罪 CEO 并可能危及竞争优势，劝 Taylor「放过这个问题」。</p><p>根因（案例给出的两个拐点）：</p><ol><li><b>数据准备阶段</b>：团队难以编出男女样本均衡的训练集——可获取的患者数据源中男性比例显著更高；又因防泄密被隔离，数据科学家无法向健康系统或研究伙伴索取更好的数据。团队首席数据科学家曾在工作流聊天中确认数据存在性别偏差，并指出样本中女性 MDD 比例高于平均，警告「若用这些数据训练，模型会更倾向过度诊断女性」；但时任临时产品负责人 Eduardo 因时间压力指示继续使用该数据集，并承诺在测试与验证阶段解决。</li><li><b>测试与验证阶段</b>：工程师确认女性假阳性率更高，随后在聊天中就是否优先 <b>precision</b> 还是 <b>recall</b> 发生激烈争论。precision 回答「模型做出预测时，这个预测有多可能正确」，= 真阳性 ÷ 全部阳性，假阳性少则高；recall 回答「模型识别真实病例的能力有多好」，= 真阳性 ÷（真阳性 + 假阴性），假阴性少则高。二者常相互张力：优先 precision → 更保守、假阳性低但漏诊多；优先 recall → 覆盖更多病例但误诊多。产品当时是<b>高 recall</b>：正确诊断了所有 MDD 病例，也把一些没有 MDD 的人诊断为 MDD。</li></ol><p>争论的两方立场（都要能复述）：支持高 recall 的工程师认为「确保所有需要治疗的人都得到治疗」是好事，而且对生意有利——诊所客户会看到诊断量上升，从而带来更多诊疗与处方收入；反对者指出，误诊（尤其对女性）会导致不必要用药，影响情绪稳定、社会互动甚至法律权利。Eduardo 的最终决定是维持高 recall，并写下这段话（原句）：“Let’s not draw any more attention to the 19% false-positive rate for women … Any fallout effect from the false-positive discrepancy isn’t our problem. It’s in the hands of our customers who write the prescriptions … Our job is to get this product to market as fast as we can.”（不要再让人注意女性 19% 的假阳性率……这一差异带来的任何后果不是我们的问题，而在开处方的客户手里……我们的工作就是尽快把产品推向市场。）随后写道：「不要再让人注意女性 19% 的假阳性率。假阳性差异带来的任何后果不是我们的问题，而是在开处方的客户手里——他们知道所有技术都有风险。我们的工作就是尽快把产品推向市场。」</p><p>AI 产品开发流程（案例图 1 的六步，可作为答题骨架）：界定问题（UX 研究访谈用户，形成问题陈述）→ 收集与准备数据（选择与问题陈述匹配的数据集，注意不要被种族、性别等类别偏斜；清洗缺失与错误；标注以平衡类别分布）→ 设计模型（AI 工程师写模型代码）→ 训练模型（让模型在清洗标注后的数据上发现模式，逐步形成预测）→ 测试与验证（用更接近真实世界脏数据的数据集测试，精度下降就回到补充训练数据）→ 部署。这个流程的关键含义是：<b>偏差在第一步和第二步就被引入，之后每一步都只能缓解而不能免费消除</b>。</p><p>伦理分析（用第 1 讲的框架）：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>原则</th><th>在本案中的含义</th></tr><tr><td>Public</td><td>女性患者会被不必要地用药，涉及人身健康与法律权利，公众利益优先于上市速度</td></tr><tr><td>Client and Employer</td><td>看似「为公司好」的快速上市，实际会带来声誉与法律风险；真正的最佳利益是可持续的产品</td></tr><tr><td>Product</td><td>明知 19% vs 2.1% 的偏差仍发布，不符合「达到最高专业标准」</td></tr><tr><td>Judgment</td><td>工程师与产品经理应保持专业判断的独立，不因 CEO 压力放弃技术结论</td></tr><tr><td>Profession</td><td>若公开后被揭露「知情仍发布」，损害整个 AI 医疗产品行业的信任</td></tr></table></div><p>行动方案（Taylor 可以做的，按成本从低到高）：① 用数据说话——把「19% vs 2.1%」换算成绝对人数（如每 1000 名女性使用者多出多少误诊、多少不必要的处方与费用），并附文献支持；② 提出「有条件发布」——限定适用人群（如仅用于男性或作为「辅助提示」而非诊断）、在界面标注置信度与局限、要求临床复核；③ 提出「分期修复」——先修数据重采样与阈值调整（可能只需数天），再排 6 周的完整修正；④ 升级到有权限的人（首席医疗官、合规/法务），并书面留痕；⑤ 准备「不发布」的替代方案与时间表，供决策者比较。</p><p>案例留下的问题（也是考试可能问的）：「如果你要说服首席产品官推迟发布，你会怎么做？」好的答案不是「坚持伦理」，而是「把伦理翻译成商业语言」：误诊导致的诉讼与监管风险、被媒体揭露后的信任崩塌、以及「先修偏差再发布」其实可能只需数周而非六周。</p><h3 id="s7">12.6 跨案例的三条规律</h3><p>把四个案例放在一起，可以提炼出三条反复出现的规律，考试时用它们做「综合」最有说服力：</p><ol><li><b>变更的成本取决于它发生的位置，而不是它的金额。</b>IBM 的 4000 万美元需求之所以难，不是因为钱多，而是因为它出现在最后迭代；Sasken 的「基础功能」之所以变成变更请求，是因为它出现在离用户最远的地方；EXCEED 的投诉之所以难处理，是因为它出现在系统测试阶段。</li><li><b>过程纪律不是官僚，而是让不确定性可承受的机制。</b>IBM 用「回退整个特性 + 代码冻结」保证迭代交付质量；Sasken 用配置管理、集中缺陷库、根因分析报告维持高标准的客户信任；EXCEED 的困境恰恰是缺少自动化与可复现的测试数据，使波动无法被解释。</li><li><b>伦理不是附加项，而是需求的一部分。</b>Catalise 的偏差本质是「非功能需求（公平性、安全性）没有被写进规格」；一旦写进去，它就会像性能或可靠性一样，成为架构与测试的对象，而不是发布前的道德辩论。</li></ol><p>这三条也正好回扣第 1 讲的四属性、第 3 讲的变更代价、第 4 讲的非功能需求——案例课的价值就在于让你看到：这些抽象词在真实组织里长什么样。</p><div class="callout idea" data-ext="l12-case-studies-0"><b>背景</b><p>案例课没有标准答案，但有证据标准：目标不是猜出题人意图，而是在故意不完整的信息里形成证据最强的立场，并在新信息出现时不断修正。读案例可先抓首尾的核心情境与主角目标，再列出还缺哪些关键信息。IBM 案例的技术核心是迭代回退规则：某特性在本迭代内修不好就整体回退代码、推迟下轮，以保证任何交付特性都像可发布一样完整，代价是浪费已完成代码。分析末期范围决策时，先算不做的代价（收入、客户终身价值、竞品替代），再算做的代价（回归风险与发布延误）。</p></div></section>
+<section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>iterative development</td><td>迭代开发</td><td>Development in iterations so evolving requirements can be accommodated.</td></tr><tr><td>code freeze</td><td>代码冻结</td><td>A stage where no new code may be added, protecting a stable system before release.</td></tr><tr><td>back out</td><td>整体回退</td><td>Removing all code for a feature that cannot be fixed within the iteration.</td></tr><tr><td>value network</td><td>价值网络</td><td>Closely tied operators, vendors, content and platform providers with operator-specified interfaces.</td></tr><tr><td>product maturity</td><td>产品成熟度</td><td>The completeness, modularity and quality a client expects as the baseline feature set.</td></tr><tr><td>defect density</td><td>缺陷密度</td><td>Defects per thousand lines of code; Japan 0.020 vs US 0.400 in the cited study.</td></tr><tr><td>field defect</td><td>现场缺陷</td><td>A problem reported from the operational site, an important reliability measure.</td></tr><tr><td>root cause analysis</td><td>根因分析</td><td>Reports explaining how a bug was resolved and how recurrence is prevented.</td></tr><tr><td>V-process</td><td>V 过程</td><td>Test cases developed alongside requirements, high-level and detailed design.</td></tr><tr><td>control chart</td><td>控制图</td><td>Distinguishes normal variation from abnormal variation over time.</td></tr><tr><td>pareto chart</td><td>帕累托图</td><td>Ranks causes so the few contributing most can be addressed first.</td></tr><tr><td>data bias</td><td>数据偏差</td><td>Skewed training data leading to systematically different error rates across groups.</td></tr><tr><td>precision</td><td>精确率</td><td>True positives divided by all positives; higher when false positives are low.</td></tr><tr><td>recall</td><td>召回率</td><td>True positives divided by true positives plus false negatives.</td></tr><tr><td>ethical AI</td><td>伦理 AI</td><td>Developing AI products consistent with public interest, professional standards and human judgment.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　IBM 的决策备忘录</div><p>情境：假设你是 Lalonde。请用不超过 200 字写一份给 Mayor 的决策备忘录，说明你的选择与条件。</p><p><b>示例：</b>「我接受该需求，但以三个条件为前提：① 只做可通过功能开关隔离的最小实现，默认关闭，避免影响既有路径；② 在最后迭代只投入两名资深开发者，其余人力继续保障发布；③ 若在测试窗口内无法修复相关缺陷，按既有规则整体回退，功能推迟到下一版本，届时由双方共同向客户说明。理由是：4000 万美元收入与客户终身价值高于末期改动的可控风险；但质量与 12 月 22 日发布承诺不可让。请 WebSphere 侧确认其功能可在同一开关下与我们同步启用。」</p><p><b>分析要点：</b>① 明确「接受」而非模糊表态；② 用功能开关把「末期改动」的风险隔离；③ 保留课件中已有的「回退」规则作为兜底，使决策可逆；④ 指出跨产品同步（RAD 与 WAS 同一天发布）这一组织约束；⑤ 给出「不做」时的沟通责任人。</p><p><b>评分点：</b>是否引用了案例的具体约束（6 周迭代、2 周测试、代码冻结、同日发布、独立业务单元），而不是只谈「质量很重要」。</p></div><div class="qa"><div class="q">例 2　Sasken 的根因树</div><p>情境：客户投诉「播放器在特定运营商网络上流媒体卡顿」。请用鱼骨图的六个分支（人、机、料、法、环、测）各写一条可能原因，并指出你会优先验证哪两条。</p><p><b>鱼骨：</b>人——团队年轻、缺乏日本运营商网络配置经验；机——印度侧无完整目标测试平台，无法复现运营商网络条件；料——流媒体分片与码率参数来自客户规格，但规格版本可能滞后；法——缺陷仅用表格登记，缺少可复现的抓包与日志规范；环——跨国网络时延与日本本地网络差异；测——测试用例未覆盖弱网切换（Wi-Fi ↔ 移动网）。</p><p><b>优先验证：</b>① 「机/环」——先在客户日本测试设施上复现，确认是否只在特定网络出现；② 「测」——检查用例是否覆盖网络切换与码率自适应，因为这是流媒体卡顿最常见的触发条件。</p><p><b>为什么这两条：</b>它们最可能同时解释「特定运营商」与「卡顿」两个限定词；而「人年轻」虽真实，却不能解释为什么只在某网络出现——这就是「相关 vs 因果」的判断。</p></div><div class="qa"><div class="q">例 3　EXCEED 的数据判断</div><p>情境：用本讲给出的统计（均值 82.3、最小 72、最大 92、日最低 76.6），判断「系统测试过程是否失控」，并写出你的论证。</p><p><b>论证：</b>① 全样本 100 个窗口的均值为 82.3，日间均值在 76.6–84.4 之间，极差约 10%；单窗口极差 20（72–92），约 24%。② 若把这 100 个点画成控制图，先按 ±2σ 估算正常波动范围（σ 约 5–6，则下限约 70–72），可以看到最低点 72 仍在范围内，<b>没有明显超出正常波动的证据</b>。③ 因此「过程失控」的结论<b>不成立</b>；但「整体水平是否达到客户期望」是另一个问题——这需要与合同约定的生产率基线比较，而不是与团队自己的历史比。</p><p><b>进一步：</b>要检验「11 点部署」这一机制性原因，应做「首次部署时间」与「当日上午（9:00 与 11:00 窗口）执行数」的配对分析；要检验网络延迟，应做「响应时间」与「执行数」的同步相关分析，并注意 210–236 ms 的波动幅度本身很小。</p><p><b>结论写法：</b>「数据显示波动在正常范围内，因此优先处理结构性原因（手工测试导致的整体水平偏低、部署时间不稳定），而不是把某几天的低值当作异常去追责。」这既回应了客户的「进展缓慢」，也避免了错误归因。</p></div><div class="qa"><div class="q">例 4　Catalise 的说服方案</div><p>情境：你是 Taylor。请写出说服首席产品官 Darnell 推迟发布的三分钟陈述（要点式），要求包含数据、风险、方案与请求。</p><p><b>陈述要点：</b></p><ol><li><b>数据</b>：女性假阳性 19%、男性 2.1%；换算为每 1000 名女性使用者约多出 170 例误诊，按现行诊疗路径意味着不必要的处方与随访成本；已有文献指出女性本就存在被过度诊断的风险，产品会放大这一偏差。</li><li><b>风险</b>：三类——患者健康（不必要用药）、法律与监管（歧视性偏差的诉讼与审查）、商业（一旦被媒体或研究者揭露，「知情仍发布」会摧毁医院合作伙伴与 3 亿美元融资所依赖的信任）。</li><li><b>方案</b>：分三档——A 立即修数据与阈值（预计 1–2 周，可显著缩小差距）；B 有条件发布（仅作辅助提示、强制临床复核、界面标注置信区间与适用人群）；C 完整修复（6 周，含重新采样与再验证）。</li><li><b>请求</b>：批准 A + B 组合，把完整修复排入下一版本；同时请首席医疗官共同签署发布标准，避免后续争议。</li></ol><p><b>为什么这样组织：</b>它把伦理问题翻译成「健康—法律—商业」三重风险，并给出「不必等六周」的可行路径——这正是案例课要求的「有证据支撑的立场」，而不是道德表态。</p></div></section>
 <section id="sec-practice" class="card" data-type="practice"><ol><li>案例法三步是什么？为什么案例通常没有客观正确答案？</li><li>IBM 的迭代为什么是「4 周 + 2 周」？「整体回退特性」这条规则解决了什么问题、代价是什么？</li><li>Sasken 案例中，「产品成熟度」与「需求演化」如何共同推高成本？</li><li>EXCEED 案例中，哪两条原因属于「机制性原因」、哪两条属于「结构性原因」？为什么这个区分重要？</li><li>写出 precision 与 recall 的定义，并说明在医疗诊断场景中优先哪一个会带来什么后果。</li><li>从四个案例中各取一条证据，说明「变更的成本取决于它发生的位置」。</li></ol><details><summary>参考答案与思路</summary><div class="ans"><p><b>1.</b> 阅读准备、小组讨论、全班讨论。因为案例信息故意不完整、决策涉及多方价值权衡，评价标准是「证据强度与推理质量」，不是「是否猜中主角的选择」。</p><p><b>2.</b> 4 周做计划、设计与实现，2 周专门测试与修缺陷，使「每个迭代交付的特性都像可发布一样完整」。整体回退解决了「带缺陷的特性污染增量」的问题，保证质量门禁；代价是浪费已完成代码、把压力推到下一迭代，并可能反复回退。</p><p><b>3.</b> 产品成熟度决定「客户眼中的基础功能」与「团队认知的定制项」之间的落差；需求演化使客户在开发中持续修改且期望不延期。两者叠加 → 团队压缩评审与测试 → 实现偏离原设计 → 后续修改更贵、可维护性下降。</p><p><b>4.</b> 机制性：11 点才部署（直接压缩上午窗口）、测试数据难找（每个用例的准备时间不同）。结构性：手工测试无法复用（整体水平低）、测试机内存与网络延迟（环境能力）。区分重要，因为机制性原因可以立即改正并验证效果，结构性原因需要投资与商业论证。</p><p><b>5.</b> precision = 真阳性 ÷ 全部阳性（假阳性少则高）；recall = 真阳性 ÷（真阳性 + 假阴性）。医疗诊断优先 recall → 漏诊少但误诊多（本案即此，女性 19% 假阳性）；优先 precision → 误诊少但漏诊多，可能延误治疗。取舍应结合疾病的可逆性与误诊伤害。</p><p><b>6.</b> IBM：需求出现在最后迭代，所以 4000 万美元的改动极难；Sasken：接口规范由运营商持续升级，变更出现在离用户最远的离岸团队；EXCEED：投诉出现在系统测试阶段，返工成本高；Catalise：偏差在数据准备阶段被引入，越晚修复代价越大（重采样 + 再训练 + 再验证）。</p></div></details></section>
 <section id="sec-exam" class="card" data-type="exam"><div class="callout exam"><b>必考</b>案例法三步与「信息故意不完整」；IBM 的 6 周迭代构成、整体回退、代码冻结、三个选项；Sasken 的五类压力与缺陷率数字、codec 与 player 的对比；EXCEED 的 V 过程、机制性 vs 结构性原因；Catalise 的 19%/2.1%、precision/recall、六步 AI 流程。</div><div class="callout warn"><b>易错 1</b>把案例题答成「知识点默写」。案例题评分看「是否引用案例具体事实」与「是否权衡了替代方案」。</div><div class="callout warn"><b>易错 2</b>把 EXCEED 的「低值几天」直接当成「过程失控」。要先判断是否超出正常波动。</div><div class="callout warn"><b>易错 3</b>把 precision 与 recall 的定义写反。记法：precision 看「报出来的有多少是真的」，recall 看「真的有多少被报出来」。</div><div class="callout warn"><b>易错 4</b>在 Catalise 题中只写「应该遵守伦理」。必须给出可执行方案（修数据、限定适用人群、临床复核、升级决策）与商业论证。</div><div class="callout tip"><b>进阶</b>能用「变更的成本取决于位置」把四个案例串起来，并指出「伦理要求应写进非功能需求」——这一步把案例课升格为对整门课的综合。</div></section>
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s8">案例分析的清单</h2><ol class="steps"><li>读首尾两节，写出核心情境、主角目标、必须做的决策</li><li>扫读图表，标出关键数字（金额、日期、比率、人数）</li><li>列出「要判断这个决策还缺什么信息」，并在案例中找对应证据</li><li>把决策选项列全（至少三个，含「不做」与「部分做」）</li><li>为每个选项写收益、代价、风险与可逆性</li><li>用课程概念命名问题（范围蔓延、技术债、non-functional requirement、偏差）</li><li>检查伦理维度：受影响方、ACM/IEEE 原则、可执行的替代方案</li><li>给出立场，并写明「什么新证据会让我改变立场」</li></ol></section>
-<section id="sec-mapping" class="card" data-type="mapping"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p1</td><td>案例情境、4000 万美元需求、末期插入、四个待答问题</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p2–p5</td><td>IBM 业务与战略、RAD 与 WAS 的依赖、发布节奏、开发四阶段与代码冻结、回归缺陷</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p5–p7</td><td>瀑布的辩护与批评、迭代方法、6 周迭代构成、回退规则、三个选项</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p8–p9</td><td>业务板块财务数据（支撑「4000 万美元」量级判断）</td></tr><tr><td>Sasken.pdf</td><td>p1–p4</td><td>日本移动市场与价值网络、接口规范由运营商主导、Sasken 背景</td></tr><tr><td>Sasken.pdf</td><td>p4–p7</td><td>codec 与 media player 两项目对比、产品成熟度、过程纪律、需求演化</td></tr><tr><td>Sasken.pdf</td><td>p7–p10</td><td>质量与缺陷率、测试层级与根因分析、离岸协作与 bug sheet、文化差异、产品 vs 服务</td></tr><tr><td>Sasken.pdf</td><td>p10–p15</td><td>上线与后续、财务与架构附录、术语表</td></tr><tr><td>16_Week 10/2_Case Study/data/EXCEED.pdf</td><td>p2–p4</td><td>V 过程、时间与材料合同、投诉分类、测试执行统计、团队会上的多种原因</td></tr><tr><td>16_Week 10/2_Case Study/data/EXCEED.pdf</td><td>p7–p8</td><td>用例执行数据表、网络响应时间数据（用于相关/因果分析）</td></tr><tr><td>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</td><td>p1–p3</td><td>Catalise 背景、Catalisten、19% vs 2.1%、六周修复成本、NLP 与诊断</td></tr><tr><td>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</td><td>p3–p5</td><td>AI 产品六步流程、数据偏差的两个拐点、precision 与 recall、Eduardo 的决定、行动问题</td></tr><tr><td>（合并）</td><td>—</td><td>IBM 的 6 份重复副本、Move Fast 的 2 份副本已按内容去重，此处只列一次</td></tr><tr><td>（拓展）</td><td>—</td><td>案例阅读八步法为通用分析方法，可迁移到其他管理案例</td></tr><tr><td>（跳过）</td><td>—</td><td>各周 Case Study 的 Moodle 说明页（讨论题与阅读指南）内容已并入 12.1，不单列</td></tr></table></section><div class="lnav"><a class="prev" href="l11-agile-practices-workshop.html">← 第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</a><a class="next" href="l13-course-project-and-report-writing.html">第 13 讲 · 课程项目与状态报告写作 →</a></div></article></div>
+<section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p1</td><td>案例情境、4000 万美元需求、末期插入、四个待答问题</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p2–p5</td><td>IBM 业务与战略、RAD 与 WAS 的依赖、发布节奏、开发四阶段与代码冻结、回归缺陷</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p5–p7</td><td>瀑布的辩护与批评、迭代方法、6 周迭代构成、回退规则、三个选项</td></tr><tr><td>16_Week 10/2_Case Study/data/IBM.pdf</td><td>p8–p9</td><td>业务板块财务数据（支撑「4000 万美元」量级判断）</td></tr><tr><td>Sasken.pdf</td><td>p1–p4</td><td>日本移动市场与价值网络、接口规范由运营商主导、Sasken 背景</td></tr><tr><td>Sasken.pdf</td><td>p4–p7</td><td>codec 与 media player 两项目对比、产品成熟度、过程纪律、需求演化</td></tr><tr><td>Sasken.pdf</td><td>p7–p10</td><td>质量与缺陷率、测试层级与根因分析、离岸协作与 bug sheet、文化差异、产品 vs 服务</td></tr><tr><td>Sasken.pdf</td><td>p10–p15</td><td>上线与后续、财务与架构附录、术语表</td></tr><tr><td>16_Week 10/2_Case Study/data/EXCEED.pdf</td><td>p2–p4</td><td>V 过程、时间与材料合同、投诉分类、测试执行统计、团队会上的多种原因</td></tr><tr><td>16_Week 10/2_Case Study/data/EXCEED.pdf</td><td>p7–p8</td><td>用例执行数据表、网络响应时间数据（用于相关/因果分析）</td></tr><tr><td>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</td><td>p1–p3</td><td>Catalise 背景、Catalisten、19% vs 2.1%、六周修复成本、NLP 与诊断</td></tr><tr><td>17_Week 11/2_Case Study/data/Move Fast, but without Bias - A.pdf</td><td>p3–p5</td><td>AI 产品六步流程、数据偏差的两个拐点、precision 与 recall、Eduardo 的决定、行动问题</td></tr><tr><td>（合并）</td><td>—</td><td>IBM 的 6 份重复副本、Move Fast 的 2 份副本已按内容去重，此处只列一次</td></tr><tr><td>（拓展）</td><td>—</td><td>案例阅读八步法为通用分析方法，可迁移到其他管理案例</td></tr><tr><td>（跳过）</td><td>—</td><td>各周 Case Study 的 Moodle 说明页（讨论题与阅读指南）内容已并入 12.1，不单列</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l11-agile-practices-workshop.html"><span>上一讲</span><strong>第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</strong></a><a data-sequence="parent" href="part-4.html"><span>返回目录</span><strong>第 4 章 实践、案例与课程项目</strong></a><a data-sequence="next" href="l13-course-project-and-report-writing.html"><span>下一讲</span><strong>第 13 讲 · 课程项目与状态报告写作</strong></a></nav></article></div></div>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var header = document.querySelector('.topbar');
+  var directory = document.querySelector('.page-directory');
+  var toggle = document.getElementById('directory-toggle');
+  var content = document.getElementById('directory-content');
+  var localNav = directory.querySelector('[data-scrollspy]');
+  var compact = matchMedia('(max-width:980px)');
+  var branches = Array.from(directory.querySelectorAll('.directory-expand'));
+  var links = Array.from(localNav.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function (a) {
+    var target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (target) target.setAttribute('tabindex', '-1');
+    return target;
+  });
+  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
+  var previous = null;
+  var queued = false;
+  var anchorTarget = null;
+
+  function expand(button, open) {
+    button.setAttribute('aria-expanded', String(open));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
+  }
+  function setDirectory(open) {
+    expand(toggle, open);
+    toggle.querySelector('.directory-toggle-state').textContent = open ? '收起' : '展开';
+  }
+  function measure() {
+    root.style.setProperty('--topbar-height', Math.ceil(header.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--page-directory-height', compact.matches && !root.classList.contains('focus-reading') ? (toggle.offsetHeight + 18) + 'px' : '0px');
+  }
+  function reveal(link) {
+    var parent = link.parentElement;
+    while (parent && parent !== content) {
+      if (parent.id && parent.id.indexOf('directory-branch-') === 0) {
+        var button = directory.querySelector('[aria-controls="' + parent.id + '"]');
+        if (button) expand(button, true);
+      }
+      parent = parent.parentElement;
+    }
+  }
+  function revealHash() {
+    var link = links.find(function (item) { return item.hash === location.hash; });
+    if (link) reveal(link);
+  }
+  function settleAnchor() {
+    if (!anchorTarget) return;
+    // Lazy media above a destination can otherwise move it after the jump.
+    anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    var waiting = Array.from(document.images).some(function (image) {
+      return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    if (!waiting) anchorTarget = null;
+  }
+  function updateCurrent() {
+    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
+    if (!active) {
+      var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      }
+    }
+    if (active === previous) return;
+    links.forEach(function (a) {
+      a.classList.toggle('is-current', a === active);
+      if (a === active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) reveal(active);
+    previous = active;
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; updateCurrent(); });
+  }
+
+  root.classList.add('navigation-ready');
+  toggle.hidden = false;
+  branches.forEach(function (button) {
+    button.hidden = false;
+    expand(button, button.getAttribute('data-start-open') === 'true');
+    button.addEventListener('click', function () {
+      expand(button, button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  setDirectory(!compact.matches);
+  revealHash();
+  measure();
+  toggle.addEventListener('click', function () {
+    setDirectory(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  compact.addEventListener('change', function () { setDirectory(!compact.matches); measure(); schedule(); });
+  directory.addEventListener('click', function (event) {
+    var link = event.target.closest('a');
+    if (!link || !link.getAttribute('href').startsWith('#') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    reveal(link);
+    if (compact.matches) setDirectory(false);
+    measure();
+    var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (target) {
+      event.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      target.focus({ preventScroll: true });
+      anchorTarget = target; settleAnchor(); schedule();
+    }
+  });
+  directory.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && compact.matches && !content.hidden) {
+      setDirectory(false); toggle.focus(); event.preventDefault();
+    }
+  });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('scrollend', schedule);
+  addEventListener('hashchange', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('popstate', function () { anchorTarget = null; revealHash(); schedule(); });
+  addEventListener('resize', function () { measure(); schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (window.ResizeObserver) {
+    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    observer.observe(header);
+    observer.observe(document.getElementById('page-content'));
+  }
+  // Stop following the selected anchor as soon as the reader takes control.
+  ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
+    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+  });
+  addEventListener('keydown', function (event) {
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+  });
+  var initialLink = links.find(function (link) { return link.hash === location.hash; });
+  if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
+  updateCurrent();
+})();
+</script>
+<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script><script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');
   function stored(){ try{ var s=localStorage.getItem(KEY); return (s==='light'||s==='dark')?s:null; }catch(e){ return null; } }

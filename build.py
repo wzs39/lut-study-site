@@ -22,6 +22,11 @@ import json
 import os
 import re
 import sys
+from site_navigation import NavItem, breadcrumbs, course_tree, page_frame, site_navigation, sequence_navigation
+from learning_data import build_search_data, script_json
+from learning_views import home_widgets, search_box, course_progress, lecture_controls, reading_controls
+from source_info import SourceCatalogue, source_panel
+from media_assets import MediaAssets
 
 # Windows 控制台默认 GBK，讲义标题里出现 ⑪ 这类字符时 print 会抛 UnicodeEncodeError。
 # 统一把标准输出改成 UTF-8，并对无法编码的字符退化为替代符，保证 --check 不因编码中断。
@@ -32,6 +37,8 @@ for _stream in (sys.stdout, sys.stderr):
         pass
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+SOURCE_CATALOGUE = SourceCatalogue(ROOT)
+MEDIA = MediaAssets(ROOT)
 CONTENT = os.path.join(ROOT, "content")
 MANIFEST = os.path.join(os.path.dirname(ROOT), "manifest2.txt")
 REQUIRED = [
@@ -48,6 +55,10 @@ DATE = datetime.date.today().isoformat()
 
 with io.open(os.path.join(ROOT, "assets", "style.css"), encoding="utf-8") as _fh:
     CSS_TEXT = _fh.read()
+with io.open(os.path.join(ROOT, "assets", "learning.css"), encoding="utf-8") as _fh:
+    CSS_TEXT += "\n" + _fh.read()
+with io.open(os.path.join(ROOT, "assets", "navigation.js"), encoding="utf-8") as _fh:
+    NAVIGATION_JS = _fh.read()
 
 LAYOUT = """<!doctype html>
 <html lang="zh-CN">
@@ -59,26 +70,50 @@ LAYOUT = """<!doctype html>
 <title>{{TITLE}}</title>
 <style>{{CSSTEXT}}</style>
 </head>
-<body>
+<body id="top" data-module="{{MODULE}}">
+<a class="skip-link" href="#page-content">跳到正文</a>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="{{HOME}}">课程讲义站</a>
-<a class="navlink" href="{{REVIEW}}">期末考点清单</a>
-<a class="navlink ext" href="{{EXT}}">知识拓展</a>
-<a class="navlink alt" href="{{ALL}}">全站合订本</a>
-<a class="navlink up" href="{{UPLOAD}}">上传资料</a>
-<span class="crumb">{{CRUMB}}</span>
+{{NAVIGATION}}
+<div class="header-actions"><a class="search-shortcut" href="{{HOME}}#site-search">搜索</a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
+</div>
 </div></header>
-<main class="wrap {{CLS}}" data-site-prefix="{{PREFIX}}">
+<main id="main-content" tabindex="-1" class="wrap {{CLS}}" data-site-prefix="{{PREFIX}}">
+{{CRUMB}}
 {{BODY}}
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 {{DATE}} <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<script>{{NAVSCRIPT}}</script>
+<script src="{{PREFIX}}data/learning-catalog.js"></script><script src="{{PREFIX}}assets/learning.bundle.js"></script>
 {{SCRIPT}}{{THEME}}
 </body>
 </html>
 """
+
+LECTURE_JS = """<script>
+(function(){
+  var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
+  document.body.appendChild(bar);
+  var btt=document.createElement('button');btt.id='btt';btt.type='button';
+  btt.setAttribute('aria-label','回到顶部');btt.textContent='↑';
+  btt.addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  });
+  document.body.appendChild(btt);
+  var queued=false;
+  function update(){
+    var h=document.documentElement,max=h.scrollHeight-h.clientHeight,y=window.scrollY||0;
+    bar.style.width=(max>0?y/max*100:0)+'%';btt.classList.toggle('show',y>600);
+  }
+  addEventListener('scroll',function(){
+    if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  },{passive:true});
+  addEventListener('resize',update);update();
+})();
+</script>"""
 
 THEME_JS = """<script>
 (function(){
@@ -100,48 +135,27 @@ THEME_JS = """<script>
 })();
 </script>"""
 
-SEARCH_JS = """<script>
-(function(){
-  var q=document.getElementById('q');
-  if(!q) return;
-  var cards=[].slice.call(document.querySelectorAll('.ccard'));
-  function hit(el,k){
-    return !k || (el.getAttribute('data-s')||'').toLowerCase().indexOf(k)>=0;
-  }
-  q.addEventListener('input',function(){
-    var k=q.value.trim().toLowerCase();
-    cards.forEach(function(card){
-      var shown=0;
-      [].slice.call(card.querySelectorAll('.chapters > li')).forEach(function(ch){
-        var chHit=hit(ch,k), n=0;
-        [].slice.call(ch.querySelectorAll('.lec-list li')).forEach(function(li){
-          var m=chHit||hit(li,k);
-          li.style.display=m?'':'none';
-          if(m) n++;
-        });
-        ch.style.display=(!k||chHit||n>0)?'':'none';
-        if(!k||chHit||n>0) shown++;
-      });
-      card.style.display=(!k||shown>0)?'':'none';
-    });
-  });
-})();
-</script>"""
 
 
-def page(title, body, prefix, crumb, cls="", script=""):
+def encode_inline_controls(body):
+    """Preserve literal CR/LF examples as entities without changing their DOM text."""
+    return re.sub(r'<code>([\r\n]+)</code>',
+                  lambda match: '<code>' + ''.join('&#%d;' % ord(char) for char in match[1]) + '</code>', body)
+
+
+def page(title, body, prefix, crumb, cls="", script="", module="courses", groups=()):
+    body = encode_inline_controls(MEDIA.render(scrollable_tables(body), prefix))
     return (
         LAYOUT.replace("{{TITLE}}", html.escape(title))
         .replace("{{CSSTEXT}}", CSS_TEXT)
-        .replace("{{REVIEW}}", prefix + "review.html")
-        .replace("{{EXT}}", prefix + "extend.html")
-        .replace("{{ALL}}", prefix + "all.html")
-        .replace("{{UPLOAD}}", prefix + "upload.html")
         .replace("{{HOME}}", prefix + "index.html")
         .replace("{{PREFIX}}", prefix)
-        .replace("{{CRUMB}}", crumb)
+        .replace("{{CRUMB}}", breadcrumbs(crumb))
+        .replace("{{MODULE}}", module)
+        .replace("{{NAVIGATION}}", site_navigation(prefix, module, nested=bool(prefix)))
+        .replace("{{NAVSCRIPT}}", NAVIGATION_JS)
         .replace("{{CLS}}", cls)
-        .replace("{{BODY}}", body)
+        .replace("{{BODY}}", page_frame(body, groups, title))
         .replace("{{SCRIPT}}", script)
         .replace("{{THEME}}", THEME_JS)
         .replace("{{DATE}}", DATE)
@@ -156,6 +170,13 @@ def write(path, text):
     with open(tmp, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)
     os.replace(tmp, path)
+
+
+def fix_assets(html_text, prefix=""):
+    """内容里写 assets/img|media/... 相对路径；按页面深度补前缀，使讲义页与合订本都可用。"""
+    if not html_text or not prefix:
+        return html_text
+    return html_text.replace('src="assets/', 'src="' + prefix + 'assets/')
 
 
 def decorate(body):
@@ -260,32 +281,15 @@ def manifest_files():
     return g
 
 
-def lecture_nav(c, cur):
-    out = []
-    for i, l in enumerate(c.get("lectures", [])):
-        cls = ' class="toc-l3"' if i == cur else ""
-        mark = "▸ " if i == cur else ""
-        out.append(
-            '<a%s href="%s.html">%s%s</a>'
-            % (
-                cls,
-                l.get("slug", "lec-%d" % (i + 1)),
-                mark,
-                html.escape(l.get("title_zh", "")),
-            )
-        )
-    return "".join(out)
-
-
 SECTION_LABELS = [
-    ("overview", "定位"),
-    ("detail", "知识点"),
-    ("keywords", "术语表"),
-    ("examples", "例题"),
-    ("practice", "练习"),
-    ("exam", "考点"),
+    ("overview", "本节定位与目标"),
+    ("detail", "知识精讲"),
+    ("keywords", "英文术语"),
+    ("examples", "例题解析"),
+    ("practice", "练习与解答"),
+    ("exam", "考点与易错"),
     ("checklist", "方法清单"),
-    ("mapping", "溯源"),
+    ("mapping", "原始资料对照"),
 ]
 
 
@@ -301,45 +305,55 @@ def add_section_ids(html_text):
     return html_text
 
 
-def section_quicknav(html_text):
-    have = set(re.findall(r'data-type="([a-z]+)"', html_text or ""))
-    chips = [
-        '<a class="snav" href="#sec-%s">%s</a>' % (k, lab)
-        for k, lab in SECTION_LABELS
-        if k in have
-    ]
-    if len(chips) < 2:
-        return ""
-    return '<nav class="snavs">' + "".join(chips) + "</nav>"
+def lecture_outline(body):
+    items = []
+    for kind, label in SECTION_LABELS:
+        block = section(body, kind)
+        if not block:
+            continue
+        headings, parent = [], None
+        for level, anchor, text in re.findall(r'<h([23])[^>]*id="([^"]+)"[^>]*>(.*?)</h\1>', block, flags=re.S):
+            node = NavItem(plain_text(text, 200), "#" + anchor)
+            if level == "3" and parent:
+                parent.children += (node,)
+            else:
+                headings.append(node)
+                parent = node if level == "2" else None
+        items.append(NavItem(label, "#sec-" + kind, tuple(headings)))
+    return items
+
+
+def scrollable_tables(body):
+    # Retain native table semantics while containing wide tables on small screens.
+    table_index = 0
+
+    def scroll_table(match):
+        nonlocal table_index
+        table_index += 1
+        return (
+            '<div class="table-scroll" role="region" tabindex="0" '
+            'aria-label="讲义表格 %d，可横向滚动">' % table_index
+            + match.group(0) + "</div>"
+        )
+
+    return re.sub(
+        r"<table\b[^>]*>.*?</table>",
+        scroll_table,
+        body, flags=re.S,
+    )
 
 
 def build_lecture(c, i):
     lecs = c["lectures"]
     lec = lecs[i]
-    body, toc = decorate(add_section_ids(lec.get("html", "")))
-    files = lec.get("source_files") or []
-    src = ""
-    if files:
-        src = (
-            '<p class="src">原始文件：'
-            + " ".join("<code>%s</code>" % html.escape(f) for f in files)
-            + "</p>"
-        )
-    side = (
-        '<aside class="side"><div class="toc"><div class="toc-t">本页目录</div>'
-        + toc
-        + "</div>"
-        + '<div class="toc" style="margin-top:14px"><div class="toc-t">本课讲义</div>'
-        + lecture_nav(c, i)
-        + "</div></aside>"
-    )
-    head = ["<h1>%s</h1>" % html.escape(lec.get("title_zh", ""))]
-    meta = []
+    body, _ = decorate(add_section_ids(fix_assets(lec.get("html", ""), "../../")))
+    outline = lecture_outline(body)
+    src = source_panel(c, lec, SOURCE_CATALOGUE)
+    head = ['<header class="lecture-head"><p class="lecture-kicker">%s · 第 %02d / %02d 讲</p>'
+            % (html.escape(c.get("name_zh", c.get("id", ""))), i + 1, len(lecs))]
+    head.append('<h1 id="lecture-title">%s</h1>' % html.escape(lec.get("title_zh", "")))
     if lec.get("title_en"):
-        meta.append(html.escape(lec["title_en"]))
-    meta.append('<span class="badge mute">%s</span>' % html.escape(c.get("id", "")))
-    meta.append('<span class="badge mute">第 %d / %d 讲</span>' % (i + 1, len(lecs)))
-    head.append('<p class="lead">' + " ".join(meta) + "</p>")
+        head.append('<p class="lecture-subtitle">%s</p>' % html.escape(lec["title_en"]))
     part_name = lec.get("part") or "未分章"
     part_i = next((pi for pi, (n, _) in enumerate(parts_of(c)) if n == part_name), 0)
     head.append(
@@ -347,37 +361,25 @@ def build_lecture(c, i):
         % (part_slug(part_i), html.escape(part_name))
     )
     head.append(src)
-    head.append(section_quicknav(lec.get("html", "")))
-    nav = ['<div class="lnav">']
-    if i > 0:
-        nav.append(
-            '<a class="prev" href="%s.html">← %s</a>'
-            % (lecs[i - 1].get("slug"), html.escape(lecs[i - 1].get("title_zh", "")))
-        )
-    else:
-        nav.append("<span></span>")
-    if i + 1 < len(lecs):
-        nav.append(
-            '<a class="next" href="%s.html">%s →</a>'
-            % (lecs[i + 1].get("slug"), html.escape(lecs[i + 1].get("title_zh", "")))
-        )
-    else:
-        nav.append("<span></span>")
-    nav.append("</div>")
-    art = "<article>" + "".join(head) + body + "".join(nav) + "</article>"
-    crumb = (
-        '<a href="../../index.html">总览</a> / <a href="index.html">%s</a> / <a href="%s.html">%s</a>'
-        % (
-            html.escape(c.get("name_zh", c.get("id", ""))),
-            part_slug(part_i),
-            html.escape(part_name),
-        )
+    head.append(lecture_controls())
+    head.append('</header>')
+    nav = sequence_navigation(
+        (lecs[i - 1]["slug"] + ".html", lecs[i - 1]["title_zh"]) if i else None,
+        (part_slug(part_i) + ".html", part_name),
+        (lecs[i + 1]["slug"] + ".html", lecs[i + 1]["title_zh"]) if i + 1 < len(lecs) else None,
+        "讲",
     )
+    art = '<article aria-labelledby="lecture-title" data-lecture-id="%s">' % html.escape(c["id"] + "/" + lec["slug"], quote=True) + "".join(head) + body + nav + "</article>"
+    crumb = [("课程总览", "../../index.html"), (c.get("name_zh", c["id"]), "index.html"),
+             (part_name, part_slug(part_i) + ".html"), (lec.get("title_zh", ""), None)]
     return page(
         "%s · %s" % (lec.get("title_zh", ""), c.get("id", "")),
-        '<div class="lec">' + side + art + "</div>",
+        art,
         "../../",
         crumb,
+        cls="lecture-page",
+        script=LECTURE_JS,
+        groups=[("本页内容", outline), ("课程目录", course_tree(c, lec["slug"] + ".html", parts_of(c)))],
     )
 
 
@@ -398,16 +400,18 @@ def part_slug(i):
     return "part-%d" % (i + 1)
 
 
-def lec_card(l):
+def lec_card(l, course_id=""):
     kw = l.get("keywords") or []
     chips = "".join('<span class="chip">%s</span>' % html.escape(k) for k in kw[:8])
     ov = section(l.get("html", ""), "overview")
     return (
-        '<div class="card"><h3><a href="%s.html">%s</a></h3>'
+        '<div class="card" id="preview-%s"><h3><a href="%s.html">%s</a>%s</h3>'
         '<p class="lead">%s</p>%s%s</div>'
         % (
+            html.escape(l.get("slug", ""), quote=True),
             l.get("slug"),
             html.escape(l.get("title_zh", "")),
+            '<span class="study-state" data-study-id="%s">未开始</span>' % html.escape(course_id + "/" + l["slug"], quote=True) if course_id else "",
             html.escape(l.get("title_en", "")),
             ("<p>" + html.escape(plain_text(ov, 200)) + "</p>") if ov else "",
             ("<p>" + chips + "</p>") if chips else "",
@@ -431,7 +435,7 @@ def build_course(c):
     parts = parts_of(c)
     blocks = []
     for pi, (name, items) in enumerate(parts):
-        rows = "".join(lec_card(l) for _, l in items)
+        rows = "".join(lec_card(l, c["id"]) for _, l in items)
         blocks.append(
             '<div class="chapter"><h2 id="p-%s"><a href="%s.html">%s</a> '
             '<span class="badge mute">%d 讲</span></h2>%s</div>'
@@ -447,17 +451,17 @@ def build_course(c):
         % (html.escape(c.get("id", ""), quote=True), html.escape(parts_meta, quote=True))
     )
     body = (
-        '<h1>%s</h1><p class="lead">%s</p>%s'
-        '<p><a class="chip" href="../../review.html#r-%s">本课考点速查 →</a> '
-        '<a class="chip" href="../../extend.html#e-%s">本课知识拓展 →</a> '
-        '<a class="chip" href="../../all.html#c-%s">本课合订本 →</a> '
-        '<a class="chip" href="#course-materials">本课实时资料与上传 ↓</a></p>%s%s'
+        '<h1>%s</h1><p class="lead">%s</p>%s%s'
+        '<nav class="related-nav" aria-label="本课关联页面"><a href="../../review.html#r-%s">本课考点清单 →</a> '
+        '<a href="../../extend.html#e-%s">本课知识拓展 →</a> '
+        '<a href="reader.html#c-%s">本课合订本 →</a></nav>%s%s'
         % (
             html.escape(c.get("name_zh", c.get("id", ""))),
             course_info(c, lecs, len(parts)),
             ("<p>%s</p>" % html.escape(c.get("summary", "")))
             if c.get("summary")
             else "",
+            course_progress(c["id"],len(lecs)),
             html.escape(c.get("id", "")),
             html.escape(c.get("id", "")),
             html.escape(c.get("id", "")),
@@ -465,41 +469,30 @@ def build_course(c):
             upload_panel,
         )
     )
-    crumb = (
-        '<a href="../../index.html">总览</a> / <a href="../../index.html#c-%s">课程</a> / '
-        % html.escape(c.get("id", ""))
-        + html.escape(c.get("name_zh", c.get("id", "")))
-    )
-    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/materials.js"></script>'
+    crumb = [("课程总览", "../../index.html"), (c.get("name_zh", c["id"]), None)]
+    outline = [NavItem(name, "#p-%d" % (pi + 1)) for pi, (name, _) in enumerate(parts)]
+    outline.append(NavItem("实时资料与上传", "#course-materials"))
+    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
     return page(
         "%s · 课程讲义" % c.get("name_zh", c.get("id", "")),
         body,
         "../../",
         crumb,
         script=mat_scripts,
+        groups=[("本页内容", outline), ("课程目录", course_tree(c, "index.html", parts))],
     )
 
 
 def build_part(c, pi):
     parts = parts_of(c)
     name, items = parts[pi]
-    rows = "".join(lec_card(l) for _, l in items)
-    nav = ['<div class="lnav">']
-    if pi > 0:
-        nav.append(
-            '<a class="prev" href="%s.html">← %s</a>'
-            % (part_slug(pi - 1), html.escape(parts[pi - 1][0]))
-        )
-    else:
-        nav.append("<span></span>")
-    if pi + 1 < len(parts):
-        nav.append(
-            '<a class="next" href="%s.html">%s →</a>'
-            % (part_slug(pi + 1), html.escape(parts[pi + 1][0]))
-        )
-    else:
-        nav.append("<span></span>")
-    nav.append("</div>")
+    rows = "".join(lec_card(l, c["id"]) for _, l in items)
+    nav = sequence_navigation(
+        (part_slug(pi - 1) + ".html", parts[pi - 1][0]) if pi else None,
+        ("index.html", c.get("name_zh", c["id"])),
+        (part_slug(pi + 1) + ".html", parts[pi + 1][0]) if pi + 1 < len(parts) else None,
+        "章",
+    )
     upload_panel = (
         '<section class="card mat-panel" id="chapter-materials" data-course="%s" data-part="%d" data-part-name="%s">'
         '<div class="mat-empty">正在加载本章节实时资料…</div></section>'
@@ -512,8 +505,7 @@ def build_part(c, pi):
     body = (
         "<h1>%s</h1>"
         '<p class="lead">%s <span class="badge mute">%s</span></p>'
-        '<p><a class="chip" href="#chapter-materials">本章补充资料 / 上传讲义 ↓</a></p>'
-        "<h2>%s</h2>%s%s%s"
+        '<h2 id="chapter-lectures">%s</h2>%s%s%s'
         % (
             html.escape(name),
             html.escape(c.get("name_zh", c.get("id", ""))),
@@ -521,20 +513,21 @@ def build_part(c, pi):
             html.escape(name),
             rows,
             upload_panel,
-            "".join(nav),
+            nav,
         )
     )
-    crumb = '<a href="../../index.html">总览</a> / <a href="index.html">%s</a> / %s' % (
-        html.escape(c.get("name_zh", c.get("id", ""))),
-        html.escape(name),
-    )
-    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/materials.js"></script>'
+    crumb = [("课程总览", "../../index.html"), (c.get("name_zh", c["id"]), "index.html"), (name, None)]
+    outline = [NavItem("本章讲义", "#chapter-lectures", tuple(
+        NavItem(l.get("title_zh", ""), "#preview-" + l["slug"]) for _, l in items)),
+        NavItem("补充资料与上传", "#chapter-materials")]
+    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
     return page(
         "%s · %s" % (name, c.get("name_zh", "")),
         body,
         "../../",
         crumb,
         script=mat_scripts,
+        groups=[("本页内容", outline), ("课程目录", course_tree(c, part_slug(pi) + ".html", parts))],
     )
 
 
@@ -568,12 +561,13 @@ def build_root(courses):
                     + kw
                 ).lower()
                 rows.append(
-                    '<li data-s="%s"><a class="t" href="c/%s/%s.html">%s</a></li>'
+                    '<li data-s="%s"><a class="t" href="c/%s/%s.html">%s</a><span class="study-state" data-study-id="%s">未开始</span></li>'
                     % (
                         html.escape(s, quote=True),
                         cid,
                         l.get("slug"),
                         html.escape(l.get("title_zh", "")),
+                        html.escape(cid + "/" + l["slug"], quote=True),
                     )
                 )
             chapters.append(
@@ -590,7 +584,7 @@ def build_root(courses):
             )
         cards.append(
             '<div class="ccard" id="c-%s"><h3><a href="c/%s/index.html">%s</a></h3>'
-            '<div class="meta">%s%s · %d 章 · %d 讲</div><ul class="chapters">%s</ul></div>'
+            '<div class="meta">%s%s · %d 章 · %d 讲</div>%s<ul class="chapters">%s</ul></div>'
             % (
                 cid,
                 cid,
@@ -599,6 +593,7 @@ def build_root(courses):
                 (" · " + html.escape(c.get("name_en", ""))) if c.get("name_en") else "",
                 len(parts_of(c)),
                 len(lecs),
+                course_progress(cid,len(lecs)),
                 "".join(chapters),
             )
         )
@@ -610,11 +605,7 @@ def build_root(courses):
         '<div class="stat"><b>%d</b><span>个章节</span></div>'
         '<div class="stat"><b>%d</b><span>讲讲义</span></div>'
         '<div class="stat"><b>%d</b><span>个原始文件</span></div></div>'
-        '<input id="q" class="search" placeholder="搜索：课程ID / 章节名 / 讲义标题 / 关键词…">'
-        '<p><a class="chip" href="upload.html">📤 上传章节讲义 / 实时资料中心 →</a> '
-        '<a class="chip" href="all.html">打开全站合订本（全部讲次一页读完）→</a> '
-        '<a class="chip" href="review.html">期末考点提醒清单 →</a> '
-        '<a class="chip" href="extend.html">知识拓展汇总页 →</a></p>'
+        '%s%s'
         '<div class="courses">%s</div>'
         '<details class="howto"><summary>后续如何补充新的讲义页（扩展说明）</summary>'
         '<ol class="steps">'
@@ -630,6 +621,8 @@ def build_root(courses):
             total_parts,
             total_lec,
             src_total,
+            search_box(courses),
+            home_widgets(courses),
             "".join(cards),
         )
     )
@@ -637,16 +630,17 @@ def build_root(courses):
         "课程讲义总览",
         body,
         "",
-        "共 %d 门课 · %d 章 · %d 讲" % (len(courses), total_parts, total_lec),
-        script=SEARCH_JS,
+        [("课程总览", None)],
+        script='<script src="assets/search.js"></script>',
+        groups=[("本页内容", [NavItem("全文搜索", "#site-search"),NavItem("继续学习与错题", "#study-dashboard")]
+                 + [NavItem(c.get("name_zh", c["id"]), "#c-" + c["id"]) for c in courses])],
     )
 
 
-def build_allinone(courses):
+def build_allinone(courses, prefix=""):
     total = sum(len(c.get("lectures", [])) for c in courses)
     total_parts = sum(len(parts_of(c)) for c in courses)
-    toc = ['<div class="alltoc"><b>目录：课程 → 章节 → 讲次</b><ol class="steps">']
-    parts = []
+    outline, parts = [], []
     for c in courses:
         cid = c.get("id", "")
         name = c.get("name_zh", cid)
@@ -654,29 +648,9 @@ def build_allinone(courses):
         chapters = parts_of(c)
         sub = []
         for pi, (pname, items) in enumerate(chapters):
-            links = "".join(
-                '<li><a href="#l-%s-%s">%s</a></li>'
-                % (
-                    html.escape(cid),
-                    html.escape(l.get("slug", "")),
-                    html.escape(l.get("title_zh", "")),
-                )
-                for _, l in items
-            )
-            sub.append(
-                '<li><a href="#p-%s-%d">%s</a>（%d 讲）<ol class="steps">%s</ol></li>'
-                % (html.escape(cid), pi + 1, html.escape(pname), len(items), links)
-            )
-        toc.append(
-            '<li><a href="#c-%s">%s</a>（%d 章 / %d 讲）<ol class="steps">%s</ol></li>'
-            % (
-                html.escape(cid),
-                html.escape(name),
-                len(chapters),
-                len(lecs),
-                "".join(sub),
-            )
-        )
+            sub.append(NavItem(pname, "#p-%s-%d" % (cid, pi + 1), tuple(
+                NavItem(l.get("title_zh", ""), "#l-%s-%s" % (cid, l["slug"])) for _, l in items)))
+        outline.append(NavItem(name, "#c-" + cid, tuple(sub)))
         parts.append(
             '<section class="allcourse" id="c-%s"><h1>%s</h1>'
             '<p class="lead">%s · %d 章 · %d 讲</p></section>'
@@ -713,7 +687,7 @@ def build_allinone(courses):
                         html.escape(l.get("title_zh", "")),
                         html.escape(l.get("title_en", "") or ""),
                         html.escape(pname),
-                        l.get("html", ""),
+                        fix_assets(l.get("html", ""), ""),
                         html.escape(cid),
                         html.escape(l.get("slug", "")),
                         html.escape(cid),
@@ -721,39 +695,45 @@ def build_allinone(courses):
                         html.escape(cid),
                     )
                 )
-    toc.append("</ol></div>")
     body = (
         "<h1>全站合订本 · 全部课程逐讲讲义</h1>"
         '<p class="lead">%d 门课 / %d 章 / %d 讲，按「课程 → 章节」顺序连排；每章有标题，'
-        "每讲之后可直接跳回独立页或章节页。适合通读、打印、离线放到手机里看。</p>%s%s"
-        % (len(courses), total_parts, total, "".join(toc), "".join(parts))
+        "每讲之后可直接跳回独立页或章节页。适合通读、打印、离线放到手机里看。</p>%s"
+        % (len(courses), total_parts, total, "".join(parts))
     )
+    if prefix:
+        body = body.replace('全站合订本 · 全部课程逐讲讲义', html.escape(courses[0].get('name_zh', courses[0]['id'])) + ' · 课程合订本')
+        body = body.replace('href="c/', 'href="' + prefix + 'c/')
+        body = fix_assets(body, prefix)
+    else:
+        links = ''.join('<li><a href="c/%s/reader.html">%s · %d 讲</a></li>' % (html.escape(c['id']),html.escape(c.get('name_zh',c['id'])),len(c['lectures'])) for c in courses)
+        body = '<details class="card"><summary>按课程阅读（页面更轻）</summary><ul>' + links + '</ul></details>' + body
+    body = reading_controls() + body
     return page(
-        "全站合订本 · 课程讲义",
+        "课程合订本" if prefix else "全站合订本 · 课程讲义",
         body,
-        "",
-        "共 %d 门课 · %d 章 · %d 讲" % (len(courses), total_parts, total),
+        prefix,
+        [("课程总览", prefix + "index.html"), ("课程合订本" if prefix else "全站合订本", None)],
+        module="reader",
+        groups=[("本页内容", outline)],
     )
 
 
 REVIEW_JS = """<script>
 (function(){
-  var boxes=[].slice.call(document.querySelectorAll('input.tick'));
-  var out=document.getElementById('tickprog');
-  var KEY='lut-review-v1';
-  var store={};
-  try{ store=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ store={}; }
-  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+  var boxes=Array.from(document.querySelectorAll('input.tick')),out=document.getElementById('tickprog');
+  var app=window.LUTLearning,legacy={};
+  try{legacy=JSON.parse(localStorage.getItem('lut-review-v1')||'{}')||{};}catch(e){}
   function refresh(){
-    var done=boxes.filter(function(b){return b.checked;}).length;
-    if(out) out.textContent='已复习 '+done+' / '+boxes.length+' 讲';
+    boxes.forEach(function(box){box.checked=app?app.store.getLecture(box.dataset.studyId).status==='mastered':!!legacy[box.dataset.k];});
+    if(out)out.textContent='已复习 '+boxes.filter(function(box){return box.checked;}).length+' / '+boxes.length+' 讲';
   }
-  boxes.forEach(function(b){
-    var k=b.getAttribute('data-k');
-    if(store[k]) b.checked=true;
-    b.addEventListener('change',function(){ store[k]=b.checked; save(); refresh(); });
-  });
-  refresh();
+  boxes.forEach(function(box){box.addEventListener('change',function(){
+    if(app)app.commit(app.store.setLecture(box.dataset.studyId,{status:box.checked?'mastered':'review'}));
+    else{legacy[box.dataset.k]=box.checked;try{localStorage.setItem('lut-review-v1',JSON.stringify(legacy));}catch(e){}}
+    refresh();
+  });});
+  addEventListener('lut:learning-changed',refresh);refresh();
 })();
 </script>"""
 
@@ -771,37 +751,39 @@ def _demote(block):
 
 def build_review(courses):
     total = sum(len(c.get("lectures", [])) for c in courses)
-    quick, sections = [], []
+    quick, sections, outline = [], [], [NavItem("复习进度总表", "#review-progress")]
     for c in courses:
         cid = c.get("id", "")
         name = c.get("name_zh", cid)
         lecs = c.get("lectures", [])
         chapters = parts_of(c)
         quick.append(
-            '<div class="qcourse"><div class="qhead"><a href="#r-%s">%s</a>'
+            '<div class="qcourse"><div class="qhead"><span>%s</span>'
             '<span class="badge mute">%d 章 / %d 讲</span></div><ul class="chapters-tick">'
-            % (html.escape(cid), html.escape(name), len(chapters), len(lecs))
+            % (html.escape(name), len(chapters), len(lecs))
         )
         for pi, (pname, items) in enumerate(chapters):
             quick.append(
-                '<li><a class="qp" href="c/%s/%s.html">%s</a><ul class="ticklist">'
-                % (html.escape(cid), part_slug(pi), html.escape(pname))
+                '<li><span class="qp">%s</span><ul class="ticklist">' % html.escape(pname)
             )
             for gi, l in items:
                 key = "%s-%s" % (cid, l.get("slug", "lec-%d" % (gi + 1)))
                 quick.append(
-                    '<li><label><input type="checkbox" class="tick" data-k="%s"> %s</label></li>'
-                    % (html.escape(key), html.escape(l.get("title_zh", "")))
+                    '<li><label><input type="checkbox" class="tick" data-k="%s" data-study-id="%s"> %s</label></li>'
+                    % (html.escape(key), html.escape(cid + "/" + l["slug"],quote=True), html.escape(l.get("title_zh", "")))
                 )
             quick.append("</ul></li>")
         quick.append("</ul></div>")
 
-        blocks = []
+        blocks, chapter_links = [], []
         for pi, (pname, items) in enumerate(chapters):
+            chapter_links.append(NavItem(pname, "#rp-%s-%d" % (cid, pi + 1), tuple(
+                NavItem(l.get("title_zh", ""), "#r-%s-%s" % (cid, l["slug"]))
+                for _, l in items if section(l.get("html", ""), "exam").strip())))
             blocks.append(
-                '<div class="revpart"><a href="c/%s/%s.html">%s</a>'
+                '<div class="revpart" id="rp-%s-%d"><a href="c/%s/%s.html">%s</a>'
                 '<span class="badge mute">%d 讲</span></div>'
-                % (html.escape(cid), part_slug(pi), html.escape(pname), len(items))
+                % (html.escape(cid), pi + 1, html.escape(cid), part_slug(pi), html.escape(pname), len(items))
             )
             for gi, l in items:
                 slug = l.get("slug", "lec-%d" % (gi + 1))
@@ -836,6 +818,7 @@ def build_review(courses):
                 )
                 body.append("</div>")
                 blocks.append("".join(body))
+        outline.append(NavItem(name, "#r-" + cid, tuple(chapter_links)))
         sections.append(
             '<section class="revcourse" id="r-%s"><h2>%s <span class="badge mute">%s</span></h2>%s</section>'
             % (html.escape(cid), html.escape(name), html.escape(cid), "".join(blocks))
@@ -851,7 +834,7 @@ def build_review(courses):
         '<ol class="steps"><li>考前 3 天：按课程顺序过「必考」，把不会的回到原讲义补 detail。</li>'
         "<li>考前 1 天：只看「易错」，把每条错因写成一句话。</li>"
         "<li>考前 1 小时：只看 badges 为必考的公式、定义和题型名称，不做新题。</li></ol></div>"
-        '<h2>复习进度总表</h2><div class="qgrid">%s</div>'
+        '<h2 id="review-progress">复习进度总表</h2><div class="qgrid">%s</div>'
         "<h2>逐讲考点与难点</h2>%s"
         % (len(courses), total, "".join(quick), "".join(sections))
     )
@@ -859,14 +842,16 @@ def build_review(courses):
         "期末总复习 · 考点提醒清单",
         body,
         "",
-        "共 %d 门课 · %d 讲" % (len(courses), total),
+        [("课程总览", "index.html"), ("期末考点清单", None)],
         script=REVIEW_JS,
+        module="review",
+        groups=[("本页内容", outline)],
     )
 
 
 def build_extension(courses):
     """知识拓展专页：汇总所有讲义里的「拓展」提示框与 mapping 中标注的补充内容。"""
-    anchors, blocks, total_idea, total_note = [], [], 0, 0
+    outline, blocks, total_idea, total_note = [], [], 0, 0
     for c in courses:
         cid = c.get("id", "")
         name = c.get("name_zh", cid)
@@ -897,16 +882,18 @@ def build_extension(courses):
             continue
         total_idea += len(idea_rows)
         total_note += len(note_rows)
-        anchors.append(
-            '<li><a href="#e-%s">%s</a>（拓展框 %d · 补充条目 %d）</li>'
-            % (html.escape(cid), html.escape(name), len(idea_rows), len(note_rows))
-        )
+        children = []
+        if idea_rows:
+            children.append(NavItem("课内拓展提示框", "#e-%s-ideas" % cid))
+        if note_rows:
+            children.append(NavItem("补充内容与原始文件对照", "#e-%s-notes" % cid))
+        outline.append(NavItem(name, "#e-" + cid, tuple(children)))
         parts = [
             '<section class="revcourse" id="e-%s"><h2>%s <span class="badge mute">%s</span></h2>'
             % (html.escape(cid), html.escape(name), html.escape(cid))
         ]
         if idea_rows:
-            parts.append('<div class="revpart">课内拓展提示框</div>')
+            parts.append('<div class="revpart" id="e-%s-ideas">课内拓展提示框</div>' % html.escape(cid))
             for tzh, slug, box in idea_rows:
                 parts.append(
                     '<div class="extidea"><div class="extsrc"><a href="c/%s/%s.html">%s</a></div>%s</div>'
@@ -919,8 +906,9 @@ def build_extension(courses):
                 )
         if note_rows:
             parts.append(
-                '<div class="revpart">mapping 中标注的补充 / 拓展内容（对照原始文件）</div>'
+                '<div class="revpart" id="e-%s-notes">mapping 中标注的补充 / 拓展内容（对照原始文件）</div>'
                 '<table><tr><th>出处讲次</th><th>源文件 / 位置</th><th>补充说明</th></tr>'
+                % html.escape(cid)
             )
             for tzh, slug, row in note_rows:
                 cells = re.findall(r"<td.*?</td>", row, flags=re.S)
@@ -949,32 +937,44 @@ def build_extension(courses):
         '<ol class="steps"><li>按课程跳转，拓展框都带原始讲次链接，点回去能看到它在讲义里的上下文。</li>'
         "<li>mapping 补充条目按「出处讲次 / 源文件 / 补充说明」三列排列，方便区分哪些是原文、哪些是整理时加的。</li>"
         "<li>考前不需要通读本页：拓展只用来答疑与写论述题的深度，评分以原讲义 exam 板块为准。</li></ol></div>"
-        '<h2>目录</h2><ol class="steps">%s</ol>%s'
-        % (len(courses), total_courses, total_idea, total_note, "".join(anchors), "".join(blocks))
+        '%s'
+        % (len(courses), total_courses, total_idea, total_note, "".join(blocks))
     )
     return page(
         "知识拓展 · 全站汇总",
         body,
         "",
-        "拓展框 %d · mapping 补充 %d" % (total_idea, total_note),
+        [("课程总览", "index.html"), ("知识拓展", None)],
+        module="extension",
+        groups=[("本页内容", outline)],
     )
 
 
 def build_upload(courses):
     total_parts = sum(len(parts_of(c)) for c in courses)
     body = (
-        "<h1>实时资料上传中心 · Upload Center</h1>"
+        '<h1 id="upload-intro">实时资料上传中心 · Upload Center</h1>'
         '<p class="lead">支持按「课程 → 章节」上传 PDF / PPTX / DOCX / 图片 / 代码文件，或直接撰写 Markdown 补充笔记。'
-        "发布后立即同步到对应章节页与全站最新动态。</p>"
+        "连接云端后可共享到对应章节；本机预览模式仅自己可见。</p>"
+        '<details class="card" id="sharing-setup"><summary>共享连接设置与检查</summary>'
+        '<p>维护者先运行 supabase/schema.sql。这里只填写项目地址和公开客户端密钥，设置仅作用于当前浏览器；全站启用请填写 assets/config.js 后部署。</p>'
+        '<div class="study-filters"><label>Supabase 项目地址<input id="sharing-url" type="url" placeholder="https://project.supabase.co" autocomplete="off" spellcheck="false"></label>'
+        '<label>公开 publishable / anon 密钥<input id="sharing-key" type="password" autocomplete="off" spellcheck="false"></label></div>'
+        '<div class="reader-actions"><button class="study-button" type="button" id="sharing-test">只读检查连接</button>'
+        '<button class="study-button primary" type="button" id="sharing-save" disabled>保存本机连接并刷新</button>'
+        '<button class="study-button" type="button" id="sharing-reset">清除本机覆盖设置</button></div>'
+        '<p id="sharing-status" role="status" class="sub"></p></details>'
         '<div id="upload-hub"><div class="mat-empty">正在加载课程与章节目录…</div></div>'
     )
-    mat_scripts = '<script src="assets/config.js"></script><script src="assets/materials.js"></script>'
+    mat_scripts = '<script src="assets/config.js"></script><script src="assets/sharing-config.js"></script><script src="assets/materials.js"></script>'
     return page(
         "实时资料上传中心 · 课程讲义站",
         body,
         "",
-        "覆盖 %d 门课 · %d 个章节" % (len(courses), total_parts),
+        [("课程总览", "index.html"), ("上传资料", None)],
         script=mat_scripts,
+        module="upload",
+        groups=[("本页内容", [NavItem("上传说明", "#upload-intro"), NavItem("课程与章节资料", "#upload-hub")])],
     )
 
 
@@ -1078,6 +1078,19 @@ def check(courses):
     return bad
 
 
+def build_learning_assets(courses):
+    data = build_search_data(courses, lambda body: decorate(add_section_ids(body))[0])
+    catalogue = {key:data[key] for key in ("version", "courses", "lectures")}
+    write(os.path.join(ROOT,"data","learning-catalog.js"), "window.LUT_LEARNING_CATALOG=" + script_json(catalogue) + ";\n")
+    write(os.path.join(ROOT,"data","search-index.js"), "window.LUT_SEARCH_DATA=" + script_json({"version":1,"documents":data["documents"]}) + ";\n")
+    scripts = ["search-core.js","study-store.js","study.js","reader-tools.js","practice.js"]
+    bundle = []
+    for name in scripts:
+        with io.open(os.path.join(ROOT,"assets",name),encoding="utf-8") as source:
+            bundle.append("/* " + name + " */\n" + source.read())
+    write(os.path.join(ROOT,"assets","learning.bundle.js"), "\n;\n".join(bundle))
+
+
 def main():
     args = sys.argv[1:]
     only = None
@@ -1090,10 +1103,12 @@ def main():
     if only and not targets:
         print("!! content/%s.json 不存在" % only)
         sys.exit(1)
+    build_learning_assets(courses)
     n = 0
     for c in targets:
         cid = c.get("id")
         write(os.path.join(ROOT, "c", cid, "index.html"), build_course(c))
+        write(os.path.join(ROOT, "c", cid, "reader.html"), build_allinone([c], "../../"))
         for i in range(len(c.get("lectures", []))):
             slug = c["lectures"][i].get("slug", "lec-%d" % (i + 1))
             write(os.path.join(ROOT, "c", cid, slug + ".html"), build_lecture(c, i))
