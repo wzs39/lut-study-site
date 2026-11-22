@@ -73,5 +73,9 @@
   more.addEventListener('click',function(){limit+=30;render();});
   var parameters = new URLSearchParams(location.search);
   query.value = (parameters.get('q') || '').slice(0,160); course.value=parameters.get('course') || ''; kind.value=parameters.get('kind') || '';
-  if(query.value || course.value)run();
+  if(query.value || course.value){
+    run();
+    var searchEl = document.getElementById('site-search');
+    if (query.value && searchEl) searchEl.scrollIntoView({ block: 'start' });
+  }
 })();

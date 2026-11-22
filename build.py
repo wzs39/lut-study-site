@@ -75,7 +75,7 @@ LAYOUT = """<!doctype html>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="{{HOME}}">课程讲义站</a>
 {{NAVIGATION}}
-<div class="header-actions"><a class="search-shortcut" href="{{HOME}}#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
+<div class="header-actions"><a class="search-shortcut" href="{{HOME}}#site-search" aria-label="全站搜索与原版课件查询" title="全站搜索与原版课件查询 (Ctrl+K)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -667,13 +667,14 @@ def build_root(courses):
     body = (
         '<header class="home-hero"><div class="home-hero-main">'
         "<h1>课程讲义总览</h1>"
-        '<p class="lead">按「课程 → 章节 → 讲次」三级组织，支持离线全文搜索、学习进度追踪、原版课件溯源与考前分层复习。按 <kbd>Ctrl K</kbd> 可在全站任意页面快捷跳转或查原课件。</p></div>'
+        '<p class="lead">按「课程 → 章节 → 讲次」三级组织，支持离线全文搜索、学习进度追踪、原版课件溯源与考前分层复习。点击搜索图标或按 <kbd>Ctrl K</kbd> 可随时快捷查找。</p></div>'
         '<div class="stats"><div class="stat"><b>%d</b><span>门课程</span></div>'
         '<div class="stat"><b>%d</b><span>个章节</span></div>'
         '<div class="stat"><b>%d</b><span>讲讲义</span></div>'
         '<div class="stat"><b>%d</b><span>个原始文件</span></div></div></header>'
-        '<div class="home-workbench">%s%s</div>'
-        '%s%s<div class="courses">%s</div>'
+        '%s'
+        '%s<div class="courses">%s</div>'
+        '<section class="home-search-tools" aria-label="全文搜索与原版课件">%s%s</section>'
         '<details class="howto"><summary>后续如何补充新的讲义页（扩展说明）</summary>'
         '<ol class="steps">'
         "<li>已有课程加一讲：在 <code>content/&lt;课程ID&gt;.json</code> 的 <code>lectures</code> 数组末尾追加一个对象，"
@@ -688,11 +689,11 @@ def build_root(courses):
             total_parts,
             total_lec,
             src_total,
-            search_box(courses),
             home_widgets(courses),
-            courseware_box,
             filter_bar,
             "".join(cards),
+            search_box(courses),
+            courseware_box,
         )
     )
     return page(
@@ -701,8 +702,9 @@ def build_root(courses):
         "",
         [("课程总览", None)],
         script='<script src="assets/search.js"></script>',
-        groups=[("本页内容", [NavItem("全文搜索", "#site-search"), NavItem("继续学习与错题", "#study-dashboard"), NavItem("原版课件速查", "#courseware-hub")]
-                 + [NavItem(c.get("name_zh", c["id"]), "#c-" + c["id"]) for c in courses])],
+        groups=[("本页内容", [NavItem("继续学习与错题", "#study-dashboard")]
+                 + [NavItem(c.get("name_zh", c["id"]), "#c-" + c["id"]) for c in courses]
+                 + [NavItem("全文搜索", "#site-search"), NavItem("原版课件速查", "#courseware-hub")])],
     )
 
 

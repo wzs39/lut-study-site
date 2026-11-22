@@ -255,10 +255,9 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
 .directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
 .directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
 .page-directory [hidden]{display:none}
-.directory-tree[data-scrollspy]{scroll-target-group:auto}
-.directory-link:is(.is-current,[aria-current="page"],:target-current){background:var(--accent-soft);color:var(--accent-deep);
+.directory-link:is(.is-current,[aria-current="page"]){background:var(--accent-soft);color:var(--accent-deep);
   border-inline-start-color:var(--accent);font-weight:650}
-.directory-link:is(.is-current,[aria-current="page"],:target-current) .directory-index{color:inherit}
+.directory-link:is(.is-current,[aria-current="page"]) .directory-index{color:inherit}
 .sequence-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-block-start:1.5rem}
 .sequence-nav>a,.sequence-disabled{padding:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
 .sequence-nav>a:hover{text-decoration:none;border-color:var(--accent);background:var(--accent-soft)}
@@ -549,10 +548,15 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
-.search-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.4rem;min-width:2.75rem;
-  padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:.8125rem;
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;width:2.35rem;height:2.35rem;min-width:2.35rem;min-height:2.35rem;
+  padding:0;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);
   transition:border-color .15s,color .15s,background-color .15s}
 .search-shortcut:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.fab-search{position:fixed;right:22px;bottom:78px;z-index:55;width:42px;height:42px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);
+  background:var(--card);color:var(--accent);cursor:pointer;box-shadow:var(--shadow-lift);
+  transition:border-color .15s,background-color .15s,transform .15s}
+.fab-search:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
 .kbd-hint{font-size:.6875rem;padding:.05rem .35rem;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted);line-height:1.4}
 .study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;
   padding:.42rem .82rem;background:var(--card);color:var(--fg);font:inherit;font-size:.85rem;font-weight:550;
@@ -643,6 +647,7 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
 .study-notice[hidden]{display:none}
 @media(max-width:640px){
   .kbd-hint{display:none}
+  .fab-search{right:14px;bottom:68px}
   .search-query{grid-template-columns:minmax(0,1fr) auto}
   #search-clear{grid-column:2;min-height:2.25rem}
   .reader-actions{align-items:stretch}
@@ -656,7 +661,7 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   .filter-controls{flex-direction:column;align-items:stretch}
 }
 @media print{
-  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions{display:none}
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions,.fab-search{display:none}
   .code-block pre{padding-block-start:1rem}
   .image-zoom{display:contents}
   .image-viewer{display:none}
@@ -685,17 +690,8 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 .home-hero .stats{margin:0;flex-shrink:0}
 .home-hero .stat{padding:7px 13px;min-width:86px}
 .home-hero .stat b{font-size:19px}
-.home-workbench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:1.4rem}
-.home-workbench>.card{margin:0;padding:16px 20px}
-.home-workbench .site-search form>label{font-size:.98rem;margin-block-end:.45rem}
-.home-workbench .study-filters{margin-block:.55rem .4rem;gap:.55rem}
-.home-workbench .study-filters select{min-height:2.35rem;font-size:.9rem}
-.home-workbench .search-query .search{min-height:2.45rem;font-size:.94rem;padding:8px 12px}
-.home-workbench #search-status{margin:.35rem 0 0;font-size:.82rem}
-.home-workbench #study-totals{margin:.3rem 0 .45rem;font-size:.82rem}
-@media(max-width:1120px){
-  .home-workbench{grid-template-columns:1fr;gap:14px}
-}
+#study-dashboard.learning-home{padding:14px 18px;margin-bottom:1.25rem}
+.home-search-tools{margin-top:1.75rem}
 
 /* ---------- 课程分类筛选与卡片升级 ---------- */
 .course-section-head{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1rem}
@@ -844,7 +840,7 @@ a.cw-name{color:var(--accent-deep)}
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
 <nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
-<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" aria-label="全站搜索与原版课件查询" title="全站搜索与原版课件查询 (Ctrl+K)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -1022,10 +1018,25 @@ match op:
     if (target) target.setAttribute('tabindex', '-1');
     return target;
   });
-  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
   var previous = null;
   var queued = false;
   var anchorTarget = null;
+  var manualLockUntil = 0;
+
+  function setActive(active) {
+    if (active === previous) return;
+    links.forEach(function (a) {
+      var on = a === active;
+      a.classList.toggle('is-current', on);
+      if (on) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
+    previous = active;
+  }
 
   function expand(button, open) {
     button.setAttribute('aria-expanded', String(open));
@@ -1075,8 +1086,9 @@ match op:
     }
   }
   function updateCurrent() {
-    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
-    if (!active && targets.length) {
+    if (performance.now() < manualLockUntil) return;
+    var active = null;
+    if (targets.length) {
       var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
       if (targets.length > 24) {
         // Binary search keeps scrollspy O(log N) on large multi-course pages like all.html / review.html.
@@ -1094,17 +1106,7 @@ match op:
         }
       }
     }
-    if (active === previous) return;
-    links.forEach(function (a) {
-      a.classList.toggle('is-current', a === active);
-      if (a === active) a.setAttribute('aria-current', 'location');
-      else a.removeAttribute('aria-current');
-    });
-    if (active) {
-      reveal(active);
-      scrollDirectoryItemIntoView(active);
-    }
-    previous = active;
+    setActive(active);
   }
   function schedule() {
     if (queued) return;
@@ -1138,8 +1140,12 @@ match op:
     if (target) {
       event.preventDefault();
       if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      if (links.indexOf(link) !== -1) {
+        manualLockUntil = performance.now() + 450;
+        setActive(link);
+      }
       target.focus({ preventScroll: true });
-      anchorTarget = target; settleAnchor(); schedule();
+      anchorTarget = target; settleAnchor();
     }
   });
   directory.addEventListener('keydown', function (event) {
@@ -1159,10 +1165,13 @@ match op:
   }
   // Stop following the selected anchor as soon as the reader takes control.
   ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
-    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+    addEventListener(name, function (ev) {
+      anchorTarget = null;
+      if (name !== 'pointerdown' || !directory.contains(ev.target)) manualLockUntil = 0;
+    }, { passive: true });
   });
   addEventListener('keydown', function (event) {
-    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) { anchorTarget = null; manualLockUntil = 0; }
   });
   var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
   if (allDirLinks.length >= 8) {

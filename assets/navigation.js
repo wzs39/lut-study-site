@@ -15,10 +15,25 @@
     if (target) target.setAttribute('tabindex', '-1');
     return target;
   });
-  var nativeSpy = window.CSS && CSS.supports('scroll-target-group: auto');
   var previous = null;
   var queued = false;
   var anchorTarget = null;
+  var manualLockUntil = 0;
+
+  function setActive(active) {
+    if (active === previous) return;
+    links.forEach(function (a) {
+      var on = a === active;
+      a.classList.toggle('is-current', on);
+      if (on) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
+    previous = active;
+  }
 
   function expand(button, open) {
     button.setAttribute('aria-expanded', String(open));
@@ -68,8 +83,9 @@
     }
   }
   function updateCurrent() {
-    var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
-    if (!active && targets.length) {
+    if (performance.now() < manualLockUntil) return;
+    var active = null;
+    if (targets.length) {
       var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
       if (targets.length > 24) {
         // Binary search keeps scrollspy O(log N) on large multi-course pages like all.html / review.html.
@@ -87,17 +103,7 @@
         }
       }
     }
-    if (active === previous) return;
-    links.forEach(function (a) {
-      a.classList.toggle('is-current', a === active);
-      if (a === active) a.setAttribute('aria-current', 'location');
-      else a.removeAttribute('aria-current');
-    });
-    if (active) {
-      reveal(active);
-      scrollDirectoryItemIntoView(active);
-    }
-    previous = active;
+    setActive(active);
   }
   function schedule() {
     if (queued) return;
@@ -131,8 +137,12 @@
     if (target) {
       event.preventDefault();
       if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+      if (links.indexOf(link) !== -1) {
+        manualLockUntil = performance.now() + 450;
+        setActive(link);
+      }
       target.focus({ preventScroll: true });
-      anchorTarget = target; settleAnchor(); schedule();
+      anchorTarget = target; settleAnchor();
     }
   });
   directory.addEventListener('keydown', function (event) {
@@ -152,10 +162,13 @@
   }
   // Stop following the selected anchor as soon as the reader takes control.
   ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {
-    addEventListener(name, function () { anchorTarget = null; }, { passive: true });
+    addEventListener(name, function (ev) {
+      anchorTarget = null;
+      if (name !== 'pointerdown' || !directory.contains(ev.target)) manualLockUntil = 0;
+    }, { passive: true });
   });
   addEventListener('keydown', function (event) {
-    if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
+    if (/^(Arrow|Page|Home|End| )/.test(event.key)) { anchorTarget = null; manualLockUntil = 0; }
   });
   var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
   if (allDirLinks.length >= 8) {

@@ -1299,6 +1299,38 @@
     });
   }
 
+  var fabSearch = document.createElement('button');
+  fabSearch.id = 'fab-search';
+  fabSearch.className = 'fab-search';
+  fabSearch.type = 'button';
+  fabSearch.setAttribute('aria-label', '全站搜索与原版课件查询');
+  fabSearch.title = '全站搜索 / 原版课件 (Ctrl+K)';
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var fabSvg = document.createElementNS(svgNS, 'svg');
+  fabSvg.setAttribute('viewBox', '0 0 24 24');
+  fabSvg.setAttribute('width', '18');
+  fabSvg.setAttribute('height', '18');
+  fabSvg.setAttribute('fill', 'none');
+  fabSvg.setAttribute('stroke', 'currentColor');
+  fabSvg.setAttribute('stroke-width', '2.1');
+  fabSvg.setAttribute('stroke-linecap', 'round');
+  fabSvg.setAttribute('stroke-linejoin', 'round');
+  fabSvg.setAttribute('aria-hidden', 'true');
+  var circle = document.createElementNS(svgNS, 'circle');
+  circle.setAttribute('cx', '11');
+  circle.setAttribute('cy', '11');
+  circle.setAttribute('r', '7');
+  var line = document.createElementNS(svgNS, 'line');
+  line.setAttribute('x1', '21');
+  line.setAttribute('y1', '21');
+  line.setAttribute('x2', '16.65');
+  line.setAttribute('y2', '16.65');
+  fabSvg.appendChild(circle);
+  fabSvg.appendChild(line);
+  fabSearch.appendChild(fabSvg);
+  fabSearch.addEventListener('click', function () { openPalette('quick'); });
+  document.body.appendChild(fabSearch);
+
   addEventListener('keydown', function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
