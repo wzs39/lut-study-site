@@ -547,6 +547,19 @@ sup,sub{line-height:0;font-size:.78em}
   .breadcrumbs [aria-current="page"]{text-decoration:underline}
 }
 
+/* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
+.formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
+.formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
+.formula-box.left .formula-line{text-align:left}
+.step-badge{display:inline-block;padding:2px 7px;font-size:.78em;font-weight:700;border-radius:5px;margin-right:6px;vertical-align:middle}
+.step-badge.step1{background:var(--accent-soft);color:var(--accent-deep)}
+.step-badge.step2{background:var(--purple-soft);color:var(--purple)}
+.step-badge.step3{background:var(--warn-soft);color:var(--warn)}
+.step-badge.ok{background:var(--ok-soft);color:var(--ok)}
+.step-badge.mute{background:var(--detail-bg);border:1px solid var(--line);color:var(--muted)}
+
+
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
 .search-shortcut{display:inline-flex;align-items:center;justify-content:center;width:2.35rem;height:2.35rem;min-width:2.35rem;min-height:2.35rem;
@@ -885,7 +898,7 @@ M: 1 0 1 1</code></pre><p>回到 1011，验证 <code>(M ⊕ K) ⊕ K = M</code>�
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s59">方法清单</h2><h3 id="s60">用 RSA 做一次加密（六步）</h3><ol class="steps"><li>选两个素数 p、q，算 <code>n = p × q</code></li><li>算 <code>φ(n) = (p−1)(q−1)</code></li><li>选 e：与 φ(n) 互质，且 1 &lt; e &lt; φ(n)</li><li>求 d：解 <code>e·d ≡ 1 (mod φ(n))</code>（扩展欧几里得或试算）</li><li>把明文转成整数 m（小于 n），算 <code>c = m^e mod n</code></li><li>验算：算 <code>c^d mod n</code> 应等于 m</li></ol><h3 id="s61">算模幂 <code>a^b mod n</code>（三步）</h3><ol class="steps"><li>把指数 b 写成二进制（或 2 的幂之和）</li><li>逐次平方并取模，得到 <code>a^1, a^2, a^4, a^8 …</code></li><li>把对应位的幂相乘，每乘一次取一次模</li></ol><h3 id="s62">判断该用哪种加密（三问）</h3><ul class="checklist"><li>要保护的数据量大吗？（大 → 对称，如 AES）</li><li>双方事先能安全共享密钥吗？（不能 → 用非对称交换会话密钥）</li><li>需要证明「是谁发的」吗？（需要 → 数字签名，用私钥签）</li></ul><h3 id="s63">检查一个「加密方案」是否真的安全（四查）</h3><ul class="checklist"><li>密钥怎么生成？是否真随机、长度足够？</li><li>密钥怎么分发与保管？是否会被日志、备份泄漏？</li><li>算法与实现是否有认证（防篡改）？</li><li>终端是否可信？解锁状态下加密是否还起作用？</li></ul></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 13，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p2–p4</td><td>六个关键问题、数字信息的重要性与风险、信息安全的定义与三个目的（技术/流程/人）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p5–p6</td><td>加密的定义与四术语、加密的六处用途、静止与传输两种保护</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p7–p11</td><td>隐写术的词源、埃及头发加密、图像 LSB 签名、藏头诗与 Alice 的例子</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p12–p13</td><td>E(M)=C、D(C)=M、D(E(M))=M、术语表、安全不依赖算法保密</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p14–p16</td><td>密钥的定义与三种作用、密钥 ≠ 密码、为什么需要密钥、对称与非对称的定义</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p17–p19</td><td>替换密码的定义、Caesar 移 3 位、ROT13、同音替换（E 的四个选项）、多字替换（希腊字母、Huffman）、多表替换（Alberti 盘 1467）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p20–p23</td><td>置换密码的定义、ADFGVX 与二维表、转子机（Enigma/Lorenz）、Enigma 的 Scherbius 与结构、158×10^18 与两个弱点、Turing 与 Ultra</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p24–p27</td><td>OTP 的定义与四个条件、Vernam 与 1919 专利、XOR 定义与自反性、加解密公式、两条规则与完美保密</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p28–p32</td><td>AES 的参数（分组、密钥长度）、轮结构与 R=14 跳过 MixColumns、AES 的五处用途、at rest 与 in transit、优缺点与密钥管理</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p33–p40</td><td>非对称的公私钥、三个用处与限定、RSA 的历史（1978 / Cocks 1973）、p=5,q=11 的完整五步与加解密算例、e 与 d 的四条约束（含 Wiener 攻击与 65537）</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p41–p45</td><td>为什么不全用公钥（性能）与混合加密、对称/非对称对照表、HTTPS 与 TLS 的三项保障及限定、全盘加密（BitLocker/FileVault）与局限、E2EE 的流程与局限</td></tr><tr><td>Week10- Data Encryption/Lecture10.pdf</td><td>p46–p47</td><td>加密不能解决的四个问题与「需要互补机制」的结论</td></tr><tr><td>Week10- Data Encryption/Exercise6.pdf</td><td>第 1–3 题</td><td>对称与非对称的定义、Alice 用公钥给 Bob 发消息的流程、p=11,q=7、M=101₂ 的密钥生成/加密/解密（本讲例 3 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>模逆的扩展欧几里得求法、平方取幂的分步过程、e 与 d 相等的反例（e=19 时 d=19）、密钥重用导致 <code>C1⊕C2 = M1⊕M2</code> 的推导、ECC 作为现代替代，均为理解性拓展</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="w9-information-retrieval.html"><span>上一讲</span><strong>Week 9 · 信息检索：布尔检索、倒排索引、TF-IDF 与评价</strong></a><a data-sequence="parent" href="part-5.html"><span>返回目录</span><strong>第 5 章 数据加密与信息安全</strong></a><a data-sequence="next" href="w11-logic.html"><span>下一讲</span><strong>Week 11 · 逻辑与信息处理：命题逻辑、真值表与等价律</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-23 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';

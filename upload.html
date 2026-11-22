@@ -547,6 +547,19 @@ sup,sub{line-height:0;font-size:.78em}
   .breadcrumbs [aria-current="page"]{text-decoration:underline}
 }
 
+/* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
+.formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
+.formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
+.formula-box.left .formula-line{text-align:left}
+.step-badge{display:inline-block;padding:2px 7px;font-size:.78em;font-weight:700;border-radius:5px;margin-right:6px;vertical-align:middle}
+.step-badge.step1{background:var(--accent-soft);color:var(--accent-deep)}
+.step-badge.step2{background:var(--purple-soft);color:var(--purple)}
+.step-badge.step3{background:var(--warn-soft);color:var(--warn)}
+.step-badge.ok{background:var(--ok-soft);color:var(--ok)}
+.step-badge.mute{background:var(--detail-bg);border:1px solid var(--line);color:var(--muted)}
+
+
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
 .search-shortcut{display:inline-flex;align-items:center;justify-content:center;width:2.35rem;height:2.35rem;min-width:2.35rem;min-height:2.35rem;
@@ -851,7 +864,7 @@ a.cw-name{color:var(--accent-deep)}
 <nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">上传资料</span></li></ol></nav>
 <div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">实时资料上传中心 · 课程讲义站</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#upload-intro"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">上传说明</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#courseware-cloud"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">云端课件库配置</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#upload-hub"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">课程与章节资料</span></a></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><h1 id="upload-intro">实时资料上传中心 · Upload Center</h1><p class="lead">支持按「课程 → 章节」上传 PDF / PPTX / DOCX / 图片 / 代码文件，或直接撰写 Markdown 补充笔记。连接云端后可共享到对应章节；本机预览模式仅自己可见。</p><details class="card" id="courseware-cloud"><summary>云端原始课件库配置（推荐 Cloudflare R2 · 兼容 GCS / S3）</summary><p class="sub">原始课件（820 份去隐私后的公开课件，约 656 MB）推荐托管在 <strong>Cloudflare R2</strong>（每月 10 GB 免费 + 永久 0 流量费），网页继续托管在 GitHub Pages。按 <code>SETUP_R2.md</code> 同步后填入公开前缀地址即可全站直开原件。</p><div class="study-filters"><label>云端课件公开前缀地址（HTTPS）<input id="gcs-base-url" type="url" placeholder="https://pub-xxxxxxxxxxxxxxxx.r2.dev/courseware" autocomplete="off" spellcheck="false"></label></div><div class="reader-actions"><button class="study-button" type="button" id="gcs-test">抽检云端课件连接</button><button class="study-button primary" type="button" id="gcs-save">保存本机生效并刷新</button><button class="study-button" type="button" id="gcs-reset">清除本机覆盖</button></div><p id="gcs-status" role="status" class="sub"></p><p class="sub">全站生效请写入 <code>assets/config.js</code>：<code id="gcs-config-snippet"></code></p></details><details class="card" id="sharing-setup"><summary>共享连接设置与检查</summary><p>维护者先运行 supabase/schema.sql。这里只填写项目地址和公开客户端密钥，设置仅作用于当前浏览器；全站启用请填写 assets/config.js 后部署。</p><div class="study-filters"><label>Supabase 项目地址<input id="sharing-url" type="url" placeholder="https://project.supabase.co" autocomplete="off" spellcheck="false"></label><label>公开 publishable / anon 密钥<input id="sharing-key" type="password" autocomplete="off" spellcheck="false"></label></div><div class="reader-actions"><button class="study-button" type="button" id="sharing-test">只读检查连接</button><button class="study-button primary" type="button" id="sharing-save" disabled>保存本机连接并刷新</button><button class="study-button" type="button" id="sharing-reset">清除本机覆盖设置</button></div><p id="sharing-status" role="status" class="sub"></p></details><div id="upload-hub"><div class="mat-empty">正在加载课程与章节目录…</div></div></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-23 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';

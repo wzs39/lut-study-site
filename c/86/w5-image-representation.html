@@ -547,6 +547,19 @@ sup,sub{line-height:0;font-size:.78em}
   .breadcrumbs [aria-current="page"]{text-decoration:underline}
 }
 
+/* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
+.formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
+.formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
+.formula-box.left .formula-line{text-align:left}
+.step-badge{display:inline-block;padding:2px 7px;font-size:.78em;font-weight:700;border-radius:5px;margin-right:6px;vertical-align:middle}
+.step-badge.step1{background:var(--accent-soft);color:var(--accent-deep)}
+.step-badge.step2{background:var(--purple-soft);color:var(--purple)}
+.step-badge.step3{background:var(--warn-soft);color:var(--warn)}
+.step-badge.ok{background:var(--ok-soft);color:var(--ok)}
+.step-badge.mute{background:var(--detail-bg);border:1px solid var(--line);color:var(--muted)}
+
+
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
 .search-shortcut{display:inline-flex;align-items:center;justify-content:center;width:2.35rem;height:2.35rem;min-width:2.35rem;min-height:2.35rem;
@@ -883,7 +896,7 @@ B =   0 → 00000000
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s48">方法清单</h2><h3 id="s49">把一张图数字化（三步）</h3><ol class="steps"><li>采样：确定网格密度（宽 × 高），得到像素位置</li><li>量化：确定每像素位数（8 位灰度 / 24 位 RGB），把连续亮度映射到有限级</li><li>编码：把每个量化值写成固定长度的二进制，按行（或按通道）排列</li></ol><h3 id="s50">算未压缩图像大小（四步）</h3><ol class="steps"><li>算像素数：<code>W × H</code></li><li>算每像素字节：<code>B / 8</code></li><li>相乘得字节数</li><li>按题目口径换算：KiB 用 1024，kB 用 1000；标注「未压缩」</li></ol><h3 id="s51">判断栅格还是矢量（两问）</h3><ul class="checklist"><li>信息是连续色调（照片、纹理）还是几何形状（线、圆、字）？</li><li>是否需要任意缩放而保持清晰？</li><li>两者都指向形状 + 缩放 → 矢量；否则 → 栅格</li></ul><h3 id="s52">答题时的自查</h3><ul class="checklist"><li>写清「未压缩」与单位口径</li><li>分辨率的写法是「宽 × 高」</li><li>色深要说清「位怎么分配」</li><li>RGB 要写清通道顺序</li></ul></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 13，可横向滚动"><table><tr><th>源文件</th><th>位置</th><th>覆盖的知识点</th></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p2–p3</td><td>六个关键问题、现实的连续性 vs 计算机的离散性、数字化的三步流水线</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p4–p6</td><td>数字图像定义、像素 = picture element、二维网格与 I(x, y) 记号、灰度矩阵</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p7–p12</td><td>采样定义（在哪里测量）、采样网格示意、采样决定空间分辨率、分辨率写法 640×480 至 3840×2160、总像素 1920×1080=2.07MP、分辨率不等于画质</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p13–p18</td><td>量化定义（给什么值）、采样与量化对照表、量化示意、灰度 0 黑 255 白、8 位 256 级、灰度图即二维数字数组</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p19–p20</td><td>编码定义（怎样用位表示）、128 → 10000000、三步的分工总结</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p21–p25</td><td>RGB 模型、三元组、五种关键颜色表、24 位 = 3 字节、256^3 = 16 777 216、单像素 (255,128,0) 的二进制</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p26–p27</td><td>色深定义与 2^n 表、8 位在不同分配下的不同含义</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p28–p31</td><td>未压缩大小公式、1024×768 灰度 768 KiB、1920×1080 RGB 5.93 MiB、数据量 ∝ 分辨率 × 色深</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p32–p34</td><td>栅格图像定义与例子、分辨率依赖与像素化、优缺点表</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p35–p38</td><td>矢量图形定义、圆的数学描述、栅格与矢量六项对照、适用场景、常见格式</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p39–p42</td><td>完整数字化流水线、表示 vs 编码 vs 压缩、三步一句话总结与大图</td></tr><tr><td>Week5- Image Representation/Lecture5.pdf</td><td>p43–p50</td><td>四道复习题（800×600 像素数、8 位级数、原始数据量、栅格或矢量），已收入本讲第十二节</td></tr><tr><td>Week6- Audio and Video Representation/Exercise 3.pdf</td><td>第 3、4、6 题</td><td>RGB 怎样表示颜色、位深/色深的定义与 1 位和 8 位灰度的差别、4000×3000 24 位图像的 MB 计算（本讲例 2 完整覆盖）</td></tr><tr><td>（补充）</td><td>—</td><td>三原色与视锥细胞的感知依据、I(x,y) 到矩阵运算的衔接、CSS #RRGGBB 与十六进制的对应、MB 与 MiB 的口径差异，均为衔接性拓展</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="w4-character-encoding.html"><span>上一讲</span><strong>Week 4 · 字符与文本编码：ASCII、Unicode、UTF-8</strong></a><a data-sequence="parent" href="part-3.html"><span>返回目录</span><strong>第 3 章 数字编码与压缩</strong></a><a data-sequence="next" href="w6-audio-and-video.html"><span>下一讲</span><strong>Week 6 · 音频与视频表示：采样率、位深、帧率</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-23 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';
