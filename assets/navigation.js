@@ -50,6 +50,7 @@
     if (!anchorTarget) return;
     // Lazy media above a destination can otherwise move it after the jump.
     anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    if (document.images.length > 60) { anchorTarget = null; return; }
     var waiting = Array.from(document.images).some(function (image) {
       return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
     });
@@ -68,10 +69,22 @@
   }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
-    if (!active) {
+    if (!active && targets.length) {
       var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
-      for (var i = 0; i < targets.length; i++) {
-        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      if (targets.length > 24) {
+        // Binary search keeps scrollspy O(log N) on large multi-course pages like all.html / review.html.
+        var lo = 0, hi = targets.length - 1, hit = -1;
+        while (lo <= hi) {
+          var mid = (lo + hi) >> 1;
+          var t = targets[mid];
+          if (t && t.getBoundingClientRect().top <= edge) { hit = mid; lo = mid + 1; }
+          else hi = mid - 1;
+        }
+        if (hit >= 0) active = links[hit];
+      } else {
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+        }
       }
     }
     if (active === previous) return;
@@ -134,9 +147,8 @@
   addEventListener('resize', function () { measure(); schedule(); });
   addEventListener('load', function () { measure(); schedule(); });
   if (window.ResizeObserver) {
-    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    var observer = new ResizeObserver(function () { measure(); if (anchorTarget) settleAnchor(); });
     observer.observe(header);
-    observer.observe(document.getElementById('page-content'));
   }
   // Stop following the selected anchor as soon as the reader takes control.
   ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {

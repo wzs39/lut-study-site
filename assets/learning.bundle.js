@@ -298,7 +298,8 @@
       if(ok)resolve();else reject(new Error('请选中代码后手动复制。'));
     });
   }
-  content.querySelectorAll('pre').forEach(function(pre){
+  function enhanceCodeBlock(pre){
+    if(pre.parentElement&&pre.parentElement.classList.contains('code-block'))return;
     var wrapper=document.createElement('div');wrapper.className='code-block';pre.before(wrapper);wrapper.appendChild(pre);
     var button=document.createElement('button');button.type='button';button.className='copy-code';button.textContent='复制代码';wrapper.appendChild(button);
     button.addEventListener('click',function(){
@@ -309,7 +310,20 @@
         app.notify('代码已复制。');
       }).catch(function(error){app.notify(error.message);});
     });
-  });
+  }
+  var pres=Array.from(content.querySelectorAll('pre'));
+  if(pres.length<=40||!window.IntersectionObserver){
+    pres.forEach(enhanceCodeBlock);
+  }else{
+    var preObserver=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting)return;
+        preObserver.unobserve(entry.target);
+        enhanceCodeBlock(entry.target);
+      });
+    },{rootMargin:'400px 0px'});
+    pres.forEach(function(pre){preObserver.observe(pre);});
+  }
 
   var dialog=document.createElement('dialog');dialog.className='image-viewer';dialog.setAttribute('aria-label','图片大图预览');
   dialog.setAttribute('closedby','any');
@@ -323,18 +337,30 @@
     dialog.addEventListener('pointerdown',function(event){pressedOutside=outside(event);});
     dialog.addEventListener('pointerup',function(event){if(pressedOutside&&outside(event))dialog.close();});
   }
-  content.querySelectorAll('img').forEach(function(img){
-    var link=img.closest('a'),trigger=link;
-    if(!trigger){trigger=document.createElement('button');trigger.type='button';trigger.className='image-zoom';trigger.setAttribute('aria-label','查看大图：'+(img.alt||'课程图片'));img.before(trigger);trigger.appendChild(img);}
-    trigger.addEventListener('click',function(event){
-      if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||typeof dialog.showModal!=='function')return;
-      var source=img.dataset.fullSrc||img.getAttribute('src'),url;
-      try{url=new URL(source,location.href);}catch(_){return;}
-      if(!['http:','https:','file:','blob:'].includes(url.protocol))return;
-      if(link&&new URL(link.href,location.href).href!==url.href&&new URL(link.href,location.href).href!==img.src)return;
-      event.preventDefault();image.src=url.href;image.alt=img.alt||'课程图片';caption.textContent=img.alt||'原始课程图片';dialog.showModal();
+  function openImageModal(img,link,event){
+    if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||typeof dialog.showModal!=='function')return;
+    var source=img.dataset.fullSrc||img.getAttribute('src'),url;
+    try{url=new URL(source,location.href);}catch(_){return;}
+    if(!['http:','https:','file:','blob:'].includes(url.protocol))return;
+    if(link&&new URL(link.href,location.href).href!==url.href&&new URL(link.href,location.href).href!==img.src)return;
+    event.preventDefault();image.src=url.href;image.alt=img.alt||'课程图片';caption.textContent=img.alt||'原始课程图片';dialog.showModal();
+  }
+  var imgs=Array.from(content.querySelectorAll('img'));
+  if(imgs.length<=40){
+    imgs.forEach(function(img){
+      var link=img.closest('a'),trigger=link;
+      if(!trigger){trigger=document.createElement('button');trigger.type='button';trigger.className='image-zoom';trigger.setAttribute('aria-label','查看大图：'+(img.alt||'课程图片'));img.before(trigger);trigger.appendChild(img);}
+      trigger.addEventListener('click',function(event){openImageModal(img,link,event);});
     });
-  });
+  }else{
+    // On massive pages (all.html with 460+ images), use single delegated click listener to avoid 460 DOM mutations.
+    content.classList.add('delegated-zoom');
+    content.addEventListener('click',function(event){
+      var img=event.target.closest('img');
+      if(!img||!content.contains(img))return;
+      openImageModal(img,img.closest('a'),event);
+    });
+  }
 
   var query=(new URLSearchParams(location.search).get('find')||'').slice(0,160);
   var article=document.querySelector('article[data-lecture-id]');if(!query||!article)return;
@@ -667,7 +693,7 @@
       }).catch(function () { /* keep static panel intact on load error */ });
     }
 
-    if (getBaseUrl()) mountPanel();
+    if (details.open) mountPanel();
     else details.addEventListener('toggle', function () { if (details.open) mountPanel(); }, { once: true });
   }
 

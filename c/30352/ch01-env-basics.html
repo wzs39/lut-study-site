@@ -86,8 +86,8 @@ pre code{background:none;color:inherit;padding:0}
 kbd{background:var(--code-bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05em .45em}
 
 /* ---------- 顶栏 ---------- */
-.topbar{position:static;top:0;z-index:30;background:var(--topbar-bg);
-  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+.topbar{position:static;top:0;z-index:30;background:var(--card);
+  border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(15,23,42,.04)}
 .navigation-ready .topbar{position:sticky}
 .topbar-in{max-width:1320px;margin:0 auto;padding:10px 24px;display:grid;
   grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1rem}
@@ -402,10 +402,10 @@ sup,sub{line-height:0;font-size:.78em}
 .allcourse{background:var(--ov-bg);border:1px solid var(--ov-line);
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
+  padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow);content-visibility:auto;contain-intrinsic-size:auto 900px}
 .revcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow)}
-.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px}
+  padding:18px 22px;margin:0 0 22px;box-shadow:var(--shadow);content-visibility:auto;contain-intrinsic-size:auto 700px}
+.revlec{border-top:1px dashed var(--line);padding-top:12px;margin-top:16px;content-visibility:auto;contain-intrinsic-size:auto 320px}
 .revlec:first-of-type{border-top:none;margin-top:6px}
 .revlec>h3{margin-top:0}
 .revbody>h4:first-child{margin-top:.2em}
@@ -624,6 +624,7 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   border:1px solid var(--callout-line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:.75rem;cursor:pointer}
 .clipboard-fallback{position:fixed;inset-block-start:-10000px;inset-inline-start:0}
 .image-zoom{display:block;padding:0;margin:0;max-inline-size:100%;background:transparent;border:0;cursor:zoom-in}
+.delegated-zoom img{cursor:zoom-in}
 .image-zoom img{display:block}
 .image-viewer{max-inline-size:calc(100vw - 2rem);max-inline-size:calc(100dvw - 2rem);max-block-size:calc(100dvh - 2rem);
   margin:auto;padding:1rem;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow:auto}
@@ -957,6 +958,7 @@ is_student = True</code></pre>
     if (!anchorTarget) return;
     // Lazy media above a destination can otherwise move it after the jump.
     anchorTarget.scrollIntoView({ block: 'start', behavior: 'instant' });
+    if (document.images.length > 60) { anchorTarget = null; return; }
     var waiting = Array.from(document.images).some(function (image) {
       return !image.complete && !!(image.compareDocumentPosition(anchorTarget) & Node.DOCUMENT_POSITION_FOLLOWING);
     });
@@ -975,10 +977,22 @@ is_student = True</code></pre>
   }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
-    if (!active) {
+    if (!active && targets.length) {
       var edge = parseFloat(getComputedStyle(root).scrollPaddingTop) + 8;
-      for (var i = 0; i < targets.length; i++) {
-        if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+      if (targets.length > 24) {
+        // Binary search keeps scrollspy O(log N) on large multi-course pages like all.html / review.html.
+        var lo = 0, hi = targets.length - 1, hit = -1;
+        while (lo <= hi) {
+          var mid = (lo + hi) >> 1;
+          var t = targets[mid];
+          if (t && t.getBoundingClientRect().top <= edge) { hit = mid; lo = mid + 1; }
+          else hi = mid - 1;
+        }
+        if (hit >= 0) active = links[hit];
+      } else {
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i] && targets[i].getClientRects().length && targets[i].getBoundingClientRect().top <= edge) active = links[i];
+        }
       }
     }
     if (active === previous) return;
@@ -1041,9 +1055,8 @@ is_student = True</code></pre>
   addEventListener('resize', function () { measure(); schedule(); });
   addEventListener('load', function () { measure(); schedule(); });
   if (window.ResizeObserver) {
-    var observer = new ResizeObserver(function () { measure(); settleAnchor(); schedule(); });
+    var observer = new ResizeObserver(function () { measure(); if (anchorTarget) settleAnchor(); });
     observer.observe(header);
-    observer.observe(document.getElementById('page-content'));
   }
   // Stop following the selected anchor as soon as the reader takes control.
   ['wheel', 'touchstart', 'pointerdown'].forEach(function (name) {

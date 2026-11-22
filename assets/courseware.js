@@ -227,7 +227,7 @@
       }).catch(function () { /* keep static panel intact on load error */ });
     }
 
-    if (getBaseUrl()) mountPanel();
+    if (details.open) mountPanel();
     else details.addEventListener('toggle', function () { if (details.open) mountPanel(); }, { once: true });
   }
 

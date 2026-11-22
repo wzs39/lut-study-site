@@ -46,10 +46,11 @@ FOLDER_CODE_TO_ID = {
     "HDD5020": "86",
 }
 
-SKIP_NAMES = {".ds_store", "thumbs.db", "desktop.ini"}
-SKIP_DIR_NAMES = {"_study_site", "__pycache__", ".git"}
+SKIP_NAMES = {".ds_store", "thumbs.db", "desktop.ini", "linked-manifest.json"}
+SKIP_DIR_NAMES = {"_study_site", "__pycache__", ".git", "_info"}
 PRIVATE_DIR_NAMES = {"submissions"}
 PRIVATE_NAME_RE = re.compile(r"zishuo|004027128", re.I)
+LOGIN_HTML_MARKERS = ("log in to the site", "forgotten your username", "shibboleth", "error 404")
 
 
 def is_private_path(rel_posix: str) -> bool:
@@ -57,6 +58,16 @@ def is_private_path(rel_posix: str) -> bool:
     if any(p in PRIVATE_DIR_NAMES for p in parts):
         return True
     return bool(PRIVATE_NAME_RE.search(rel_posix))
+
+
+def is_login_or_error_html(path: Path) -> bool:
+    if path.suffix.lower() not in (".html", ".htm"):
+        return False
+    try:
+        head = path.read_bytes()[:1200].decode("utf-8", errors="replace").lower()
+    except OSError:
+        return False
+    return any(marker in head for marker in LOGIN_HTML_MARKERS)
 
 
 def script_json(value) -> str:
@@ -100,6 +111,36 @@ def discover_source_files(include_private: bool = False) -> tuple[list[dict], di
     abs_map: dict[str, Path] = {}
     seen_ids: set[str] = set()
     skipped_private = 0
+    skipped_invalid_html = 0
+
+    def add_file(cid: str, rel: str, path: Path) -> None:
+        nonlocal skipped_private, skipped_invalid_html
+        if path.name.lower() in SKIP_NAMES or path.name.startswith("~$"):
+            return
+        if not include_private and is_private_path(rel):
+            skipped_private += 1
+            return
+        if is_login_or_error_html(path):
+            skipped_invalid_html += 1
+            return
+        fid = f"{cid}/{rel}"
+        if fid in seen_ids:
+            return
+        seen_ids.add(fid)
+        ext = path.suffix.lower()
+        records.append(
+            {
+                "id": fid,
+                "cid": cid,
+                "rel": rel,
+                "name": path.name,
+                "ext": ext,
+                "cat": file_category(ext),
+                "size": path.stat().st_size,
+                "lectures": [],
+            }
+        )
+        abs_map[fid] = path
 
     for root in source_roots:
         if not root.is_dir():
@@ -115,31 +156,26 @@ def discover_source_files(include_private: bool = False) -> tuple[list[dict], di
                     continue
                 if any(part in SKIP_DIR_NAMES for part in path.parts):
                     continue
-                if path.name.lower() in SKIP_NAMES or path.name.startswith("~$"):
-                    continue
                 rel = path.relative_to(course_dir).as_posix()
-                if not include_private and is_private_path(rel):
-                    skipped_private += 1
-                    continue
-                fid = f"{cid}/{rel}"
-                if fid in seen_ids:
-                    continue
-                seen_ids.add(fid)
-                ext = path.suffix.lower()
-                records.append(
-                    {
-                        "id": fid,
-                        "cid": cid,
-                        "rel": rel,
-                        "name": path.name,
-                        "ext": ext,
-                        "cat": file_category(ext),
-                        "size": path.stat().st_size,
-                        "lectures": [],
-                    }
-                )
-                abs_map[fid] = path
+                add_file(cid, rel, path)
 
+    # Also include supplemental linked PDFs archived under moodle-updates/*/linked/<cid>/
+    updates_root = REPO_ROOT / "moodle-updates"
+    if updates_root.is_dir():
+        for linked_dir in sorted(updates_root.glob("*/linked/*")):
+            if not linked_dir.is_dir():
+                continue
+            cid = linked_dir.name
+            if not (SITE_ROOT / "content" / f"{cid}.json").is_file():
+                continue
+            for path in sorted(linked_dir.rglob("*")):
+                if not path.is_file():
+                    continue
+                rel = "linked/" + path.relative_to(linked_dir).as_posix()
+                add_file(cid, rel, path)
+
+    if skipped_invalid_html:
+        print(f"Filtered out {skipped_invalid_html} invalid Moodle login/error HTML snapshots")
     return records, abs_map, skipped_private
 
 
@@ -148,6 +184,29 @@ def _norm_key(text: str) -> str:
     if s.endswith(".txt"):
         s = s[:-4]
     return re.sub(r"[\s_\-]+", "", s)
+
+
+def _path_tokens(text: str) -> set[str]:
+    s = text.replace("\\", "/").strip().lower()
+    if s.endswith(".txt"):
+        s = s[:-4]
+    return set(re.findall(r"[a-z0-9äöå]{2,}", s))
+
+
+def _pick_best_candidate(cand_str: str, candidates: list[dict]) -> dict | None:
+    if len(candidates) == 1:
+        return candidates[0]
+    want = _path_tokens(cand_str)
+    scored = []
+    for r in candidates:
+        have = _path_tokens(r["rel"])
+        overlap = len(want & have)
+        score = overlap / max(1, len(have))
+        scored.append((overlap, score, r))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    if scored and scored[0][0] >= 2:
+        return scored[0][2]
+    return None
 
 
 def link_lectures(records: list[dict]) -> dict[str, list[dict]]:
@@ -178,7 +237,6 @@ def link_lectures(records: list[dict]) -> dict[str, list[dict]]:
                 total_refs += 1
                 sf = raw_sf.replace("\\", "/").strip()
                 candidates = [sf]
-                # Also extract parenthetical filename like "11-sol.pdf (Homework 11 solutions.pdf)"
                 paren = re.findall(r"\(([^()]+\.[A-Za-z0-9]{1,5})\)", sf)
                 candidates.extend(paren)
                 hit: dict | None = None
@@ -191,21 +249,30 @@ def link_lectures(records: list[dict]) -> dict[str, list[dict]]:
                     elif low_notxt in exact_rel:
                         hit = exact_rel[low_notxt]
                     else:
-                        bn = Path(low).name
-                        bn_notxt = Path(low_notxt).name
-                        if bn in by_name:
-                            hit = by_name[bn][0]
-                        elif bn_notxt in by_name:
-                            hit = by_name[bn_notxt][0]
-                        else:
-                            # Handle flattened extraction names such as 3_Lectures_1_SSEIntro2026.pptx.txt
+                        # First check flattened full-path match (e.g. 3_Assignments_2_..._intro_intro.html -> 3_Assignments/2_.../intro/intro.html)
+                        nk_full = _norm_key(low_notxt)
+                        for r in pool:
+                            if _norm_key(r["rel"]) == nk_full:
+                                hit = r
+                                break
+                        if not hit:
+                            bn = Path(low).name
+                            bn_notxt = Path(low_notxt).name
+                            if bn in by_name:
+                                hit = _pick_best_candidate(low_notxt, by_name[bn])
+                            elif bn_notxt in by_name:
+                                hit = _pick_best_candidate(low_notxt, by_name[bn_notxt])
+                        if not hit:
+                            bn_notxt = Path(low_notxt).name
                             nk = _norm_key(bn_notxt)
                             if len(nk) >= 6:
-                                for r in pool:
-                                    rn = _norm_key(r["name"])
-                                    if len(rn) >= 6 and (nk.endswith(rn) or rn.endswith(nk)):
-                                        hit = r
-                                        break
+                                suffix_hits = [
+                                    r for r in pool
+                                    if len(_norm_key(r["name"])) >= 6
+                                    and (nk.endswith(_norm_key(r["name"])) or _norm_key(r["name"]).endswith(nk))
+                                ]
+                                if suffix_hits:
+                                    hit = _pick_best_candidate(low_notxt, suffix_hits)
                     if hit:
                         break
 
