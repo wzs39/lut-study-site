@@ -8,68 +8,68 @@
 <title>第 10 讲 · 软件质量与配置管理 · 30361</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
   --radius:14px;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
   --measure:68rem;
-  --topbar-height:86px;
+  --topbar-height:64px;
   --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+    --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
     --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
     --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
     --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
     --callout-bg:#212933; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
     --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
     --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+    --shadow-lift:0 8px 24px rgba(0,0,0,.42);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+  --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
   --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
   --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
   --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
   --callout-bg:#212933; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
   --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
   --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+  --shadow-lift:0 8px 24px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
@@ -127,20 +127,20 @@ section[data-type],.card[data-type]{background:var(--card);border:1px solid var(
   border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
   scroll-margin-top:86px}
 section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
-/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+/* 每段顶部的类型徽标：统一编号胶囊，跨平台清晰不裁切 */
 section[data-type]::before,.card[data-type]::before{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;line-height:1.4;
   color:var(--accent);background:var(--accent-soft);
-  padding:3px 12px;border-radius:99px;margin-bottom:14px}
-section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
-section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
-section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
-section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
-section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
-section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+  padding:4px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"01 · 本节定位";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"02 · 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"03 · 英文术语";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"04 · 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"05 · 练习自测";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"06 · 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"07 · 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"08 · 资料对照";color:var(--muted);background:var(--chip-bg)}
 section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
@@ -190,13 +190,13 @@ section[data-type="keywords"] table td:first-child{font-weight:600}
 .qa .q{font-weight:650}
 .qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
   background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
-details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details{border:1px dashed var(--callout-line);border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
 details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
 details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
 details[open] summary::before{transform:rotate(90deg)}
 details summary::-webkit-details-marker{display:none}
 details[open] summary{margin-bottom:.45em}
-details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
+details .ans{border-top:1px dashed var(--line);margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
 .checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
@@ -230,25 +230,28 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
   border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
 .directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-chevron{transition:transform .18s ease}
 .directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
 #directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
-.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
-  color:var(--muted);font-size:.75rem;line-height:1.6}
-.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-context{margin:0 .5rem .625rem;padding-block-end:.625rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.5}
+.directory-group-title{padding:.45rem .625rem .3rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .directory-group-title:not(:first-child){margin-block-start:.5rem}
 .directory-list{list-style:none;margin:0;padding:0}
-.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list li{margin:.1rem 0;min-width:0}
 .directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
 .directory-row{display:flex;align-items:stretch;min-width:0}
-.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
-  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-link{display:flex;align-items:flex-start;gap:.45rem;flex:1;min-width:0;padding:.45rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:7px;color:var(--fg);font-size:.8125rem;line-height:1.5;
+  transition:background-color .14s,color .14s}
 .directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
 .directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
-.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:99px;padding:0 .35rem;align-self:center;opacity:.85}
 .directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
 .directory-link.ancestor{font-weight:650}
-.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
-  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:1.9rem;padding:.2rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.15rem}
+.directory-expand>span{display:inline-block;transition:transform .16s ease}
 .directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
 .directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
 .page-directory [hidden]{display:none}
@@ -281,13 +284,13 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
   .page-content{margin-block-start:1rem}
 }
-.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
-  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
-.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
-.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
-.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head{padding:1.25rem 1.5rem;margin-block-end:1.15rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .45rem}
+.lecture-head h1{font-size:clamp(1.45rem,1.1rem + 1vw,1.9rem);line-height:1.35;margin:0 0 .35rem;text-wrap:balance}
+.lecture-subtitle{font-size:.95rem;color:var(--muted);margin:0 0 .65rem;line-height:1.55}
 .lecture-head .chaptertag{margin:0;font-size:.8125rem}
-.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources{margin:.75rem 0 0;padding:.5rem .8rem;border:1px solid var(--line);background:var(--detail-bg)}
 .lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
 .lecture-sources .src{margin:.625rem 0 0}
 .lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
@@ -301,24 +304,27 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
 .src code{font-size:12.4px;word-break:break-all}
 
 /* ---------- 总览页组件 ---------- */
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:22px;line-height:1.3}
-.stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
-  font-size:15px;background:var(--card);margin-bottom:20px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 15px;min-width:108px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:21px;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.4px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--callout-line);border-radius:10px;
+  font-size:15px;background:var(--card);color:var(--fg);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
-  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
-.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
-.ccard h3{margin:.1em 0 .3em}
-.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
-.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:16px;align-items:start}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  box-shadow:var(--shadow);transition:box-shadow .16s,transform .16s,border-color .16s;display:flex;flex-direction:column}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px);border-color:var(--ov-line)}
+.ccard h3{margin:.35em 0 .25em;font-size:17px;line-height:1.4}
+.ccard h3::before{display:none}
+.ccard h3 a{color:var(--fg)}
+.ccard h3 a:hover{color:var(--accent);text-decoration:none}
+.ccard .meta{font-size:12.8px;color:var(--muted);margin-bottom:6px;line-height:1.5}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14px}
+.lec-list li{padding:5px 0;border-top:1px solid var(--line-soft);display:flex;gap:8px;justify-content:space-between;align-items:baseline}
 .lec-list li:first-child{border-top:none}
-.lec-list .t{flex:1}
-.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list .t{flex:1;min-width:0}
+.lec-list .n{color:var(--muted);font-size:12.4px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
 
 /* ---------- 全站统一模块导航 ---------- */
@@ -360,35 +366,40 @@ sup,sub{line-height:0;font-size:.78em}
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
   border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
-.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
-.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-weight:650;margin-bottom:6px}
+.qhead-title{color:var(--fg);font-size:14.5px;line-height:1.4;min-width:0}
+.qhead-title:hover{color:var(--accent)}
+.qhead-badges{display:inline-flex;gap:4px;flex-shrink:0;align-items:center}
+.qhead-badges .badge{margin-right:0;white-space:nowrap;font-size:11.5px;padding:0 8px}
+.ticklist{list-style:none;padding:0;margin:.35em 0 0;font-size:13.8px}
+.ticklist li{padding:3.5px 0;border-top:1px solid var(--line-soft)}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-.ticklist input{margin-top:.35em}
+.ticklist input{margin-top:.32em;accent-color:var(--accent)}
 .chapter{margin:0 0 24px}
 .chapter>h2 a{color:var(--fg)}
 .chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
 .chapters{list-style:none;padding:0;margin:.4em 0 0}
-.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch{border-top:1px solid var(--line-soft);padding:8px 0 4px}
 .chapters>li.ch:first-child{border-top:none;padding-top:2px}
-.chapters .ch-t{font-weight:600}
-.chapters .n{float:right;color:var(--muted);font-size:12.6px}
-.chapters .lec-list{margin:.15em 0 0;padding-left:0}
-.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chapters .ch-t{font-weight:600;font-size:13.8px}
+.chapters .n{color:var(--muted);font-size:12px;white-space:nowrap;flex-shrink:0}
+.chapters .lec-list{margin:.2em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3.5px 0;border-top:none;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
+.chapters-tick>li{padding:5px 0;border-top:1px solid var(--line-soft)}
 .chapters-tick>li:first-child{border-top:none}
-.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.chapters-tick .qp{font-weight:600;font-size:13.4px;color:var(--muted)}
 .allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
+.allcourse{background:var(--ov-bg);border:1px solid var(--ov-line);
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
@@ -410,19 +421,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px;max-width:100%;overflow-wrap:anywhere}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;max-width:100%}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mat-form{display:flex;flex-direction:column;gap:12px}
-.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600;min-width:0}
 .mat-field input,.mat-field select,.mat-field textarea{
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
-  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%;min-width:0;max-width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
 .mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
-  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s;max-width:100%}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
 .mat-drop-text{font-size:14.5px}
@@ -430,7 +441,7 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
-  font-weight:600;cursor:pointer;text-decoration:none}
+  font-weight:600;cursor:pointer;text-decoration:none;max-width:100%}
 .mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
 .mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .mat-btn.primary:hover{filter:brightness(.94);color:#fff}
@@ -439,13 +450,13 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-status{font-size:13.5px;color:var(--muted)}
 .mat-status.ok{color:var(--ok);font-weight:600}
 .mat-status.err{color:var(--bad);font-weight:600}
-.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
-.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px;min-width:0}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;min-width:0;max-width:100%}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 .mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
-.mat-item-main{flex:1;min-width:220px}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg);max-width:100%}
+.mat-item-main{flex:1;min-width:0}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
@@ -497,21 +508,21 @@ sup,sub{line-height:0;font-size:.78em}
 /* ---------- 小屏 ---------- */
 @media(max-width:640px){
   body{font-size:15.5px}
-  .wrap{padding:18px 14px 50px}
-  .card,section[data-type]{padding:15px 16px}
-  h1{font-size:24px}
-  h2{font-size:19px}
-  .topbar-in{padding:9px 14px;gap:9px}
+  .wrap{padding:14px 12px 48px}
+  .card,section[data-type]{padding:14px 15px}
+  h1{font-size:23px}
+  h2{font-size:18.5px}
+  .topbar-in{padding:8px 12px;grid-template-columns:1fr auto;gap:.45rem}
   #btt{right:14px;bottom:16px}
-  .lecture-head,.lecture-page section[data-type]{padding:1rem}
-  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
-  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
-  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
-  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .lecture-head,.lecture-page section[data-type]{padding:.95rem 1rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;overflow-x:auto;
+    gap:.2rem;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .global-nav::-webkit-scrollbar{display:none}
+  .navlink{flex:0 0 auto;font-size:.74rem;min-height:2.05rem;padding:.22rem .5rem;white-space:nowrap}
+  .thbtn{min-width:2.5rem;min-height:2.5rem}
   .sequence-nav{grid-template-columns:1fr;gap:.5rem}
   .sequence-nav [data-sequence]{text-align:start}
-  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
-
+  .breadcrumbs{font-size:.75rem;margin-block-end:.75rem}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -538,29 +549,36 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
-.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
-  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
-.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
-  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
-  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
-.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.4rem;min-width:2.75rem;
+  padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:.8125rem;
+  transition:border-color .15s,color .15s,background-color .15s}
+.search-shortcut:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.kbd-hint{font-size:.6875rem;padding:.05rem .35rem;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted);line-height:1.4}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;
+  padding:.42rem .82rem;background:var(--card);color:var(--fg);font:inherit;font-size:.85rem;font-weight:550;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%;
+  transition:border-color .14s,background-color .14s,color .14s}
+.study-button.compact{min-height:2.1rem;padding:.3rem .7rem;font-size:.8rem}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
 .study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button.primary:hover{filter:brightness(.94);color:var(--card);background:var(--accent-deep)}
 .study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
 .study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
-.learning-home h2,.site-search h2{margin-block-start:0}
-.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
-.learning-home details{margin-block-end:0}
+.learning-home h2,.site-search h2{margin-block-start:0;font-size:1.1rem}
+.continue-link{display:inline-block;font-weight:650;font-size:1rem}
+.learning-home details{margin-block:.5rem 0;padding:7px 12px}
 .study-backup .study-button{margin-block-end:.625rem}
-.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.85rem;max-width:100%}
 .study-import input{max-width:100%;font:inherit}
-.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
-  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
-.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
-.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
-.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
-.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
-.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
-.course-progress span{white-space:nowrap}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:550;padding:.1rem .4rem;margin-inline-start:.45rem;
+  border:1px solid var(--line);border-radius:99px;color:var(--muted);white-space:nowrap;vertical-align:middle;flex-shrink:0}
+.study-state[data-status="new"]{opacity:.62;border-color:transparent;background:var(--bg)}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--ov-line)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.course-progress{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.45rem 0 .7rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:11rem;block-size:.45rem;accent-color:var(--accent);border-radius:99px}
+.course-progress span{white-space:nowrap;font-variant-numeric:tabular-nums}
 .site-search{display:block}
 .site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
 .search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
@@ -578,16 +596,22 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
 ::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
 .search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
   border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
-.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
-.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
-.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
-.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
-.study-status input{accent-color:var(--accent);margin:0}
-.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
-.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
-.reader-options summary{font-size:.875rem}
-.reader-options .study-filters{min-width:min(20rem,100%)}
-.study-storage-note{font-size:.6875rem;margin:0}
+.study-toolbar{margin-block-start:.85rem;padding-block-start:.85rem;border-block-start:1px solid var(--line)}
+.study-toolbar-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.75rem 1rem;flex-wrap:wrap}
+.study-status{border:0;padding:0;margin:0;min-width:0}
+.study-status legend{padding:0;margin-block-end:.35rem;font-size:.72rem;font-weight:600;color:var(--muted)}
+.status-group{display:inline-flex;flex-wrap:wrap;gap:.3rem;padding:.2rem;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.status-pill{display:inline-flex;align-items:center;gap:.32rem;min-height:2.1rem;padding:.2rem .65rem;border-radius:7px;
+  cursor:pointer;font-size:.8rem;font-weight:550;color:var(--muted);transition:background-color .14s,color .14s}
+.status-pill:hover{color:var(--fg)}
+.status-pill:has(input:checked){background:var(--card);color:var(--accent-deep);box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.status-pill input{accent-color:var(--accent);margin:0;width:.88rem;height:.88rem}
+.reader-actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0}
+.reader-options{margin:0;padding:.35rem .75rem;min-height:2.5rem;border:1px solid var(--callout-line);border-radius:8px;display:inline-flex;flex-direction:column;justify-content:center}
+.reader-options summary{font-size:.85rem}
+.reader-options .study-filters{min-width:min(18rem,100%);margin-block:.5rem .25rem}
+.study-storage-note{font-size:.72rem;margin:.6rem 0 0;color:var(--muted)}
+.copy-code.is-copied{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 .lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
 .lecture-page section[data-type]>p{max-inline-size:80ch}
 .focus-reading .page-layout{display:block}
@@ -617,15 +641,21 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
 .study-notice[hidden]{display:none}
 @media(max-width:640px){
+  .kbd-hint{display:none}
   .search-query{grid-template-columns:minmax(0,1fr) auto}
   #search-clear{grid-column:2;min-height:2.25rem}
   .reader-actions{align-items:stretch}
   .reader-options{max-width:100%}
   .study-button{font-size:.8125rem}
   .practice-controls{align-items:stretch}
+  .home-hero .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{min-width:0}
+  .course-filter-bar{align-items:stretch}
+  .filter-toolbar-row{flex-direction:column;align-items:stretch}
+  .filter-controls{flex-direction:column;align-items:stretch}
 }
 @media print{
-  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions{display:none}
   .code-block pre{padding-block-start:1rem}
   .image-zoom{display:contents}
   .image-viewer{display:none}
@@ -645,6 +675,167 @@ dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
 dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
 dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
 dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
+
+/* ---------- 首页 Hero & 双栏工作台 ---------- */
+.home-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 1.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.home-hero-main{flex:1 1 24rem;min-width:0}
+.home-hero-main h1{margin:0 0 .25rem;font-size:clamp(1.5rem,1.2rem + .9vw,1.95rem)}
+.home-hero-main .lead{margin:0;font-size:.93rem}
+.home-hero .stats{margin:0;flex-shrink:0}
+.home-hero .stat{padding:7px 13px;min-width:86px}
+.home-hero .stat b{font-size:19px}
+.home-workbench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:1.4rem}
+.home-workbench>.card{margin:0;padding:16px 20px}
+.home-workbench .site-search form>label{font-size:.98rem;margin-block-end:.45rem}
+.home-workbench .study-filters{margin-block:.55rem .4rem;gap:.55rem}
+.home-workbench .study-filters select{min-height:2.35rem;font-size:.9rem}
+.home-workbench .search-query .search{min-height:2.45rem;font-size:.94rem;padding:8px 12px}
+.home-workbench #search-status{margin:.35rem 0 0;font-size:.82rem}
+.home-workbench #study-totals{margin:.3rem 0 .45rem;font-size:.82rem}
+@media(max-width:1120px){
+  .home-workbench{grid-template-columns:1fr;gap:14px}
+}
+
+/* ---------- 课程分类筛选与卡片升级 ---------- */
+.course-section-head{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1rem}
+.course-section-head h2{margin:0}
+.course-filter-bar{display:flex;justify-content:space-between;align-items:center;gap:.65rem;flex-wrap:wrap}
+.filter-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.filter-pill{display:inline-flex;align-items:center;gap:.35rem;min-height:2.1rem;padding:.28rem .75rem;
+  border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);
+  font:inherit;font-size:.8125rem;font-weight:550;cursor:pointer;transition:all .14s}
+.filter-pill span{font-size:.72rem;opacity:.75;font-variant-numeric:tabular-nums}
+.filter-pill:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft)}
+.filter-pill.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.filter-pill.pill-bad.is-active{background:var(--bad);border-color:var(--bad);color:var(--card)}
+.filter-pill.pill-warn.is-active{background:var(--warn);border-color:var(--warn);color:var(--card)}
+.ccard[hidden],.revcourse[hidden],.revlec[hidden],.qcourse[hidden]{display:none}
+.ccard-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.ccard-top .badge{margin:0;font-size:11.5px;padding:0 9px}
+.ccard-cat{background:var(--accent-soft);color:var(--accent-deep)}
+.ccard-summary{font-size:.84rem;color:var(--muted);margin:.15rem 0 .35rem;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ccard-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin:.25rem 0 .65rem}
+.ccard-link{display:inline-flex;align-items:center;padding:.28rem .68rem;border:1px solid var(--line);border-radius:7px;
+  font-size:.78rem;font-weight:600;color:var(--muted);background:var(--bg);transition:all .14s}
+.ccard-link:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.ccard-link.primary{background:var(--accent-soft);border-color:var(--ov-line);color:var(--accent-deep)}
+.ccard-chapters{margin:auto 0 0;padding:7px 12px;border-style:solid;border-color:var(--line);background:var(--detail-bg)}
+.ccard-chapters>summary{font-size:.8125rem;color:var(--muted);font-weight:550}
+.ccard-chapters[open]>summary{color:var(--accent-deep);margin-bottom:.5rem}
+
+/* ---------- 侧边栏过滤、状态点与跨课切换 ---------- */
+.directory-filter{padding:0 .5rem .6rem}
+.directory-filter-input{width:100%;padding:.4rem .65rem;font:inherit;font-size:.8rem;color:var(--fg);
+  background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.directory-filter-input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);background:var(--card)}
+.course-switcher{padding:.65rem .75rem;border-top:1px solid var(--line);background:var(--detail-bg);
+  border-radius:0 0 var(--radius) var(--radius);flex-shrink:0}
+#directory-content[hidden] + .course-switcher{display:none}
+.course-switcher label{display:flex;flex-direction:column;gap:.3rem;font-size:.72rem;font-weight:650;color:var(--muted)}
+.course-switcher select{font:inherit;font-size:.8rem;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:7px;padding:.38rem .5rem;min-height:2.2rem;width:100%;max-width:100%}
+.dir-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.45rem;background:var(--line)}
+.dir-status-dot[data-status="learning"]{background:var(--accent)}
+.dir-status-dot[data-status="review"]{background:var(--warn)}
+.dir-status-dot[data-status="mastered"]{background:var(--ok)}
+
+/* ---------- 全站命令面板 (Ctrl+K) ---------- */
+dialog.cmd-palette{inset:0;margin:min(10vh,5rem) auto auto;padding:0;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);color:var(--fg);width:min(40rem,calc(100vw - 1.5rem));max-height:min(78dvh,38rem);
+  box-shadow:0 22px 60px rgba(0,0,0,.32);overflow:hidden}
+dialog.cmd-palette[open]{display:flex;flex-direction:column}
+dialog.cmd-palette::backdrop{background:rgba(10,15,26,.55);backdrop-filter:blur(3px)}
+.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;border-bottom:1px solid var(--line)}
+.cmd-input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:inherit;font-size:1rem;padding:.25rem}
+.cmd-input:focus{outline:none}
+.cmd-close{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:6px;padding:.2rem .5rem;
+  font:inherit;font-size:.72rem;cursor:pointer;flex-shrink:0}
+.cmd-close:hover{color:var(--fg);border-color:var(--accent)}
+.cmd-mode-bar{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.45rem .85rem;background:var(--detail-bg);border-bottom:1px solid var(--line)}
+.cmd-mode{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:.2rem .68rem;
+  font:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.cmd-mode.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cmd-hint{margin-inline-start:auto;font-size:.72rem;color:var(--muted)}
+.cmd-status{margin:0;padding:.4rem .95rem;font-size:.76rem;color:var(--muted);border-bottom:1px solid var(--line-soft)}
+.cmd-list{list-style:none;margin:0;padding:.35rem;overflow:auto;flex:1;min-height:0}
+.cmd-list li{margin:0}
+.cmd-item{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem .65rem;border-radius:9px;color:var(--fg);text-decoration:none}
+.cmd-item:hover,.cmd-item.is-selected{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.cmd-type{font-size:.68rem;font-weight:700;padding:.12rem .45rem;border-radius:6px;background:var(--chip-bg);color:var(--chip-fg);
+  white-space:nowrap;flex-shrink:0;margin-top:.15rem}
+.cmd-item.is-selected .cmd-type{background:var(--accent-deep);color:var(--card)}
+.cmd-main{display:flex;flex-direction:column;min-width:0;flex:1}
+.cmd-main strong{font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
+.cmd-sub{font-size:.76rem;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+
+/* ---------- 考点清单 & 知识拓展筛选工具条 & 合订本快捷条 ---------- */
+.filter-toolbar{padding:14px 18px;margin-bottom:18px}
+.filter-toolbar-row{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-select-label{display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;color:var(--muted)}
+.filter-select-label select{font:inherit;font-size:.84rem;min-height:2.2rem;padding:.25rem .55rem;background:var(--card);
+  color:var(--fg);border:1px solid var(--callout-line);border-radius:7px;max-width:16rem}
+.filter-check{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--fg);cursor:pointer;user-select:none}
+.filter-check input{accent-color:var(--accent)}
+.filter-status{margin:.55rem 0 0;font-size:.8rem}
+.review-matrix{border-style:solid;border-color:var(--line);padding:12px 16px;margin:0 0 22px;background:var(--card);box-shadow:var(--shadow)}
+.review-matrix>summary{font-size:1.05rem;color:var(--fg)}
+.review-matrix .qgrid{margin:12px 0 4px}
+.reader-quickbar h2{margin-top:0;font-size:1.08rem}
+.reader-pill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,14.5rem),1fr));gap:8px;margin-top:10px}
+.reader-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:9px;background:var(--detail-bg);color:var(--fg);font-size:.83rem;font-weight:550;transition:all .14s}
+.reader-pill em{font-style:normal;font-size:.74rem;color:var(--muted);white-space:nowrap}
+.reader-pill:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+
+/* ---------- 原始课件查询与 Google Cloud Storage 直链 ---------- */
+.cw-home{border-style:solid;border-color:var(--line);padding:14px 18px;margin:0 0 1.4rem;background:var(--card);box-shadow:var(--shadow)}
+.cw-home>summary,.cw-panel details>summary{font-size:.96rem;font-weight:650;color:var(--fg)}
+.cw-panel{border-left:4px solid var(--accent)}
+.cw-panel details{border:0;margin:0;padding:0;background:transparent}
+.cw-panel-body{margin-top:.8rem}
+.cw-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-search{flex:1 1 16rem;min-width:0;padding:.48rem .75rem;border:1px solid var(--callout-line);border-radius:8px;
+  background:var(--card);color:var(--fg);font:inherit;font-size:.88rem}
+.cw-search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.cw-select{padding:.42rem .65rem;border:1px solid var(--callout-line);border-radius:8px;background:var(--card);
+  color:var(--fg);font:inherit;font-size:.84rem;min-height:2.25rem;max-width:100%}
+.cw-status-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-cloud-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:.15rem .55rem;
+  border-radius:99px;background:var(--warn-soft);color:var(--warn);max-width:100%;overflow-wrap:anywhere}
+.cw-cloud-pill.is-live{background:var(--ok-soft);color:var(--ok)}
+.cw-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.cw-item{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;
+  padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;background:var(--detail-bg)}
+.cw-main{flex:1 1 16rem;min-width:0}
+.cw-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.cw-ext{font-size:.66rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;background:var(--chip-bg);color:var(--chip-fg);letter-spacing:.04em;flex-shrink:0}
+.cw-cat-pdf{background:var(--bad-soft);color:var(--bad)}
+.cw-cat-slides{background:var(--warn-soft);color:var(--warn)}
+.cw-cat-doc{background:var(--accent-soft);color:var(--accent-deep)}
+.cw-cat-code{background:var(--purple-soft);color:var(--purple)}
+.cw-cat-media{background:var(--ok-soft);color:var(--ok)}
+.cw-name{font-size:.88rem;font-weight:650;color:var(--fg);overflow-wrap:anywhere}
+a.cw-name{color:var(--accent-deep)}
+.cw-size{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cw-meta{font-size:.75rem;color:var(--muted);margin-top:.2rem;overflow-wrap:anywhere;font-family:"Cascadia Code",Consolas,monospace}
+.cw-lectures{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+.cw-lec-link{padding:.1rem .45rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent-deep);font-size:.75rem}
+.cw-lec-link:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.cw-actions{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;flex-shrink:0}
+.cw-btn{display:inline-flex;align-items:center;padding:.3rem .68rem;border:1px solid var(--line);border-radius:7px;
+  background:var(--card);color:var(--fg);font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap}
+.cw-btn:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.cw-btn.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cw-btn.primary:hover{filter:brightness(.94);color:var(--card)}
+.cw-btn.muted{color:var(--muted);background:var(--bg)}
+.cw-empty{padding:1rem;text-align:center;color:var(--muted);font-size:.86rem;border:1px dashed var(--line);border-radius:10px}
+.cw-lecture-box{margin-top:.75rem;padding-top:.7rem;border-top:1px dashed var(--line)}
+.cw-lecture-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.82rem}
+#courseware-cloud input{font:inherit;padding:.55rem .7rem;min-width:0;width:100%;box-sizing:border-box;
+  border:1px solid var(--callout-line);border-radius:7px;background:var(--card);color:var(--fg)}
+#courseware-cloud .study-filters{grid-template-columns:1fr}
 </style>
 </head>
 <body id="top" data-module="courses">
@@ -652,7 +843,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
 <nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
-<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -660,13 +851,13 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </div></header>
 <main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
 <nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">CT60A4050 软件工程基础</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-3.html">第 3 章 测试、演化与项目管理</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 10 讲 · 软件质量与配置管理</span></li></ol></nav>
-<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 10 讲 · 软件质量与配置管理 · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">10.1 质量管理管三个层面</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">10.2 质量计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">10.3 质量管理的范围</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">10.4 软件质量的两种定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">10.5 非功能特性决定主观质量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">10.6 过程质量与产品质量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">10.7 质量文化</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">10.8 标准：产品标准与过程标准</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">10.9 敏捷中的质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">10.10 配置管理：在不断变化中保持可辨识</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">10.11 敏捷与配置管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">10.12 版本控制与分支策略（练习课补充）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">10.13 AI 与软件质量管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">质量与配置管理清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-25" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-25"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l04-requirements-engineering.html"><span class="directory-label">第 4 讲 · 需求工程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l09-project-management-and-planning.html"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="l10-quality-and-configuration-management.html" aria-current="page"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l12-case-studies.html"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-project-docs.html"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/l10-quality-and-configuration-management"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 10 / 14 讲</p><h1 id="lecture-title">第 10 讲 · 软件质量与配置管理</h1><p class="lecture-subtitle">Software Quality and Configuration Management</p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 测试、演化与项目管理</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>2cc8188cd3bb</code>（用于识别内容变更）</dd></dl><ul><li><code>19_Week 13/1_SE - Lecture 10 - 2026.pdf</code> <span class="sub">未附原文件</span></li><li><code>19_Week 13/3_Exercise Session 3 (1).pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 10 讲 · 软件质量与配置管理 · 30361</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">10.1 质量管理管三个层面</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">10.2 质量计划</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">10.3 质量管理的范围</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">10.4 软件质量的两种定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">10.5 非功能特性决定主观质量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">10.6 过程质量与产品质量</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">10.7 质量文化</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">10.8 标准：产品标准与过程标准</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">10.9 敏捷中的质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">10.10 配置管理：在不断变化中保持可辨识</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">10.11 敏捷与配置管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">10.12 版本控制与分支策略（练习课补充）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">10.13 AI 与软件质量管理</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">质量与配置管理清单</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">CT60A4050 软件工程基础</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="true" aria-label="展开或收起：CT60A4050 软件工程基础"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 导论与过程模型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-25" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 导论与过程模型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-25"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l01-course-and-se-overview.html"><span class="directory-label">第 1 讲 · 课程导论与软件工程概览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l02-sdlc-models-and-agile.html"><span class="directory-label">第 2 讲 · SDLC 模型、瀑布、螺旋、V 模型与敏捷</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l03-process-activities-and-improvement.html"><span class="directory-label">第 3 讲 · 软件过程、过程活动与过程改进</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 需求、建模与架构</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 需求、建模与架构"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l04-requirements-engineering.html"><span class="directory-label">第 4 讲 · 需求工程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l05-system-modelling.html"><span class="directory-label">第 5 讲 · 系统建模与 UML</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l06-architectural-design.html"><span class="directory-label">第 6 讲 · 软件体系结构设计</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-3.html"><span class="directory-label">第 3 章 测试、演化与项目管理</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 3 章 测试、演化与项目管理"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l07-testing-and-quality.html"><span class="directory-label">第 7 讲 · 软件测试与质量管理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l08-evolution-and-maintenance.html"><span class="directory-label">第 8 讲 · 软件演化、维护与遗留系统</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l09-project-management-and-planning.html"><span class="directory-label">第 9 讲 · 软件项目管理与计划</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="l10-quality-and-configuration-management.html" aria-current="page"><span class="directory-label">第 10 讲 · 软件质量与配置管理</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 实践、案例与课程项目</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 实践、案例与课程项目"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="l11-agile-practices-workshop.html"><span class="directory-label">第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l12-case-studies.html"><span class="directory-label">第 12 讲 · 案例研究：IBM、Sasken、EXCEED 与 Catalise</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="l13-course-project-and-report-writing.html"><span class="directory-label">第 13 讲 · 课程项目与状态报告写作</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-project-docs.html"><span class="directory-label">补充 · 项目文档模板、Honor Code 与案例讨论</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30361/l10-quality-and-configuration-management"><header class="lecture-head"><p class="lecture-kicker">CT60A4050 软件工程基础 · 第 10 / 14 讲</p><h1 id="lecture-title">第 10 讲 · 软件质量与配置管理</h1><p class="lecture-subtitle">Software Quality and Configuration Management</p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 测试、演化与项目管理</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>2cc8188cd3bb</code>（用于识别内容变更）</dd></dl><ul><li><code>19_Week 13/1_SE - Lecture 10 - 2026.pdf</code> <span class="sub">未附原文件</span></li><li><code>19_Week 13/3_Exercise Session 3 (1).pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><div class="study-toolbar-row"><fieldset class="study-status"><legend>学习状态</legend><div class="status-group"><label class="status-pill"><input type="radio" name="lecture-status" value="new"><span>未开始</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="learning"><span>学习中</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="review"><span>待复习</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="mastered"><span>已掌握</span></label></div></fieldset>
 <div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
 <label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
 <label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
 <button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
-<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
-<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是 Module 2 的收官讲，把两个看似不同的主题放在一起：<b>质量</b>（产品做得好不好）与<b>配置管理</b>（在不断变化中，你怎么知道现在到底是哪个版本）。二者的连接点是「变更」：质量体系约束变更的质量，配置管理记录并控制变更本身。</p><p>与前后衔接：第 7 讲给出了 SQM 的定义与度量，本讲展开为组织级/项目级框架、质量标准与质量计划；第 8 讲的演化与重构依赖版本管理与构建；第 11 讲的 CI 流水线是本讲「系统构建」的工程化实现。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出质量管理的三个层面（组织、项目执行、项目质量计划）与质量团队的独立性要求</li><li>写出一份质量计划的五个组成部分，并解释为什么它必须简短</li><li>列出常用质量属性，并说明质量属性之间为什么必然冲突</li><li>区分产品标准与过程标准，各举三例</li><li>说出配置管理的四项活动，并解释为什么敏捷「不可能」离开配置管理工具</li><li>设计分支策略与合并/变基方案，并说明冲突与回滚的处理方式</li></ul></section>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器 · 快捷键：<kbd>Ctrl K</kbd> 搜索 / <kbd>[</kbd><kbd>]</kbd> 切换上下讲 / <kbd>F</kbd> 专注阅读</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>这是 Module 2 的收官讲，把两个看似不同的主题放在一起：<b>质量</b>（产品做得好不好）与<b>配置管理</b>（在不断变化中，你怎么知道现在到底是哪个版本）。二者的连接点是「变更」：质量体系约束变更的质量，配置管理记录并控制变更本身。</p><p>与前后衔接：第 7 讲给出了 SQM 的定义与度量，本讲展开为组织级/项目级框架、质量标准与质量计划；第 8 讲的演化与重构依赖版本管理与构建；第 11 讲的 CI 流水线是本讲「系统构建」的工程化实现。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>说出质量管理的三个层面（组织、项目执行、项目质量计划）与质量团队的独立性要求</li><li>写出一份质量计划的五个组成部分，并解释为什么它必须简短</li><li>列出常用质量属性，并说明质量属性之间为什么必然冲突</li><li>区分产品标准与过程标准，各举三例</li><li>说出配置管理的四项活动，并解释为什么敏捷「不可能」离开配置管理工具</li><li>设计分支策略与合并/变基方案，并说明冲突与回滚的处理方式</li></ul></section>
 <section id="sec-detail" class="card" data-type="detail"><h3 id="s2">10.1 质量管理管三个层面</h3><p>软件质量管理关注「确保软件产品达到所需质量水平」。课件给出三个主要关注点：</p><ol><li><b>组织层面</b>：建立一套组织过程与标准的框架，使之能产出高质量软件；</li><li><b>项目层面（执行）</b>：应用具体的质量过程，并检查这些计划的过程是否被遵循；</li><li><b>项目层面（计划）</b>：为项目建立质量计划，阐明项目的质量目标，并定义将使用哪些过程与标准。</li></ol><p>质量管理活动应提供对开发过程的<b>独立检查</b>：检查项目交付物是否与组织标准及目标一致。因此<b>质量团队应独立于开发团队</b>，以便对软件采取客观视角、在不被开发问题影响的情况下报告质量。</p><div class="callout exam"><b>必考</b>「质量团队必须独立于开发团队」是常考点。独立性不是组织政治，而是保证报告的客观性——如果质量人员向项目经理汇报且绩效由进度决定，质量报告必然被软化。</div><h3 id="s3">10.2 质量计划</h3><p>质量计划阐明期望的产品质量、如何评估这些质量，并定义最重要的质量属性；它应定义质量评估过程，说明应应用哪些组织标准，必要时定义新的标准。</p><p>质量计划的五个组成部分：产品介绍（product introduction）、产品计划（product plans）、过程描述（process descriptions）、质量目标（quality goals）、风险与风险管理（risks and risk management）。</p><p>课件对篇幅有一条很实用的要求：<b>质量计划应当简短</b>——“If they are too long, no-one will read them.”（太长就没人看。）这句话可直接用于论述题：质量体系的失败往往不是缺文档，而是文档没人读。</p><h3 id="s4">10.3 质量管理的范围</h3><p>质量管理对大型复杂系统尤其重要：质量文档是进展的记录，并在开发团队更替时支撑开发的连续性。对较小系统，质量管理需要更少文档，应聚焦于建立<b>质量文化</b>；使用敏捷开发时，技术也必须演化。</p><h3 id="s5">10.4 软件质量的两种定义</h3><p>最简单的定义：质量意味着产品<b>符合其规格</b>（meet its specification）。但对软件系统，这有问题：</p><ul><li>客户的质量要求（效率、可靠性）与开发者的质量要求（可维护性、可复用性）之间存在<b>张力</b>；</li><li>有些质量要求难以无歧义地规定；</li><li>软件规格通常<b>不完整且常常不一致</b>。</li></ul><p>因此关注点可能应转向「<b>适用于目的</b>」（fitness for purpose）而非「符合规格」。课件的六个检查问题很好地说明了「适用于目的」的含义：</p><ol><li>软件是否已被恰当测试？</li><li>软件是否足够可靠、可以投入使用？</li><li>软件在正常使用中的性能是否可接受？</li><li>软件是否可用（usable）？</li><li>软件结构是否良好、是否可理解？</li><li>开发过程中是否遵循了编程与文档标准？</li></ol><h3 id="s6">10.5 非功能特性决定主观质量</h3><p>课件给出一条经验判断：软件的<b>主观质量</b>很大程度上取决于其<b>非功能特性</b>。这反映真实的用户体验——如果软件功能不是用户期望的，用户往往会绕过它、找别的办法完成目标；但如果软件不可靠或太慢，用户实际上<b>无法</b>达成目标。</p><p>这句话与第 4 讲「非功能需求可能比功能需求更关键」是同一判断的两种表述，可以互相引用。</p><p>常用质量属性（课件列了 15 个）：安全性（safety）、可理解性（understandability）、可移植性（portability）、安全性（security）、可测试性（testability）、可用性（usability）、可靠性（reliability）、适应性（adaptability）、可复用性（reusability）、韧性（resilience）、模块化（modularity）、效率（efficiency）、健壮性（robustness）、复杂性（complexity）、可学习性（learnability）。</p><p>质量冲突不可避免：任何系统都不可能对所有属性最优——例如提高健壮性可能损失性能。因此质量计划必须定义「对本软件最重要的质量属性」，并包含质量评估过程的定义：一种约定的、判断某质量（如可维护性或健壮性）是否存在于产品中的方式。</p><div class="callout warn"><b>易错</b>把「质量高」当成一个单一维度。质量是多属性向量，且属性之间冲突；说「这个系统质量很高」而不说明在哪些属性上、以什么为代价，是不专业的表述。</div><h3 id="s7">10.6 过程质量与产品质量</h3><p>开发产品的质量受生产过程质量的影响。这在软件开发中很重要，因为有些产品质量属性难以评估（例如可维护性）。但课件也提醒：软件过程与产品质量之间的关系<b>非常复杂且理解不足</b>——个人技能与经验的应用尤其重要；外部因素（应用的新颖性、需要加速的开发进度）可能损害产品质量。</p><p>「基于过程的质量」（process-based quality）的逻辑是：如果过程被定义为能产出高质量产品的过程，并且过程被遵循、被度量、被改进，那么产品质量就有了间接保证。这也是 CMMI/SPICE 类模型的立论基础（第 3 讲）。</p><h3 id="s8">10.7 质量文化</h3><p>质量管理者应致力于建立<b>质量文化</b>：让所有对软件开发负责的人都承诺达到高产品质量；鼓励团队为自己工作的质量负责，并开发新的质量改进方法；支持关注质量「无形方面」的人；鼓励所有成员的专业行为。</p><p>为什么文化重要？因为质量体系能约束「可检查的动作」，但无法约束「没写下来的偷懒」。第 11 讲 Telerik 案例中「每个人都对产品有 ownership」正是质量文化的组织版本。</p><h3 id="s9">10.8 标准：产品标准与过程标准</h3><p>标准定义产品或过程所需的属性，在质量管理中作用重要。标准可以是国际、国家、组织或项目标准。它的三个作用：封装最佳实践（避免重复过去的错误）；提供「在特定情境中质量意味着什么」的框架（即该组织对质量的看法）；提供连续性（新员工通过理解所用标准来理解组织）。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>类别</th><th>英文</th><th>适用对象</th><th>例子</th></tr><tr><td>产品标准</td><td>product standards</td><td>被开发的软件产品</td><td>设计评审表单、需求文档结构、方法头格式、Java 编程风格、项目计划格式、变更请求表单</td></tr><tr><td>过程标准</td><td>process standards</td><td>开发过程中应遵循的过程</td><td>设计评审的组织方式、新代码提交构建的流程、版本发布流程、项目计划审批流程、变更控制流程、测试记录流程</td></tr></table></div><p>标准的三个问题（很现实）：可能被工程师认为不相关、不过时；常涉及过多官僚式填表；若没有工具支持，维护与标准相关的文档就要做大量枯燥的填表工作。</p><h3 id="s10">10.9 敏捷中的质量管理</h3><p>敏捷开发中的质量管理是<b>非正式的、而非基于文档的</b>：它依赖建立质量文化，让所有团队成员对软件质量有责任感并采取行动维持质量。敏捷社区从根本上反对标准式方法与质量过程所带来的官僚开销。</p><p>三条「共享好实践」（shared good practice，可直接作为代码评审清单）：</p><ol><li><b>Check before check-in</b>：程序员有责任在代码提交到构建系统之前，与其他成员组织自己的代码评审；</li><li><b>Never break the build</b>：成员不应提交导致系统失败的代码；开发者必须针对整个系统测试自己的改动，并确信其按预期工作；</li><li><b>Fix problems when you see them</b>：若程序员发现他人代码中的问题或不清晰之处，可以直接修复，而不是转回给原作者。</li></ol><p>评审在敏捷中通常是非正式的：Scrum 在每个迭代完成后有<b>冲刺评审</b>（sprint review），可讨论质量问题；XP 用<b>结对编程</b>保证代码持续被另一名成员检查。</p><p>敏捷质量管理在大型系统中的三个局限：为外部客户开发大系统时，最少文档的敏捷质量管理可能不实际——大客户有自己的质量过程，会要求以兼容方式报告进展；多个地理分布、可能来自不同公司的团队参与开发时，非正式沟通不实际；长寿命系统的开发团队会变化，没有文档，新成员可能无法理解开发。</p><h3 id="s11">10.10 配置管理：在不断变化中保持可辨识</h3><p>软件系统在开发与使用中持续变化。配置管理（CM）是「管理变化中的软件系统的策略、过程与工具」。为什么需要它？因为很容易失去对「每个系统版本里到底包含哪些变更与构件版本」的追踪；对团队项目，CM 是控制不同开发者所做变更所必需的。</p><p>四项配置管理活动：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>活动</th><th>英文</th><th>做什么</th></tr><tr><td>版本管理</td><td>version management</td><td>跟踪系统构件的多个版本，确保不同开发者对构件的修改不互相干扰</td></tr><tr><td>系统构建</td><td>system building</td><td>把程序构件、数据与库组装起来，编译成可执行系统</td></tr><tr><td>变更管理</td><td>change management</td><td>跟踪来自客户与开发者的变更请求，核算变更的成本与影响，决定是否实施</td></tr><tr><td>发布管理</td><td>release management</td><td>为对外发布准备软件，并跟踪已发布给客户使用的系统版本</td></tr></table></div><p>注意「变更管理」在三个语境中的不同含义：第 4 讲是<b>需求</b>变更管理（变更提案与追溯），本讲是<b>配置</b>变更管理（变更请求、成本、影响、是否实施），第 13 讲的项目计划里是<b>项目</b>变更管理（计划偏差的纠正）。三者共享「记录—评估—决策—实施」的骨架。</p><h3 id="s12">10.11 敏捷与配置管理</h3><p>敏捷开发中构件与系统每天被修改多次，<b>没有 CM 工具是不可能做到的</b>。典型流程是：构件的权威版本保存在共享的项目仓库中；开发者把它们复制到自己的工作区；修改代码后用构建工具在自己机器上构建新系统并测试；满意后把修改过的构件送回项目仓库。</p><p>这条流程解释了为什么「分支/合并策略」在敏捷中不是可选项：多人高频修改同一仓库，冲突是常态而非例外。</p><h3 id="s13">10.12 版本控制与分支策略（练习课补充）</h3><p>练习课给出的定义：版本控制是管理源代码与文档变更的系统；它记录每次修改的历史，支持协作开发、分支管理与回滚操作，从而提高可维护性与开发效率。常见系统分两类：<b>集中式</b>（如 SVN）与<b>分布式</b>（如 Git）。</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>维度</th><th>集中式 centralized（SVN）</th><th>分布式 distributed（Git）</th></tr><tr><td>仓库位置</td><td>单一中央服务器保存全部历史</td><td>每个克隆都是完整仓库，含全部历史</td></tr><tr><td>离线工作</td><td>受限（需连服务器）</td><td>可完全离线提交，之后推送</td></tr><tr><td>分支成本</td><td>较高（常靠目录复制）</td><td>极低（分支只是指针）</td></tr><tr><td>权限控制</td><td>集中、细粒度</td><td>以仓库/分支为单位，较弱</td></tr><tr><td>典型风险</td><td>服务器单点故障</td><td>历史分散，需要约定推送与评审流程</td></tr></table></div><p>分支规划（branch planning）：主分支（main/master）应始终可发布；功能分支（feature branch）从主分支切出，完成后经评审合并；修复分支用于紧急缺陷；发布分支用于冻结与打补丁。关键约定是「主分支永远绿」——这与敏捷的「Never break the build」是同一条纪律。</p><p>合并策略：<b>merge</b> 保留分支历史与真实分叉，产生合并提交；<b>rebase</b> 把提交「重放」到目标分支之上，得到线性历史，但会改写提交哈希。经验规则是：<b>共享分支上用 merge，未推送的本地分支上可用 rebase 整理历史</b>；对已推送的公共分支做 rebase 会破坏他人的历史。</p><p>冲突处理与回滚：冲突应「小步、频繁」地解决——频繁从主分支同步可把冲突控制在几行之内；回滚优先用「反向提交」（revert）而不是改写历史（reset --hard），因为后者会让协作者的历史分叉。这些是工程约定，考试通常考「merge 与 rebase 的区别及适用场景」。</p><h3 id="s14">10.13 AI 与软件质量管理</h3><p>课件的最后一节把 AI 对质量管理的影響分成三块。第一块是从「被动测试」走向「预测性工程」的四种能力：</p><ul><li><b>自动化测试生成</b>：生成式 AI 把用户故事与代码库转成单元与端到端测试脚本，大幅削减手工编写工作；</li><li><b>自愈式自动化</b>：AI 实时检测 UI 与布局变化，自动修复失效的测试定位器，无需人工干预；</li><li><b>预测性缺陷分析</b>：机器学习分析提交历史与代码复杂度，在缺陷进入生产前标记高风险模块；</li><li><b>智能优化</b>：AI 根据最近代码变更决定跑哪些测试用例，加速 CI/CD 反馈回路。</li></ul><p>第二块是它对质量管理「三个主要关注点」的重塑：组织标准（如 ISO 9001 扩展到 AI 治理、数据隐私与偏差标准，如 ISO/IEC 42001）；动态最佳实践（AI 监控跨项目遥测，持续更新编码标准、标记架构反模式）；持续过程审计（AI 以自动检查 CI/CD 流水线与拉取请求的合规性，替代人工把关）；自适应项目质量计划（质量计划从静态文档变成「活蓝图」，根据历史数据动态调整测试覆盖与风险优先级）。</p><p>第三块是收益与新风险的权衡：已有文献显示 AI 驱动分析把缺陷检出率提高 <b>30%–50%</b>，同时减少误报与维护成本；系统综述确认 LLM 测试生成与 ML 预测能达到比传统自动化更高的代码覆盖率；但存在「代码质量悖论」——若不加约束，AI 生成的代码可能增加代码变动率、重复与安全漏洞（高出 23.7% 到 2.74 倍）。课件的共识是：AI 是质量保证的强大「力量倍增器」，但严格的人工监督与成熟的治理仍不可或缺。</p><div class="callout idea" data-ext="l10-quality-and-configuration-management-0"><b>常见误解</b><p><strong>质量高</strong>不是单一维度，而是多属性向量且属性间冲突：提高健壮性可能损失性能，因此质量计划必须写明本项目最重要的属性。质量有两种定义——符合规格，或适用于目的；后者更实用，因为规格往往不完整且不一致，客户要效率可靠性、开发者要可维护可复用，本就存在张力。质量团队必须独立于开发团队，这不是组织政治，而是保证报告客观：若绩效由进度决定，质量报告必被软化。质量计划还宜短，太长就没人读，质量体系失败常因文档无人问津。</p></div></section>
 <section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>quality management</td><td>质量管理</td><td>Ensuring that the required level of quality is achieved in a software product.</td></tr><tr><td>quality plan</td><td>质量计划</td><td>Sets out desired product qualities, how they are assessed, and which standards apply.</td></tr><tr><td>fitness for purpose</td><td>适用于目的</td><td>Quality judged by whether the software serves its purpose, not merely by specification conformance.</td></tr><tr><td>quality attribute</td><td>质量属性</td><td>Safety, security, reliability, usability, maintainability, efficiency, testability, etc.</td></tr><tr><td>quality conflict</td><td>质量冲突</td><td>Improving one attribute, e.g. robustness, may degrade another, e.g. performance.</td></tr><tr><td>quality culture</td><td>质量文化</td><td>Everyone responsible for development is committed to high product quality.</td></tr><tr><td>product standard</td><td>产品标准</td><td>Applies to the software product, e.g. document structure, coding style.</td></tr><tr><td>process standard</td><td>过程标准</td><td>Defines the process to be followed, e.g. review conduct, change control.</td></tr><tr><td>configuration management</td><td>配置管理</td><td>Policies, processes and tools for managing changing software systems.</td></tr><tr><td>version management</td><td>版本管理</td><td>Tracking multiple versions of components and preventing interference between developers.</td></tr><tr><td>system building</td><td>系统构建</td><td>Assembling components, data and libraries and compiling an executable system.</td></tr><tr><td>release management</td><td>发布管理</td><td>Preparing software for external release and tracking released versions.</td></tr><tr><td>branch</td><td>分支</td><td>An independent line of development; feature branches merge back to main.</td></tr><tr><td>merge</td><td>合并</td><td>Combines histories and creates a merge commit; used on shared branches.</td></tr><tr><td>rebase</td><td>变基</td><td>Replays commits onto another base for a linear history; rewrites hashes.</td></tr><tr><td>technical debt</td><td>技术债</td><td>Short-term shortcuts that raise the cost of future change.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　写一份质量计划的骨架</div><p>情境：某 6 人团队为医院开发预约系统，合同要求「符合医院信息安全规范，且上线后 6 个月内缺陷修复响应不超过 4 小时」。请写出质量计划的五个部分，并各给一句具体内容。</p><p><b>解：</b></p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 5，可横向滚动"><table><tr><th>部分</th><th>内容示例</th></tr><tr><td>产品介绍</td><td>面向患者与导诊台的预约系统，含挂号、改约、取消、通知四个核心流程；首批上线 3 个科室。</td></tr><tr><td>产品计划</td><td>M1 完成需求基线；M2 完成核心流程与安全加固；M3 通过发布测试与验收；上线后进入 6 个月保障期。</td></tr><tr><td>过程描述</td><td>需求评审 → 设计评审 → 代码评审（check before check-in）→ 自动化回归（每次提交）→ 独立发布测试 → 验收测试。</td></tr><tr><td>质量目标</td><td>P0 缺陷零遗留；关键流程响应 ≤ 1.5 s（95 分位）；安全规范逐条核查通过；缺陷修复响应 ≤ 4 h。</td></tr><tr><td>风险与风险管理</td><td>风险：安全规范条款理解偏差；措施：邀请医院信息安全负责人参加设计评审并签字确认。</td></tr></table></div><p><b>要点：</b>质量目标必须可度量（分位数、时限、条款清单），否则无法评估；质量计划要与合同条款对齐，而不是另起一套。</p></div><div class="qa"><div class="q">例 2　两种质量观的取舍</div><p>情境：某通用软件产品完全符合其规格文档，但用户抱怨「太慢、经常崩」。产品经理说「我们符合规格，质量没问题」。请用本讲的两种质量观分析，并给出改进方向。</p><p><b>分析：</b>「符合规格」是开发视角的质量；「适用于目的」是用户视角的质量。该产品在第一种意义上合格，在第二种意义上不合格。</p><p><b>为什么会出现这种分裂：</b>课件指出三个原因——客户与开发者的质量要求存在张力（开发者关注可维护性，客户关注效率与可靠性）；部分质量要求难以无歧义规定（「快」没有阈值）；规格本身不完整、常不一致（遗漏了性能与故障恢复）。</p><p><b>改进方向：</b>① 把「快」「稳」写成可验证的非功能需求（响应时间分位数、可用性目标、故障恢复时间）；② 把非功能特性纳入发布测试与验收标准（第 7 讲的性能与压力测试）；③ 在质量计划中明确「本项目最重要的三个质量属性」，并接受其他属性的妥协；④ 建立用户反馈到需求变更的通道（第 4 讲的变更管理）。</p><p><b>结论：</b>「符合规格」是必要条件，「适用于目的」才是充分条件；质量计划应同时覆盖两者。</p></div><div class="qa"><div class="q">例 3　分支策略与合并方案</div><p>情境：某团队 8 人，用 Git，两周一个冲刺，每天多次提交；有 3 个功能并行开发，另有 1 个紧急线上缺陷要修。主分支必须随时可发布。请设计分支策略，并说明合并与回滚规则。</p><p><b>设计：</b>① <code>main</code> 保护分支，只接受通过评审与 CI 的合并，始终可发布；② 每个功能一个 <code>feature/xxx</code> 分支，从 main 切出，小步提交，每日从 main 同步（merge 或 rebase 本地未推送部分）；③ 紧急缺陷从 main 切 <code>hotfix/xxx</code>，修复后同时合并回 main 并打标签发布；④ 每个冲刺末从 main 切 <code>release/x.y</code> 用于冻结与回归，只接受缺陷修复。</p><p><b>合并规则：</b>功能分支合并到 main 用 <b>merge</b>（保留上下文与评审记录，且不破坏他人历史）；开发者在自己<b>未推送</b>的分支上可用 <b>rebase</b> 整理提交，使评审更清晰。禁止对已推送的 main 做 rebase。</p><p><b>冲突与回滚：</b>冲突通过「每日同步 + 小 PR」控制在几行内；回滚线上问题时用 <code>revert</code> 生成反向提交（保留审计轨迹），而不是 <code>reset --hard</code> 改写公共历史；发布版本用 tag 标记，回滚即回到上一个 tag。</p><p><b>与配置管理四活动的对应：</b>分支与保护规则 = 版本管理；CI 构建 = 系统构建；PR 评审与变更单 = 变更管理；tag 与发布分支 = 发布管理。</p></div><div class="qa"><div class="q">例 4　敏捷质量体系在大客户项目中的改造</div><p>情境：某 30 人团队用 Scrum 为一家银行开发信贷审批系统。银行要求每季度提交质量报告、提供需求到测试的追溯矩阵、并通过外部审计。团队的「非正式质量文化」被打回。请给出改造方案。</p><p><b>分析：</b>这正是课件指出的三个局限中的两个——大客户有自己的质量过程并要求兼容报告；系统受外部监管。非正式做法不足以满足证据要求。</p><p><b>方案：</b>① 保留敏捷内核（冲刺、评审、结对、CI），但在每个冲刺的 Definition of Done 中加入「追溯矩阵更新」「质量指标快照」；② 用工具自动生成追溯矩阵（需求 ID ↔ 提交 ↔ 测试用例 ↔ 测试结果），把「文档负担」转成「流水线副产品」；③ 把冲刺评审的纪要、缺陷趋势、覆盖率作为季度质量报告的素材，避免另做一套；④ 对审计关注的过程标准（评审记录、变更控制）保留最小但完整的证据链；⑤ 质量角色独立于开发（向质量负责人而非项目经理汇报），以满足独立性要求。</p><p><b>结论：</b>敏捷与合规不是二选一；关键是让「证据」由流程自动产生，而不是事后补文档。</p></div></section>
@@ -675,7 +866,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s15">质量与配置管理清单</h2><ol class="steps"><li>确定本项目最重要的 2–3 个质量属性，其余明确妥协</li><li>为每个质量目标写可度量判据（分位数、时限、条款清单）</li><li>写质量计划五部分，控制在一到两页</li><li>确认质量报告的路径独立于开发进度压力</li><li>选定产品标准（文档结构、编码风格）与过程标准（评审、变更、发布）</li><li>把三条敏捷好实践写进团队公约：check before check-in、never break the build、fix problems when you see them</li><li>建立仓库与分支策略：main 保护、feature 短生命周期、hotfix 独立、release 冻结</li><li>约定合并规则（共享分支 merge、本地未推送可 rebase）与回滚规则（revert 优先）</li><li>让追溯矩阵与质量指标由 CI 自动生成，而不是事后补文档</li></ol></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 6，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>19_Week 13/1_SE - Lecture 10 - 2026.pdf</td><td>p4–p8</td><td>质量管理三个关注点、质量活动的独立检查、质量计划结构与简短要求、范围与文化</td></tr><tr><td>19_Week 13/1_SE - Lecture 10 - 2026.pdf</td><td>p9–p16</td><td>质量的两种定义与困难、适用于目的的六问、非功能特性、质量属性清单与冲突、过程与产品质量、质量文化</td></tr><tr><td>19_Week 13/1_SE - Lecture 10 - 2026.pdf</td><td>p17–p23</td><td>标准的定义与层级、产品/过程标准对照、标准的问题、敏捷质量管理、三条共享好实践、评审、大系统局限</td></tr><tr><td>19_Week 13/1_SE - Lecture 10 - 2026.pdf</td><td>p24–p26</td><td>配置管理定义与必要性、四项活动、敏捷与 CM 的工作流</td></tr><tr><td>19_Week 13/1_SE - Lecture 10 - 2026.pdf</td><td>p27–p29</td><td>AI 与 SQM：测试生成、自愈、预测缺陷、智能优化；三个关注点的重塑；收益与风险</td></tr><tr><td>19_Week 13/3_Exercise Session 3 (1).pdf</td><td>p4–p5</td><td>版本控制定义、集中式与分布式、分支规划、合并策略、冲突与回滚（练习课要求）</td></tr><tr><td>（跳过）19_Week 13/2_Exercise Session 7.pptx</td><td>全篇</td><td>复习课行政页，未纳入讲义</td></tr><tr><td>（跳过）19_Week 13/2_Exercise Session 7.pptx</td><td>全篇</td><td>复习课行政页，未纳入讲义</td></tr><tr><td>（补充）</td><td>—</td><td>merge/rebase 的具体规则与 revert 优先原则属工程约定补充</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="l09-project-management-and-planning.html"><span>上一讲</span><strong>第 9 讲 · 软件项目管理与计划</strong></a><a data-sequence="parent" href="part-3.html"><span>返回目录</span><strong>第 3 章 测试、演化与项目管理</strong></a><a data-sequence="next" href="l11-agile-practices-workshop.html"><span>下一讲</span><strong>第 11 讲 · 习题课：Scrum、冲刺、探针与规划扑克的实践</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';
@@ -733,6 +924,17 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
     });
     if (!waiting) anchorTarget = null;
   }
+  function scrollDirectoryItemIntoView(link) {
+    if (!link || content.hidden || compact.matches) return;
+    var cRect = content.getBoundingClientRect();
+    var lRect = link.getBoundingClientRect();
+    if (lRect.height === 0) return;
+    if (lRect.top < cRect.top + 36) {
+      content.scrollTop -= (cRect.top + 36 - lRect.top);
+    } else if (lRect.bottom > cRect.bottom - 24) {
+      content.scrollTop += (lRect.bottom - (cRect.bottom - 24));
+    }
+  }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
     if (!active) {
@@ -747,7 +949,10 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
       if (a === active) a.setAttribute('aria-current', 'location');
       else a.removeAttribute('aria-current');
     });
-    if (active) reveal(active);
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
     previous = active;
   }
   function schedule() {
@@ -809,12 +1014,75 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
   addEventListener('keydown', function (event) {
     if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
   });
+  var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
+  if (allDirLinks.length >= 8) {
+    var filterWrap = document.createElement('div');
+    filterWrap.className = 'directory-filter';
+    var filterInput = document.createElement('input');
+    filterInput.type = 'search';
+    filterInput.className = 'directory-filter-input';
+    filterInput.placeholder = '筛选本页目录…';
+    filterInput.setAttribute('aria-label', '筛选本页目录');
+    filterInput.autocomplete = 'off';
+    filterWrap.appendChild(filterInput);
+    var contextEl = content.querySelector('.directory-context');
+    if (contextEl) contextEl.after(filterWrap);
+    else content.prepend(filterWrap);
+
+    var savedExpanded = null;
+    function applyDirFilter() {
+      var q = filterInput.value.trim().toLowerCase();
+      var items = Array.from(content.querySelectorAll('.directory-list li'));
+      if (!q) {
+        items.forEach(function (li) { li.hidden = false; });
+        if (savedExpanded) {
+          branches.forEach(function (btn) {
+            var id = btn.getAttribute('aria-controls');
+            if (Object.prototype.hasOwnProperty.call(savedExpanded, id)) expand(btn, savedExpanded[id]);
+          });
+          savedExpanded = null;
+        }
+        return;
+      }
+      if (!savedExpanded) {
+        savedExpanded = {};
+        branches.forEach(function (btn) {
+          savedExpanded[btn.getAttribute('aria-controls')] = btn.getAttribute('aria-expanded') === 'true';
+        });
+      }
+      items.forEach(function (li) { li.hidden = true; });
+      allDirLinks.forEach(function (a) {
+        var label = a.textContent.toLowerCase();
+        if (label.indexOf(q) !== -1) {
+          var li = a.closest('li');
+          while (li && content.contains(li)) {
+            li.hidden = false;
+            var branch = li.parentElement && li.parentElement.parentElement;
+            if (branch && branch.id && branch.id.indexOf('directory-branch-') === 0) {
+              var btn = directory.querySelector('[aria-controls="' + branch.id + '"]');
+              if (btn) expand(btn, true);
+            }
+            li = li.parentElement ? li.parentElement.closest('li') : null;
+          }
+        }
+      });
+    }
+    filterInput.addEventListener('input', applyDirFilter);
+    filterInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && filterInput.value) {
+        filterInput.value = '';
+        applyDirFilter();
+        event.stopPropagation();
+      }
+    });
+  }
+
   var initialLink = links.find(function (link) { return link.hash === location.hash; });
   if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
   updateCurrent();
 })();
 </script>
-<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
 (function(){
   var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');

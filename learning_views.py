@@ -44,18 +44,19 @@ def course_progress(course_id, total):
 
 
 def lecture_controls():
-    radios = ''.join('<label><input type="radio" name="lecture-status" value="%s">%s</label>' % (key,label)
+    radios = ''.join('<label class="status-pill"><input type="radio" name="lecture-status" value="%s"><span>%s</span></label>' % (key,label)
                      for key,label in [('new','未开始'),('learning','学习中'),('review','待复习'),('mastered','已掌握')])
-    return '''<div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend>%s</fieldset>
+    return '''<div class="study-toolbar"><div class="study-toolbar-row"><fieldset class="study-status"><legend>学习状态</legend><div class="status-group">%s</div></fieldset>
 <div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
 <label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
 <label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
 <button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
-<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
-<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div>''' % radios
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器 · 快捷键：<kbd>Ctrl K</kbd> 搜索 / <kbd>[</kbd><kbd>]</kbd> 切换上下讲 / <kbd>F</kbd> 专注阅读</p></div>''' % radios
 
 
 def reading_controls():
-    actions = lecture_controls().split('<div class="reader-actions">', 1)[1]
-    actions = actions.split('<a class="study-button" id="resume-lecture"', 1)[0]
-    return '<div class="reader-toolbar reader-actions">' + actions + '</div>'
+    return '''<div class="reader-toolbar reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
+<label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
+<label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
+<button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button></div>'''

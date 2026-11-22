@@ -8,68 +8,68 @@
 <title>第 2 章 · 高阶导数、中值定理、极值与隐函数 · 62</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
   --radius:14px;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
   --measure:68rem;
-  --topbar-height:86px;
+  --topbar-height:64px;
   --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+    --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
     --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
     --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
     --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
     --callout-bg:#212933; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
     --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
     --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+    --shadow-lift:0 8px 24px rgba(0,0,0,.42);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+  --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
   --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
   --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
   --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
   --callout-bg:#212933; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
   --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
   --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+  --shadow-lift:0 8px 24px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
@@ -127,20 +127,20 @@ section[data-type],.card[data-type]{background:var(--card);border:1px solid var(
   border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
   scroll-margin-top:86px}
 section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
-/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+/* 每段顶部的类型徽标：统一编号胶囊，跨平台清晰不裁切 */
 section[data-type]::before,.card[data-type]::before{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;line-height:1.4;
   color:var(--accent);background:var(--accent-soft);
-  padding:3px 12px;border-radius:99px;margin-bottom:14px}
-section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
-section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
-section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
-section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
-section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
-section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+  padding:4px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"01 · 本节定位";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"02 · 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"03 · 英文术语";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"04 · 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"05 · 练习自测";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"06 · 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"07 · 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"08 · 资料对照";color:var(--muted);background:var(--chip-bg)}
 section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
@@ -190,13 +190,13 @@ section[data-type="keywords"] table td:first-child{font-weight:600}
 .qa .q{font-weight:650}
 .qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
   background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
-details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details{border:1px dashed var(--callout-line);border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
 details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
 details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
 details[open] summary::before{transform:rotate(90deg)}
 details summary::-webkit-details-marker{display:none}
 details[open] summary{margin-bottom:.45em}
-details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
+details .ans{border-top:1px dashed var(--line);margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
 .checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
@@ -230,25 +230,28 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
   border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
 .directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-chevron{transition:transform .18s ease}
 .directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
 #directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
-.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
-  color:var(--muted);font-size:.75rem;line-height:1.6}
-.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-context{margin:0 .5rem .625rem;padding-block-end:.625rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.5}
+.directory-group-title{padding:.45rem .625rem .3rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .directory-group-title:not(:first-child){margin-block-start:.5rem}
 .directory-list{list-style:none;margin:0;padding:0}
-.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list li{margin:.1rem 0;min-width:0}
 .directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
 .directory-row{display:flex;align-items:stretch;min-width:0}
-.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
-  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-link{display:flex;align-items:flex-start;gap:.45rem;flex:1;min-width:0;padding:.45rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:7px;color:var(--fg);font-size:.8125rem;line-height:1.5;
+  transition:background-color .14s,color .14s}
 .directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
 .directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
-.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:99px;padding:0 .35rem;align-self:center;opacity:.85}
 .directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
 .directory-link.ancestor{font-weight:650}
-.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
-  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:1.9rem;padding:.2rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.15rem}
+.directory-expand>span{display:inline-block;transition:transform .16s ease}
 .directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
 .directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
 .page-directory [hidden]{display:none}
@@ -281,13 +284,13 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
   .page-content{margin-block-start:1rem}
 }
-.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
-  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
-.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
-.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
-.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head{padding:1.25rem 1.5rem;margin-block-end:1.15rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .45rem}
+.lecture-head h1{font-size:clamp(1.45rem,1.1rem + 1vw,1.9rem);line-height:1.35;margin:0 0 .35rem;text-wrap:balance}
+.lecture-subtitle{font-size:.95rem;color:var(--muted);margin:0 0 .65rem;line-height:1.55}
 .lecture-head .chaptertag{margin:0;font-size:.8125rem}
-.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources{margin:.75rem 0 0;padding:.5rem .8rem;border:1px solid var(--line);background:var(--detail-bg)}
 .lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
 .lecture-sources .src{margin:.625rem 0 0}
 .lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
@@ -301,24 +304,27 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
 .src code{font-size:12.4px;word-break:break-all}
 
 /* ---------- 总览页组件 ---------- */
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:22px;line-height:1.3}
-.stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
-  font-size:15px;background:var(--card);margin-bottom:20px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 15px;min-width:108px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:21px;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.4px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--callout-line);border-radius:10px;
+  font-size:15px;background:var(--card);color:var(--fg);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
-  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
-.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
-.ccard h3{margin:.1em 0 .3em}
-.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
-.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:16px;align-items:start}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  box-shadow:var(--shadow);transition:box-shadow .16s,transform .16s,border-color .16s;display:flex;flex-direction:column}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px);border-color:var(--ov-line)}
+.ccard h3{margin:.35em 0 .25em;font-size:17px;line-height:1.4}
+.ccard h3::before{display:none}
+.ccard h3 a{color:var(--fg)}
+.ccard h3 a:hover{color:var(--accent);text-decoration:none}
+.ccard .meta{font-size:12.8px;color:var(--muted);margin-bottom:6px;line-height:1.5}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14px}
+.lec-list li{padding:5px 0;border-top:1px solid var(--line-soft);display:flex;gap:8px;justify-content:space-between;align-items:baseline}
 .lec-list li:first-child{border-top:none}
-.lec-list .t{flex:1}
-.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list .t{flex:1;min-width:0}
+.lec-list .n{color:var(--muted);font-size:12.4px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
 
 /* ---------- 全站统一模块导航 ---------- */
@@ -360,35 +366,40 @@ sup,sub{line-height:0;font-size:.78em}
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
   border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
-.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
-.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-weight:650;margin-bottom:6px}
+.qhead-title{color:var(--fg);font-size:14.5px;line-height:1.4;min-width:0}
+.qhead-title:hover{color:var(--accent)}
+.qhead-badges{display:inline-flex;gap:4px;flex-shrink:0;align-items:center}
+.qhead-badges .badge{margin-right:0;white-space:nowrap;font-size:11.5px;padding:0 8px}
+.ticklist{list-style:none;padding:0;margin:.35em 0 0;font-size:13.8px}
+.ticklist li{padding:3.5px 0;border-top:1px solid var(--line-soft)}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-.ticklist input{margin-top:.35em}
+.ticklist input{margin-top:.32em;accent-color:var(--accent)}
 .chapter{margin:0 0 24px}
 .chapter>h2 a{color:var(--fg)}
 .chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
 .chapters{list-style:none;padding:0;margin:.4em 0 0}
-.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch{border-top:1px solid var(--line-soft);padding:8px 0 4px}
 .chapters>li.ch:first-child{border-top:none;padding-top:2px}
-.chapters .ch-t{font-weight:600}
-.chapters .n{float:right;color:var(--muted);font-size:12.6px}
-.chapters .lec-list{margin:.15em 0 0;padding-left:0}
-.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chapters .ch-t{font-weight:600;font-size:13.8px}
+.chapters .n{color:var(--muted);font-size:12px;white-space:nowrap;flex-shrink:0}
+.chapters .lec-list{margin:.2em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3.5px 0;border-top:none;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
+.chapters-tick>li{padding:5px 0;border-top:1px solid var(--line-soft)}
 .chapters-tick>li:first-child{border-top:none}
-.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.chapters-tick .qp{font-weight:600;font-size:13.4px;color:var(--muted)}
 .allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
+.allcourse{background:var(--ov-bg);border:1px solid var(--ov-line);
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
@@ -410,19 +421,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px;max-width:100%;overflow-wrap:anywhere}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;max-width:100%}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mat-form{display:flex;flex-direction:column;gap:12px}
-.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600;min-width:0}
 .mat-field input,.mat-field select,.mat-field textarea{
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
-  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%;min-width:0;max-width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
 .mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
-  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s;max-width:100%}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
 .mat-drop-text{font-size:14.5px}
@@ -430,7 +441,7 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
-  font-weight:600;cursor:pointer;text-decoration:none}
+  font-weight:600;cursor:pointer;text-decoration:none;max-width:100%}
 .mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
 .mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .mat-btn.primary:hover{filter:brightness(.94);color:#fff}
@@ -439,13 +450,13 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-status{font-size:13.5px;color:var(--muted)}
 .mat-status.ok{color:var(--ok);font-weight:600}
 .mat-status.err{color:var(--bad);font-weight:600}
-.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
-.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px;min-width:0}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;min-width:0;max-width:100%}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 .mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
-.mat-item-main{flex:1;min-width:220px}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg);max-width:100%}
+.mat-item-main{flex:1;min-width:0}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
@@ -497,21 +508,21 @@ sup,sub{line-height:0;font-size:.78em}
 /* ---------- 小屏 ---------- */
 @media(max-width:640px){
   body{font-size:15.5px}
-  .wrap{padding:18px 14px 50px}
-  .card,section[data-type]{padding:15px 16px}
-  h1{font-size:24px}
-  h2{font-size:19px}
-  .topbar-in{padding:9px 14px;gap:9px}
+  .wrap{padding:14px 12px 48px}
+  .card,section[data-type]{padding:14px 15px}
+  h1{font-size:23px}
+  h2{font-size:18.5px}
+  .topbar-in{padding:8px 12px;grid-template-columns:1fr auto;gap:.45rem}
   #btt{right:14px;bottom:16px}
-  .lecture-head,.lecture-page section[data-type]{padding:1rem}
-  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
-  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
-  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
-  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .lecture-head,.lecture-page section[data-type]{padding:.95rem 1rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;overflow-x:auto;
+    gap:.2rem;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .global-nav::-webkit-scrollbar{display:none}
+  .navlink{flex:0 0 auto;font-size:.74rem;min-height:2.05rem;padding:.22rem .5rem;white-space:nowrap}
+  .thbtn{min-width:2.5rem;min-height:2.5rem}
   .sequence-nav{grid-template-columns:1fr;gap:.5rem}
   .sequence-nav [data-sequence]{text-align:start}
-  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
-
+  .breadcrumbs{font-size:.75rem;margin-block-end:.75rem}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -538,29 +549,36 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
-.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
-  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
-.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
-  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
-  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
-.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.4rem;min-width:2.75rem;
+  padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:.8125rem;
+  transition:border-color .15s,color .15s,background-color .15s}
+.search-shortcut:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.kbd-hint{font-size:.6875rem;padding:.05rem .35rem;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted);line-height:1.4}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;
+  padding:.42rem .82rem;background:var(--card);color:var(--fg);font:inherit;font-size:.85rem;font-weight:550;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%;
+  transition:border-color .14s,background-color .14s,color .14s}
+.study-button.compact{min-height:2.1rem;padding:.3rem .7rem;font-size:.8rem}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
 .study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button.primary:hover{filter:brightness(.94);color:var(--card);background:var(--accent-deep)}
 .study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
 .study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
-.learning-home h2,.site-search h2{margin-block-start:0}
-.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
-.learning-home details{margin-block-end:0}
+.learning-home h2,.site-search h2{margin-block-start:0;font-size:1.1rem}
+.continue-link{display:inline-block;font-weight:650;font-size:1rem}
+.learning-home details{margin-block:.5rem 0;padding:7px 12px}
 .study-backup .study-button{margin-block-end:.625rem}
-.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.85rem;max-width:100%}
 .study-import input{max-width:100%;font:inherit}
-.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
-  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
-.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
-.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
-.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
-.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
-.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
-.course-progress span{white-space:nowrap}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:550;padding:.1rem .4rem;margin-inline-start:.45rem;
+  border:1px solid var(--line);border-radius:99px;color:var(--muted);white-space:nowrap;vertical-align:middle;flex-shrink:0}
+.study-state[data-status="new"]{opacity:.62;border-color:transparent;background:var(--bg)}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--ov-line)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.course-progress{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.45rem 0 .7rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:11rem;block-size:.45rem;accent-color:var(--accent);border-radius:99px}
+.course-progress span{white-space:nowrap;font-variant-numeric:tabular-nums}
 .site-search{display:block}
 .site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
 .search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
@@ -578,16 +596,22 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
 ::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
 .search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
   border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
-.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
-.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
-.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
-.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
-.study-status input{accent-color:var(--accent);margin:0}
-.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
-.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
-.reader-options summary{font-size:.875rem}
-.reader-options .study-filters{min-width:min(20rem,100%)}
-.study-storage-note{font-size:.6875rem;margin:0}
+.study-toolbar{margin-block-start:.85rem;padding-block-start:.85rem;border-block-start:1px solid var(--line)}
+.study-toolbar-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.75rem 1rem;flex-wrap:wrap}
+.study-status{border:0;padding:0;margin:0;min-width:0}
+.study-status legend{padding:0;margin-block-end:.35rem;font-size:.72rem;font-weight:600;color:var(--muted)}
+.status-group{display:inline-flex;flex-wrap:wrap;gap:.3rem;padding:.2rem;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.status-pill{display:inline-flex;align-items:center;gap:.32rem;min-height:2.1rem;padding:.2rem .65rem;border-radius:7px;
+  cursor:pointer;font-size:.8rem;font-weight:550;color:var(--muted);transition:background-color .14s,color .14s}
+.status-pill:hover{color:var(--fg)}
+.status-pill:has(input:checked){background:var(--card);color:var(--accent-deep);box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.status-pill input{accent-color:var(--accent);margin:0;width:.88rem;height:.88rem}
+.reader-actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0}
+.reader-options{margin:0;padding:.35rem .75rem;min-height:2.5rem;border:1px solid var(--callout-line);border-radius:8px;display:inline-flex;flex-direction:column;justify-content:center}
+.reader-options summary{font-size:.85rem}
+.reader-options .study-filters{min-width:min(18rem,100%);margin-block:.5rem .25rem}
+.study-storage-note{font-size:.72rem;margin:.6rem 0 0;color:var(--muted)}
+.copy-code.is-copied{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 .lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
 .lecture-page section[data-type]>p{max-inline-size:80ch}
 .focus-reading .page-layout{display:block}
@@ -617,15 +641,21 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
 .study-notice[hidden]{display:none}
 @media(max-width:640px){
+  .kbd-hint{display:none}
   .search-query{grid-template-columns:minmax(0,1fr) auto}
   #search-clear{grid-column:2;min-height:2.25rem}
   .reader-actions{align-items:stretch}
   .reader-options{max-width:100%}
   .study-button{font-size:.8125rem}
   .practice-controls{align-items:stretch}
+  .home-hero .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{min-width:0}
+  .course-filter-bar{align-items:stretch}
+  .filter-toolbar-row{flex-direction:column;align-items:stretch}
+  .filter-controls{flex-direction:column;align-items:stretch}
 }
 @media print{
-  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions{display:none}
   .code-block pre{padding-block-start:1rem}
   .image-zoom{display:contents}
   .image-viewer{display:none}
@@ -645,6 +675,167 @@ dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
 dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
 dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
 dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
+
+/* ---------- 首页 Hero & 双栏工作台 ---------- */
+.home-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 1.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.home-hero-main{flex:1 1 24rem;min-width:0}
+.home-hero-main h1{margin:0 0 .25rem;font-size:clamp(1.5rem,1.2rem + .9vw,1.95rem)}
+.home-hero-main .lead{margin:0;font-size:.93rem}
+.home-hero .stats{margin:0;flex-shrink:0}
+.home-hero .stat{padding:7px 13px;min-width:86px}
+.home-hero .stat b{font-size:19px}
+.home-workbench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:1.4rem}
+.home-workbench>.card{margin:0;padding:16px 20px}
+.home-workbench .site-search form>label{font-size:.98rem;margin-block-end:.45rem}
+.home-workbench .study-filters{margin-block:.55rem .4rem;gap:.55rem}
+.home-workbench .study-filters select{min-height:2.35rem;font-size:.9rem}
+.home-workbench .search-query .search{min-height:2.45rem;font-size:.94rem;padding:8px 12px}
+.home-workbench #search-status{margin:.35rem 0 0;font-size:.82rem}
+.home-workbench #study-totals{margin:.3rem 0 .45rem;font-size:.82rem}
+@media(max-width:1120px){
+  .home-workbench{grid-template-columns:1fr;gap:14px}
+}
+
+/* ---------- 课程分类筛选与卡片升级 ---------- */
+.course-section-head{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1rem}
+.course-section-head h2{margin:0}
+.course-filter-bar{display:flex;justify-content:space-between;align-items:center;gap:.65rem;flex-wrap:wrap}
+.filter-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.filter-pill{display:inline-flex;align-items:center;gap:.35rem;min-height:2.1rem;padding:.28rem .75rem;
+  border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);
+  font:inherit;font-size:.8125rem;font-weight:550;cursor:pointer;transition:all .14s}
+.filter-pill span{font-size:.72rem;opacity:.75;font-variant-numeric:tabular-nums}
+.filter-pill:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft)}
+.filter-pill.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.filter-pill.pill-bad.is-active{background:var(--bad);border-color:var(--bad);color:var(--card)}
+.filter-pill.pill-warn.is-active{background:var(--warn);border-color:var(--warn);color:var(--card)}
+.ccard[hidden],.revcourse[hidden],.revlec[hidden],.qcourse[hidden]{display:none}
+.ccard-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.ccard-top .badge{margin:0;font-size:11.5px;padding:0 9px}
+.ccard-cat{background:var(--accent-soft);color:var(--accent-deep)}
+.ccard-summary{font-size:.84rem;color:var(--muted);margin:.15rem 0 .35rem;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ccard-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin:.25rem 0 .65rem}
+.ccard-link{display:inline-flex;align-items:center;padding:.28rem .68rem;border:1px solid var(--line);border-radius:7px;
+  font-size:.78rem;font-weight:600;color:var(--muted);background:var(--bg);transition:all .14s}
+.ccard-link:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.ccard-link.primary{background:var(--accent-soft);border-color:var(--ov-line);color:var(--accent-deep)}
+.ccard-chapters{margin:auto 0 0;padding:7px 12px;border-style:solid;border-color:var(--line);background:var(--detail-bg)}
+.ccard-chapters>summary{font-size:.8125rem;color:var(--muted);font-weight:550}
+.ccard-chapters[open]>summary{color:var(--accent-deep);margin-bottom:.5rem}
+
+/* ---------- 侧边栏过滤、状态点与跨课切换 ---------- */
+.directory-filter{padding:0 .5rem .6rem}
+.directory-filter-input{width:100%;padding:.4rem .65rem;font:inherit;font-size:.8rem;color:var(--fg);
+  background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.directory-filter-input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);background:var(--card)}
+.course-switcher{padding:.65rem .75rem;border-top:1px solid var(--line);background:var(--detail-bg);
+  border-radius:0 0 var(--radius) var(--radius);flex-shrink:0}
+#directory-content[hidden] + .course-switcher{display:none}
+.course-switcher label{display:flex;flex-direction:column;gap:.3rem;font-size:.72rem;font-weight:650;color:var(--muted)}
+.course-switcher select{font:inherit;font-size:.8rem;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:7px;padding:.38rem .5rem;min-height:2.2rem;width:100%;max-width:100%}
+.dir-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.45rem;background:var(--line)}
+.dir-status-dot[data-status="learning"]{background:var(--accent)}
+.dir-status-dot[data-status="review"]{background:var(--warn)}
+.dir-status-dot[data-status="mastered"]{background:var(--ok)}
+
+/* ---------- 全站命令面板 (Ctrl+K) ---------- */
+dialog.cmd-palette{inset:0;margin:min(10vh,5rem) auto auto;padding:0;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);color:var(--fg);width:min(40rem,calc(100vw - 1.5rem));max-height:min(78dvh,38rem);
+  box-shadow:0 22px 60px rgba(0,0,0,.32);overflow:hidden}
+dialog.cmd-palette[open]{display:flex;flex-direction:column}
+dialog.cmd-palette::backdrop{background:rgba(10,15,26,.55);backdrop-filter:blur(3px)}
+.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;border-bottom:1px solid var(--line)}
+.cmd-input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:inherit;font-size:1rem;padding:.25rem}
+.cmd-input:focus{outline:none}
+.cmd-close{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:6px;padding:.2rem .5rem;
+  font:inherit;font-size:.72rem;cursor:pointer;flex-shrink:0}
+.cmd-close:hover{color:var(--fg);border-color:var(--accent)}
+.cmd-mode-bar{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.45rem .85rem;background:var(--detail-bg);border-bottom:1px solid var(--line)}
+.cmd-mode{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:.2rem .68rem;
+  font:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.cmd-mode.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cmd-hint{margin-inline-start:auto;font-size:.72rem;color:var(--muted)}
+.cmd-status{margin:0;padding:.4rem .95rem;font-size:.76rem;color:var(--muted);border-bottom:1px solid var(--line-soft)}
+.cmd-list{list-style:none;margin:0;padding:.35rem;overflow:auto;flex:1;min-height:0}
+.cmd-list li{margin:0}
+.cmd-item{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem .65rem;border-radius:9px;color:var(--fg);text-decoration:none}
+.cmd-item:hover,.cmd-item.is-selected{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.cmd-type{font-size:.68rem;font-weight:700;padding:.12rem .45rem;border-radius:6px;background:var(--chip-bg);color:var(--chip-fg);
+  white-space:nowrap;flex-shrink:0;margin-top:.15rem}
+.cmd-item.is-selected .cmd-type{background:var(--accent-deep);color:var(--card)}
+.cmd-main{display:flex;flex-direction:column;min-width:0;flex:1}
+.cmd-main strong{font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
+.cmd-sub{font-size:.76rem;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+
+/* ---------- 考点清单 & 知识拓展筛选工具条 & 合订本快捷条 ---------- */
+.filter-toolbar{padding:14px 18px;margin-bottom:18px}
+.filter-toolbar-row{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-select-label{display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;color:var(--muted)}
+.filter-select-label select{font:inherit;font-size:.84rem;min-height:2.2rem;padding:.25rem .55rem;background:var(--card);
+  color:var(--fg);border:1px solid var(--callout-line);border-radius:7px;max-width:16rem}
+.filter-check{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--fg);cursor:pointer;user-select:none}
+.filter-check input{accent-color:var(--accent)}
+.filter-status{margin:.55rem 0 0;font-size:.8rem}
+.review-matrix{border-style:solid;border-color:var(--line);padding:12px 16px;margin:0 0 22px;background:var(--card);box-shadow:var(--shadow)}
+.review-matrix>summary{font-size:1.05rem;color:var(--fg)}
+.review-matrix .qgrid{margin:12px 0 4px}
+.reader-quickbar h2{margin-top:0;font-size:1.08rem}
+.reader-pill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,14.5rem),1fr));gap:8px;margin-top:10px}
+.reader-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:9px;background:var(--detail-bg);color:var(--fg);font-size:.83rem;font-weight:550;transition:all .14s}
+.reader-pill em{font-style:normal;font-size:.74rem;color:var(--muted);white-space:nowrap}
+.reader-pill:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+
+/* ---------- 原始课件查询与 Google Cloud Storage 直链 ---------- */
+.cw-home{border-style:solid;border-color:var(--line);padding:14px 18px;margin:0 0 1.4rem;background:var(--card);box-shadow:var(--shadow)}
+.cw-home>summary,.cw-panel details>summary{font-size:.96rem;font-weight:650;color:var(--fg)}
+.cw-panel{border-left:4px solid var(--accent)}
+.cw-panel details{border:0;margin:0;padding:0;background:transparent}
+.cw-panel-body{margin-top:.8rem}
+.cw-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-search{flex:1 1 16rem;min-width:0;padding:.48rem .75rem;border:1px solid var(--callout-line);border-radius:8px;
+  background:var(--card);color:var(--fg);font:inherit;font-size:.88rem}
+.cw-search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.cw-select{padding:.42rem .65rem;border:1px solid var(--callout-line);border-radius:8px;background:var(--card);
+  color:var(--fg);font:inherit;font-size:.84rem;min-height:2.25rem;max-width:100%}
+.cw-status-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-cloud-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:.15rem .55rem;
+  border-radius:99px;background:var(--warn-soft);color:var(--warn);max-width:100%;overflow-wrap:anywhere}
+.cw-cloud-pill.is-live{background:var(--ok-soft);color:var(--ok)}
+.cw-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.cw-item{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;
+  padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;background:var(--detail-bg)}
+.cw-main{flex:1 1 16rem;min-width:0}
+.cw-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.cw-ext{font-size:.66rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;background:var(--chip-bg);color:var(--chip-fg);letter-spacing:.04em;flex-shrink:0}
+.cw-cat-pdf{background:var(--bad-soft);color:var(--bad)}
+.cw-cat-slides{background:var(--warn-soft);color:var(--warn)}
+.cw-cat-doc{background:var(--accent-soft);color:var(--accent-deep)}
+.cw-cat-code{background:var(--purple-soft);color:var(--purple)}
+.cw-cat-media{background:var(--ok-soft);color:var(--ok)}
+.cw-name{font-size:.88rem;font-weight:650;color:var(--fg);overflow-wrap:anywhere}
+a.cw-name{color:var(--accent-deep)}
+.cw-size{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cw-meta{font-size:.75rem;color:var(--muted);margin-top:.2rem;overflow-wrap:anywhere;font-family:"Cascadia Code",Consolas,monospace}
+.cw-lectures{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+.cw-lec-link{padding:.1rem .45rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent-deep);font-size:.75rem}
+.cw-lec-link:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.cw-actions{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;flex-shrink:0}
+.cw-btn{display:inline-flex;align-items:center;padding:.3rem .68rem;border:1px solid var(--line);border-radius:7px;
+  background:var(--card);color:var(--fg);font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap}
+.cw-btn:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.cw-btn.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cw-btn.primary:hover{filter:brightness(.94);color:var(--card)}
+.cw-btn.muted{color:var(--muted);background:var(--bg)}
+.cw-empty{padding:1rem;text-align:center;color:var(--muted);font-size:.86rem;border:1px dashed var(--line);border-radius:10px}
+.cw-lecture-box{margin-top:.75rem;padding-top:.7rem;border-top:1px dashed var(--line)}
+.cw-lecture-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.82rem}
+#courseware-cloud input{font:inherit;padding:.55rem .7rem;min-width:0;width:100%;box-sizing:border-box;
+  border:1px solid var(--callout-line);border-radius:7px;background:var(--card);color:var(--fg)}
+#courseware-cloud .study-filters{grid-template-columns:1fr}
 </style>
 </head>
 <body id="top" data-module="courses">
@@ -652,7 +843,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
 <nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
-<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -660,13 +851,13 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </div></header>
 <main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
 <nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">HDD4010 工程数学 I</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-2.html">第 2 章 导数与微分</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 2 章 · 高阶导数、中值定理、极值与隐函数</span></li></ol></nav>
-<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 2 章 · 高阶导数、中值定理、极值与隐函数 · 62</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">4.1 高阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">4.2 xⁿ 与多项式的 n 阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">4.3 运动学：位置、速度、速率、加速度</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">4.4 一阶与二阶导数的几何意义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">4.5 三角函数与 1/(1+x) 的高阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">4.6 中值定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">4.7 罗尔定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">4.8 由 MVT 得到单调性判据</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">4.9 用 MVT 证明不等式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">4.10 极值：定义、临界点与求法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">4.11 隐函数求导</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">4.12 原函数与不定积分</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">4.13 初值问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">4.14 常见误解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">方法与清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法与清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">闭区间求最值（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">隐函数求导（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">解初值问题（三步）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD4010 工程数学 I</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD4010 工程数学 I"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 函数、极限与连续性</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 函数、极限与连续性"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t1-preliminaries-functions.html"><span class="directory-label">第 1 章 · 预备知识、直线与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t2-limits-continuity.html"><span class="directory-label">第 1 章 · 极限与连续性</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-2.html"><span class="directory-label">第 2 章 导数与微分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 2 章 导数与微分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t3-derivatives-rules.html"><span class="directory-label">第 2 章 · 导数定义与求导法则</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="t4-higher-order-extrema-implicit.html" aria-current="page"><span class="directory-label">第 2 章 · 高阶导数、中值定理、极值与隐函数</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 超越函数与极限技巧</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 超越函数与极限技巧"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t5-inverse-exp-log.html"><span class="directory-label">第 3 章 · 反函数、指数与对数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t6-inverse-trig-lhopital-riemann.html"><span class="directory-label">第 3 章 · 反三角、双曲函数、洛必达与定积分</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 积分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 积分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t7-integration-techniques.html"><span class="directory-label">第 4 章 · 微积分基本定理与积分方法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 模拟卷与题型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 模拟卷与题型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="mock-exam-and-question-types.html"><span class="directory-label">第 5 章 · 模拟卷与题型</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="62/t4-higher-order-extrema-implicit"><header class="lecture-head"><p class="lecture-kicker">HDD4010 工程数学 I · 第 04 / 08 讲</p><h1 id="lecture-title">第 2 章 · 高阶导数、中值定理、极值与隐函数</h1><p class="lecture-subtitle">Higher-Order Derivatives, Mean-Value Theorem, Extrema and Implicit Differentiation</p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 导数与微分</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>a10398e9c87e</code>（用于识别内容变更）</dd></dl><ul><li><code>Topic 4/EMI_Week4_Lecture1.pdf</code> <span class="sub">未附原文件</span></li><li><code>Topic 4/EMI_Week4_Lecture2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 2 章 · 高阶导数、中值定理、极值与隐函数 · 62</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">4.1 高阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">4.2 xⁿ 与多项式的 n 阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">4.3 运动学：位置、速度、速率、加速度</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">4.4 一阶与二阶导数的几何意义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">4.5 三角函数与 1/(1+x) 的高阶导数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">4.6 中值定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">4.7 罗尔定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">4.8 由 MVT 得到单调性判据</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">4.9 用 MVT 证明不等式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">4.10 极值：定义、临界点与求法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">4.11 隐函数求导</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">4.12 原函数与不定积分</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">4.13 初值问题</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">4.14 常见误解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">方法与清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法与清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">闭区间求最值（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">隐函数求导（四步）</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">解初值问题（三步）</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD4010 工程数学 I</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD4010 工程数学 I"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 函数、极限与连续性</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 函数、极限与连续性"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t1-preliminaries-functions.html"><span class="directory-label">第 1 章 · 预备知识、直线与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t2-limits-continuity.html"><span class="directory-label">第 1 章 · 极限与连续性</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-2.html"><span class="directory-label">第 2 章 导数与微分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 2 章 导数与微分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t3-derivatives-rules.html"><span class="directory-label">第 2 章 · 导数定义与求导法则</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="t4-higher-order-extrema-implicit.html" aria-current="page"><span class="directory-label">第 2 章 · 高阶导数、中值定理、极值与隐函数</span><span class="directory-current">当前页</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 超越函数与极限技巧</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-36" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 超越函数与极限技巧"><span aria-hidden="true">›</span></button></div><div id="directory-branch-36"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t5-inverse-exp-log.html"><span class="directory-label">第 3 章 · 反函数、指数与对数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="t6-inverse-trig-lhopital-riemann.html"><span class="directory-label">第 3 章 · 反三角、双曲函数、洛必达与定积分</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 积分</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-39" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 积分"><span aria-hidden="true">›</span></button></div><div id="directory-branch-39"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="t7-integration-techniques.html"><span class="directory-label">第 4 章 · 微积分基本定理与积分方法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 模拟卷与题型</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 模拟卷与题型"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="mock-exam-and-question-types.html"><span class="directory-label">第 5 章 · 模拟卷与题型</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="62/t4-higher-order-extrema-implicit"><header class="lecture-head"><p class="lecture-kicker">HDD4010 工程数学 I · 第 04 / 08 讲</p><h1 id="lecture-title">第 2 章 · 高阶导数、中值定理、极值与隐函数</h1><p class="lecture-subtitle">Higher-Order Derivatives, Mean-Value Theorem, Extrema and Implicit Differentiation</p><p class="chaptertag">所属章节：<a href="part-2.html">第 2 章 导数与微分</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>a10398e9c87e</code>（用于识别内容变更）</dd></dl><ul><li><code>Topic 4/EMI_Week4_Lecture1.pdf</code> <span class="sub">未附原文件</span></li><li><code>Topic 4/EMI_Week4_Lecture2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><div class="study-toolbar-row"><fieldset class="study-status"><legend>学习状态</legend><div class="status-group"><label class="status-pill"><input type="radio" name="lecture-status" value="new"><span>未开始</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="learning"><span>学习中</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="review"><span>待复习</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="mastered"><span>已掌握</span></label></div></fieldset>
 <div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
 <label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
 <label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
 <button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
-<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
-<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 3 讲建立了导数并给出了求导法则，本讲把导数用到三件具体事情上：① 连续求导得到高阶导数，用来描述「变化率的变化率」（加速度、凹凸性）；② 用中值定理把「一点的导数」与「区间上的整体行为」连起来，从而判断单调性；③ 通过求导反过来找函数（原函数与初值问题），为第 7 讲的积分做准备。</p><p>本讲还包含两个技术上非常重要的工具：隐函数求导（方程不解出 y 也能求 y′）与极值判定（临界点 + 闭区间端点）。这两项在模拟卷中直接出现（见第 5 章），必须练到能默写流程。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出并计算二阶以上的高阶导数，包括 xⁿ、1/(1+x)、sin、cos 的一般公式</li><li>由位置函数读出速度、速率与加速度，并判断加速还是减速</li><li>陈述并应用拉格朗日中值定理与罗尔定理，并用一阶、二阶导数判定单调区间、凹凸与拐点，证明简单不等式</li><li>求闭区间上连续函数的最值（临界点 + 端点比较）</li><li>对隐式方程求一阶与二阶导数，并写出切线方程</li><li>求不定积分并用初始条件定出特解（一阶与二阶初值问题）</li></ul></section>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器 · 快捷键：<kbd>Ctrl K</kbd> 搜索 / <kbd>[</kbd><kbd>]</kbd> 切换上下讲 / <kbd>F</kbd> 专注阅读</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 3 讲建立了导数并给出了求导法则，本讲把导数用到三件具体事情上：① 连续求导得到高阶导数，用来描述「变化率的变化率」（加速度、凹凸性）；② 用中值定理把「一点的导数」与「区间上的整体行为」连起来，从而判断单调性；③ 通过求导反过来找函数（原函数与初值问题），为第 7 讲的积分做准备。</p><p>本讲还包含两个技术上非常重要的工具：隐函数求导（方程不解出 y 也能求 y′）与极值判定（临界点 + 闭区间端点）。这两项在模拟卷中直接出现（见第 5 章），必须练到能默写流程。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>写出并计算二阶以上的高阶导数，包括 xⁿ、1/(1+x)、sin、cos 的一般公式</li><li>由位置函数读出速度、速率与加速度，并判断加速还是减速</li><li>陈述并应用拉格朗日中值定理与罗尔定理，并用一阶、二阶导数判定单调区间、凹凸与拐点，证明简单不等式</li><li>求闭区间上连续函数的最值（临界点 + 端点比较）</li><li>对隐式方程求一阶与二阶导数，并写出切线方程</li><li>求不定积分并用初始条件定出特解（一阶与二阶初值问题）</li></ul></section>
 <section id="sec-detail" class="card" data-type="detail"><h3 id="s2">4.1 高阶导数</h3><p>导数是函数，所以可以再求导。二阶导数记作 <code>f″(x)</code>、<code>y″</code>、<code>d²y/dx²</code>，定义为 <code>f″ = (f′)′</code>。更高阶依次类推，n 阶导数记作 <code>f⁽ⁿ⁾(x)</code>、<code>dⁿy/dxⁿ</code>，并约定 <code>f⁽⁰⁾ = f</code>。</p><p>记号警告：<code>d²y/dx²</code> 是整体记号，表示「对 y 求两次关于 x 的导数」，不是 <code>(dy)²/(dx)²</code> 这样的分数；但它在链式法则与代换中又能像分数一样运算（第 7 讲换元积分会用到）。</p><h3 id="s3">4.2 xⁿ 与多项式的 n 阶导数</h3><p>对 <code>f(x) = xⁿ</code>（n 为正整数），逐次求导：</p><p><code>f⁽ᵏ⁾(x) = n(n−1)(n−2)⋯(n−k+1) x^{n−k} = n!/(n−k)! · x^{n−k}</code>（<code>0 ≤ k ≤ n</code>），</p><p>当 <code>k &gt; n</code> 时 <code>f⁽ᵏ⁾ = 0</code>。这里的阶乘定义为 <code>n! = n(n−1)⋯3·2·1</code>（<code>n ≥ 1</code>），并规定 <code>0! = 1</code>。</p><p>对一般多项式 <code>P(x) = aₙxⁿ + ⋯ + a₁x + a₀</code>（<code>aₙ ≠ 0</code>），由线性性可得</p><p><code>P⁽ᵏ⁾(x) = aₙ · n!/(n−k)! · x^{n−k} + ⋯</code>（<code>k ≤ n</code>），特别地 <code>P⁽ⁿ⁾(x) = n! aₙ</code>——一个常数，再求导就是 0。这条结论是后面泰勒展开的理论基础（本课只需知道）。</p><h3 id="s4">4.3 运动学：位置、速度、速率、加速度</h3><p>设质点沿 x 轴运动，位置为 <code>x(t)</code>（t 为时间）：</p><ul><li><b>速度</b> <code>v(t) = x′(t)</code>，是位置的变化率；</li><li><b>速率</b>（speed）<code>= |v(t)|</code>，是标量，没有方向；</li><li><b>加速度</b> <code>a(t) = v′(t) = x″(t)</code>，是速度的变化率。</li></ul><p>速度符号的读法：<code>v &gt; 0</code> 向正方向（右）运动；<code>v &lt; 0</code> 向负方向（左）运动；<code>v = 0</code> 瞬时静止（此时 <code>x(t)</code> 处于临界点）。</p><p><b>加速还是减速的判据</b>：看 <code>v</code> 与 <code>a</code> 的<b>符号是否相同</b>。同号则速率增大（加速），异号则速率减小（减速），与 v 本身的正负无关。这一点比「a &gt; 0 就是加速」准确得多，也是模拟卷的考点。</p><p>源文件例子：<code>x(t) = t³ − 6t²</code>，则 <code>v(t) = 3t² − 12t</code>，<code>a(t) = 6t − 12</code>。在 <code>t = 3</code>：<code>x(3) = 27 − 54 = −27</code>（原点左侧 27 m），<code>v(3) = 27 − 36 = −9</code>（向左 9 m/s），<code>a(3) = 6</code>（加速度 +6 m/s²，方向向右，故在减速）。源文件此处把 v 的值印成 −9 却把时间标成 1，属排版错位，按 <code>v(3) = −9</code> 理解。）</p><p>源文件任务：<code>x(t) = 2t³ − 15t² + 24t</code>，求 <code>v</code>、<code>a</code>，并判断 <code>t = 2</code> 时的运动方向与速率。</p><p><code>v = 6t² − 30t + 24</code>，<code>a = 12t − 30</code>；<code>v(2) = 24 − 60 + 24 = −12</code>，<code>a(2) = 24 − 30 = −6</code>。v 与 a 同号（都为负），故速率在增大：向左运动，速率为 12 m/s 且越来越快。</p><h3 id="s5">4.4 一阶与二阶导数的几何意义</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>导数</th><th>几何含义</th><th>判断信息</th></tr><tr><td><code>f′(x)</code></td><td>切线斜率，瞬时变化率</td><td><code>f′ &gt; 0</code> 递增；<code>f′ &lt; 0</code> 递减；<code>f′ = 0</code> 驻点</td></tr><tr><td><code>f″(x)</code></td><td>斜率的变化率（弯曲程度）</td><td><code>f″ &gt; 0</code> 凹向上；<code>f″ &lt; 0</code> 凹向下；变号处为拐点</td></tr></table></div><p>源文件两个对照例子：<code>f(x) = x²</code>：<code>f′ = 2x</code>（<code>x &lt; 0</code> 递减、<code>x = 0</code> 驻点、<code>x &gt; 0</code> 递增），<code>f″ = 2 &gt; 0</code>（处处凹向上）。<code>f(x) = x³</code>：<code>f′ = 3x²</code>（除 0 外都递增，<code>x = 0</code> 处驻点但不改变单调性），<code>f″ = 6x</code>（<code>x &lt; 0</code> 凹向下、<code>x &gt; 0</code> 凹向上，<code>x = 0</code> 是拐点）。</p><div class="callout warn"><b>f′ = 0 不等于极值</b><code>x³</code> 在 0 处 <code>f′ = 0</code>，但函数在那里既不是极大也不是极小——它是「驻而不极」的拐点。判断极值必须看 f′ 在该点两侧是否变号。</div><h3 id="s6">4.5 三角函数与 1/(1+x) 的高阶导数</h3><p>sin 与 cos 的导数四步一循环：</p><p><code>sin → cos → −sin → −cos → sin</code>，</p><p>用「位移形式」可以把循环写成一个公式：</p><p><b><code>(sin x)⁽ⁿ⁾ = sin(x + nπ/2)</code>，<code>(cos x)⁽ⁿ⁾ = cos(x + nπ/2)</code></b>，</p><p>并且 <code>f⁽ⁿ⁺⁴⁾ = f⁽ⁿ⁾</code>（周期为 4）。验证：<code>n = 1</code> 时 <code>sin(x + π/2) = cos x</code> ✓；<code>n = 2</code> 时 <code>sin(x + π) = −sin x</code> ✓。</p><p>源文件例 1：<code>y = cos 2x</code> 的四阶导数。链式法则每求一次多一个因子 2：<code>y′ = −2sin2x</code>、<code>y″ = −4cos2x</code>、<code>y‴ = 8sin2x</code>、<code>y⁗ = 16cos2x = 2⁴cos2x</code>。</p><p>源文件例 2：<code>y = 1/(1+x) = (1+x)⁻¹</code> 的 n 阶导数。逐次计算：<code>y′ = −(1+x)⁻²</code>、<code>y″ = 2(1+x)⁻³</code>、<code>y‴ = −3!(1+x)⁻⁴</code>、<code>y⁗ = 4!(1+x)⁻⁵</code>，归纳出</p><p><b><code>y⁽ⁿ⁾ = (−1)ⁿ n! (1+x)^{−n−1}</code></b>（<code>n ≥ 1</code>）。</p><p>归纳法验证：假设 <code>n = k</code> 成立，则求导一次得 <code>(−1)ᵏk!(−k−1)(1+x)^{−k−2} = (−1)^{k+1}(k+1)!(1+x)^{−(k+1)−1}</code>，正是公式对 <code>k+1</code> 的预测；又 <code>n = 1</code> 已验证，故对所有正整数成立。源文件把这一步写成「if the formula is correct for n = k, then it is also correct for n = k+1」，这就是数学归纳法的标准句式。</p><h3 id="s7">4.6 中值定理</h3><p>源文件的引入故事：从 Lahti 到 Lappeenranta 全程 150 mile，用了 2 小时，则途中必有某一时刻的瞬时速度恰好等于平均速度 75 mph。这就是中值定理的现实版本。</p><p><b>拉格朗日中值定理</b>（Mean-Value Theorem, MVT）：若 f 在闭区间 <code>[a, b]</code> 上连续、在开区间 <code>(a, b)</code> 内可导，则存在 <code>c ∈ (a, b)</code> 使</p><p><b><code>f′(c) = (f(b) − f(a))/(b − a)</code></b>。</p><p>几何意义：曲线上必有一点的切线与连接两端点的割线<b>平行</b>。源文件给出的证明思想很直观：把一条与割线平行的虚线从下方往上平移，第一次接触曲线时的那条线就是切线，切点就是 c；也可以从上方往下移。严格证明需要构造辅助函数 <code>h(x) = f(x) − f(a) − [(f(b)−f(a))/(b−a)](x − a)</code>，验证 <code>h(a) = h(b) = 0</code>，再用罗尔定理。</p><p>三个条件缺一不可：闭区间连续、开区间可导（端点可不导）、以及区间有限。<code>f(x) = |x|</code> 在 <code>[−1, 1]</code> 上不满足「开区间可导」，定理结论确实失效（找不到斜率为 0 的点，因为割线斜率就是 0 而 f′ 从不取 0）。</p><h3 id="s8">4.7 罗尔定理</h3><p><b>罗尔定理</b>（Rolle’s Theorem）：若 f 在 <code>[a, b]</code> 上连续、在 <code>(a, b)</code> 内可导，且 <code>f(a) = f(b)</code>，则存在 <code>c ∈ (a, b)</code> 使 <code>f′(c) = 0</code>。</p><p>它是 MVT 在 <code>f(a) = f(b)</code> 时的特例（此时割线斜率为 0）。反过来，MVT 的严格证明又依赖于罗尔定理，两者是同一件事的两种形态。</p><h3 id="s9">4.8 由 MVT 得到单调性判据</h3><p>设 f 在区间 I 上连续、在内部可导，则：</p><ul><li><code>f′(x) &gt; 0</code> 对一切内点成立 ⟹ f 在 I 上严格递增；</li><li><code>f′(x) &lt; 0</code> ⟹ 严格递减；</li><li><code>f′(x) ≥ 0</code> ⟹ 不减（nondecreasing）；<code>f′(x) ≤ 0</code> ⟹ 不增；</li><li><code>f′(x) = 0</code> 恒成立 ⟹ f 为常数。</li></ul><p>证明（以递增为例）：任取 <code>x₁ &lt; x₂</code>，在 <code>[x₁, x₂]</code> 上用 MVT，得 <code>f(x₂) − f(x₁) = (x₂ − x₁)f′(c)</code>，其中 <code>c ∈ (x₁, x₂)</code>。因为 <code>x₂ − x₁ &gt; 0</code> 且 <code>f′(c) &gt; 0</code>，所以 <code>f(x₂) &gt; f(x₁)</code>。</p><div class="callout warn"><b>逆命题不成立</b><code>f(x) = x³</code> 在 ℝ 上严格递增，但 <code>f′(0) = 0</code>。所以「严格递增 ⟹ f′ &gt; 0 处处成立」是错的，只能说 <code>f′ ≥ 0</code>。答题时若题目要求「证明递增」，用 <code>f′ &gt; 0</code> 是充分条件；若题目说「已知递增」，不能推出 <code>f′ &gt; 0</code>。</div><h3 id="s10">4.9 用 MVT 证明不等式</h3><p>源文件例子：证明 <code>√(1+x) ≤ 1 + x/2</code> 对 <code>x ≥ −1</code> 成立。令 <code>f(x) = √(1+x)</code>，在 <code>[−1, ∞)</code> 连续、在 <code>(−1, ∞)</code> 可导，<code>f′(x) = 1/(2√(1+x))</code>。分三种情形：</p><ul><li><b>x &gt; 0</b>：在 <code>[0, x]</code> 上用 MVT，存在 <code>c ∈ (0, x)</code> 使 <code>(√(1+x) − 1)/x = 1/(2√(1+c)) &lt; 1/2</code>，两边乘 <code>x &gt; 0</code> 得 <code>√(1+x) − 1 &lt; x/2</code>；</li><li><b>−1 &lt; x &lt; 0</b>：在 <code>[x, 0]</code> 上用 MVT，存在 <code>c ∈ (x, 0)</code> 使 <code>(1 − √(1+x))/(−x) = 1/(2√(1+c)) &lt; 1/2</code>，注意此处乘的是负数 <code>x &lt; 0</code>，不等号方向要翻转，仍得 <code>√(1+x) − 1 &lt; x/2</code>；</li><li><b>x = 0</b>：两边都等于 1，取等号。</li></ul><p>合并三种情形即得 <code>√(1+x) ≤ 1 + x/2</code>。注意 <code>x = −1</code> 时左边为 0、右边为 <code>1/2</code>，不等式仍成立（端点单独检查）。</p><h3 id="s11">4.10 极值：定义、临界点与求法</h3><p>设 c 在 f 的定义域 D 内：<code>f(c)</code> 是<b>绝对最大值</b>（absolute maximum），若对一切 <code>x ∈ D</code> 有 <code>f(x) ≤ f(c)</code>；<b>绝对最小值</b>类似（<code>f(x) ≥ f(c)</code>）。<code>f(c)</code> 是<b>局部最大值</b>（local maximum），若存在含 c 的开区间使该区间内 <code>f(x) ≤ f(c)</code>；局部最小类似。</p><p>源文件的图形例子（<code>[a, b]</code> 上的一条曲线）说明：绝对最大在 <code>x₅</code>、绝对最小在 <code>a</code>；局部最大出现在 <code>x₁、x₃、x₅、x₇</code>，局部最小在 <code>x₂、x₄、x₆</code>；而 <code>[x₆, x₇]</code> 上函数为常数，那段区间内每一点既是局部最大又是局部最小。这说明<b>极值点不一定唯一，也不一定孤立</b>。</p><p><b>临界点</b>（critical point）：若 c 是定义域的内点且 <code>f′(c) = 0</code> 或 <code>f′(c)</code> 不存在，则 <code>(c, f(c))</code> 是临界点。临界点可能是绝对极值、局部极值，也可能什么都不是（如 <code>x³</code> 的 0）。</p><p><b>闭区间上求最值的完整流程</b>：① 求 <code>f′</code>；② 找出 <code>(a, b)</code> 内所有 <code>f′ = 0</code> 与 <code>f′</code> 不存在的点；③ 计算这些点与两个端点 <code>a、b</code> 的函数值；④ 取最大者与最小者。端点必须参与比较，这是最容易被忽略的一步。</p><p>源文件例：<code>f(x) = x³ − 12x + 1</code>。<code>f′ = 3x² − 12 = 3(x−2)(x+2)</code>，临界点 <code>x = ±2</code>。符号表：<code>(−∞, −2)</code> 上 <code>f′ &gt; 0</code>；<code>(−2, 2)</code> 上 <code>f′ &lt; 0</code>；<code>(2, ∞)</code> 上 <code>f′ &gt; 0</code>。故 <code>x = −2</code> 是局部最大（<code>f(−2) = 17</code>），<code>x = 2</code> 是局部最小（<code>f(2) = −15</code>）。又因 <code>x → ±∞</code> 时 <code>f → ±∞</code>，函数无绝对极值。</p><p>源文件任务：<code>f(x) = 12x − x³</code> 在 <code>[−3, 1]</code> 上。<code>f′ = 12 − 3x² = 0</code> 得 <code>x = ±2</code>，只有 <code>x = −2</code> 在区间内。比较 <code>f(−3) = −36 + 27 = −9</code>、<code>f(−2) = −24 + 8 = −16</code>、<code>f(1) = 12 − 1 = 11</code>，故绝对最小 <code>−16</code>（在 <code>x = −2</code>），绝对最大 <code>11</code>（在 <code>x = 1</code>）。</p><h3 id="s12">4.11 隐函数求导</h3><p>曲线通常是方程 <code>F(x, y) = 0</code> 的图形，例如 <code>x² + y² − 25 = 0</code>。有时能解出 <code>y = f(x)</code>（显函数），有时解不出，但方程仍然在局部确定了一个或多个<b>隐函数</b>（implicit function）<code>y = y(x)</code>。</p><p><b>隐函数求导的步骤</b>：把方程两边对 x 求导，过程中<b>把 y 看成 x 的函数</b>并随时使用链式法则（<code>d/dx[y²] = 2y·y′</code>、<code>d/dx[sin y] = cos y·y′</code>），然后解出 <code>y′</code>。</p><p>源文件例：圆 <code>x² + y² = 25</code> 在 <code>(3, −4)</code> 处的斜率。两边求导：<code>2x + 2y y′ = 0</code>，故 <code>y′ = −x/y</code>。代入 <code>(3, −4)</code>：<code>y′ = −3/(−4) = 3/4</code>。</p><p>源文件例：<code>y sin y = x³ + cos x</code>。左边用乘积法则 + 链式法则：<code>y′ sin y + y cos y·y′</code>；右边：<code>3x² − sin x</code>。整理得</p><p><b><code>y′ = (3x² − sin x)/(sin y + y cos y)</code></b>。</p><p>源文件例：<code>x² + xy + 2y³ = 4</code> 在 <code>(−2, 1)</code> 的切线。先验证点在曲线上：<code>4 + (−2) + 2 = 4</code> ✓。求导：<code>2x + y + x y′ + 6y² y′ = 0</code>。代入 <code>x = −2, y = 1</code>：<code>−4 + 1 − 2y′ + 6y′ = 0</code>，即 <code>4y′ = 3</code>，<code>y′ = 3/4</code>。切线：<code>y = (3/4)(x + 2) + 1</code>，整理为 <code>3x − 4y = −10</code>。</p><p>源文件例（二阶导）：<code>xy + y² = 2x</code>。一次求导：<code>y + x y′ + 2y y′ = 2</code>，故 <code>y′ = (2 − y)/(x + 2y)</code>。再次求导：<code>y′ + y′ + x y″ + 2(y′)² + 2y y″ = 0</code>，即 <code>y″(x + 2y) = −2y′(1 + y′)</code>，于是</p><p><code>y″ = −2y′(1 + y′)/(x + 2y) = −2(2 − y)(x + y + 2)/(x + 2y)³</code>（把 <code>y′</code> 代回并通分）。</p><p>源文件例（正交轨迹）：证明双曲线族 <code>x² − y² = a</code> 与 <code>xy = b</code>（<code>a, b ≠ 0</code>）在任何交点处正交。前者求导得 <code>2x − 2y y′ = 0</code>，<code>y′ = x/y</code>；后者求导得 <code>y + x y′ = 0</code>，<code>y′ = −y/x</code>。两斜率相乘 <code>(x/y)(−y/x) = −1</code>，故切线垂直。</p><h3 id="s13">4.12 原函数与不定积分</h3><p>若 <code>F′(x) = f(x)</code>，则称 F 是 f 的一个<b>原函数</b>（antiderivative）。原函数不唯一：若 F 是一个原函数，则 <code>F(x) + C</code>（C 为任意常数）也都是原函数，因为常数的导数为 0。</p><p>源文件例子：<code>f(x) = x²</code> 的原函数是 <code>F(x) = x³/3 + C</code>。验算：<code>(x³/3 + C)′ = x²</code> ✓。这也是检查积分结果唯一可靠的方法——<b>求导回去</b>。</p><p>f 的全体原函数称为 f 的<b>不定积分</b>（indefinite integral），记作</p><p><b><code>∫f(x)dx = F(x) + C</code></b>，</p><p>其中 <code>∫</code> 是积分号（integral sign），f(x) 是被积函数，dx 指明积分变量，C 称为积分常数（constant of integration）。</p><p>由已知导数表反读，得到最基本的三条积分公式（源文件列出）：</p><ul><li><code>∫xᵃdx = x^{a+1}/(a+1) + C</code>（<code>a ≠ −1</code>）</li><li><code>∫sin x dx = −cos x + C</code></li><li><code>∫sec²x dx = tan x + C</code></li></ul><p>再加上显然的 <code>∫dx = x + C</code>、<code>∫cos x dx = sin x + C</code>，就构成了第 7 讲所有积分技巧的原料。注意幂公式里 <code>a = −1</code> 被排除：那正是 <code>∫dx/x = ln|x| + C</code>（第 5 讲），它不属于幂函数族。</p><h3 id="s14">4.13 初值问题</h3><p>含未知函数导数的方程叫<b>微分方程</b>（differential equation）。一个<b>初值问题</b>（initial-value problem, IVP）由两部分组成：</p><ul><li>微分方程 <code>dy/dx = f(x)</code></li><li>初始条件 <code>y(x₀) = y₀</code></li></ul><p>源文件给出三步解法：</p><ol class="steps"><li>求通解（general antiderivative）：<code>y = ∫f(x)dx = F(x) + C</code></li><li>代入初始条件定常数：<code>F(x₀) + C = y₀ ⟹ C = y₀ − F(x₀)</code></li><li>写出特解：<code>y = F(x) + y₀ − F(x₀)</code></li></ol><p>源文件例：解 <code>dy/dx = 6x² − 1</code>，<code>y(2) = 10</code>。通解 <code>y = 2x³ − x + C</code>；代入 <code>x = 2</code>：<code>16 − 2 + C = 10</code>，故 <code>C = −4</code>；特解 <code>y = 2x³ − x − 4</code>。验算：<code>y′ = 6x² − 1</code> ✓，<code>y(2) = 16 − 2 − 4 = 10</code> ✓。</p><p><b>二阶初值问题</b>：形如 <code>y″ = f(x)</code>，需要两个初始条件（通常给 <code>y′(x₀)</code> 与 <code>y(x₀)</code>），求解要积分两次，产生两个任意常数，分别用两个条件定出。源文件指出它的应用背景：物理中的运动方程、工程中的谐振子、生物中的种群动力学。</p><p>源文件例：<code>y″ = sin x</code>，<code>y′(π) = −1</code>，<code>y(π) = 2</code>。第一次积分：<code>y′ = −cos x + C₁</code>；代 <code>y′(π) = −1</code>：<code>−cos π + C₁ = 1 + C₁ = −1</code>，故 <code>C₁ = −2</code>。第二次积分：<code>y = −sin x − 2x + C₂</code>；代 <code>y(π) = 2</code>：<code>0 − 2π + C₂ = 2</code>，故 <code>C₂ = 2 + 2π</code>。特解 <code>y = 2 + 2π − sin x − 2x</code>。</p><p><b>重力加速度</b>（源文件 p23）：近地面重力加速度恒定且向下，<code>g ≈ 9.8</code> m/s²，即 <code>a(t) = −g</code>。两次积分得</p><p><code>v(t) = v₀ − gt</code>，<code>s(t) = s₀ + v₀t − (1/2)gt²</code>，</p><p>其中 <code>s₀ = s(0)</code> 是初始位置、<code>v₀ = v′(0)</code> 是初速度（取向上为正）。</p><p>源文件例：以 <code>9.8</code> m/s 从地面竖直上抛。<code>s₀ = 0</code>、<code>v₀ = 9.8</code>，故 <code>v = 9.8 − 9.8t</code>、<code>s = 9.8t − 4.9t²</code>。最高点处 <code>v = 0</code> 得 <code>t = 1</code>，最大高度 <code>s(1) = 9.8 − 4.9 = 4.9</code> m。落地时 <code>s = 0</code>：<code>9.8t − 4.9t² = t(9.8 − 4.9t) = 0</code>，得 <code>t = 0</code> 或 <code>t = 2</code>，故 <code>t = 2</code> s 落地；落地速度 <code>v(2) = 9.8 − 19.6 = −9.8</code> m/s，故撞击速率为 <b>9.8</b> m/s（与初速度大小相等，方向相反）。</p><h3 id="s15">4.14 常见误解</h3><ul><li><b>把原函数与导数混为一谈</b>：<code>∫f</code> 求的是「谁求导得 f」，方向与求导相反；写完必须求导回去验算。</li><li><b>漏写常数 C</b>：不定积分的结果是「一族函数」，漏 C 会整题扣分；二阶 IVP 要两个常数，只写一个说明只积分了一次。</li><li><b>二阶 IVP 用一个条件定两个常数</b>：先用 <code>y′</code> 的条件定 <code>C₁</code>，再用 <code>y</code> 的条件定 <code>C₂</code>，顺序不能反（因为 <code>C₂</code> 在第二次积分后才出现）。</li><li><b>重力公式符号错</b>：向上为正时加速度是 <code>−g</code>，所以 <code>v = v₀ − gt</code>；若取向下为正，则全部符号翻转，两种约定不能混用。</li></ul><h3 id="s16">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/cc625280acd305d8c142.webp" loading="lazy" alt="EMI_Week4_Lecture1 p24" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p24.jpg"><figcaption>EMI_Week4_Lecture1 · 第 24 页</figcaption></figure><figure><img src="../../assets/optimized/5afc92651ba294fd1803.webp" loading="lazy" alt="EMI_Week4_Lecture1 p23" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p23.jpg"><figcaption>EMI_Week4_Lecture1 · 第 23 页</figcaption></figure><figure><img src="../../assets/optimized/69ddd859a65e6b810521.webp" loading="lazy" alt="EMI_Week4_Lecture1 p3" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p03.jpg"><figcaption>EMI_Week4_Lecture1 · 第 3 页</figcaption></figure><figure><img src="../../assets/optimized/9b66eb211b13536a7964.webp" loading="lazy" alt="EMI_Week4_Lecture1 p11" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p11.jpg"><figcaption>EMI_Week4_Lecture1 · 第 11 页</figcaption></figure><figure><img src="../../assets/optimized/a53193e505c73a749c35.webp" loading="lazy" alt="EMI_Week4_Lecture1 p22" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p22.jpg"><figcaption>EMI_Week4_Lecture1 · 第 22 页</figcaption></figure><figure><img src="../../assets/optimized/f057a3ac81cd29b85b55.webp" loading="lazy" alt="EMI_Week4_Lecture1 p12" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p12.jpg"><figcaption>EMI_Week4_Lecture1 · 第 12 页</figcaption></figure><figure><img src="../../assets/optimized/db5c1005e05360ca1c73.webp" loading="lazy" alt="EMI_Week4_Lecture1 p1" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture1-p01.jpg"><figcaption>EMI_Week4_Lecture1 · 第 1 页</figcaption></figure><figure><img src="../../assets/optimized/f64122d144df6ed3e81f.webp" loading="lazy" alt="EMI_Week4_Lecture2 p8" width="1044" height="783" decoding="async" data-full-src="../../assets/img/62/slides/EMI_Week4_Lecture2-p08.jpg"><figcaption>EMI_Week4_Lecture2 · 第 8 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
 <section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>higher-order derivative</td><td>高阶导数</td><td>f″ = (f′)′, f⁽ⁿ⁾ is the n-th derivative.</td></tr><tr><td>factorial</td><td>阶乘</td><td>n! = n(n−1)⋯1 with 0! = 1; appears in (xⁿ)⁽ᵏ⁾.</td></tr><tr><td>kinematics</td><td>运动学</td><td>x(t) position, v = x′ velocity, |v| speed, a = v′ acceleration.</td></tr><tr><td>concavity</td><td>凹凸性</td><td>f″ > 0 concave up, f″ < 0 concave down.</td></tr><tr><td>inflection point</td><td>拐点</td><td>Where concavity changes, i.e. f″ changes sign.</td></tr><tr><td>mean-value theorem</td><td>中值定理</td><td>There is c with f′(c) = (f(b) − f(a))/(b − a).</td></tr><tr><td>Rolle theorem</td><td>罗尔定理</td><td>If f(a) = f(b) and f is differentiable inside, some c has f′(c) = 0.</td></tr><tr><td>monotonicity</td><td>单调性</td><td>f′ > 0 implies increasing; the converse fails for x³.</td></tr><tr><td>critical point</td><td>临界点</td><td>Interior point where f′ = 0 or f′ does not exist.</td></tr><tr><td>extreme value</td><td>极值</td><td>Absolute or local maximum/minimum of a function.</td></tr><tr><td>implicit differentiation</td><td>隐函数求导</td><td>Differentiate F(x, y) = 0 treating y as a function of x.</td></tr><tr><td>orthogonal trajectories</td><td>正交轨迹</td><td>Two families of curves meeting at right angles: slopes multiply to −1.</td></tr><tr><td>antiderivative</td><td>原函数</td><td>A function F with F′ = f; determined only up to a constant.</td></tr><tr><td>indefinite integral</td><td>不定积分</td><td>The family F(x) + C of all antiderivatives, written ∫f(x)dx.</td></tr><tr><td>initial value problem</td><td>初值问题</td><td>A differential equation plus initial condition fixing the constant.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p7–p8）　质点位置 x(t) = 2t³ − 15t² + 24t（米），求 v、a，并判断 t = 2 s 时的运动方向与速率变化。</div><p><b>一阶导：</b><code>v(t) = x′(t) = 6t² − 30t + 24</code>。<b>二阶导：</b><code>a(t) = v′(t) = 12t − 30</code>。</p><p><b>代 t = 2：</b><code>v(2) = 24 − 60 + 24 = −12</code>；<code>a(2) = 24 − 30 = −6</code>。</p><p><b>方向：</b>v &lt; 0，质点向负方向（左）运动。<b>速率：</b>|v| = 12 m/s。</p><p><b>加速/减速：</b>v 与 a 同号（都为负），故速率在<b>增大</b>——它向左运动且越来越快。若符号相反，则是减速。</p><p><b>方法迁移：</b>三步走——求 v = x′、求 a = v′、在指定时刻比较 v 与 a 的符号。注意速率是 |v|，写答案时不能漏绝对值。</p></div><div class="qa"><div class="q">例 2（源文件 p25–p27）　用中值定理证明 √(1 + x) ≤ 1 + x/2（x ≥ −1）。</div><p>令 <code>f(x) = √(1+x)</code>，在 <code>[−1, ∞)</code> 连续、在 <code>(−1, ∞)</code> 可导，<code>f′(x) = 1/(2√(1+x))</code>。</p><p><b>情形 1（x &gt; 0）：</b>在 <code>[0, x]</code> 上用 MVT，存在 <code>c ∈ (0, x)</code> 使 <code>(√(1+x) − 1)/x = 1/(2√(1+c))</code>。因为 <code>c &gt; 0</code>，所以 <code>√(1+c) &gt; 1</code>，右端 <code>&lt; 1/2</code>。两边乘 <code>x &gt; 0</code>：<code>√(1+x) − 1 &lt; x/2</code>。</p><p><b>情形 2（−1 &lt; x &lt; 0）：</b>在 <code>[x, 0]</code> 上用 MVT，存在 <code>c ∈ (x, 0)</code> 使 <code>(1 − √(1+x))/(0 − x) = 1/(2√(1+c))</code>。此时 <code>1 + c &lt; 1</code>，故 <code>√(1+c) &lt; 1</code>、<code>f′(c) &gt; 1/2</code>，于是 <code>(1 − √(1+x))/(−x) &gt; 1/2</code>。两边乘 <code>−x &gt; 0</code> 得 <code>1 − √(1+x) &gt; −x/2</code>，即 <code>√(1+x) &lt; 1 + x/2</code>。</p><p><b>情形 3（x = 0）：</b>两边都等于 1，取等号。三种情形合并即得 <code>√(1+x) ≤ 1 + x/2</code>；<code>x = −1</code> 时左边为 0、右边为 <code>1/2</code>，端点单独检查也成立。</p><p><b>符号从哪来：</b>分母 <code>0 − x = −x</code> 在 <code>x &lt; 0</code> 时为正，乘它不改方向；真正决定方向的是 <code>√(1+c) &lt; 1</code> 让导数比 <code>1/2</code> 大。若误写成 <code>f′(c) &lt; 1/2</code>，整条不等式就会反过来，这是本题唯一的陷阱。</p></div><div class="qa"><div class="q">例 3（源文件 p5–p7）　求 f(x) = x³ − 12x + 1 的极值；再求 f(x) = 12x − x³ 在 [−3, 1] 上的最值。</div><p><b>(a)</b> <code>f′ = 3x² − 12 = 3(x−2)(x+2)</code>，临界点 <code>x = ±2</code>。符号表：<code>x &lt; −2</code> 时 <code>f′ &gt; 0</code>，<code>−2 &lt; x &lt; 2</code> 时 <code>f′ &lt; 0</code>，<code>x &gt; 2</code> 时 <code>f′ &gt; 0</code>。</p><p>故 <code>x = −2</code> 为局部最大，<code>f(−2) = −8 + 24 + 1 = 17</code>；<code>x = 2</code> 为局部最小，<code>f(2) = 8 − 24 + 1 = −15</code>。因 <code>x → ±∞</code> 时 <code>f → ±∞</code>，无绝对极值。</p><p><b>(b)</b> <code>f′ = 12 − 3x² = 0</code> 得 <code>x = ±2</code>；区间 <code>[−3, 1]</code> 内只有 <code>x = −2</code>。</p><p>比较三点：<code>f(−3) = −36 + 27 = −9</code>；<code>f(−2) = −24 + 8 = −16</code>；<code>f(1) = 12 − 1 = 11</code>。</p><p>故绝对最小值为 <code>−16</code>（在 <code>x = −2</code>），绝对最大值为 <code>11</code>（在 <code>x = 1</code>）。注意 <code>x = 2</code> 不在区间内，不能参与比较；端点 <code>x = 1</code> 恰好取得最大值，这正是「闭区间必须查端点」的典型例子。</p></div><div class="qa"><div class="q">例 4（源文件 p11–p13）　求圆 x² + y² = 25 在 (3, −4) 处的斜率，以及 x² + xy + 2y³ = 4 在 (−2, 1) 处的切线。</div><p><b>(a)</b> 两边对 x 求导，注意 y 是 x 的函数：<code>2x + 2y·y′ = 0</code>，故 <code>y′ = −x/y</code>。</p><p>代入 <code>(3, −4)</code>：<code>y′ = −3/(−4) = 3/4</code>。可以验证：圆心到该点的半径斜率为 <code>−4/3</code>，切线斜率与其乘积为 <code>−1</code>，一致。</p><p><b>(b)</b> 先验证 <code>(−2, 1)</code> 在曲线上：<code>4 + (−2)(1) + 2(1)³ = 4</code> ✓。</p><p>求导：<code>2x + y + x y′ + 6y² y′ = 0</code>（其中 <code>xy</code> 用乘积法则，<code>2y³</code> 用链式法则）。</p><p>代入 <code>x = −2, y = 1</code>：<code>−4 + 1 − 2y′ + 6y′ = 0</code>，即 <code>4y′ = 3</code>，<code>y′ = 3/4</code>。</p><p>切线：<code>y = (3/4)(x + 2) + 1</code>，两边乘 4 整理得 <code>4y = 3x + 10</code>，即 <code>3x − 4y = −10</code>。</p><p><b>通用流程：</b>① 验证点在曲线上；② 两边求导（y 视为 y(x)）；③ 先代点再解 y′（比先解出 y′ 再代点更省力）；④ 用点斜式写切线。</p></div></section>
@@ -675,7 +866,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s17">方法与清单</h2><h3 id="s18">闭区间求最值（四步）</h3><ol class="steps"><li>求 <code>f′(x)</code> 并因式分解</li><li>解 <code>f′ = 0</code>，并找出 <code>f′</code> 不存在的内点，筛出落在区间内的临界点</li><li>计算这些点的函数值，<b>再加上两个端点的函数值</b></li><li>比较大小，写出最大值、最小值及其对应的 x</li></ol><h3 id="s19">隐函数求导（四步）</h3><ol class="steps"><li>把方程整理为 <code>F(x, y) = 0</code>，先验证给定点确实在曲线上</li><li>两边对 x 求导，凡含 y 的项都要乘 <code>y′</code>（链式法则），含 <code>xy</code> 的项用乘积法则</li><li>把已知点的坐标代入，先求数值再解 <code>y′</code>（比先解表达式再代点省力）</li><li>写切线/法线时用点斜式，并整理成题目要求的形式</li></ol><h3 id="s20">解初值问题（三步）</h3><ol class="steps"><li>求不定积分得到通解，带一个常数 C（二阶方程要积两次、带两个常数）</li><li>把初始条件代入，解出常数（二阶要分别用 <code>y′</code> 与 <code>y</code> 的条件）</li><li>把常数写回通解得到特解，并回代初始条件验算</li></ol></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖知识点</th></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p2–p4</td><td>高阶导数记号（二阶与 n 阶）</td></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p5–p8</td><td>运动学三量、速度符号解释、x = t³−6t² 与 2t³−15t²+24t 的任务</td></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p9–p10</td><td>一阶/二阶导数的几何意义、凹凸与拐点、x² 与 x³ 对照</td></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p11–p19</td><td>xⁿ 的 n 阶导数与阶乘、多项式的 n 阶导数、sin/cos 的周期性与位移公式、cos2x 与 1/(1+x) 的例题</td></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p20–p27</td><td>中值定理的现实引入、陈述、几何证明思想、√(1+x) ≤ 1 + x/2 的三情形证明</td></tr><tr><td>Topic 4/EMI_Week4_Lecture1.pdf</td><td>p28–p33</td><td>罗尔定理、单调性定义、一阶导数判据及证明、x³ 反例、三道单调性任务</td></tr><tr><td>Topic 4/EMI_Week4_Lecture2.pdf</td><td>p2–p7</td><td>绝对/局部极值定义、图形示例、临界点、闭区间最值流程、x³−12x+1 与 12x−x³</td></tr><tr><td>Topic 4/EMI_Week4_Lecture2.pdf</td><td>p9–p16</td><td>隐函数概念与求导步骤、圆斜率、y sin y = x³+cos x、x²+xy+2y³=4 的切线、二阶隐导、正交轨迹</td></tr><tr><td>Topic 4/EMI_Week4_Lecture2.pdf</td><td>p17–p19</td><td>原函数、不定积分与基本公式、初值问题三步</td></tr><tr><td>Topic 4/EMI_Week4_Lecture2.pdf</td><td>p20–p23</td><td>一阶 IVP 例题、二阶 IVP 及其应用、自由落体公式</td></tr><tr><td>Topic 4/EMI_Week4_Lecture2.pdf</td><td>p24–p26</td><td>上抛物体的最大高度与落地速度</td></tr><tr><td>（跳过）Topic 4/Lecture One.html、Lecture Two.html</td><td>—</td><td>登录页快照；p8、p12、p23 等为推导示意图，按公式与结论复原</td></tr><tr><td>（拓展）</td><td>—</td><td>二阶隐导的通分结果、MVT 的辅助函数构造、加速/减速的符号判据为衔接性补充，源文件以结论形式给出</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="t3-derivatives-rules.html"><span>上一讲</span><strong>第 2 章 · 导数定义与求导法则</strong></a><a data-sequence="parent" href="part-2.html"><span>返回目录</span><strong>第 2 章 导数与微分</strong></a><a data-sequence="next" href="t5-inverse-exp-log.html"><span>下一讲</span><strong>第 3 章 · 反函数、指数与对数</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';
@@ -733,6 +924,17 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
     });
     if (!waiting) anchorTarget = null;
   }
+  function scrollDirectoryItemIntoView(link) {
+    if (!link || content.hidden || compact.matches) return;
+    var cRect = content.getBoundingClientRect();
+    var lRect = link.getBoundingClientRect();
+    if (lRect.height === 0) return;
+    if (lRect.top < cRect.top + 36) {
+      content.scrollTop -= (cRect.top + 36 - lRect.top);
+    } else if (lRect.bottom > cRect.bottom - 24) {
+      content.scrollTop += (lRect.bottom - (cRect.bottom - 24));
+    }
+  }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
     if (!active) {
@@ -747,7 +949,10 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
       if (a === active) a.setAttribute('aria-current', 'location');
       else a.removeAttribute('aria-current');
     });
-    if (active) reveal(active);
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
     previous = active;
   }
   function schedule() {
@@ -809,12 +1014,75 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
   addEventListener('keydown', function (event) {
     if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
   });
+  var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
+  if (allDirLinks.length >= 8) {
+    var filterWrap = document.createElement('div');
+    filterWrap.className = 'directory-filter';
+    var filterInput = document.createElement('input');
+    filterInput.type = 'search';
+    filterInput.className = 'directory-filter-input';
+    filterInput.placeholder = '筛选本页目录…';
+    filterInput.setAttribute('aria-label', '筛选本页目录');
+    filterInput.autocomplete = 'off';
+    filterWrap.appendChild(filterInput);
+    var contextEl = content.querySelector('.directory-context');
+    if (contextEl) contextEl.after(filterWrap);
+    else content.prepend(filterWrap);
+
+    var savedExpanded = null;
+    function applyDirFilter() {
+      var q = filterInput.value.trim().toLowerCase();
+      var items = Array.from(content.querySelectorAll('.directory-list li'));
+      if (!q) {
+        items.forEach(function (li) { li.hidden = false; });
+        if (savedExpanded) {
+          branches.forEach(function (btn) {
+            var id = btn.getAttribute('aria-controls');
+            if (Object.prototype.hasOwnProperty.call(savedExpanded, id)) expand(btn, savedExpanded[id]);
+          });
+          savedExpanded = null;
+        }
+        return;
+      }
+      if (!savedExpanded) {
+        savedExpanded = {};
+        branches.forEach(function (btn) {
+          savedExpanded[btn.getAttribute('aria-controls')] = btn.getAttribute('aria-expanded') === 'true';
+        });
+      }
+      items.forEach(function (li) { li.hidden = true; });
+      allDirLinks.forEach(function (a) {
+        var label = a.textContent.toLowerCase();
+        if (label.indexOf(q) !== -1) {
+          var li = a.closest('li');
+          while (li && content.contains(li)) {
+            li.hidden = false;
+            var branch = li.parentElement && li.parentElement.parentElement;
+            if (branch && branch.id && branch.id.indexOf('directory-branch-') === 0) {
+              var btn = directory.querySelector('[aria-controls="' + branch.id + '"]');
+              if (btn) expand(btn, true);
+            }
+            li = li.parentElement ? li.parentElement.closest('li') : null;
+          }
+        }
+      });
+    }
+    filterInput.addEventListener('input', applyDirFilter);
+    filterInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && filterInput.value) {
+        filterInput.value = '';
+        applyDirFilter();
+        event.stopPropagation();
+      }
+    });
+  }
+
   var initialLink = links.find(function (link) { return link.hash === location.hash; });
   if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
   updateCurrent();
 })();
 </script>
-<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
 (function(){
   var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');

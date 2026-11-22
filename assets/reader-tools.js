@@ -33,7 +33,14 @@
   content.querySelectorAll('pre').forEach(function(pre){
     var wrapper=document.createElement('div');wrapper.className='code-block';pre.before(wrapper);wrapper.appendChild(pre);
     var button=document.createElement('button');button.type='button';button.className='copy-code';button.textContent='复制代码';wrapper.appendChild(button);
-    button.addEventListener('click',function(){copy((pre.querySelector('code')||pre).textContent).then(function(){app.notify('代码已复制。');}).catch(function(error){app.notify(error.message);});});
+    button.addEventListener('click',function(){
+      copy((pre.querySelector('code')||pre).textContent).then(function(){
+        button.textContent='已复制 ✓';button.classList.add('is-copied');
+        clearTimeout(button._copyTimer);
+        button._copyTimer=setTimeout(function(){button.textContent='复制代码';button.classList.remove('is-copied');},1600);
+        app.notify('代码已复制。');
+      }).catch(function(error){app.notify(error.message);});
+    });
   });
 
   var dialog=document.createElement('dialog');dialog.className='image-viewer';dialog.setAttribute('aria-label','图片大图预览');

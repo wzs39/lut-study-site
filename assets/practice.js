@@ -6,12 +6,25 @@
   if(section){
     var lecture=section.closest('article').dataset.lectureId;
     var questions=Array.from(section.querySelectorAll(':scope > .qa, :scope > ol > li, :scope > ul > li'));
-    if(!questions.length)questions=[section];
+    var detailsFallback=false;
+    if(!questions.length){
+      var dets=Array.from(section.querySelectorAll(':scope > details'));
+      if(dets.length){questions=dets;detailsFallback=true;}
+      else questions=[section];
+    }
     questions.forEach(function(question,index){
-      var copy=question.cloneNode(true);copy.querySelectorAll('details,.ans').forEach(function(answer){answer.remove();});
-      var id=lecture+'/practice-'+(index+1),prompt=copy.textContent.trim().slice(0,1200);
-      if(!question.id)question.id='practice-'+(index+1);
-      else{var anchor=document.createElement('span');anchor.id='practice-'+(index+1);anchor.className='practice-anchor';anchor.tabIndex=-1;question.prepend(anchor);}
+      var prompt='';
+      if(detailsFallback){
+        var prev=question.previousElementSibling;
+        prompt=(prev&&prev.tagName==='P'?prev.textContent:question.querySelector('summary')?question.querySelector('summary').textContent:'').trim().slice(0,1200);
+      }else{
+        var copy=question.cloneNode(true);copy.querySelectorAll('details,.ans').forEach(function(answer){answer.remove();});
+        prompt=copy.textContent.trim().slice(0,1200);
+      }
+      var id=lecture+'/practice-'+(index+1);
+      var anchorTarget=detailsFallback&&question.previousElementSibling&&question.previousElementSibling.tagName==='P'?question.previousElementSibling:question;
+      if(!anchorTarget.id)anchorTarget.id='practice-'+(index+1);
+      else{var anchor=document.createElement('span');anchor.id='practice-'+(index+1);anchor.className='practice-anchor';anchor.tabIndex=-1;anchorTarget.prepend(anchor);}
       var controls=document.createElement('div');controls.className='practice-controls';
       var label=document.createElement('label');label.textContent=questions.length>1?'第 '+(index+1)+' 题自评':'本讲练习自评';
       var select=document.createElement('select');select.name='practice-status-'+(index+1);select.dataset.practiceId=id;
@@ -21,7 +34,9 @@
       function refresh(){var row=app.store.read().practice[id]||{status:'todo',bookmarked:false};select.value=row.status;bookmark.setAttribute('aria-pressed',String(row.bookmarked));bookmark.textContent=row.bookmarked?'已收藏':'收藏题目';}
       select.addEventListener('change',function(){app.commit(app.store.setPractice(id,{status:select.value,prompt:prompt}),'练习状态已更新。');});
       bookmark.addEventListener('click',function(){var row=app.store.read().practice[id]||{};app.commit(app.store.setPractice(id,{bookmarked:!row.bookmarked,prompt:prompt}));});
-      question.appendChild(controls);refresh();addEventListener('lut:learning-changed',refresh);
+      if(detailsFallback)question.after(controls);
+      else question.appendChild(controls);
+      refresh();addEventListener('lut:learning-changed',refresh);
     });
     if(/^#practice-\d+$/.test(location.hash)){var target=document.getElementById(location.hash.slice(1));if(target){target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'start',behavior:'instant'});}}
   }

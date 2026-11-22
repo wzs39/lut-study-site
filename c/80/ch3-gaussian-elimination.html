@@ -8,68 +8,68 @@
 <title>第 3 章 · 线性方程组与高斯消元 · 80</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
   --radius:14px;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
   --measure:68rem;
-  --topbar-height:86px;
+  --topbar-height:64px;
   --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+    --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
     --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
     --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
     --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
     --callout-bg:#212933; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
     --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
     --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+    --shadow-lift:0 8px 24px rgba(0,0,0,.42);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+  --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
   --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
   --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
   --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
   --callout-bg:#212933; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
   --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
   --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+  --shadow-lift:0 8px 24px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
@@ -127,20 +127,20 @@ section[data-type],.card[data-type]{background:var(--card);border:1px solid var(
   border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
   scroll-margin-top:86px}
 section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
-/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+/* 每段顶部的类型徽标：统一编号胶囊，跨平台清晰不裁切 */
 section[data-type]::before,.card[data-type]::before{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;line-height:1.4;
   color:var(--accent);background:var(--accent-soft);
-  padding:3px 12px;border-radius:99px;margin-bottom:14px}
-section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
-section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
-section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
-section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
-section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
-section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+  padding:4px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"01 · 本节定位";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"02 · 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"03 · 英文术语";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"04 · 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"05 · 练习自测";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"06 · 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"07 · 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"08 · 资料对照";color:var(--muted);background:var(--chip-bg)}
 section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
@@ -190,13 +190,13 @@ section[data-type="keywords"] table td:first-child{font-weight:600}
 .qa .q{font-weight:650}
 .qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
   background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
-details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details{border:1px dashed var(--callout-line);border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
 details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
 details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
 details[open] summary::before{transform:rotate(90deg)}
 details summary::-webkit-details-marker{display:none}
 details[open] summary{margin-bottom:.45em}
-details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
+details .ans{border-top:1px dashed var(--line);margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
 .checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
@@ -230,25 +230,28 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
   border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
 .directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-chevron{transition:transform .18s ease}
 .directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
 #directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
-.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
-  color:var(--muted);font-size:.75rem;line-height:1.6}
-.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-context{margin:0 .5rem .625rem;padding-block-end:.625rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.5}
+.directory-group-title{padding:.45rem .625rem .3rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .directory-group-title:not(:first-child){margin-block-start:.5rem}
 .directory-list{list-style:none;margin:0;padding:0}
-.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list li{margin:.1rem 0;min-width:0}
 .directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
 .directory-row{display:flex;align-items:stretch;min-width:0}
-.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
-  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-link{display:flex;align-items:flex-start;gap:.45rem;flex:1;min-width:0;padding:.45rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:7px;color:var(--fg);font-size:.8125rem;line-height:1.5;
+  transition:background-color .14s,color .14s}
 .directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
 .directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
-.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:99px;padding:0 .35rem;align-self:center;opacity:.85}
 .directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
 .directory-link.ancestor{font-weight:650}
-.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
-  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:1.9rem;padding:.2rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.15rem}
+.directory-expand>span{display:inline-block;transition:transform .16s ease}
 .directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
 .directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
 .page-directory [hidden]{display:none}
@@ -281,13 +284,13 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
   .page-content{margin-block-start:1rem}
 }
-.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
-  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
-.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
-.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
-.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head{padding:1.25rem 1.5rem;margin-block-end:1.15rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .45rem}
+.lecture-head h1{font-size:clamp(1.45rem,1.1rem + 1vw,1.9rem);line-height:1.35;margin:0 0 .35rem;text-wrap:balance}
+.lecture-subtitle{font-size:.95rem;color:var(--muted);margin:0 0 .65rem;line-height:1.55}
 .lecture-head .chaptertag{margin:0;font-size:.8125rem}
-.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources{margin:.75rem 0 0;padding:.5rem .8rem;border:1px solid var(--line);background:var(--detail-bg)}
 .lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
 .lecture-sources .src{margin:.625rem 0 0}
 .lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
@@ -301,24 +304,27 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
 .src code{font-size:12.4px;word-break:break-all}
 
 /* ---------- 总览页组件 ---------- */
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:22px;line-height:1.3}
-.stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
-  font-size:15px;background:var(--card);margin-bottom:20px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 15px;min-width:108px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:21px;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.4px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--callout-line);border-radius:10px;
+  font-size:15px;background:var(--card);color:var(--fg);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
-  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
-.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
-.ccard h3{margin:.1em 0 .3em}
-.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
-.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:16px;align-items:start}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  box-shadow:var(--shadow);transition:box-shadow .16s,transform .16s,border-color .16s;display:flex;flex-direction:column}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px);border-color:var(--ov-line)}
+.ccard h3{margin:.35em 0 .25em;font-size:17px;line-height:1.4}
+.ccard h3::before{display:none}
+.ccard h3 a{color:var(--fg)}
+.ccard h3 a:hover{color:var(--accent);text-decoration:none}
+.ccard .meta{font-size:12.8px;color:var(--muted);margin-bottom:6px;line-height:1.5}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14px}
+.lec-list li{padding:5px 0;border-top:1px solid var(--line-soft);display:flex;gap:8px;justify-content:space-between;align-items:baseline}
 .lec-list li:first-child{border-top:none}
-.lec-list .t{flex:1}
-.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list .t{flex:1;min-width:0}
+.lec-list .n{color:var(--muted);font-size:12.4px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
 
 /* ---------- 全站统一模块导航 ---------- */
@@ -360,35 +366,40 @@ sup,sub{line-height:0;font-size:.78em}
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
   border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
-.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
-.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-weight:650;margin-bottom:6px}
+.qhead-title{color:var(--fg);font-size:14.5px;line-height:1.4;min-width:0}
+.qhead-title:hover{color:var(--accent)}
+.qhead-badges{display:inline-flex;gap:4px;flex-shrink:0;align-items:center}
+.qhead-badges .badge{margin-right:0;white-space:nowrap;font-size:11.5px;padding:0 8px}
+.ticklist{list-style:none;padding:0;margin:.35em 0 0;font-size:13.8px}
+.ticklist li{padding:3.5px 0;border-top:1px solid var(--line-soft)}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-.ticklist input{margin-top:.35em}
+.ticklist input{margin-top:.32em;accent-color:var(--accent)}
 .chapter{margin:0 0 24px}
 .chapter>h2 a{color:var(--fg)}
 .chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
 .chapters{list-style:none;padding:0;margin:.4em 0 0}
-.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch{border-top:1px solid var(--line-soft);padding:8px 0 4px}
 .chapters>li.ch:first-child{border-top:none;padding-top:2px}
-.chapters .ch-t{font-weight:600}
-.chapters .n{float:right;color:var(--muted);font-size:12.6px}
-.chapters .lec-list{margin:.15em 0 0;padding-left:0}
-.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chapters .ch-t{font-weight:600;font-size:13.8px}
+.chapters .n{color:var(--muted);font-size:12px;white-space:nowrap;flex-shrink:0}
+.chapters .lec-list{margin:.2em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3.5px 0;border-top:none;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
+.chapters-tick>li{padding:5px 0;border-top:1px solid var(--line-soft)}
 .chapters-tick>li:first-child{border-top:none}
-.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.chapters-tick .qp{font-weight:600;font-size:13.4px;color:var(--muted)}
 .allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
+.allcourse{background:var(--ov-bg);border:1px solid var(--ov-line);
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
@@ -410,19 +421,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px;max-width:100%;overflow-wrap:anywhere}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;max-width:100%}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mat-form{display:flex;flex-direction:column;gap:12px}
-.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600;min-width:0}
 .mat-field input,.mat-field select,.mat-field textarea{
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
-  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%;min-width:0;max-width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
 .mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
-  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s;max-width:100%}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
 .mat-drop-text{font-size:14.5px}
@@ -430,7 +441,7 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
-  font-weight:600;cursor:pointer;text-decoration:none}
+  font-weight:600;cursor:pointer;text-decoration:none;max-width:100%}
 .mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
 .mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .mat-btn.primary:hover{filter:brightness(.94);color:#fff}
@@ -439,13 +450,13 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-status{font-size:13.5px;color:var(--muted)}
 .mat-status.ok{color:var(--ok);font-weight:600}
 .mat-status.err{color:var(--bad);font-weight:600}
-.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
-.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px;min-width:0}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;min-width:0;max-width:100%}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 .mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
-.mat-item-main{flex:1;min-width:220px}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg);max-width:100%}
+.mat-item-main{flex:1;min-width:0}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
@@ -497,21 +508,21 @@ sup,sub{line-height:0;font-size:.78em}
 /* ---------- 小屏 ---------- */
 @media(max-width:640px){
   body{font-size:15.5px}
-  .wrap{padding:18px 14px 50px}
-  .card,section[data-type]{padding:15px 16px}
-  h1{font-size:24px}
-  h2{font-size:19px}
-  .topbar-in{padding:9px 14px;gap:9px}
+  .wrap{padding:14px 12px 48px}
+  .card,section[data-type]{padding:14px 15px}
+  h1{font-size:23px}
+  h2{font-size:18.5px}
+  .topbar-in{padding:8px 12px;grid-template-columns:1fr auto;gap:.45rem}
   #btt{right:14px;bottom:16px}
-  .lecture-head,.lecture-page section[data-type]{padding:1rem}
-  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
-  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
-  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
-  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .lecture-head,.lecture-page section[data-type]{padding:.95rem 1rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;overflow-x:auto;
+    gap:.2rem;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .global-nav::-webkit-scrollbar{display:none}
+  .navlink{flex:0 0 auto;font-size:.74rem;min-height:2.05rem;padding:.22rem .5rem;white-space:nowrap}
+  .thbtn{min-width:2.5rem;min-height:2.5rem}
   .sequence-nav{grid-template-columns:1fr;gap:.5rem}
   .sequence-nav [data-sequence]{text-align:start}
-  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
-
+  .breadcrumbs{font-size:.75rem;margin-block-end:.75rem}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -538,29 +549,36 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
-.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
-  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
-.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
-  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
-  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
-.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.4rem;min-width:2.75rem;
+  padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:.8125rem;
+  transition:border-color .15s,color .15s,background-color .15s}
+.search-shortcut:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.kbd-hint{font-size:.6875rem;padding:.05rem .35rem;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted);line-height:1.4}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;
+  padding:.42rem .82rem;background:var(--card);color:var(--fg);font:inherit;font-size:.85rem;font-weight:550;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%;
+  transition:border-color .14s,background-color .14s,color .14s}
+.study-button.compact{min-height:2.1rem;padding:.3rem .7rem;font-size:.8rem}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
 .study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button.primary:hover{filter:brightness(.94);color:var(--card);background:var(--accent-deep)}
 .study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
 .study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
-.learning-home h2,.site-search h2{margin-block-start:0}
-.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
-.learning-home details{margin-block-end:0}
+.learning-home h2,.site-search h2{margin-block-start:0;font-size:1.1rem}
+.continue-link{display:inline-block;font-weight:650;font-size:1rem}
+.learning-home details{margin-block:.5rem 0;padding:7px 12px}
 .study-backup .study-button{margin-block-end:.625rem}
-.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.85rem;max-width:100%}
 .study-import input{max-width:100%;font:inherit}
-.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
-  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
-.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
-.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
-.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
-.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
-.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
-.course-progress span{white-space:nowrap}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:550;padding:.1rem .4rem;margin-inline-start:.45rem;
+  border:1px solid var(--line);border-radius:99px;color:var(--muted);white-space:nowrap;vertical-align:middle;flex-shrink:0}
+.study-state[data-status="new"]{opacity:.62;border-color:transparent;background:var(--bg)}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--ov-line)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.course-progress{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.45rem 0 .7rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:11rem;block-size:.45rem;accent-color:var(--accent);border-radius:99px}
+.course-progress span{white-space:nowrap;font-variant-numeric:tabular-nums}
 .site-search{display:block}
 .site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
 .search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
@@ -578,16 +596,22 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
 ::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
 .search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
   border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
-.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
-.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
-.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
-.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
-.study-status input{accent-color:var(--accent);margin:0}
-.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
-.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
-.reader-options summary{font-size:.875rem}
-.reader-options .study-filters{min-width:min(20rem,100%)}
-.study-storage-note{font-size:.6875rem;margin:0}
+.study-toolbar{margin-block-start:.85rem;padding-block-start:.85rem;border-block-start:1px solid var(--line)}
+.study-toolbar-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.75rem 1rem;flex-wrap:wrap}
+.study-status{border:0;padding:0;margin:0;min-width:0}
+.study-status legend{padding:0;margin-block-end:.35rem;font-size:.72rem;font-weight:600;color:var(--muted)}
+.status-group{display:inline-flex;flex-wrap:wrap;gap:.3rem;padding:.2rem;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.status-pill{display:inline-flex;align-items:center;gap:.32rem;min-height:2.1rem;padding:.2rem .65rem;border-radius:7px;
+  cursor:pointer;font-size:.8rem;font-weight:550;color:var(--muted);transition:background-color .14s,color .14s}
+.status-pill:hover{color:var(--fg)}
+.status-pill:has(input:checked){background:var(--card);color:var(--accent-deep);box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.status-pill input{accent-color:var(--accent);margin:0;width:.88rem;height:.88rem}
+.reader-actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0}
+.reader-options{margin:0;padding:.35rem .75rem;min-height:2.5rem;border:1px solid var(--callout-line);border-radius:8px;display:inline-flex;flex-direction:column;justify-content:center}
+.reader-options summary{font-size:.85rem}
+.reader-options .study-filters{min-width:min(18rem,100%);margin-block:.5rem .25rem}
+.study-storage-note{font-size:.72rem;margin:.6rem 0 0;color:var(--muted)}
+.copy-code.is-copied{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 .lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
 .lecture-page section[data-type]>p{max-inline-size:80ch}
 .focus-reading .page-layout{display:block}
@@ -617,15 +641,21 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
 .study-notice[hidden]{display:none}
 @media(max-width:640px){
+  .kbd-hint{display:none}
   .search-query{grid-template-columns:minmax(0,1fr) auto}
   #search-clear{grid-column:2;min-height:2.25rem}
   .reader-actions{align-items:stretch}
   .reader-options{max-width:100%}
   .study-button{font-size:.8125rem}
   .practice-controls{align-items:stretch}
+  .home-hero .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{min-width:0}
+  .course-filter-bar{align-items:stretch}
+  .filter-toolbar-row{flex-direction:column;align-items:stretch}
+  .filter-controls{flex-direction:column;align-items:stretch}
 }
 @media print{
-  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions{display:none}
   .code-block pre{padding-block-start:1rem}
   .image-zoom{display:contents}
   .image-viewer{display:none}
@@ -645,6 +675,167 @@ dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
 dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
 dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
 dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
+
+/* ---------- 首页 Hero & 双栏工作台 ---------- */
+.home-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 1.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.home-hero-main{flex:1 1 24rem;min-width:0}
+.home-hero-main h1{margin:0 0 .25rem;font-size:clamp(1.5rem,1.2rem + .9vw,1.95rem)}
+.home-hero-main .lead{margin:0;font-size:.93rem}
+.home-hero .stats{margin:0;flex-shrink:0}
+.home-hero .stat{padding:7px 13px;min-width:86px}
+.home-hero .stat b{font-size:19px}
+.home-workbench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:1.4rem}
+.home-workbench>.card{margin:0;padding:16px 20px}
+.home-workbench .site-search form>label{font-size:.98rem;margin-block-end:.45rem}
+.home-workbench .study-filters{margin-block:.55rem .4rem;gap:.55rem}
+.home-workbench .study-filters select{min-height:2.35rem;font-size:.9rem}
+.home-workbench .search-query .search{min-height:2.45rem;font-size:.94rem;padding:8px 12px}
+.home-workbench #search-status{margin:.35rem 0 0;font-size:.82rem}
+.home-workbench #study-totals{margin:.3rem 0 .45rem;font-size:.82rem}
+@media(max-width:1120px){
+  .home-workbench{grid-template-columns:1fr;gap:14px}
+}
+
+/* ---------- 课程分类筛选与卡片升级 ---------- */
+.course-section-head{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1rem}
+.course-section-head h2{margin:0}
+.course-filter-bar{display:flex;justify-content:space-between;align-items:center;gap:.65rem;flex-wrap:wrap}
+.filter-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.filter-pill{display:inline-flex;align-items:center;gap:.35rem;min-height:2.1rem;padding:.28rem .75rem;
+  border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);
+  font:inherit;font-size:.8125rem;font-weight:550;cursor:pointer;transition:all .14s}
+.filter-pill span{font-size:.72rem;opacity:.75;font-variant-numeric:tabular-nums}
+.filter-pill:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft)}
+.filter-pill.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.filter-pill.pill-bad.is-active{background:var(--bad);border-color:var(--bad);color:var(--card)}
+.filter-pill.pill-warn.is-active{background:var(--warn);border-color:var(--warn);color:var(--card)}
+.ccard[hidden],.revcourse[hidden],.revlec[hidden],.qcourse[hidden]{display:none}
+.ccard-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.ccard-top .badge{margin:0;font-size:11.5px;padding:0 9px}
+.ccard-cat{background:var(--accent-soft);color:var(--accent-deep)}
+.ccard-summary{font-size:.84rem;color:var(--muted);margin:.15rem 0 .35rem;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ccard-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin:.25rem 0 .65rem}
+.ccard-link{display:inline-flex;align-items:center;padding:.28rem .68rem;border:1px solid var(--line);border-radius:7px;
+  font-size:.78rem;font-weight:600;color:var(--muted);background:var(--bg);transition:all .14s}
+.ccard-link:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.ccard-link.primary{background:var(--accent-soft);border-color:var(--ov-line);color:var(--accent-deep)}
+.ccard-chapters{margin:auto 0 0;padding:7px 12px;border-style:solid;border-color:var(--line);background:var(--detail-bg)}
+.ccard-chapters>summary{font-size:.8125rem;color:var(--muted);font-weight:550}
+.ccard-chapters[open]>summary{color:var(--accent-deep);margin-bottom:.5rem}
+
+/* ---------- 侧边栏过滤、状态点与跨课切换 ---------- */
+.directory-filter{padding:0 .5rem .6rem}
+.directory-filter-input{width:100%;padding:.4rem .65rem;font:inherit;font-size:.8rem;color:var(--fg);
+  background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.directory-filter-input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);background:var(--card)}
+.course-switcher{padding:.65rem .75rem;border-top:1px solid var(--line);background:var(--detail-bg);
+  border-radius:0 0 var(--radius) var(--radius);flex-shrink:0}
+#directory-content[hidden] + .course-switcher{display:none}
+.course-switcher label{display:flex;flex-direction:column;gap:.3rem;font-size:.72rem;font-weight:650;color:var(--muted)}
+.course-switcher select{font:inherit;font-size:.8rem;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:7px;padding:.38rem .5rem;min-height:2.2rem;width:100%;max-width:100%}
+.dir-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.45rem;background:var(--line)}
+.dir-status-dot[data-status="learning"]{background:var(--accent)}
+.dir-status-dot[data-status="review"]{background:var(--warn)}
+.dir-status-dot[data-status="mastered"]{background:var(--ok)}
+
+/* ---------- 全站命令面板 (Ctrl+K) ---------- */
+dialog.cmd-palette{inset:0;margin:min(10vh,5rem) auto auto;padding:0;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);color:var(--fg);width:min(40rem,calc(100vw - 1.5rem));max-height:min(78dvh,38rem);
+  box-shadow:0 22px 60px rgba(0,0,0,.32);overflow:hidden}
+dialog.cmd-palette[open]{display:flex;flex-direction:column}
+dialog.cmd-palette::backdrop{background:rgba(10,15,26,.55);backdrop-filter:blur(3px)}
+.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;border-bottom:1px solid var(--line)}
+.cmd-input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:inherit;font-size:1rem;padding:.25rem}
+.cmd-input:focus{outline:none}
+.cmd-close{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:6px;padding:.2rem .5rem;
+  font:inherit;font-size:.72rem;cursor:pointer;flex-shrink:0}
+.cmd-close:hover{color:var(--fg);border-color:var(--accent)}
+.cmd-mode-bar{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.45rem .85rem;background:var(--detail-bg);border-bottom:1px solid var(--line)}
+.cmd-mode{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:.2rem .68rem;
+  font:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.cmd-mode.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cmd-hint{margin-inline-start:auto;font-size:.72rem;color:var(--muted)}
+.cmd-status{margin:0;padding:.4rem .95rem;font-size:.76rem;color:var(--muted);border-bottom:1px solid var(--line-soft)}
+.cmd-list{list-style:none;margin:0;padding:.35rem;overflow:auto;flex:1;min-height:0}
+.cmd-list li{margin:0}
+.cmd-item{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem .65rem;border-radius:9px;color:var(--fg);text-decoration:none}
+.cmd-item:hover,.cmd-item.is-selected{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.cmd-type{font-size:.68rem;font-weight:700;padding:.12rem .45rem;border-radius:6px;background:var(--chip-bg);color:var(--chip-fg);
+  white-space:nowrap;flex-shrink:0;margin-top:.15rem}
+.cmd-item.is-selected .cmd-type{background:var(--accent-deep);color:var(--card)}
+.cmd-main{display:flex;flex-direction:column;min-width:0;flex:1}
+.cmd-main strong{font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
+.cmd-sub{font-size:.76rem;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+
+/* ---------- 考点清单 & 知识拓展筛选工具条 & 合订本快捷条 ---------- */
+.filter-toolbar{padding:14px 18px;margin-bottom:18px}
+.filter-toolbar-row{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-select-label{display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;color:var(--muted)}
+.filter-select-label select{font:inherit;font-size:.84rem;min-height:2.2rem;padding:.25rem .55rem;background:var(--card);
+  color:var(--fg);border:1px solid var(--callout-line);border-radius:7px;max-width:16rem}
+.filter-check{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--fg);cursor:pointer;user-select:none}
+.filter-check input{accent-color:var(--accent)}
+.filter-status{margin:.55rem 0 0;font-size:.8rem}
+.review-matrix{border-style:solid;border-color:var(--line);padding:12px 16px;margin:0 0 22px;background:var(--card);box-shadow:var(--shadow)}
+.review-matrix>summary{font-size:1.05rem;color:var(--fg)}
+.review-matrix .qgrid{margin:12px 0 4px}
+.reader-quickbar h2{margin-top:0;font-size:1.08rem}
+.reader-pill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,14.5rem),1fr));gap:8px;margin-top:10px}
+.reader-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:9px;background:var(--detail-bg);color:var(--fg);font-size:.83rem;font-weight:550;transition:all .14s}
+.reader-pill em{font-style:normal;font-size:.74rem;color:var(--muted);white-space:nowrap}
+.reader-pill:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+
+/* ---------- 原始课件查询与 Google Cloud Storage 直链 ---------- */
+.cw-home{border-style:solid;border-color:var(--line);padding:14px 18px;margin:0 0 1.4rem;background:var(--card);box-shadow:var(--shadow)}
+.cw-home>summary,.cw-panel details>summary{font-size:.96rem;font-weight:650;color:var(--fg)}
+.cw-panel{border-left:4px solid var(--accent)}
+.cw-panel details{border:0;margin:0;padding:0;background:transparent}
+.cw-panel-body{margin-top:.8rem}
+.cw-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-search{flex:1 1 16rem;min-width:0;padding:.48rem .75rem;border:1px solid var(--callout-line);border-radius:8px;
+  background:var(--card);color:var(--fg);font:inherit;font-size:.88rem}
+.cw-search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.cw-select{padding:.42rem .65rem;border:1px solid var(--callout-line);border-radius:8px;background:var(--card);
+  color:var(--fg);font:inherit;font-size:.84rem;min-height:2.25rem;max-width:100%}
+.cw-status-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-cloud-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:.15rem .55rem;
+  border-radius:99px;background:var(--warn-soft);color:var(--warn);max-width:100%;overflow-wrap:anywhere}
+.cw-cloud-pill.is-live{background:var(--ok-soft);color:var(--ok)}
+.cw-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.cw-item{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;
+  padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;background:var(--detail-bg)}
+.cw-main{flex:1 1 16rem;min-width:0}
+.cw-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.cw-ext{font-size:.66rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;background:var(--chip-bg);color:var(--chip-fg);letter-spacing:.04em;flex-shrink:0}
+.cw-cat-pdf{background:var(--bad-soft);color:var(--bad)}
+.cw-cat-slides{background:var(--warn-soft);color:var(--warn)}
+.cw-cat-doc{background:var(--accent-soft);color:var(--accent-deep)}
+.cw-cat-code{background:var(--purple-soft);color:var(--purple)}
+.cw-cat-media{background:var(--ok-soft);color:var(--ok)}
+.cw-name{font-size:.88rem;font-weight:650;color:var(--fg);overflow-wrap:anywhere}
+a.cw-name{color:var(--accent-deep)}
+.cw-size{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cw-meta{font-size:.75rem;color:var(--muted);margin-top:.2rem;overflow-wrap:anywhere;font-family:"Cascadia Code",Consolas,monospace}
+.cw-lectures{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+.cw-lec-link{padding:.1rem .45rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent-deep);font-size:.75rem}
+.cw-lec-link:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.cw-actions{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;flex-shrink:0}
+.cw-btn{display:inline-flex;align-items:center;padding:.3rem .68rem;border:1px solid var(--line);border-radius:7px;
+  background:var(--card);color:var(--fg);font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap}
+.cw-btn:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.cw-btn.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cw-btn.primary:hover{filter:brightness(.94);color:var(--card)}
+.cw-btn.muted{color:var(--muted);background:var(--bg)}
+.cw-empty{padding:1rem;text-align:center;color:var(--muted);font-size:.86rem;border:1px dashed var(--line);border-radius:10px}
+.cw-lecture-box{margin-top:.75rem;padding-top:.7rem;border-top:1px dashed var(--line)}
+.cw-lecture-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.82rem}
+#courseware-cloud input{font:inherit;padding:.55rem .7rem;min-width:0;width:100%;box-sizing:border-box;
+  border:1px solid var(--callout-line);border-radius:7px;background:var(--card);color:var(--fg)}
+#courseware-cloud .study-filters{grid-template-columns:1fr}
 </style>
 </head>
 <body id="top" data-module="courses">
@@ -652,7 +843,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
 <nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
-<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -660,13 +851,13 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </div></header>
 <main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
 <nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">HDD4020 工程数学 II</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-3.html">第 3 章 行列式与线性方程组</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 3 章 · 线性方程组与高斯消元</span></li></ol></nav>
-<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 3 章 · 线性方程组与高斯消元 · 80</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节在整门课中的位置</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">6.1 方程组的矩阵形式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">6.2 解的三种情形</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">6.3 三条行运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">6.4 例 1：唯一解的完整消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">6.5 例 2：无解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">6.6 例 3：无穷多解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">6.7 齐次方程组：零解与非零解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">6.8 非平凡解的充要条件</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">6.9 例：判断是否有非平凡解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">6.10 高斯消元与逆矩阵法的比较</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">6.11 常见误解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-20" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-20"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">方法与检查清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法与检查清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">高斯消元的标准流程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">解的情形判定表</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">交卷前自查</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD4020 工程数学 II</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD4020 工程数学 II"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 参数曲线与极坐标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 参数曲线与极坐标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch1-parametric-curves.html"><span class="directory-label">第 1 章 · 平面曲线与参数方程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch1-arc-polar.html"><span class="directory-label">第 1 章 · 弧长、旋转曲面与极坐标</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 空间坐标与矩阵</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 空间坐标与矩阵"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch2-cyl-spherical.html"><span class="directory-label">第 2 章 · 柱坐标与球坐标</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch2-matrices.html"><span class="directory-label">第 2 章 · 矩阵、特殊矩阵与几何变换</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-3.html"><span class="directory-label">第 3 章 行列式与线性方程组</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 3 章 行列式与线性方程组"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch3-determinant-inverse.html"><span class="directory-label">第 3 章 · 行列式、伴随矩阵与逆矩阵</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="ch3-gaussian-elimination.html" aria-current="page"><span class="directory-label">第 3 章 · 线性方程组与高斯消元</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch3-eigenvalues-cramer.html"><span class="directory-label">第 3 章 · 特征值与克拉默法则</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 向量代数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-37" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 向量代数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-37"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch4-vectors-dot-product.html"><span class="directory-label">第 4 章 · 向量、点积与两个不等式</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="80/ch3-gaussian-elimination"><header class="lecture-head"><p class="lecture-kicker">HDD4020 工程数学 II · 第 06 / 08 讲</p><h1 id="lecture-title">第 3 章 · 线性方程组与高斯消元</h1><p class="lecture-subtitle">Systems of Linear Equations and Gaussian Elimination</p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 行列式与线性方程组</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>7bf31134ebd6</code>（用于识别内容变更）</dd></dl><ul><li><code>Topic 3/EMII_Week3_Lecture1.pdf</code> <span class="sub">未附原文件</span></li><li><code>Topic 3/EMII_Week3_Lecture2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 3 章 · 线性方程组与高斯消元 · 80</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节在整门课中的位置</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">6.1 方程组的矩阵形式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">6.2 解的三种情形</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">6.3 三条行运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">6.4 例 1：唯一解的完整消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">6.5 例 2：无解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">6.6 例 3：无穷多解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">6.7 齐次方程组：零解与非零解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">6.8 非平凡解的充要条件</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">6.9 例：判断是否有非平凡解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">6.10 高斯消元与逆矩阵法的比较</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">6.11 常见误解</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-20" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-20"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">方法与检查清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法与检查清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">高斯消元的标准流程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">解的情形判定表</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">交卷前自查</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">HDD4020 工程数学 II</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-26" aria-expanded="true" data-start-open="true" aria-label="展开或收起：HDD4020 工程数学 II"><span aria-hidden="true">›</span></button></div><div id="directory-branch-26"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="part-1.html"><span class="directory-label">第 1 章 参数曲线与极坐标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-27" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 1 章 参数曲线与极坐标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-27"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch1-parametric-curves.html"><span class="directory-label">第 1 章 · 平面曲线与参数方程</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch1-arc-polar.html"><span class="directory-label">第 1 章 · 弧长、旋转曲面与极坐标</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 空间坐标与矩阵</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 空间坐标与矩阵"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch2-cyl-spherical.html"><span class="directory-label">第 2 章 · 柱坐标与球坐标</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch2-matrices.html"><span class="directory-label">第 2 章 · 矩阵、特殊矩阵与几何变换</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="part-3.html"><span class="directory-label">第 3 章 行列式与线性方程组</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-33" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 3 章 行列式与线性方程组"><span aria-hidden="true">›</span></button></div><div id="directory-branch-33"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch3-determinant-inverse.html"><span class="directory-label">第 3 章 · 行列式、伴随矩阵与逆矩阵</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="ch3-gaussian-elimination.html" aria-current="page"><span class="directory-label">第 3 章 · 线性方程组与高斯消元</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="ch3-eigenvalues-cramer.html"><span class="directory-label">第 3 章 · 特征值与克拉默法则</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 向量代数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-37" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 向量代数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-37"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="ch4-vectors-dot-product.html"><span class="directory-label">第 4 章 · 向量、点积与两个不等式</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="80/ch3-gaussian-elimination"><header class="lecture-head"><p class="lecture-kicker">HDD4020 工程数学 II · 第 06 / 08 讲</p><h1 id="lecture-title">第 3 章 · 线性方程组与高斯消元</h1><p class="lecture-subtitle">Systems of Linear Equations and Gaussian Elimination</p><p class="chaptertag">所属章节：<a href="part-3.html">第 3 章 行列式与线性方程组</a></p><details class="lecture-sources"><summary>资料来源 · 2 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>7bf31134ebd6</code>（用于识别内容变更）</dd></dl><ul><li><code>Topic 3/EMII_Week3_Lecture1.pdf</code> <span class="sub">未附原文件</span></li><li><code>Topic 3/EMII_Week3_Lecture2.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><div class="study-toolbar-row"><fieldset class="study-status"><legend>学习状态</legend><div class="status-group"><label class="status-pill"><input type="radio" name="lecture-status" value="new"><span>未开始</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="learning"><span>学习中</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="review"><span>待复习</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="mastered"><span>已掌握</span></label></div></fieldset>
 <div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
 <label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
 <label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
 <button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
-<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
-<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>上一讲用 <code>x = A⁻¹b</code> 解方程组，前提是逆矩阵存在。但工程里更常见的情形恰恰是「逆不存在」：方程之间互相矛盾，或者方程数量不够。这时需要一种不依赖逆、又能直接判断解的情形的算法——<b>高斯消元</b>（Gaussian elimination）。</p><p>本节还处理一个特殊但极重要的子类：右端全为零的<b>齐次方程组</b>。齐次方程组永远有零解，真正的问题是「除了零解还有没有别的解」。这个问题正是下一讲特征值的入口。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>把线性方程组写成 <code>Ax = b</code> 与增广矩阵形式，并区分齐次与非齐次</li><li>写出并正确使用三条行运算，把矩阵化成阶梯形</li><li>用回代法求唯一解，并判断「无解」与「无穷多解」两种情形</li><li>说明 <code>det(A) = 0</code> 时非齐次方程组为什么可能无解也可能无穷多解</li><li>写出齐次方程组有非平凡解的充要条件 <code>det(A) = 0</code>，并用于判定</li><li>用参数表示无穷多解的通解</li></ul><p>与前后讲的衔接：本节的「阶梯形」与「回代」是数值线性代数的起点；下一讲会把这个工具用在 <code>(A − λI)x = 0</code> 上，求出的 λ 就是特征值。</p></section>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器 · 快捷键：<kbd>Ctrl K</kbd> 搜索 / <kbd>[</kbd><kbd>]</kbd> 切换上下讲 / <kbd>F</kbd> 专注阅读</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节在整门课中的位置</h2><p>上一讲用 <code>x = A⁻¹b</code> 解方程组，前提是逆矩阵存在。但工程里更常见的情形恰恰是「逆不存在」：方程之间互相矛盾，或者方程数量不够。这时需要一种不依赖逆、又能直接判断解的情形的算法——<b>高斯消元</b>（Gaussian elimination）。</p><p>本节还处理一个特殊但极重要的子类：右端全为零的<b>齐次方程组</b>。齐次方程组永远有零解，真正的问题是「除了零解还有没有别的解」。这个问题正是下一讲特征值的入口。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>把线性方程组写成 <code>Ax = b</code> 与增广矩阵形式，并区分齐次与非齐次</li><li>写出并正确使用三条行运算，把矩阵化成阶梯形</li><li>用回代法求唯一解，并判断「无解」与「无穷多解」两种情形</li><li>说明 <code>det(A) = 0</code> 时非齐次方程组为什么可能无解也可能无穷多解</li><li>写出齐次方程组有非平凡解的充要条件 <code>det(A) = 0</code>，并用于判定</li><li>用参数表示无穷多解的通解</li></ul><p>与前后讲的衔接：本节的「阶梯形」与「回代」是数值线性代数的起点；下一讲会把这个工具用在 <code>(A − λI)x = 0</code> 上，求出的 λ 就是特征值。</p></section>
 <section id="sec-detail" class="card" data-type="detail"><h3 id="s2">6.1 方程组的矩阵形式</h3><p>n 个方程 n 个未知数的线性方程组</p><p><code>a₁₁x₁ + … + a₁ₙxₙ = b₁</code>，…，<code>aₙ₁x₁ + … + aₙₙxₙ = bₙ</code></p><p>可以缩写成 <b><code>Ax = b</code></b>，其中 A 是<b>系数矩阵</b>（coefficient matrix），x 是未知数列向量，b 是右端列向量。</p><p>若 b = 0，方程组叫<b>齐次</b>（homogeneous）；否则叫<b>非齐次</b>（non-homogeneous）。这个区分不是术语游戏：齐次组的结构比非齐次组简单得多，永远至少有一个解。</p><p>求解时更常用的形式是<b>增广矩阵</b>（augmented matrix）：把 b 作为最后一列拼在 A 的右侧，记作 <code>[A | b]</code>。所有行运算都对整行（含最后一列）同时进行，这样就不会漏掉右端的改动。</p><h3 id="s3">6.2 解的三种情形</h3><p>对非齐次方程组 <code>Ax = b</code>：</p><ul><li><b>A 非奇异（det ≠ 0）</b>：逆存在，解唯一，<code>x = A⁻¹b</code>。</li><li><b>A 奇异（det = 0）</b>：可能<b>无解</b>，也可能有<b>无穷多解</b>，绝不会是唯一解。</li></ul><p>第二种情形必须靠消元后的矩阵来判断，光看 det = 0 无法区分「无解」与「无穷多解」。这是本节最重要的逻辑点，也是考试最容易出陷阱的地方。</p><p>对<b>齐次</b>方程组 <code>Ax = 0</code>，情形简单一些：</p><ul><li><b>det(A) ≠ 0</b>：只有零解（trivial solution），即所有未知数都为 0。</li><li><b>det(A) = 0</b>：除零解外还有非零解（non-trivial solutions），且必有无穷多解。</li></ul><p>为什么齐次组不会「无解」？因为把 x = 0 代进去，左边永远是 0，右边也是 0，零解一定成立。所以齐次组只有两种命运：唯一零解，或无穷多解（含零解）。</p><h3 id="s4">6.3 三条行运算</h3><p>高斯消元只允许三种操作，它们都<b>不改变方程组的解集</b>：</p><ol class="steps"><li><b>倍乘</b>：把某个方程（整行）乘以一个<b>非零</b>常数</li><li><b>换行</b>：交换两个方程的位置</li><li><b>倍加</b>：把某个方程的 k 倍加到另一个方程上</li></ol><p>第一条要求 k ≠ 0：乘 0 会把方程抹掉，解集就变了。第二、三条显然是等价变形——交换方程的顺序、或者把一个方程替换成它与另一个方程的线性组合，都不改变满足所有方程的 x 的集合。</p><p>消元的目标是把矩阵化成<b>阶梯形</b>（echelon form）：</p><p><code>[[∗, ∗, ∗, | ∗], [0, ∗, ∗, | ∗], [0, 0, ∗, | ∗]]</code></p><p>左下角全为零，每一行的第一个非零元（主元）逐行向右移动。化到这一步之后，最后一个方程只含一个未知数，可以直接解出；把它代回上一行，又解出一个；如此<b>回代</b>（back substitution）直到全部解出。</p><h3 id="s5">6.4 例 1：唯一解的完整消元</h3><p>解 <code>x + 5y − z = 8</code>、<code>3x − y + 2z = 7</code>、<code>2x + y + 3z = 13</code>。</p><p><b>第一步，写增广矩阵。</b></p><p><code>[[1, 5, −1, 8], [3, −1, 2, 7], [2, 1, 3, 13]]</code></p><p><b>第二步，消去第二、三行的第一个元。</b>做 <code>R₂ − 3R₁</code> 与 <code>R₃ − 2R₁</code>：</p><p><code>[[1, 5, −1, 8], [0, −16, 5, −17], [0, −9, 5, −3]]</code></p><p>核对：<code>−1 − 3(5) = −16</code>，<code>2 − 3(−1) = 5</code>，<code>7 − 3(8) = −17</code>；<code>1 − 2(5) = −9</code>，<code>3 − 2(−1) = 5</code>，<code>13 − 2(8) = −3</code>。</p><p><b>第三步，消去第三行的第二个元。</b>用 <code>16R₃ − 9R₂</code>（避免分数）：</p><p><code>[[1, 5, −1, 8], [0, −16, 5, −17], [0, 0, 35, 105]]</code></p><p>核对：<code>16(5) − 9(5) = 35</code>，<code>16(−3) − 9(−17) = −48 + 153 = 105</code>。</p><p><b>第四步，回代。</b>第三行给出 <code>35z = 105</code>，即 <b>z = 3</b>；</p><p>第二行：<code>−16y + 5(3) = −17</code> → <code>−16y = −32</code> → <b>y = 2</b>；</p><p>第一行：<code>x + 5(2) − 3 = 8</code> → <b>x = 1</b>。</p><p>解为 (1, 2, 3)，与课件一致。代回原方程检验：<code>1 + 10 − 3 = 8</code> ✓，<code>3 − 2 + 6 = 7</code> ✓，<code>2 + 2 + 9 = 13</code> ✓。</p><div class="callout tip"><b>消元时尽量避免分数</b>第三步若直接把 R₃ 的首元化成 0，会得到分数系数；用「交叉相乘再相减」（如 16R₃ − 9R₂）可以保持整数，手算更稳。</div><h3 id="s6">6.5 例 2：无解</h3><p>解 <code>x + 3y = 5</code>、<code>7x + 21y = 28</code>。</p><p>增广矩阵 <code>[[1, 3, 5], [7, 21, 28]]</code>，做 <code>R₂ − 7R₁</code>：</p><p><code>[[1, 3, 5], [0, 0, −7]]</code></p><p>第二行相当于 <code>0x + 0y = −7</code>，左边恒为 0、右边是 −7，矛盾，故<b>无解</b>。</p><p>从另一个角度看：系数矩阵 <code>[[1, 3], [7, 21]]</code> 的 det = 21 − 21 = 0，奇异，不可逆。而两个方程化简后是 <code>x + 3y = 5</code> 与 <code>x + 3y = 4</code>——同一条直线的两个不同平移，永远不可能相交。</p><p>这个例子说明：<b>奇异 + 右端不匹配 = 无解</b>。阶梯形里出现 <code>[0, …, 0 | 非零]</code> 这一行，就是无解的信号。</p><h3 id="s7">6.6 例 3：无穷多解</h3><p>解 <code>x + 2y − 3z = 8</code>、<code>−3x − 6y + 14z = 21</code>、<code>2x + 4y + 3z = 97</code>。</p><p>增广矩阵 <code>[[1, 2, −3, 8], [−3, −6, 14, 21], [2, 4, 3, 97]]</code>。</p><p>做 <code>R₂ + 3R₁</code>：<code>[0, 0, 5, 45]</code>；做 <code>R₃ − 2R₁</code>：<code>[0, 0, 9, 81]</code>。得</p><p><code>[[1, 2, −3, 8], [0, 0, 5, 45], [0, 0, 9, 81]]</code></p><p>两行都给出 <code>z = 9</code>（<code>5z = 45</code> 与 <code>9z = 81</code> 一致，说明方程相容）。代回第一行：</p><p><code>x + 2y − 27 = 8</code> → <code>x + 2y = 35</code>。</p><p>一个方程、两个未知数，故 x 与 y 中可任取一个作自由参数：令 y = t，则 <code>x = 35 − 2t</code>，<b>无穷多解</b>。</p><p>课件写作「x 或 y 可取任意值，y = (35 − x)/2」，思路相同。系数矩阵的 det = 0（可以验算：第一行与第二行的前两列成比例，展开后为零），所以奇异、不可逆。</p><p>这个例子说明：<b>奇异 + 右端匹配 = 无穷多解</b>。阶梯形里出现一整行零（<code>[0, 0, 0 | 0]</code>），就是自由变量出现的信号。</p><h3 id="s8">6.7 齐次方程组：零解与非零解</h3><p>齐次方程组 <code>Ax = 0</code> 永远有<b>平凡解</b>（trivial solution）<code>x = 0</code>，即所有未知数都取 0。除它之外的解——至少有一个未知数不为零——叫<b>非平凡解</b>（non-trivial solutions）。</p><p>课件的两个对比例子说得很清楚：</p><p><b>齐次组 1：</b><code>x + 3y = 0</code>、<code>7x + 30y = 0</code>。det = 30 − 21 = 9 ≠ 0，只有零解 x = y = 0。</p><p><b>齐次组 2：</b><code>x + 3y = 0</code>、<code>7x + 21y = 0</code>。det = 21 − 21 = 0，两行成比例（第二行 = 7 × 第一行），于是 <code>x = −3y</code>，y 任意取值——既有零解（y = 0），也有无穷多非平凡解。</p><p>区别只在一个数字：30 与 21。前者让两行独立，后者让两行成比例。这就是行列式在起作用。</p><h3 id="s9">6.8 非平凡解的充要条件</h3><p>课件给出了 2×2 的推导：方程组 <code>ax + by = 0</code>、<code>cx + dy = 0</code> 要有非平凡解，必须有一式是另一式的倍数：</p><p><code>ax + by = 0</code> 与 <code>kax + kby = 0</code>（k 为常数）</p><p>此时系数矩阵 <code>[[a, b], [ka, kb]]</code> 的行列式</p><p><code>det = a(kb) − b(ka) = 0</code>。</p><p>反过来，若 det = 0，两行成比例，方程只剩一个，必有无穷多解。于是得到一般结论：</p><p><b>齐次方程组 <code>Ax = 0</code> 只有零解 ⟺ <code>det(A) ≠ 0</code>；有非平凡解 ⟺ <code>det(A) = 0</code>。</b></p><p>这条结论是整个第 3 章的核心，下一讲的特征方程 <code>det(A − λI) = 0</code> 就是把它用在「系数矩阵含参数 λ」的情形上。</p><h3 id="s10">6.9 例：判断是否有非平凡解</h3><p>课件 Task 1：判断两个齐次组是否有非平凡解。</p><p><b>（1）</b><code>x − 2y = 0</code>、<code>2x + 3y = 0</code>。系数矩阵 <code>[[1, −2], [2, 3]]</code>，det = 3 + 4 = 7 ≠ 0，<b>只有零解</b>，没有非平凡解。</p><p><b>（2）</b><code>2x − 5y = 0</code>、<code>−10x + 25y = 0</code>。系数矩阵 <code>[[2, −5], [−10, 25]]</code>，det = 50 − 50 = 0，<b>有非平凡解</b>（第二行 = −5 × 第一行，两方程等价，解为 <code>x = 5y/2</code>）。</p><p>答案与课件一致：第（1）题 no，第（2）题 yes。</p><h3 id="s11">6.10 高斯消元与逆矩阵法的比较</h3><p>两种方法都能解方程组，但适用面不同：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>比较项</th><th>逆矩阵法</th><th>高斯消元</th></tr><tr><td>前提</td><td>A 必须非奇异</td><td>任何矩阵都可以</td></tr><tr><td>计算量</td><td>要算 n² 个代数余子式（求 adj）</td><td>只需约 n³/3 次乘加，且可造零</td></tr><tr><td>能否判断解的情形</td><td>不能——det = 0 时方法失效</td><td>能：出现 <code>[0 | 非零]</code> 是无解，出现整行零是无穷多解</td></tr><tr><td>适用场景</td><td>2×2、3×3，且已确认 det ≠ 0</td><td>阶数较大，或不确定是否有解</td></tr></table></div><p>考试中若题目只问「求解」，且矩阵是三阶以下，用逆矩阵往往更快；若题目问「判断解的情形」或矩阵含参数，必须用消元。</p><h3 id="s12">6.11 常见误解</h3><ul><li><b>行运算时忘了同步改右端</b>：增广矩阵是一整行一起变，只改左边系数不改最后一列，答案必错。</li><li><b>把某行乘以 0</b>：这不是合法行运算，会把方程抹掉、改变解集。</li><li><b>看到 det = 0 就写「无解」</b>：det = 0 只说明不是唯一解，还要看右端是否匹配。匹配则无穷多解，不匹配才无解。</li><li><b>齐次组写「无解」</b>：齐次组永远有零解，只可能是「唯一零解」或「无穷多解」。</li><li><b>自由变量表示不规范</b>：无穷多解要写出通解（如 <code>x = 35 − 2t, y = t, z = 9</code>），只写「有无穷多解」拿不到全分。</li><li><b>回代时把已经求出的值代错行</b>：回代必须<b>自下而上</b>，从最后一个方程开始，逐级往上代。</li></ul><h3 id="s13">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/optimized/3a1112e64beddbc55354.webp" loading="lazy" alt="EMII_Week3_Lecture1 p14" width="1044" height="783" decoding="async" data-full-src="../../assets/img/80/slides/EMII_Week3_Lecture1-p14.jpg"><figcaption>EMII_Week3_Lecture1 · 第 14 页</figcaption></figure><figure><img src="../../assets/optimized/d399458df2b7417dc4b8.webp" loading="lazy" alt="EMII_Week3_Lecture1 p1" width="1044" height="783" decoding="async" data-full-src="../../assets/img/80/slides/EMII_Week3_Lecture1-p01.jpg"><figcaption>EMII_Week3_Lecture1 · 第 1 页</figcaption></figure><figure><img src="../../assets/optimized/cfbe40d6883d9d18f601.webp" loading="lazy" alt="EMII_Week3_Lecture2 p1" width="1044" height="783" decoding="async" data-full-src="../../assets/img/80/slides/EMII_Week3_Lecture2-p01.jpg"><figcaption>EMII_Week3_Lecture2 · 第 1 页</figcaption></figure><figure><img src="../../assets/optimized/1041b0f879862897662c.webp" loading="lazy" alt="EMII_Week3_Lecture2 p38" width="1044" height="783" decoding="async" data-full-src="../../assets/img/80/slides/EMII_Week3_Lecture2-p38.jpg"><figcaption>EMII_Week3_Lecture2 · 第 38 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
 <section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>system of linear equations</td><td>线性方程组</td><td>A collection of linear equations written compactly as Ax = b.</td></tr><tr><td>coefficient matrix</td><td>系数矩阵</td><td>The matrix A formed by the coefficients of the unknowns.</td></tr><tr><td>augmented matrix</td><td>增广矩阵</td><td>[A | b], the coefficient matrix with the constant column appended.</td></tr><tr><td>homogeneous system</td><td>齐次方程组</td><td>A system with b = 0; it always has the trivial solution.</td></tr><tr><td>non-homogeneous system</td><td>非齐次方程组</td><td>A system with b ≠ 0.</td></tr><tr><td>trivial solution</td><td>平凡解</td><td>x = 0, which every homogeneous system possesses.</td></tr><tr><td>non-trivial solution</td><td>非平凡解</td><td>A solution in which at least one unknown is non-zero.</td></tr><tr><td>Gaussian elimination</td><td>高斯消元</td><td>Using row operations to reduce the augmented matrix to echelon form.</td></tr><tr><td>row operation</td><td>行运算</td><td>Scaling a row by a non-zero constant, swapping rows, or adding a multiple of one row to another.</td></tr><tr><td>echelon form</td><td>阶梯形</td><td>Zeros below the leading entry of each row, with leading entries moving right.</td></tr><tr><td>back substitution</td><td>回代</td><td>Solve the last equation first, then substitute upward.</td></tr><tr><td>free variable</td><td>自由变量</td><td>A variable that can be chosen freely when the system has infinitely many solutions.</td></tr><tr><td>contradictory row</td><td>矛盾行</td><td>A row of the form [0 … 0 | c] with c ≠ 0, signalling no solution.</td></tr><tr><td>singular</td><td>奇异的</td><td>det(A) = 0; the system is either inconsistent or under-determined.</td></tr><tr><td>unique solution</td><td>唯一解</td><td>Occurs exactly when det(A) ≠ 0.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　用高斯消元解 <code>2x + y − z = 1</code>、<code>x − y + z = 2</code>、<code>3x + 2y + z = 5</code>。</div><p><b>增广矩阵。</b><code>[[2, 1, −1, 1], [1, −1, 1, 2], [3, 2, 1, 5]]</code>。</p><p><b>先把首元化成 1。</b>交换 R₁ 与 R₂：<code>[[1, −1, 1, 2], [2, 1, −1, 1], [3, 2, 1, 5]]</code>。</p><p><b>消元。</b><code>R₂ − 2R₁</code>：<code>[0, 3, −3, −3]</code>；<code>R₃ − 3R₁</code>：<code>[0, 5, −2, −1]</code>。</p><p><b>再消。</b>用 <code>3R₃ − 5R₂</code>：<code>[0, 0, −6 + 15, −3 + 15] = [0, 0, 9, 12]</code>。</p><p><b>回代。</b><code>9z = 12</code> → <code>z = 4/3</code>；<code>3y − 3(4/3) = −3</code> → <code>3y = 1</code> → <code>y = 1/3</code>；<code>x − 1/3 + 4/3 = 2</code> → <code>x = 1</code>。</p><p><b>检验。</b><code>2(1) + 1/3 − 4/3 = 2 − 1 = 1</code> ✓；<code>1 − 1/3 + 4/3 = 2</code> ✓；<code>3 + 2/3 + 4/3 = 5</code> ✓。解为 (1, 1/3, 4/3)。</p></div><div class="qa"><div class="q">例 2　判断并求解 <code>x + y + z = 3</code>、<code>2x + 2y + 2z = 6</code>、<code>x − y = 0</code>。</div><p><b>增广矩阵。</b><code>[[1, 1, 1, 3], [2, 2, 2, 6], [1, −1, 0, 0]]</code>。</p><p><b>消元。</b><code>R₂ − 2R₁</code> 得整行零 <code>[0, 0, 0, 0]</code>；<code>R₃ − R₁</code> 得 <code>[0, −2, −1, −3]</code>。</p><p><b>观察。</b>第二行全零说明第二个方程是第一个方程的 2 倍，是冗余信息，行列式必为 0。剩下两个独立方程、三个未知数，故有无穷多解。</p><p><b>求通解。</b>由 <code>x = y</code>（第三行：<code>−2y − z = −3</code> → <code>z = 3 − 2y</code>），代入第一行：<code>y + y + (3 − 2y) = 3</code>，恒成立。</p><p>故通解为 <code>x = t</code>、<code>y = t</code>、<code>z = 3 − 2t</code>，t 任意。</p><p><b>点评。</b>这一题的关键是「整行零」——它不是无解，而是把自由变量解放出来。只有 <code>[0, 0, 0 | 非零]</code> 才是无解。</p></div><div class="qa"><div class="q">例 3　问 k 取何值时，<code>x + y = 1</code>、<code>kx + 2y = 3</code> 无解？何时有无穷多解？</div><p><b>行列式。</b><code>det = 1×2 − 1×k = 2 − k</code>。</p><p><b>唯一解。</b><code>k ≠ 2</code> 时 det ≠ 0，有唯一解。</p><p><b>讨论 k = 2。</b>方程组变成 <code>x + y = 1</code>、<code>2x + 2y = 3</code>，即 <code>x + y = 1.5</code>，与第一式矛盾，<b>无解</b>。</p><p><b>有没有无穷多解的 k？</b>把右端改成 <code>kx + 2y = 2</code> 时，k = 2 使两式相同，此时无穷多解。可见「奇异」必须与右端一起看。</p><p><b>点评。</b>含参数题的标准做法是：先算 det，求出使它为零的临界值，再逐个代回讨论。不要一上来就消元。</p></div></section>
@@ -675,7 +866,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s14">方法与检查清单</h2><h3 id="s15">高斯消元的标准流程</h3><ol class="steps"><li>写成增广矩阵 <code>[A | b]</code></li><li>若首元不为 1，先交换行或整行倍乘，把首元化成 1（便于心算）</li><li>用倍加把该列下方全部消成 0</li><li>对第二列重复上一步，直到形成阶梯形</li><li>自下而上回代，逐个解出未知数</li><li>代回原方程检验；若出现整行零或矛盾行，改写结论（无穷多解 / 无解）</li></ol><h3 id="s16">解的情形判定表</h3><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>消元后的现象</th><th>结论</th></tr><tr><td>阶梯形每行都有主元，无零行</td><td>唯一解</td></tr><tr><td>出现 <code>[0, …, 0 | c]</code>（c ≠ 0）</td><td>无解</td></tr><tr><td>出现整行零 <code>[0, …, 0 | 0]</code></td><td>无穷多解，需引入自由变量写通解</td></tr></table></div><h3 id="s17">交卷前自查</h3><ul class="checklist"><li>行运算是否对整行（含最后一列）同时进行</li><li>乘以的常数是否非零</li><li>回代方向是否自下而上</li><li>无穷多解是否写出了含参数的通解</li><li>齐次组的结论是否只用了「唯一零解 / 无穷多解」两种说法</li></ul></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 4，可横向滚动"><table><tr><th>源文件</th><th>页码 / 位置</th><th>覆盖的知识点</th></tr><tr><td>Topic 3/EMII_Week3_Lecture1.pdf</td><td>p26–p28</td><td>方程组的矩阵形式 Ax = b、系数矩阵、齐次与非齐次、x = A⁻¹b</td></tr><tr><td>Topic 3/EMII_Week3_Lecture1.pdf</td><td>p29–p30</td><td>用逆矩阵解方程组的例子与 Task 2</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p5–p9</td><td>高斯消元的动机、阶梯形的目标、三条行运算、增广矩阵</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p10–p11</td><td>例 1 的完整消元步骤与回代</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p12–p13</td><td>例 2：矛盾行导致无解、det = 0</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p14–p16</td><td>例 3：整行零导致无穷多解、自由变量</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p17–p18</td><td>平凡解与非平凡解的定义、两个齐次组对比</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p19–p21</td><td>非平凡解的条件推导与结论 det(A) = 0</td></tr><tr><td>Topic 3/EMII_Week3_Lecture2.pdf</td><td>p22</td><td>Task 1：两组齐次方程组的判定</td></tr><tr><td>（跳过）_info_*.html.txt</td><td>全篇</td><td>Moodle 快照，无讲义内容</td></tr><tr><td>（拓展）</td><td>—</td><td>6.10 的两种解法对照表、6.2 的解的情形归纳、例 3 的含参数讨论均为方法性补充；不新增考点</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="ch3-determinant-inverse.html"><span>上一讲</span><strong>第 3 章 · 行列式、伴随矩阵与逆矩阵</strong></a><a data-sequence="parent" href="part-3.html"><span>返回目录</span><strong>第 3 章 行列式与线性方程组</strong></a><a data-sequence="next" href="ch3-eigenvalues-cramer.html"><span>下一讲</span><strong>第 3 章 · 特征值与克拉默法则</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';
@@ -733,6 +924,17 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
     });
     if (!waiting) anchorTarget = null;
   }
+  function scrollDirectoryItemIntoView(link) {
+    if (!link || content.hidden || compact.matches) return;
+    var cRect = content.getBoundingClientRect();
+    var lRect = link.getBoundingClientRect();
+    if (lRect.height === 0) return;
+    if (lRect.top < cRect.top + 36) {
+      content.scrollTop -= (cRect.top + 36 - lRect.top);
+    } else if (lRect.bottom > cRect.bottom - 24) {
+      content.scrollTop += (lRect.bottom - (cRect.bottom - 24));
+    }
+  }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
     if (!active) {
@@ -747,7 +949,10 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
       if (a === active) a.setAttribute('aria-current', 'location');
       else a.removeAttribute('aria-current');
     });
-    if (active) reveal(active);
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
     previous = active;
   }
   function schedule() {
@@ -809,12 +1014,75 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
   addEventListener('keydown', function (event) {
     if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
   });
+  var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
+  if (allDirLinks.length >= 8) {
+    var filterWrap = document.createElement('div');
+    filterWrap.className = 'directory-filter';
+    var filterInput = document.createElement('input');
+    filterInput.type = 'search';
+    filterInput.className = 'directory-filter-input';
+    filterInput.placeholder = '筛选本页目录…';
+    filterInput.setAttribute('aria-label', '筛选本页目录');
+    filterInput.autocomplete = 'off';
+    filterWrap.appendChild(filterInput);
+    var contextEl = content.querySelector('.directory-context');
+    if (contextEl) contextEl.after(filterWrap);
+    else content.prepend(filterWrap);
+
+    var savedExpanded = null;
+    function applyDirFilter() {
+      var q = filterInput.value.trim().toLowerCase();
+      var items = Array.from(content.querySelectorAll('.directory-list li'));
+      if (!q) {
+        items.forEach(function (li) { li.hidden = false; });
+        if (savedExpanded) {
+          branches.forEach(function (btn) {
+            var id = btn.getAttribute('aria-controls');
+            if (Object.prototype.hasOwnProperty.call(savedExpanded, id)) expand(btn, savedExpanded[id]);
+          });
+          savedExpanded = null;
+        }
+        return;
+      }
+      if (!savedExpanded) {
+        savedExpanded = {};
+        branches.forEach(function (btn) {
+          savedExpanded[btn.getAttribute('aria-controls')] = btn.getAttribute('aria-expanded') === 'true';
+        });
+      }
+      items.forEach(function (li) { li.hidden = true; });
+      allDirLinks.forEach(function (a) {
+        var label = a.textContent.toLowerCase();
+        if (label.indexOf(q) !== -1) {
+          var li = a.closest('li');
+          while (li && content.contains(li)) {
+            li.hidden = false;
+            var branch = li.parentElement && li.parentElement.parentElement;
+            if (branch && branch.id && branch.id.indexOf('directory-branch-') === 0) {
+              var btn = directory.querySelector('[aria-controls="' + branch.id + '"]');
+              if (btn) expand(btn, true);
+            }
+            li = li.parentElement ? li.parentElement.closest('li') : null;
+          }
+        }
+      });
+    }
+    filterInput.addEventListener('input', applyDirFilter);
+    filterInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && filterInput.value) {
+        filterInput.value = '';
+        applyDirFilter();
+        event.stopPropagation();
+      }
+    });
+  }
+
   var initialLink = links.find(function (link) { return link.hash === location.hash; });
   if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
   updateCurrent();
 })();
 </script>
-<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
 (function(){
   var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');

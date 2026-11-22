@@ -75,7 +75,7 @@ LAYOUT = """<!doctype html>
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="{{HOME}}">课程讲义站</a>
 {{NAVIGATION}}
-<div class="header-actions"><a class="search-shortcut" href="{{HOME}}#site-search">搜索</a>
+<div class="header-actions"><a class="search-shortcut" href="{{HOME}}#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -87,7 +87,7 @@ LAYOUT = """<!doctype html>
 </main>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 {{DATE}} <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>{{NAVSCRIPT}}</script>
-<script src="{{PREFIX}}data/learning-catalog.js"></script><script src="{{PREFIX}}assets/learning.bundle.js"></script>
+<script src="{{PREFIX}}assets/config.js"></script><script src="{{PREFIX}}data/learning-catalog.js"></script><script src="{{PREFIX}}assets/learning.bundle.js"></script>
 {{SCRIPT}}{{THEME}}
 </body>
 </html>
@@ -445,6 +445,12 @@ def build_course(c):
         [{"index": pi + 1, "slug": part_slug(pi), "name": name} for pi, (name, _) in enumerate(parts)],
         ensure_ascii=False,
     )
+    source_panel_box = (
+        '<section class="card cw-panel" id="course-source-files" data-course="%s">'
+        '<details><summary>本课原始课件总表（PDF / PPTX / DOCX / 代码 / 音视频 · 按文件名或类型查询）</summary>'
+        '<div class="cw-panel-body"><p class="sub">展开以加载本课原始课件列表与讲义对照。</p></div></details></section>'
+        % html.escape(c.get("id", ""), quote=True)
+    )
     upload_panel = (
         '<section class="card mat-panel" id="course-materials" data-course="%s" data-parts="%s">'
         '<div class="mat-empty">正在加载本课实时资料库…</div></section>'
@@ -454,7 +460,8 @@ def build_course(c):
         '<h1>%s</h1><p class="lead">%s</p>%s%s'
         '<nav class="related-nav" aria-label="本课关联页面"><a href="../../review.html#r-%s">本课考点清单 →</a> '
         '<a href="../../extend.html#e-%s">本课知识拓展 →</a> '
-        '<a href="reader.html#c-%s">本课合订本 →</a></nav>%s%s'
+        '<a href="reader.html#c-%s">本课合订本 →</a> '
+        '<a href="#course-source-files">本课原始课件 ↓</a></nav>%s%s%s'
         % (
             html.escape(c.get("name_zh", c.get("id", ""))),
             course_info(c, lecs, len(parts)),
@@ -466,13 +473,15 @@ def build_course(c):
             html.escape(c.get("id", "")),
             html.escape(c.get("id", "")),
             "".join(blocks),
+            source_panel_box,
             upload_panel,
         )
     )
     crumb = [("课程总览", "../../index.html"), (c.get("name_zh", c["id"]), None)]
     outline = [NavItem(name, "#p-%d" % (pi + 1)) for pi, (name, _) in enumerate(parts)]
+    outline.append(NavItem("本课原始课件", "#course-source-files"))
     outline.append(NavItem("实时资料与上传", "#course-materials"))
-    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
+    mat_scripts = '<script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
     return page(
         "%s · 课程讲义" % c.get("name_zh", c.get("id", "")),
         body,
@@ -520,7 +529,7 @@ def build_part(c, pi):
     outline = [NavItem("本章讲义", "#chapter-lectures", tuple(
         NavItem(l.get("title_zh", ""), "#preview-" + l["slug"]) for _, l in items)),
         NavItem("补充资料与上传", "#chapter-materials")]
-    mat_scripts = '<script src="../../assets/config.js"></script><script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
+    mat_scripts = '<script src="../../assets/sharing-config.js"></script><script src="../../assets/materials.js"></script>'
     return page(
         "%s · %s" % (name, c.get("name_zh", "")),
         body,
@@ -531,17 +540,37 @@ def build_part(c, pi):
     )
 
 
+COURSE_CATEGORIES = [
+    ("cs", "编程与软件", {"30352", "30361", "30332", "86"}),
+    ("math", "数学与工程", {"30565", "62", "80"}),
+    ("lang", "语言课程", {"33295", "34583", "32667", "32632"}),
+    ("general", "通识与导论", {"29911", "29913", "30331", "29428"}),
+]
+
+
+def course_category(cid):
+    cid = str(cid)
+    for key, label, ids in COURSE_CATEGORIES:
+        if cid in ids:
+            return key, label
+    return "general", "通识与导论"
+
+
 def build_root(courses):
     mf = manifest_files()
     total_lec = sum(len(c.get("lectures", [])) for c in courses)
     total_parts = sum(len(parts_of(c)) for c in courses)
     src_total = sum(len(v) for v in mf.values())
+    cat_counts = {key: 0 for key, _, _ in COURSE_CATEGORIES}
     cards = []
     for c in courses:
         lecs = c.get("lectures", [])
         cid = c["id"]
+        parts = parts_of(c)
+        cat_key, cat_label = course_category(cid)
+        cat_counts[cat_key] = cat_counts.get(cat_key, 0) + 1
         chapters = []
-        for pi, (name, items) in enumerate(parts_of(c)):
+        for pi, (name, items) in enumerate(parts):
             rows = []
             for _, l in items:
                 kw = " ".join((l.get("keywords") or [])[:10])
@@ -571,8 +600,8 @@ def build_root(courses):
                     )
                 )
             chapters.append(
-                '<li class="ch" data-s="%s"><a class="ch-t" href="c/%s/%s.html">%s</a>'
-                '<span class="n">%d 讲</span><ul class="lec-list">%s</ul></li>'
+                '<li class="ch" data-s="%s"><div class="ch-head"><a class="ch-t" href="c/%s/%s.html">%s</a>'
+                '<span class="n">%d 讲</span></div><ul class="lec-list">%s</ul></li>'
                 % (
                     html.escape((cid + " " + name).lower(), quote=True),
                     cid,
@@ -582,31 +611,69 @@ def build_root(courses):
                     "".join(rows),
                 )
             )
+        summary = c.get("summary") or ""
         cards.append(
-            '<div class="ccard" id="c-%s"><h3><a href="c/%s/index.html">%s</a></h3>'
-            '<div class="meta">%s%s · %d 章 · %d 讲</div>%s<ul class="chapters">%s</ul></div>'
+            '<article class="ccard" id="c-%s" data-category="%s">'
+            '<div class="ccard-top"><span class="badge mute">%s</span><span class="badge ccard-cat">%s</span></div>'
+            '<h3><a href="c/%s/index.html">%s</a></h3>'
+            '<div class="meta">%s%d 章 · %d 讲</div>'
+            '%s%s'
+            '<div class="ccard-actions"><a class="ccard-link primary" href="c/%s/index.html">进入课程 →</a>'
+            '<a class="ccard-link" href="review.html#r-%s">考点清单</a>'
+            '<a class="ccard-link" href="c/%s/reader.html">合订本</a></div>'
+            '<details class="ccard-chapters"><summary>展开章节与讲次目录（%d 章 · %d 讲）</summary><ul class="chapters">%s</ul></details></article>'
             % (
                 cid,
+                cat_key,
+                html.escape(cid),
+                html.escape(cat_label),
                 cid,
                 html.escape(c.get("name_zh", cid)),
-                html.escape(cid),
-                (" · " + html.escape(c.get("name_en", ""))) if c.get("name_en") else "",
-                len(parts_of(c)),
+                (html.escape(c.get("name_en", "")) + " · ") if c.get("name_en") else "",
+                len(parts),
                 len(lecs),
-                course_progress(cid,len(lecs)),
+                ('<p class="ccard-summary">%s</p>' % html.escape(plain_text(summary, 90))) if summary else "",
+                course_progress(cid, len(lecs)),
+                cid,
+                cid,
+                cid,
+                len(parts),
+                len(lecs),
                 "".join(chapters),
             )
         )
+    cat_buttons = ['<button type="button" class="filter-pill is-active" data-cat="all" aria-pressed="true">全部课程 <span>%d</span></button>' % len(courses)]
+    for key, label, _ in COURSE_CATEGORIES:
+        if cat_counts.get(key):
+            cat_buttons.append(
+                '<button type="button" class="filter-pill" data-cat="%s" aria-pressed="false">%s <span>%d</span></button>'
+                % (key, html.escape(label), cat_counts[key])
+            )
+    cat_buttons.append('<button type="button" class="filter-pill" data-cat="pending" aria-pressed="false">未学完</button>')
+    filter_bar = (
+        '<div class="course-section-head" id="course-catalog">'
+        '<h2>全部课程</h2>'
+        '<div class="course-filter-bar" id="course-filter-bar" role="group" aria-label="课程分类筛选">'
+        '<div class="filter-pills">%s</div>'
+        '<button type="button" class="study-button compact" id="toggle-all-chapters" aria-expanded="false">展开全部章节</button>'
+        '</div></div>' % "".join(cat_buttons)
+    )
+    courseware_box = (
+        '<details class="card cw-home" id="courseware-hub">'
+        '<summary>原版课件源头速查（支持按课程 / 文件名 / 扩展名检索，反查对应讲义或直开云端原件）</summary>'
+        '<div class="cw-panel-body"><p class="sub">展开以按需加载全站原始课件索引（PDF / PPTX / DOCX / 音频 / 代码）。</p></div>'
+        '</details>'
+    )
     body = (
+        '<header class="home-hero"><div class="home-hero-main">'
         "<h1>课程讲义总览</h1>"
-        '<p class="lead">按「课程 → 章节 → 讲次」三级组织：每门课独立成页，每章有独立章节页，每讲有独立讲义页。'
-        "搜课程ID、章节名、讲义标题或关键词都能定位。</p>"
+        '<p class="lead">按「课程 → 章节 → 讲次」三级组织，支持离线全文搜索、学习进度追踪、原版课件溯源与考前分层复习。按 <kbd>Ctrl K</kbd> 可在全站任意页面快捷跳转或查原课件。</p></div>'
         '<div class="stats"><div class="stat"><b>%d</b><span>门课程</span></div>'
         '<div class="stat"><b>%d</b><span>个章节</span></div>'
         '<div class="stat"><b>%d</b><span>讲讲义</span></div>'
-        '<div class="stat"><b>%d</b><span>个原始文件</span></div></div>'
-        '%s%s'
-        '<div class="courses">%s</div>'
+        '<div class="stat"><b>%d</b><span>个原始文件</span></div></div></header>'
+        '<div class="home-workbench">%s%s</div>'
+        '%s%s<div class="courses">%s</div>'
         '<details class="howto"><summary>后续如何补充新的讲义页（扩展说明）</summary>'
         '<ol class="steps">'
         "<li>已有课程加一讲：在 <code>content/&lt;课程ID&gt;.json</code> 的 <code>lectures</code> 数组末尾追加一个对象，"
@@ -623,6 +690,8 @@ def build_root(courses):
             src_total,
             search_box(courses),
             home_widgets(courses),
+            courseware_box,
+            filter_bar,
             "".join(cards),
         )
     )
@@ -632,7 +701,7 @@ def build_root(courses):
         "",
         [("课程总览", None)],
         script='<script src="assets/search.js"></script>',
-        groups=[("本页内容", [NavItem("全文搜索", "#site-search"),NavItem("继续学习与错题", "#study-dashboard")]
+        groups=[("本页内容", [NavItem("全文搜索", "#site-search"), NavItem("继续学习与错题", "#study-dashboard"), NavItem("原版课件速查", "#courseware-hub")]
                  + [NavItem(c.get("name_zh", c["id"]), "#c-" + c["id"]) for c in courses])],
     )
 
@@ -706,8 +775,10 @@ def build_allinone(courses, prefix=""):
         body = body.replace('href="c/', 'href="' + prefix + 'c/')
         body = fix_assets(body, prefix)
     else:
-        links = ''.join('<li><a href="c/%s/reader.html">%s · %d 讲</a></li>' % (html.escape(c['id']),html.escape(c.get('name_zh',c['id'])),len(c['lectures'])) for c in courses)
-        body = '<details class="card"><summary>按课程阅读（页面更轻）</summary><ul>' + links + '</ul></details>' + body
+        links = ''.join('<a class="reader-pill" href="c/%s/reader.html"><span>%s</span><em>%d 讲</em></a>' % (html.escape(c['id']), html.escape(c.get('name_zh', c['id'])), len(c['lectures'])) for c in courses)
+        body = ('<section class="card reader-quickbar"><h2>按单门课程阅读（页面更轻，加载更快）</h2>'
+                '<p class="sub">全站合订本包含全部 15 门课（约 4 MB）；日常复习推荐直接点下方单课合订本（每课 110–590 KB）：</p>'
+                '<div class="reader-pill-grid">' + links + '</div></section>') + body
     body = reading_controls() + body
     return page(
         "课程合订本" if prefix else "全站合订本 · 课程讲义",
@@ -758,9 +829,9 @@ def build_review(courses):
         lecs = c.get("lectures", [])
         chapters = parts_of(c)
         quick.append(
-            '<div class="qcourse"><div class="qhead"><span>%s</span>'
-            '<span class="badge mute">%d 章 / %d 讲</span></div><ul class="chapters-tick">'
-            % (html.escape(name), len(chapters), len(lecs))
+            '<div class="qcourse" data-course="%s"><div class="qhead"><a class="qhead-title" href="#r-%s">%s</a>'
+            '<span class="qhead-badges"><span class="badge ok qcourse-done">0 / %d 已复习</span><span class="badge mute">%d 章</span></span></div><ul class="chapters-tick">'
+            % (html.escape(cid, quote=True), html.escape(cid, quote=True), html.escape(name), len(lecs), len(chapters))
         )
         for pi, (pname, items) in enumerate(chapters):
             quick.append(
@@ -792,8 +863,8 @@ def build_review(courses):
                 if not exam.strip():
                     continue
                 body = [
-                    '<div class="revlec" id="r-%s-%s">'
-                    % (html.escape(cid), html.escape(slug))
+                    '<div class="revlec" id="r-%s-%s" data-study-id="%s">'
+                    % (html.escape(cid), html.escape(slug), html.escape(cid + "/" + slug, quote=True))
                 ]
                 body.append(
                     '<h4><a href="c/%s/%s.html">%s</a> <span class="badge mute">第 %d 讲</span>'
@@ -823,20 +894,37 @@ def build_review(courses):
             '<section class="revcourse" id="r-%s"><h2>%s <span class="badge mute">%s</span></h2>%s</section>'
             % (html.escape(cid), html.escape(name), html.escape(cid), "".join(blocks))
         )
+    course_opts = '<option value="">全部课程</option>' + ''.join(
+        '<option value="%s">%s</option>' % (html.escape(str(c['id']), quote=True), html.escape(c.get('name_zh', c['id'])))
+        for c in courses
+    )
+    rev_filter = (
+        '<section class="card filter-toolbar" id="review-filter-bar" aria-label="考点筛选工具">'
+        '<div class="filter-toolbar-row">'
+        '<div class="filter-pills" role="group" aria-label="按重要程度筛选">'
+        '<button type="button" class="filter-pill is-active" data-rev-mode="all" aria-pressed="true">全部考点</button>'
+        '<button type="button" class="filter-pill pill-bad" data-rev-mode="must" aria-pressed="false">仅看必考</button>'
+        '<button type="button" class="filter-pill pill-warn" data-rev-mode="warn" aria-pressed="false">仅看易错</button>'
+        '<button type="button" class="filter-pill" data-rev-mode="adv" aria-pressed="false">仅看进阶</button>'
+        '</div>'
+        '<div class="filter-controls">'
+        '<label class="filter-select-label"><span>课程</span><select id="review-course-filter">%s</select></label>'
+        '<label class="filter-check"><input type="checkbox" id="review-only-unreviewed"><span>仅看未复习</span></label>'
+        '</div></div>'
+        '<p class="sub filter-status" id="review-filter-status" role="status"></p></section>' % course_opts
+    )
     body = (
         "<h1>期末总复习 · 考点提醒清单</h1>"
-        '<p class="lead">把每门课每一讲的「考点与难点」「方法清单」集中到一页：先按课程勾掉已复习的讲次，'
-        '再逐条过一遍必考、易错与进阶提示。适合考前 3 天扫盲、考前 1 天速查、考前 1 小时只看<span class="badge bad">必考</span>。</p>'
+        '<p class="lead">把每门课每一讲的「考点与难点」「方法清单」集中到一页：支持按必考、易错、进阶、课程与未复习状态一键过滤，'
+        '适配考前 3 天扫盲、考前 1 天只看<span class="badge warn">易错</span>、考前 1 小时只看<span class="badge bad">必考</span>。</p>'
         '<div class="stats"><div class="stat"><b>%d</b><span>门课</span></div>'
         '<div class="stat"><b>%d</b><span>讲</span></div>'
         '<div class="stat"><b id="tickprog">已复习 0 / 0 讲</b><span>复习进度（本地保存）</span></div></div>'
-        '<div class="usebar"><b>怎么用这一页：</b>'
-        '<ol class="steps"><li>考前 3 天：按课程顺序过「必考」，把不会的回到原讲义补 detail。</li>'
-        "<li>考前 1 天：只看「易错」，把每条错因写成一句话。</li>"
-        "<li>考前 1 小时：只看 badges 为必考的公式、定义和题型名称，不做新题。</li></ol></div>"
-        '<h2 id="review-progress">复习进度总表</h2><div class="qgrid">%s</div>'
+        '%s'
+        '<details class="review-matrix" open><summary><span id="review-progress">复习进度总表（点击可收起）</span></summary>'
+        '<div class="qgrid">%s</div></details>'
         "<h2>逐讲考点与难点</h2>%s"
-        % (len(courses), total, "".join(quick), "".join(sections))
+        % (len(courses), total, rev_filter, "".join(quick), "".join(sections))
     )
     return page(
         "期末总复习 · 考点提醒清单",
@@ -925,6 +1013,23 @@ def build_extension(courses):
         parts.append("</section>")
         blocks.append("".join(parts))
     total_courses = len(blocks)
+    ext_opts = '<option value="">全部课程</option>' + ''.join(
+        '<option value="%s">%s</option>' % (html.escape(str(c['id']), quote=True), html.escape(c.get('name_zh', c['id'])))
+        for c in courses if any(nav.href == "#e-" + str(c['id']) for nav in outline)
+    )
+    ext_filter = (
+        '<section class="card filter-toolbar" id="extend-filter-bar" aria-label="拓展筛选工具">'
+        '<div class="filter-toolbar-row">'
+        '<div class="filter-pills" role="group" aria-label="按内容类型筛选">'
+        '<button type="button" class="filter-pill is-active" data-ext-kind="all" aria-pressed="true">全部拓展</button>'
+        '<button type="button" class="filter-pill" data-ext-kind="ideas" aria-pressed="false">仅看课内拓展框</button>'
+        '<button type="button" class="filter-pill" data-ext-kind="notes" aria-pressed="false">仅看 mapping 补充</button>'
+        '</div>'
+        '<div class="filter-controls">'
+        '<label class="filter-select-label"><span>课程</span><select id="extend-course-filter">%s</select></label>'
+        '</div></div>'
+        '<p class="sub filter-status" id="extend-filter-status" role="status"></p></section>' % ext_opts
+    )
     body = (
         "<h1>知识拓展 · 全站汇总</h1>"
         '<p class="lead">把 %d 门课讲义里所有「拓展」提示框（背景知识、推导、常见误解、前后衔接）与 '
@@ -933,12 +1038,8 @@ def build_extension(courses):
         '<div class="stats"><div class="stat"><b>%d</b><span>门课有拓展</span></div>'
         '<div class="stat"><b>%d</b><span>个拓展框</span></div>'
         '<div class="stat"><b>%d</b><span>条 mapping 补充</span></div></div>'
-        '<div class="usebar"><b>怎么用这一页：</b>'
-        '<ol class="steps"><li>按课程跳转，拓展框都带原始讲次链接，点回去能看到它在讲义里的上下文。</li>'
-        "<li>mapping 补充条目按「出处讲次 / 源文件 / 补充说明」三列排列，方便区分哪些是原文、哪些是整理时加的。</li>"
-        "<li>考前不需要通读本页：拓展只用来答疑与写论述题的深度，评分以原讲义 exam 板块为准。</li></ol></div>"
-        '%s'
-        % (len(courses), total_courses, total_idea, total_note, "".join(blocks))
+        '%s%s'
+        % (len(courses), total_courses, total_idea, total_note, ext_filter, "".join(blocks))
     )
     return page(
         "知识拓展 · 全站汇总",
@@ -956,6 +1057,14 @@ def build_upload(courses):
         '<h1 id="upload-intro">实时资料上传中心 · Upload Center</h1>'
         '<p class="lead">支持按「课程 → 章节」上传 PDF / PPTX / DOCX / 图片 / 代码文件，或直接撰写 Markdown 补充笔记。'
         "连接云端后可共享到对应章节；本机预览模式仅自己可见。</p>"
+        '<details class="card" id="courseware-cloud"><summary>云端原始课件库配置（推荐 Cloudflare R2 · 兼容 GCS / S3）</summary>'
+        '<p class="sub">原始课件（820 份去隐私后的公开课件，约 656 MB）推荐托管在 <strong>Cloudflare R2</strong>（每月 10 GB 免费 + 永久 0 流量费），网页继续托管在 GitHub Pages。按 <code>SETUP_R2.md</code> 同步后填入公开前缀地址即可全站直开原件。</p>'
+        '<div class="study-filters"><label>云端课件公开前缀地址（HTTPS）<input id="gcs-base-url" type="url" placeholder="https://pub-xxxxxxxxxxxxxxxx.r2.dev/courseware" autocomplete="off" spellcheck="false"></label></div>'
+        '<div class="reader-actions"><button class="study-button" type="button" id="gcs-test">抽检云端课件连接</button>'
+        '<button class="study-button primary" type="button" id="gcs-save">保存本机生效并刷新</button>'
+        '<button class="study-button" type="button" id="gcs-reset">清除本机覆盖</button></div>'
+        '<p id="gcs-status" role="status" class="sub"></p>'
+        '<p class="sub">全站生效请写入 <code>assets/config.js</code>：<code id="gcs-config-snippet"></code></p></details>'
         '<details class="card" id="sharing-setup"><summary>共享连接设置与检查</summary>'
         '<p>维护者先运行 supabase/schema.sql。这里只填写项目地址和公开客户端密钥，设置仅作用于当前浏览器；全站启用请填写 assets/config.js 后部署。</p>'
         '<div class="study-filters"><label>Supabase 项目地址<input id="sharing-url" type="url" placeholder="https://project.supabase.co" autocomplete="off" spellcheck="false"></label>'
@@ -966,7 +1075,7 @@ def build_upload(courses):
         '<p id="sharing-status" role="status" class="sub"></p></details>'
         '<div id="upload-hub"><div class="mat-empty">正在加载课程与章节目录…</div></div>'
     )
-    mat_scripts = '<script src="assets/config.js"></script><script src="assets/sharing-config.js"></script><script src="assets/materials.js"></script>'
+    mat_scripts = '<script src="assets/sharing-config.js"></script><script src="assets/materials.js"></script>'
     return page(
         "实时资料上传中心 · 课程讲义站",
         body,
@@ -974,7 +1083,7 @@ def build_upload(courses):
         [("课程总览", "index.html"), ("上传资料", None)],
         script=mat_scripts,
         module="upload",
-        groups=[("本页内容", [NavItem("上传说明", "#upload-intro"), NavItem("课程与章节资料", "#upload-hub")])],
+        groups=[("本页内容", [NavItem("上传说明", "#upload-intro"), NavItem("云端课件库配置", "#courseware-cloud"), NavItem("课程与章节资料", "#upload-hub")])],
     )
 
 
@@ -1083,7 +1192,7 @@ def build_learning_assets(courses):
     catalogue = {key:data[key] for key in ("version", "courses", "lectures")}
     write(os.path.join(ROOT,"data","learning-catalog.js"), "window.LUT_LEARNING_CATALOG=" + script_json(catalogue) + ";\n")
     write(os.path.join(ROOT,"data","search-index.js"), "window.LUT_SEARCH_DATA=" + script_json({"version":1,"documents":data["documents"]}) + ";\n")
-    scripts = ["search-core.js","study-store.js","study.js","reader-tools.js","practice.js"]
+    scripts = ["search-core.js","study-store.js","study.js","reader-tools.js","practice.js","courseware.js","quick-nav.js"]
     bundle = []
     for name in scripts:
         with io.open(os.path.join(ROOT,"assets",name),encoding="utf-8") as source:

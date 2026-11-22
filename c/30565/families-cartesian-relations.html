@@ -8,68 +8,68 @@
 <title>第 2 讲 · 集合族、幂集、笛卡尔积与二元关系 · 30565</title>
 <style>:root{
   color-scheme:light dark;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
   --radius:14px;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
   --measure:68rem;
-  --topbar-height:86px;
+  --topbar-height:64px;
   --page-directory-height:0px;
 }
 /* 深色 token：系统偏好（CSS 自动跟随，无 JS 时也生效） */
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-    --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+    --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+    --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
     --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
     --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+    --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
     --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
     --callout-bg:#212933; --callout-line:#3c4856;
-    --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+    --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
     --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-    --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+    --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
     --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-    --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+    --shadow-lift:0 8px 24px rgba(0,0,0,.42);
   }
 }
 /* 手动覆盖：meta 显式 light / dark 时，覆盖系统偏好（指南要求 CSS 跟随 meta） */
 :root:has(>head>meta[name="color-scheme"][content="light"]){color-scheme:light;
-  --bg:#f4f6fa; --fg:#1c222b; --muted:#5d6875; --line:#e2e7ee;
-  --card:#ffffff; --accent:#2f6fdb; --accent-soft:#eaf1fd; --accent-deep:#1d4fa8;
+  --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
+  --card:#ffffff; --accent:#2563eb; --accent-soft:#eaf1fe; --accent-deep:#1d4ed8;
   --ok:#147548; --ok-soft:#e6f5ec; --warn:#b26a12; --warn-soft:#fcf1e1;
   --bad:#c03630; --bad-soft:#fcebea; --purple:#6b4ec9; --purple-soft:#efeafd;
-  --code-bg:#eceff4; --code-fg:#243044; --pre-bg:#1c222d; --pre-fg:#e8ecf3;
+  --code-bg:#edf1f7; --code-fg:#243044; --pre-bg:#161c26; --pre-fg:#e8ecf3;
   --th-bg:#eef2f8; --th-fg:#2c3948; --even-bg:#f8fafc;
   --callout-bg:#f0f4f9; --callout-line:#b9c3cf;
   --ov-bg:linear-gradient(180deg,#f5f9ff,#ffffff); --ov-line:#d3e3fb;
   --map-bg:#fafbfd; --map-fg:#3a4654; --chip-bg:#eceff4; --chip-fg:#38445a;
-  --topbar-bg:rgba(255,255,255,.9); --qa-bg:#fcfefe; --detail-bg:#fafbfe;
-  --shadow:0 1px 2px rgba(18,28,44,.05),0 2px 8px rgba(18,28,44,.04);
-  --shadow-lift:0 4px 18px rgba(18,28,44,.10);
+  --topbar-bg:rgba(255,255,255,.92); --qa-bg:#fcfefe; --detail-bg:#f9fbfe;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.035);
+  --shadow-lift:0 6px 20px rgba(15,23,42,.09);
 }
 :root:has(>head>meta[name="color-scheme"][content="dark"]){color-scheme:dark;
-  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28303b;
-  --card:#1a2028; --accent:#5b9bf0; --accent-soft:#1f2f4a; --accent-deep:#8fbcf7;
+  --bg:#12161c; --fg:#dce3ec; --muted:#8b96a5; --line:#28313e; --line-soft:#202733;
+  --card:#1a2029; --accent:#5b9bf0; --accent-soft:#1e2f4a; --accent-deep:#8fbcf7;
   --ok:#4bbf83; --ok-soft:#1b2e25; --warn:#d99a4e; --warn-soft:#322a1d;
   --bad:#e2726b; --bad-soft:#341f1e; --purple:#9c86e8; --purple-soft:#272341;
-  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0e1218; --pre-fg:#dbe2ea;
+  --code-bg:#232b36; --code-fg:#c6d2e0; --pre-bg:#0d1117; --pre-fg:#dbe2ea;
   --th-bg:#212933; --th-fg:#dce3ec; --even-bg:#1d232c;
   --callout-bg:#212933; --callout-line:#3c4856;
-  --ov-bg:linear-gradient(180deg,#1b2230,#1a2028); --ov-line:#2c3d58;
+  --ov-bg:linear-gradient(180deg,#1b2333,#1a2029); --ov-line:#2c3d58;
   --map-bg:#192027; --map-fg:#a9b4c2; --chip-bg:#232b36; --chip-fg:#b6c2d2;
-  --topbar-bg:rgba(18,22,28,.9); --qa-bg:#1c232c; --detail-bg:#1d232c;
+  --topbar-bg:rgba(18,22,28,.92); --qa-bg:#1c232c; --detail-bg:#1c222b;
   --shadow:0 1px 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.18);
-  --shadow-lift:0 6px 22px rgba(0,0,0,.4);
+  --shadow-lift:0 8px 24px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-height) + var(--page-directory-height) + 24px)}
@@ -127,20 +127,20 @@ section[data-type],.card[data-type]{background:var(--card);border:1px solid var(
   border-radius:var(--radius);padding:20px 26px;margin:0 0 20px;box-shadow:var(--shadow);
   scroll-margin-top:86px}
 section[data-type]>h2:first-child,.card[data-type]>h2:first-child{margin-top:.05em}
-/* 每段顶部的类型徽标：让八段结构一眼可辨 */
+/* 每段顶部的类型徽标：统一编号胶囊，跨平台清晰不裁切 */
 section[data-type]::before,.card[data-type]::before{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;line-height:1.4;
   color:var(--accent);background:var(--accent-soft);
-  padding:3px 12px;border-radius:99px;margin-bottom:14px}
-section[data-type="overview"]::before{content:"◎ 本节定位";color:var(--accent);background:var(--accent-soft)}
-section[data-type="detail"]::before{content:"📖 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="keywords"]::before{content:"🔤 术语表";color:var(--purple);background:var(--purple-soft)}
-section[data-type="examples"]::before{content:"✏️ 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
-section[data-type="practice"]::before{content:"📝 练习";color:var(--warn);background:var(--warn-soft)}
-section[data-type="exam"]::before{content:"🎯 考点难点";color:var(--bad);background:var(--bad-soft)}
-section[data-type="checklist"]::before{content:"✅ 方法清单";color:var(--ok);background:var(--ok-soft)}
-section[data-type="mapping"]::before{content:"🗂 源文件对照";color:var(--muted);background:var(--chip-bg)}
+  padding:4px 12px;border-radius:99px;margin-bottom:14px}
+section[data-type="overview"]::before{content:"01 · 本节定位";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="detail"]::before{content:"02 · 知识精讲";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="keywords"]::before{content:"03 · 英文术语";color:var(--purple);background:var(--purple-soft)}
+section[data-type="examples"]::before{content:"04 · 例题精解";color:var(--accent-deep);background:var(--accent-soft)}
+section[data-type="practice"]::before{content:"05 · 练习自测";color:var(--warn);background:var(--warn-soft)}
+section[data-type="exam"]::before{content:"06 · 考点难点";color:var(--bad);background:var(--bad-soft)}
+section[data-type="checklist"]::before{content:"07 · 方法清单";color:var(--ok);background:var(--ok-soft)}
+section[data-type="mapping"]::before{content:"08 · 资料对照";color:var(--muted);background:var(--chip-bg)}
 section[data-type="overview"],.card[data-type="overview"]{background:var(--ov-bg);border-color:var(--ov-line)}
 section[data-type="keywords"],.card[data-type="keywords"]{border-left:4px solid var(--purple)}
 section[data-type="exam"],.card[data-type="exam"]{border-left:4px solid var(--bad)}
@@ -190,13 +190,13 @@ section[data-type="keywords"] table td:first-child{font-weight:600}
 .qa .q{font-weight:650}
 .qa .q::before{content:"问 ";display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);
   background:var(--accent-soft);border-radius:6px;padding:0 7px;margin-right:8px;vertical-align:1px}
-details{border:1px dashed #c9d3df;border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
+details{border:1px dashed var(--callout-line);border-radius:11px;padding:9px 15px;margin:.8em 0;background:var(--detail-bg)}
 details summary{cursor:pointer;font-weight:600;color:var(--accent);outline:none;list-style:none;position:relative;padding-left:22px}
 details summary::before{content:"▸";position:absolute;left:2px;top:-1px;transition:transform .15s;color:var(--muted)}
 details[open] summary::before{transform:rotate(90deg)}
 details summary::-webkit-details-marker{display:none}
 details[open] summary{margin-bottom:.45em}
-details .ans{border-top:1px dashed #d5dfeb;margin-top:.55em;padding-top:.55em}
+details .ans{border-top:1px dashed var(--line);margin-top:.55em;padding-top:.55em}
 .checklist{list-style:none;padding-left:0}
 .checklist li{position:relative;padding-left:28px;margin:.42em 0}
 .checklist li::before{content:"\2713";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700}
@@ -230,25 +230,28 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   padding:.75rem 1rem;background:transparent;color:var(--fg);font:inherit;font-size:.875rem;
   border:0;border-radius:var(--radius);cursor:pointer;text-align:start;flex-shrink:0}
 .directory-toggle-state{margin-inline-start:auto;font-size:.75rem;color:var(--muted)}
+.directory-chevron{transition:transform .18s ease}
 .directory-toggle[aria-expanded="true"] .directory-chevron{transform:rotate(180deg)}
 #directory-content{min-height:0;overflow:auto;padding:0 .5rem .75rem;scrollbar-width:thin}
-.directory-context{margin:0 .5rem .75rem;padding-block-end:.75rem;border-bottom:1px solid var(--line);
-  color:var(--muted);font-size:.75rem;line-height:1.6}
-.directory-group-title{padding:.5rem .625rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em}
+.directory-context{margin:0 .5rem .625rem;padding-block-end:.625rem;border-bottom:1px solid var(--line);
+  color:var(--muted);font-size:.75rem;line-height:1.5}
+.directory-group-title{padding:.45rem .625rem .3rem;margin:0;color:var(--muted);font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .directory-group-title:not(:first-child){margin-block-start:.5rem}
 .directory-list{list-style:none;margin:0;padding:0}
-.directory-list li{margin:.125rem 0;min-width:0}
+.directory-list li{margin:.1rem 0;min-width:0}
 .directory-list .directory-list{margin-inline-start:.875rem;padding-inline-start:.375rem;border-inline-start:1px solid var(--line)}
 .directory-row{display:flex;align-items:stretch;min-width:0}
-.directory-link{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:0;padding:.625rem .5rem;
-  border-inline-start:3px solid transparent;border-radius:6px;color:var(--fg);font-size:.8125rem;line-height:1.6}
+.directory-link{display:flex;align-items:flex-start;gap:.45rem;flex:1;min-width:0;padding:.45rem .5rem;
+  border-inline-start:3px solid transparent;border-radius:7px;color:var(--fg);font-size:.8125rem;line-height:1.5;
+  transition:background-color .14s,color .14s}
 .directory-label{min-width:0;flex:1;overflow-wrap:anywhere}
 .directory-index{font-size:.6875rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.25rem;padding-block-start:.125rem}
-.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:4px;padding:0 .25rem;align-self:center}
+.directory-current{font-size:.625rem;white-space:nowrap;border:1px solid currentColor;border-radius:99px;padding:0 .35rem;align-self:center;opacity:.85}
 .directory-link:hover{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
 .directory-link.ancestor{font-weight:650}
-.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:2rem;padding:.25rem;
-  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.25rem}
+.directory-expand{display:grid;place-items:center;flex-shrink:0;min-width:1.9rem;padding:.2rem;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:1.15rem}
+.directory-expand>span{display:inline-block;transition:transform .16s ease}
 .directory-expand:hover{background:var(--accent-soft);color:var(--accent-deep)}
 .directory-expand[aria-expanded="true"]>span{transform:rotate(90deg)}
 .page-directory [hidden]{display:none}
@@ -281,13 +284,13 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
   .page-directory{max-height:calc(100vh - var(--topbar-height) - 24px);max-height:calc(100dvh - var(--topbar-height) - 24px)}
   .page-content{margin-block-start:1rem}
 }
-.lecture-head{padding:1.5rem 1.75rem;margin-block-end:1.25rem;background:var(--card);
-  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius)}
-.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .75rem}
-.lecture-head h1{font-size:clamp(1.5rem,1.15rem + 1vw,2rem);line-height:1.4;margin:0 0 .5rem;text-wrap:balance}
-.lecture-subtitle{font-size:1rem;color:var(--muted);margin:0 0 1rem;line-height:1.6}
+.lecture-head{padding:1.25rem 1.5rem;margin-block-end:1.15rem;background:var(--card);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow)}
+.lecture-kicker{font-size:.75rem;letter-spacing:.04em;color:var(--accent-deep);font-weight:650;margin:0 0 .45rem}
+.lecture-head h1{font-size:clamp(1.45rem,1.1rem + 1vw,1.9rem);line-height:1.35;margin:0 0 .35rem;text-wrap:balance}
+.lecture-subtitle{font-size:.95rem;color:var(--muted);margin:0 0 .65rem;line-height:1.55}
 .lecture-head .chaptertag{margin:0;font-size:.8125rem}
-.lecture-sources{margin:1rem 0 0;padding:.625rem .875rem;border:1px solid var(--line);background:var(--detail-bg)}
+.lecture-sources{margin:.75rem 0 0;padding:.5rem .8rem;border:1px solid var(--line);background:var(--detail-bg)}
 .lecture-sources summary{font-size:.8125rem;font-weight:500;min-height:1.5rem}
 .lecture-sources .src{margin:.625rem 0 0}
 .lecture-page section[data-type]{scroll-margin-top:0;padding:1.5rem 1.75rem}
@@ -301,24 +304,27 @@ figcaption{font-size:13px;color:var(--muted);margin-top:.45em}
 .src code{font-size:12.4px;word-break:break-all}
 
 /* ---------- 总览页组件 ---------- */
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 16px;min-width:120px;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:22px;line-height:1.3}
-.stat span{font-size:12.6px;color:var(--muted)}
-.search{width:100%;max-width:520px;padding:11px 15px;border:1px solid #c9d3df;border-radius:11px;
-  font-size:15px;background:var(--card);margin-bottom:20px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 15px;min-width:108px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:21px;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.4px;color:var(--muted)}
+.search{width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--callout-line);border-radius:10px;
+  font-size:15px;background:var(--card);color:var(--fg);margin-bottom:20px}
 .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:18px}
-.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 19px;
-  box-shadow:var(--shadow);transition:box-shadow .15s,transform .15s}
-.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
-.ccard h3{margin:.1em 0 .3em}
-.ccard .meta{font-size:13px;color:var(--muted);margin-bottom:9px}
-.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14.5px}
-.lec-list li{padding:5px 0;border-top:1px solid #eef2f7;display:flex;gap:8px;justify-content:space-between}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:16px;align-items:start}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  box-shadow:var(--shadow);transition:box-shadow .16s,transform .16s,border-color .16s;display:flex;flex-direction:column}
+.ccard:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px);border-color:var(--ov-line)}
+.ccard h3{margin:.35em 0 .25em;font-size:17px;line-height:1.4}
+.ccard h3::before{display:none}
+.ccard h3 a{color:var(--fg)}
+.ccard h3 a:hover{color:var(--accent);text-decoration:none}
+.ccard .meta{font-size:12.8px;color:var(--muted);margin-bottom:6px;line-height:1.5}
+.lec-list{list-style:none;padding:0;margin:.3em 0 0;font-size:14px}
+.lec-list li{padding:5px 0;border-top:1px solid var(--line-soft);display:flex;gap:8px;justify-content:space-between;align-items:baseline}
 .lec-list li:first-child{border-top:none}
-.lec-list .t{flex:1}
-.lec-list .n{color:var(--muted);font-size:12.6px;white-space:nowrap}
+.lec-list .t{flex:1;min-width:0}
+.lec-list .n{color:var(--muted);font-size:12.4px;white-space:nowrap}
 .lec-list li.dim{opacity:.62}
 
 /* ---------- 全站统一模块导航 ---------- */
@@ -360,35 +366,40 @@ sup,sub{line-height:0;font-size:.78em}
 .usebar{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);
   border-radius:var(--radius);padding:14px 20px;margin:0 0 22px;box-shadow:var(--shadow)}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:14px;margin-bottom:26px}
-.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
-.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
-.ticklist{list-style:none;padding:0;margin:.4em 0 0;font-size:14px}
-.ticklist li{padding:3px 0;border-top:1px solid #eef2f7}
+.qcourse{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-weight:650;margin-bottom:6px}
+.qhead-title{color:var(--fg);font-size:14.5px;line-height:1.4;min-width:0}
+.qhead-title:hover{color:var(--accent)}
+.qhead-badges{display:inline-flex;gap:4px;flex-shrink:0;align-items:center}
+.qhead-badges .badge{margin-right:0;white-space:nowrap;font-size:11.5px;padding:0 8px}
+.ticklist{list-style:none;padding:0;margin:.35em 0 0;font-size:13.8px}
+.ticklist li{padding:3.5px 0;border-top:1px solid var(--line-soft)}
 .ticklist li:first-child{border-top:none}
 .ticklist label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-.ticklist input{margin-top:.35em}
+.ticklist input{margin-top:.32em;accent-color:var(--accent)}
 .chapter{margin:0 0 24px}
 .chapter>h2 a{color:var(--fg)}
 .chaptertag{font-size:13.5px;color:var(--muted);margin:.1em 0 .8em}
 .chapters{list-style:none;padding:0;margin:.4em 0 0}
-.chapters>li.ch{border-top:1px solid #eef2f7;padding:9px 0 3px}
+.chapters>li.ch{border-top:1px solid var(--line-soft);padding:8px 0 4px}
 .chapters>li.ch:first-child{border-top:none;padding-top:2px}
-.chapters .ch-t{font-weight:600}
-.chapters .n{float:right;color:var(--muted);font-size:12.6px}
-.chapters .lec-list{margin:.15em 0 0;padding-left:0}
-.chapters .lec-list li{padding:3px 0;border-top:none;display:block;font-size:14px}
+.ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chapters .ch-t{font-weight:600;font-size:13.8px}
+.chapters .n{color:var(--muted);font-size:12px;white-space:nowrap;flex-shrink:0}
+.chapters .lec-list{margin:.2em 0 0;padding-left:0}
+.chapters .lec-list li{padding:3.5px 0;border-top:none;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .revpart{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;
   padding:8px 14px;margin:20px 0 2px;font-weight:600}
 .revpart .badge{font-weight:400;margin-left:8px}
 .chapters-tick{list-style:none;padding:0;margin:.3em 0 0}
-.chapters-tick>li{padding:5px 0;border-top:1px solid #eef2f7}
+.chapters-tick>li{padding:5px 0;border-top:1px solid var(--line-soft)}
 .chapters-tick>li:first-child{border-top:none}
-.chapters-tick .qp{font-weight:600;font-size:13.6px}
+.chapters-tick .qp{font-weight:600;font-size:13.4px;color:var(--muted)}
 .allpart{font-size:19px;margin:30px 0 8px;padding-left:12px;border-left:4px solid var(--accent)}
 .howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:14px 20px;margin:22px 0 0;box-shadow:var(--shadow)}
 .howto summary{cursor:pointer;font-weight:600}
-.allcourse{background:linear-gradient(180deg,#eef4ff,#ffffff);border:1px solid #d3e3fb;
+.allcourse{background:var(--ov-bg);border:1px solid var(--ov-line);
   border-radius:var(--radius);padding:16px 22px;margin:34px 0 14px}
 .alllec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
@@ -410,19 +421,19 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-live-pill.local{background:var(--warn-soft);color:var(--warn)}
 .mat-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
 .mat-hint{font-size:12.5px;color:var(--muted)}
-.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px}
+.mat-drawer{background:var(--detail-bg);border:1px solid var(--line);border-radius:11px;padding:16px;margin:12px 0 16px;max-width:100%;overflow-wrap:anywhere}
 .mat-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer}
+.mat-tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;max-width:100%}
 .mat-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mat-form{display:flex;flex-direction:column;gap:12px}
-.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+.mat-form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.mat-field{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600;min-width:0}
 .mat-field input,.mat-field select,.mat-field textarea{
   font:inherit;font-weight:400;padding:8px 11px;border:1px solid var(--line);
-  border-radius:8px;background:var(--card);color:var(--fg);width:100%}
+  border-radius:8px;background:var(--card);color:var(--fg);width:100%;min-width:0;max-width:100%}
 .mat-field textarea{resize:vertical;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px}
 .mat-dropzone{display:block;border:2px dashed var(--line);border-radius:11px;padding:22px 16px;
-  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s}
+  text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s;max-width:100%}
 .mat-dropzone:hover,.mat-dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
 .mat-file-input{display:none}
 .mat-drop-text{font-size:14.5px}
@@ -430,7 +441,7 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-form-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13.5px;
-  font-weight:600;cursor:pointer;text-decoration:none}
+  font-weight:600;cursor:pointer;text-decoration:none;max-width:100%}
 .mat-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
 .mat-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .mat-btn.primary:hover{filter:brightness(.94);color:#fff}
@@ -439,13 +450,13 @@ sup,sub{line-height:0;font-size:.78em}
 .mat-status{font-size:13.5px;color:var(--muted)}
 .mat-status.ok{color:var(--ok);font-weight:600}
 .mat-status.err{color:var(--bad);font-weight:600}
-.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px}
-.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.mat-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;font-size:13.5px;min-width:0}
+.mat-filter-row select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;min-width:0;max-width:100%}
 .mat-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 .mat-empty{padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:11px}
 .mat-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
-  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg)}
-.mat-item-main{flex:1;min-width:220px}
+  padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--qa-bg);max-width:100%}
+.mat-item-main{flex:1;min-width:0}
 .mat-item-head{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px}
 .mat-item-title{font-size:15px}
 .mat-desc{font-size:14px;color:var(--muted);margin:4px 0}
@@ -497,21 +508,21 @@ sup,sub{line-height:0;font-size:.78em}
 /* ---------- 小屏 ---------- */
 @media(max-width:640px){
   body{font-size:15.5px}
-  .wrap{padding:18px 14px 50px}
-  .card,section[data-type]{padding:15px 16px}
-  h1{font-size:24px}
-  h2{font-size:19px}
-  .topbar-in{padding:9px 14px;gap:9px}
+  .wrap{padding:14px 12px 48px}
+  .card,section[data-type]{padding:14px 15px}
+  h1{font-size:23px}
+  h2{font-size:18.5px}
+  .topbar-in{padding:8px 12px;grid-template-columns:1fr auto;gap:.45rem}
   #btt{right:14px;bottom:16px}
-  .lecture-head,.lecture-page section[data-type]{padding:1rem}
-  .topbar-in{grid-template-columns:1fr auto;gap:.5rem}
-  .global-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
-  .navlink{font-size:.75rem;min-height:2.25rem;padding:.25rem;white-space:normal}
-  .thbtn{min-width:2.75rem;min-height:2.75rem}
+  .lecture-head,.lecture-page section[data-type]{padding:.95rem 1rem}
+  .global-nav{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;overflow-x:auto;
+    gap:.2rem;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .global-nav::-webkit-scrollbar{display:none}
+  .navlink{flex:0 0 auto;font-size:.74rem;min-height:2.05rem;padding:.22rem .5rem;white-space:nowrap}
+  .thbtn{min-width:2.5rem;min-height:2.5rem}
   .sequence-nav{grid-template-columns:1fr;gap:.5rem}
   .sequence-nav [data-sequence]{text-align:start}
-  .breadcrumbs{font-size:.75rem;margin-block-end:1rem}
-
+  .breadcrumbs{font-size:.75rem;margin-block-end:.75rem}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -538,29 +549,36 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* Learning controls share the site's semantic tokens and navigation language. */
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem}
-.search-shortcut{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;min-width:2.75rem;
-  padding:.375rem .625rem;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:.8125rem}
-.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.75rem;
-  padding:.5rem .875rem;background:var(--card);color:var(--fg);font:inherit;font-size:.875rem;
-  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%}
-.study-button:hover{border-color:var(--accent);color:var(--accent-deep);text-decoration:none}
+.search-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.4rem;min-width:2.75rem;
+  padding:.3rem .65rem;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:.8125rem;
+  transition:border-color .15s,color .15s,background-color .15s}
+.search-shortcut:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.kbd-hint{font-size:.6875rem;padding:.05rem .35rem;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted);line-height:1.4}
+.study-button{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;
+  padding:.42rem .82rem;background:var(--card);color:var(--fg);font:inherit;font-size:.85rem;font-weight:550;
+  border:1px solid var(--callout-line);border-radius:8px;cursor:pointer;text-decoration:none;max-width:100%;
+  transition:border-color .14s,background-color .14s,color .14s}
+.study-button.compact{min-height:2.1rem;padding:.3rem .7rem;font-size:.8rem}
+.study-button:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
 .study-button.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.study-button.primary:hover{filter:brightness(.94);color:var(--card);background:var(--accent-deep)}
 .study-button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
 .study-button[hidden],.site-search [hidden],.learning-home [hidden],.focus-exit[hidden]{display:none}
-.learning-home h2,.site-search h2{margin-block-start:0}
-.continue-link{display:inline-block;font-weight:650;font-size:1.0625rem}
-.learning-home details{margin-block-end:0}
+.learning-home h2,.site-search h2{margin-block-start:0;font-size:1.1rem}
+.continue-link{display:inline-block;font-weight:650;font-size:1rem}
+.learning-home details{margin-block:.5rem 0;padding:7px 12px}
 .study-backup .study-button{margin-block-end:.625rem}
-.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.875rem;max-width:100%}
+.study-import{display:flex;flex-direction:column;gap:.375rem;font-size:.85rem;max-width:100%}
 .study-import input{max-width:100%;font:inherit}
-.study-state{display:inline-block;font-size:.6875rem;font-weight:500;padding:.125rem .375rem;margin-inline-start:.5rem;
-  border:1px solid var(--line);border-radius:5px;color:var(--muted);white-space:nowrap;vertical-align:middle}
-.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep)}
-.study-state[data-status="review"]{background:var(--warn-soft);color:var(--fg)}
-.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok)}
-.course-progress{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;margin:.625rem 0 1rem;color:var(--muted);font-size:.75rem}
-.course-progress progress{flex:1;min-width:5rem;max-width:10rem;block-size:.5rem;accent-color:var(--accent)}
-.course-progress span{white-space:nowrap}
+.study-state{display:inline-block;font-size:.6875rem;font-weight:550;padding:.1rem .4rem;margin-inline-start:.45rem;
+  border:1px solid var(--line);border-radius:99px;color:var(--muted);white-space:nowrap;vertical-align:middle;flex-shrink:0}
+.study-state[data-status="new"]{opacity:.62;border-color:transparent;background:var(--bg)}
+.study-state[data-status="learning"]{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--ov-line)}
+.study-state[data-status="review"]{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.study-state[data-status="mastered"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.course-progress{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.45rem 0 .7rem;color:var(--muted);font-size:.75rem}
+.course-progress progress{flex:1;min-width:5rem;max-width:11rem;block-size:.45rem;accent-color:var(--accent);border-radius:99px}
+.course-progress span{white-space:nowrap;font-variant-numeric:tabular-nums}
 .site-search{display:block}
 .site-search form>label{font-size:1.0625rem;font-weight:700;display:block;margin-block-end:.625rem}
 .search-query{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.5rem;align-items:start}
@@ -578,16 +596,22 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
 ::highlight(lut-search){background-color:#ffdf72;color:#242009;text-decoration:underline}
 .search-jump{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
   border:1px solid var(--line);background:var(--accent-soft);padding:.75rem 1rem;border-radius:8px;margin-block:1rem}
-.study-toolbar{margin-block-start:1rem;padding-block-start:1rem;border-block-start:1px solid var(--line)}
-.study-status{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.375rem .75rem}
-.study-status legend{padding:0;margin-block-end:.375rem;font-size:.75rem;color:var(--muted)}
-.study-status label{display:inline-flex;gap:.375rem;align-items:center;min-height:2.5rem;cursor:pointer;font-size:.8125rem}
-.study-status input{accent-color:var(--accent);margin:0}
-.reader-actions{display:flex;align-items:flex-start;gap:.625rem;flex-wrap:wrap;margin-block:.625rem}
-.reader-options{margin:0;padding:.5rem .875rem;min-height:2.75rem;border:1px solid var(--callout-line)}
-.reader-options summary{font-size:.875rem}
-.reader-options .study-filters{min-width:min(20rem,100%)}
-.study-storage-note{font-size:.6875rem;margin:0}
+.study-toolbar{margin-block-start:.85rem;padding-block-start:.85rem;border-block-start:1px solid var(--line)}
+.study-toolbar-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.75rem 1rem;flex-wrap:wrap}
+.study-status{border:0;padding:0;margin:0;min-width:0}
+.study-status legend{padding:0;margin-block-end:.35rem;font-size:.72rem;font-weight:600;color:var(--muted)}
+.status-group{display:inline-flex;flex-wrap:wrap;gap:.3rem;padding:.2rem;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.status-pill{display:inline-flex;align-items:center;gap:.32rem;min-height:2.1rem;padding:.2rem .65rem;border-radius:7px;
+  cursor:pointer;font-size:.8rem;font-weight:550;color:var(--muted);transition:background-color .14s,color .14s}
+.status-pill:hover{color:var(--fg)}
+.status-pill:has(input:checked){background:var(--card);color:var(--accent-deep);box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.status-pill input{accent-color:var(--accent);margin:0;width:.88rem;height:.88rem}
+.reader-actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0}
+.reader-options{margin:0;padding:.35rem .75rem;min-height:2.5rem;border:1px solid var(--callout-line);border-radius:8px;display:inline-flex;flex-direction:column;justify-content:center}
+.reader-options summary{font-size:.85rem}
+.reader-options .study-filters{min-width:min(18rem,100%);margin-block:.5rem .25rem}
+.study-storage-note{font-size:.72rem;margin:.6rem 0 0;color:var(--muted)}
+.copy-code.is-copied{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 .lecture-page .page-content,body[data-module="reader"] .page-content{font-size:var(--reader-font-size,1.0625rem);line-height:var(--reader-line-height,1.85)}
 .lecture-page section[data-type]>p{max-inline-size:80ch}
 .focus-reading .page-layout{display:block}
@@ -617,15 +641,21 @@ mark,.lut-search-mark{background:#ffdf72;color:#242009;text-decoration:underline
   max-width:42rem;margin:0 auto;padding:.75rem 1rem;background:var(--card);color:var(--fg);border:1px solid var(--accent);border-radius:9px;box-shadow:var(--shadow-lift);font-size:.875rem}
 .study-notice[hidden]{display:none}
 @media(max-width:640px){
+  .kbd-hint{display:none}
   .search-query{grid-template-columns:minmax(0,1fr) auto}
   #search-clear{grid-column:2;min-height:2.25rem}
   .reader-actions{align-items:stretch}
   .reader-options{max-width:100%}
   .study-button{font-size:.8125rem}
   .practice-controls{align-items:stretch}
+  .home-hero .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{min-width:0}
+  .course-filter-bar{align-items:stretch}
+  .filter-toolbar-row{flex-direction:column;align-items:stretch}
+  .filter-controls{flex-direction:column;align-items:stretch}
 }
 @media print{
-  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress{display:none}
+  .learning-home,.site-search,.study-toolbar,.reader-actions,.study-notice,.practice-controls,.focus-exit,.copy-code,.search-jump,.course-progress,.course-filter-bar,.filter-toolbar,.directory-filter,.course-switcher,.cmd-palette,.reader-quickbar,.ccard-actions{display:none}
   .code-block pre{padding-block-start:1rem}
   .image-zoom{display:contents}
   .image-viewer{display:none}
@@ -645,6 +675,167 @@ dialog.mat-modal::backdrop { background: rgba(8,12,20,.72); }
 dialog.mat-modal .mat-modal-box { width: 100%; max-height: calc(100dvh - 2rem); border: 0; box-shadow: none; }
 dialog.mat-modal .mat-modal-title { margin: 0; font-size: 1.125rem; }
 dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
+
+/* ---------- 首页 Hero & 双栏工作台 ---------- */
+.home-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 1.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.home-hero-main{flex:1 1 24rem;min-width:0}
+.home-hero-main h1{margin:0 0 .25rem;font-size:clamp(1.5rem,1.2rem + .9vw,1.95rem)}
+.home-hero-main .lead{margin:0;font-size:.93rem}
+.home-hero .stats{margin:0;flex-shrink:0}
+.home-hero .stat{padding:7px 13px;min-width:86px}
+.home-hero .stat b{font-size:19px}
+.home-workbench{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:1.4rem}
+.home-workbench>.card{margin:0;padding:16px 20px}
+.home-workbench .site-search form>label{font-size:.98rem;margin-block-end:.45rem}
+.home-workbench .study-filters{margin-block:.55rem .4rem;gap:.55rem}
+.home-workbench .study-filters select{min-height:2.35rem;font-size:.9rem}
+.home-workbench .search-query .search{min-height:2.45rem;font-size:.94rem;padding:8px 12px}
+.home-workbench #search-status{margin:.35rem 0 0;font-size:.82rem}
+.home-workbench #study-totals{margin:.3rem 0 .45rem;font-size:.82rem}
+@media(max-width:1120px){
+  .home-workbench{grid-template-columns:1fr;gap:14px}
+}
+
+/* ---------- 课程分类筛选与卡片升级 ---------- */
+.course-section-head{display:flex;flex-direction:column;gap:.6rem;margin:0 0 1rem}
+.course-section-head h2{margin:0}
+.course-filter-bar{display:flex;justify-content:space-between;align-items:center;gap:.65rem;flex-wrap:wrap}
+.filter-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.filter-pill{display:inline-flex;align-items:center;gap:.35rem;min-height:2.1rem;padding:.28rem .75rem;
+  border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);
+  font:inherit;font-size:.8125rem;font-weight:550;cursor:pointer;transition:all .14s}
+.filter-pill span{font-size:.72rem;opacity:.75;font-variant-numeric:tabular-nums}
+.filter-pill:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft)}
+.filter-pill.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.filter-pill.pill-bad.is-active{background:var(--bad);border-color:var(--bad);color:var(--card)}
+.filter-pill.pill-warn.is-active{background:var(--warn);border-color:var(--warn);color:var(--card)}
+.ccard[hidden],.revcourse[hidden],.revlec[hidden],.qcourse[hidden]{display:none}
+.ccard-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.ccard-top .badge{margin:0;font-size:11.5px;padding:0 9px}
+.ccard-cat{background:var(--accent-soft);color:var(--accent-deep)}
+.ccard-summary{font-size:.84rem;color:var(--muted);margin:.15rem 0 .35rem;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ccard-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin:.25rem 0 .65rem}
+.ccard-link{display:inline-flex;align-items:center;padding:.28rem .68rem;border:1px solid var(--line);border-radius:7px;
+  font-size:.78rem;font-weight:600;color:var(--muted);background:var(--bg);transition:all .14s}
+.ccard-link:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.ccard-link.primary{background:var(--accent-soft);border-color:var(--ov-line);color:var(--accent-deep)}
+.ccard-chapters{margin:auto 0 0;padding:7px 12px;border-style:solid;border-color:var(--line);background:var(--detail-bg)}
+.ccard-chapters>summary{font-size:.8125rem;color:var(--muted);font-weight:550}
+.ccard-chapters[open]>summary{color:var(--accent-deep);margin-bottom:.5rem}
+
+/* ---------- 侧边栏过滤、状态点与跨课切换 ---------- */
+.directory-filter{padding:0 .5rem .6rem}
+.directory-filter-input{width:100%;padding:.4rem .65rem;font:inherit;font-size:.8rem;color:var(--fg);
+  background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.directory-filter-input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);background:var(--card)}
+.course-switcher{padding:.65rem .75rem;border-top:1px solid var(--line);background:var(--detail-bg);
+  border-radius:0 0 var(--radius) var(--radius);flex-shrink:0}
+#directory-content[hidden] + .course-switcher{display:none}
+.course-switcher label{display:flex;flex-direction:column;gap:.3rem;font-size:.72rem;font-weight:650;color:var(--muted)}
+.course-switcher select{font:inherit;font-size:.8rem;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:7px;padding:.38rem .5rem;min-height:2.2rem;width:100%;max-width:100%}
+.dir-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.45rem;background:var(--line)}
+.dir-status-dot[data-status="learning"]{background:var(--accent)}
+.dir-status-dot[data-status="review"]{background:var(--warn)}
+.dir-status-dot[data-status="mastered"]{background:var(--ok)}
+
+/* ---------- 全站命令面板 (Ctrl+K) ---------- */
+dialog.cmd-palette{inset:0;margin:min(10vh,5rem) auto auto;padding:0;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);color:var(--fg);width:min(40rem,calc(100vw - 1.5rem));max-height:min(78dvh,38rem);
+  box-shadow:0 22px 60px rgba(0,0,0,.32);overflow:hidden}
+dialog.cmd-palette[open]{display:flex;flex-direction:column}
+dialog.cmd-palette::backdrop{background:rgba(10,15,26,.55);backdrop-filter:blur(3px)}
+.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;border-bottom:1px solid var(--line)}
+.cmd-input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:inherit;font-size:1rem;padding:.25rem}
+.cmd-input:focus{outline:none}
+.cmd-close{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:6px;padding:.2rem .5rem;
+  font:inherit;font-size:.72rem;cursor:pointer;flex-shrink:0}
+.cmd-close:hover{color:var(--fg);border-color:var(--accent)}
+.cmd-mode-bar{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.45rem .85rem;background:var(--detail-bg);border-bottom:1px solid var(--line)}
+.cmd-mode{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:.2rem .68rem;
+  font:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.cmd-mode.is-active{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cmd-hint{margin-inline-start:auto;font-size:.72rem;color:var(--muted)}
+.cmd-status{margin:0;padding:.4rem .95rem;font-size:.76rem;color:var(--muted);border-bottom:1px solid var(--line-soft)}
+.cmd-list{list-style:none;margin:0;padding:.35rem;overflow:auto;flex:1;min-height:0}
+.cmd-list li{margin:0}
+.cmd-item{display:flex;align-items:flex-start;gap:.65rem;padding:.55rem .65rem;border-radius:9px;color:var(--fg);text-decoration:none}
+.cmd-item:hover,.cmd-item.is-selected{background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+.cmd-type{font-size:.68rem;font-weight:700;padding:.12rem .45rem;border-radius:6px;background:var(--chip-bg);color:var(--chip-fg);
+  white-space:nowrap;flex-shrink:0;margin-top:.15rem}
+.cmd-item.is-selected .cmd-type{background:var(--accent-deep);color:var(--card)}
+.cmd-main{display:flex;flex-direction:column;min-width:0;flex:1}
+.cmd-main strong{font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}
+.cmd-sub{font-size:.76rem;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+
+/* ---------- 考点清单 & 知识拓展筛选工具条 & 合订本快捷条 ---------- */
+.filter-toolbar{padding:14px 18px;margin-bottom:18px}
+.filter-toolbar-row{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.filter-select-label{display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;color:var(--muted)}
+.filter-select-label select{font:inherit;font-size:.84rem;min-height:2.2rem;padding:.25rem .55rem;background:var(--card);
+  color:var(--fg);border:1px solid var(--callout-line);border-radius:7px;max-width:16rem}
+.filter-check{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--fg);cursor:pointer;user-select:none}
+.filter-check input{accent-color:var(--accent)}
+.filter-status{margin:.55rem 0 0;font-size:.8rem}
+.review-matrix{border-style:solid;border-color:var(--line);padding:12px 16px;margin:0 0 22px;background:var(--card);box-shadow:var(--shadow)}
+.review-matrix>summary{font-size:1.05rem;color:var(--fg)}
+.review-matrix .qgrid{margin:12px 0 4px}
+.reader-quickbar h2{margin-top:0;font-size:1.08rem}
+.reader-pill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,14.5rem),1fr));gap:8px;margin-top:10px}
+.reader-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:9px;background:var(--detail-bg);color:var(--fg);font-size:.83rem;font-weight:550;transition:all .14s}
+.reader-pill em{font-style:normal;font-size:.74rem;color:var(--muted);white-space:nowrap}
+.reader-pill:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep);text-decoration:none}
+
+/* ---------- 原始课件查询与 Google Cloud Storage 直链 ---------- */
+.cw-home{border-style:solid;border-color:var(--line);padding:14px 18px;margin:0 0 1.4rem;background:var(--card);box-shadow:var(--shadow)}
+.cw-home>summary,.cw-panel details>summary{font-size:.96rem;font-weight:650;color:var(--fg)}
+.cw-panel{border-left:4px solid var(--accent)}
+.cw-panel details{border:0;margin:0;padding:0;background:transparent}
+.cw-panel-body{margin-top:.8rem}
+.cw-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-search{flex:1 1 16rem;min-width:0;padding:.48rem .75rem;border:1px solid var(--callout-line);border-radius:8px;
+  background:var(--card);color:var(--fg);font:inherit;font-size:.88rem}
+.cw-search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.cw-select{padding:.42rem .65rem;border:1px solid var(--callout-line);border-radius:8px;background:var(--card);
+  color:var(--fg);font:inherit;font-size:.84rem;min-height:2.25rem;max-width:100%}
+.cw-status-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem}
+.cw-cloud-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:.15rem .55rem;
+  border-radius:99px;background:var(--warn-soft);color:var(--warn);max-width:100%;overflow-wrap:anywhere}
+.cw-cloud-pill.is-live{background:var(--ok-soft);color:var(--ok)}
+.cw-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.cw-item{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;
+  padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;background:var(--detail-bg)}
+.cw-main{flex:1 1 16rem;min-width:0}
+.cw-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.cw-ext{font-size:.66rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;background:var(--chip-bg);color:var(--chip-fg);letter-spacing:.04em;flex-shrink:0}
+.cw-cat-pdf{background:var(--bad-soft);color:var(--bad)}
+.cw-cat-slides{background:var(--warn-soft);color:var(--warn)}
+.cw-cat-doc{background:var(--accent-soft);color:var(--accent-deep)}
+.cw-cat-code{background:var(--purple-soft);color:var(--purple)}
+.cw-cat-media{background:var(--ok-soft);color:var(--ok)}
+.cw-name{font-size:.88rem;font-weight:650;color:var(--fg);overflow-wrap:anywhere}
+a.cw-name{color:var(--accent-deep)}
+.cw-size{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cw-meta{font-size:.75rem;color:var(--muted);margin-top:.2rem;overflow-wrap:anywhere;font-family:"Cascadia Code",Consolas,monospace}
+.cw-lectures{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+.cw-lec-link{padding:.1rem .45rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent-deep);font-size:.75rem}
+.cw-lec-link:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.cw-actions{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;flex-shrink:0}
+.cw-btn{display:inline-flex;align-items:center;padding:.3rem .68rem;border:1px solid var(--line);border-radius:7px;
+  background:var(--card);color:var(--fg);font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap}
+.cw-btn:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);text-decoration:none}
+.cw-btn.primary{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--card)}
+.cw-btn.primary:hover{filter:brightness(.94);color:var(--card)}
+.cw-btn.muted{color:var(--muted);background:var(--bg)}
+.cw-empty{padding:1rem;text-align:center;color:var(--muted);font-size:.86rem;border:1px dashed var(--line);border-radius:10px}
+.cw-lecture-box{margin-top:.75rem;padding-top:.7rem;border-top:1px dashed var(--line)}
+.cw-lecture-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.82rem}
+#courseware-cloud input{font:inherit;padding:.55rem .7rem;min-width:0;width:100%;box-sizing:border-box;
+  border:1px solid var(--callout-line);border-radius:7px;background:var(--card);color:var(--fg)}
+#courseware-cloud .study-filters{grid-template-columns:1fr}
 </style>
 </head>
 <body id="top" data-module="courses">
@@ -652,7 +843,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <header class="topbar"><div class="topbar-in">
 <a class="brand" href="../../index.html">课程讲义站</a>
 <nav class="global-nav" aria-label="站点导航"><a class="navlink" data-module-link="courses" href="../../index.html" aria-current="true">课程总览</a><a class="navlink" data-module-link="review" href="../../review.html">期末考点清单</a><a class="navlink" data-module-link="extension" href="../../extend.html">知识拓展</a><a class="navlink" data-module-link="reader" href="../../all.html">全站合订本</a><a class="navlink" data-module-link="upload" href="../../upload.html">上传资料</a></nav>
-<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search">搜索</a>
+<div class="header-actions"><a class="search-shortcut" href="../../index.html#site-search" title="全站快捷搜索 (Ctrl+K 或 /)"><span>搜索</span><kbd class="kbd-hint" aria-hidden="true">Ctrl K</kbd></a>
 <button id="thbtn" class="thbtn" title="切换配色：跟随系统 / 浅色 / 深色" type="button" aria-label="切换配色模式">
 <span class="th-sys" aria-hidden="true">◐</span><span class="th-light" aria-hidden="true">☀</span><span class="th-dark" aria-hidden="true">☾</span>
 </button>
@@ -660,13 +851,13 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 </div></header>
 <main id="main-content" tabindex="-1" class="wrap lecture-page" data-site-prefix="../../">
 <nav class="breadcrumbs" aria-label="当前位置"><ol><li><a href="../../index.html">课程总览</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="index.html">BM20A9200 数学A</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><a href="part-1.html">第 1 章 集合、关系与逻辑</a></li><li><span class="breadcrumb-separator" aria-hidden="true">›</span><span aria-current="page">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</span></li></ol></nav>
-<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系 · 30565</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">2.1 集合族：元素本身是集合</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">2.2 子集族与局部变量记号</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">2.3 幂集 P(S)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">2.4 族的并与族的交</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.5 族运算的四条恒等式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.6 面包店过敏原：族交的实际用法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">2.7 有序对与 n 元组</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">2.8 笛卡尔积 A × B</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">2.9 哪些集合是笛卡尔积：投影法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">2.10 二元关系的定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">2.11 关系的四种表示法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">2.12 图（网络）的定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">2.13 从关系到图的实操</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：考点与易错"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">考点分层</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">判断与计算集合族</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">判断笛卡尔积的三步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">四种表示法互转</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">BM20A9200 数学A</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="true" aria-label="展开或收起：BM20A9200 数学A"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="part-1.html"><span class="directory-label">第 1 章 集合、关系与逻辑</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 1 章 集合、关系与逻辑"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="sets-basics.html"><span class="directory-label">第 1 讲 · 集合、属于关系与集合运算</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="families-cartesian-relations.html" aria-current="page"><span class="directory-label">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="relations-inverse-composition-logic.html"><span class="directory-label">第 3 讲 · 逆关系与合成、命题逻辑与真值表</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 证明、函数与基数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-34" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 证明、函数与基数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-34"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="formal-proofs-number-systems.html"><span class="directory-label">第 4 讲 · 一阶逻辑、三类证明与数系进制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="proof-strategy-functions.html"><span class="directory-label">第 5 讲 · 证明策略选择与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="cardinality-countable-sets.html"><span class="directory-label">第 6 讲 · 基数、可数集与对角线法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 计数与归纳</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 计数与归纳"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="combinatorics-counting.html"><span class="directory-label">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="induction-and-stacked-implications.html"><span class="directory-label">第 8 讲 · 堆叠蕴含与数学归纳法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 数论与模运算</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 数论与模运算"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="divisibility-euclidean-algorithm.html"><span class="directory-label">第 9 讲 · 整除、最大公因数与欧几里得算法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="primes-and-modular-arithmetic.html"><span class="directory-label">第 10 讲 · 素数分解与模运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="modular-inverse-rsa-matrices-intro.html"><span class="directory-label">第 11 讲 · 乘法逆元、RSA 与矩阵初步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 矩阵、复习与习题</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-45" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 矩阵、复习与习题"><span aria-hidden="true">›</span></button></div><div id="directory-branch-45"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="matrices-gauss-jordan.html"><span class="directory-label">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="exam-review-and-problem-types.html"><span class="directory-label">第 13 讲 · 习题课与考试题型总览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-exercises.html"><span class="directory-label">补充 · 12 套习题课题目与解答册：六类题型与标准写法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">补充专题与习题训练</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-49" aria-expanded="true" data-start-open="false" aria-label="展开或收起：补充专题与习题训练"><span aria-hidden="true">›</span></button></div><div id="directory-branch-49"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="supp-set-proof-workshop.html"><span class="directory-label">补充专题 · 集合证明工作坊：从定义到完整论证</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30565/families-cartesian-relations"><header class="lecture-head"><p class="lecture-kicker">BM20A9200 数学A · 第 02 / 15 讲</p><h1 id="lecture-title">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</h1><p class="lecture-subtitle">Families of Sets, Power Sets, Cartesian Products and Binary Relations</p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 集合、关系与逻辑</a></p><details class="lecture-sources"><summary>资料来源 · 3 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>87e5ac838daf</code>（用于识别内容变更）</dd></dl><ul><li><code>02-lesson.pdf</code> <span class="sub">未附原文件</span></li><li><code>03-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>Lecture1_Sets, relations and graphs.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><fieldset class="study-status"><legend>学习状态</legend><label><input type="radio" name="lecture-status" value="new">未开始</label><label><input type="radio" name="lecture-status" value="learning">学习中</label><label><input type="radio" name="lecture-status" value="review">待复习</label><label><input type="radio" name="lecture-status" value="mastered">已掌握</label></fieldset>
+<div class="page-layout"><aside class="page-side" aria-label="页面导航"><section class="page-directory"><p class="directory-heading">页面目录</p><button class="directory-toggle" id="directory-toggle" type="button" hidden aria-expanded="true" aria-controls="directory-content"><strong>页面目录</strong><span class="directory-toggle-state">收起</span><span class="directory-chevron" aria-hidden="true">⌄</span></button><div id="directory-content"><p class="directory-context">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系 · 30565</p><p class="directory-group-title">本页内容</p><nav class="directory-tree" aria-label="本页目录" data-scrollspy="true"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#sec-overview"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">本节定位与目标</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-1" aria-expanded="true" data-start-open="false" aria-label="展开或收起：本节定位与目标"><span aria-hidden="true">›</span></button></div><div id="directory-branch-1"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s1"><span class="directory-label">本节定位</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-detail"><span class="directory-index" aria-hidden="true">02</span><span class="directory-label">知识精讲</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-3" aria-expanded="true" data-start-open="false" aria-label="展开或收起：知识精讲"><span aria-hidden="true">›</span></button></div><div id="directory-branch-3"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s2"><span class="directory-label">2.1 集合族：元素本身是集合</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s3"><span class="directory-label">2.2 子集族与局部变量记号</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s4"><span class="directory-label">2.3 幂集 P(S)</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s5"><span class="directory-label">2.4 族的并与族的交</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s6"><span class="directory-label">2.5 族运算的四条恒等式</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s7"><span class="directory-label">2.6 面包店过敏原：族交的实际用法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s8"><span class="directory-label">2.7 有序对与 n 元组</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s9"><span class="directory-label">2.8 笛卡尔积 A × B</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s10"><span class="directory-label">2.9 哪些集合是笛卡尔积：投影法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s11"><span class="directory-label">2.10 二元关系的定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s12"><span class="directory-label">2.11 关系的四种表示法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s13"><span class="directory-label">2.12 图（网络）的定义</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s14"><span class="directory-label">2.13 从关系到图的实操</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s15"><span class="directory-label">原版图页（源 PDF 插图页）</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-keywords"><span class="directory-index" aria-hidden="true">03</span><span class="directory-label">英文术语</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-examples"><span class="directory-index" aria-hidden="true">04</span><span class="directory-label">例题解析</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-practice"><span class="directory-index" aria-hidden="true">05</span><span class="directory-label">练习与解答</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-exam"><span class="directory-index" aria-hidden="true">06</span><span class="directory-label">考点与易错</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-21" aria-expanded="true" data-start-open="false" aria-label="展开或收起：考点与易错"><span aria-hidden="true">›</span></button></div><div id="directory-branch-21"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s16"><span class="directory-label">考点分层</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-checklist"><span class="directory-index" aria-hidden="true">07</span><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-23" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-23"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s17"><span class="directory-label">方法清单</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-24" aria-expanded="true" data-start-open="false" aria-label="展开或收起：方法清单"><span aria-hidden="true">›</span></button></div><div id="directory-branch-24"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="#s18"><span class="directory-label">判断与计算集合族</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s19"><span class="directory-label">判断笛卡尔积的三步</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="#s20"><span class="directory-label">四种表示法互转</span></a></div></li></ol></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="#sec-mapping"><span class="directory-index" aria-hidden="true">08</span><span class="directory-label">原始资料对照</span></a></div></li></ol></nav><p class="directory-group-title">课程目录</p><nav class="directory-tree" aria-label="课程目录"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="index.html"><span class="directory-index" aria-hidden="true">01</span><span class="directory-label">BM20A9200 数学A</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-29" aria-expanded="true" data-start-open="true" aria-label="展开或收起：BM20A9200 数学A"><span aria-hidden="true">›</span></button></div><div id="directory-branch-29"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link ancestor" href="part-1.html"><span class="directory-label">第 1 章 集合、关系与逻辑</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-30" aria-expanded="true" data-start-open="true" aria-label="展开或收起：第 1 章 集合、关系与逻辑"><span aria-hidden="true">›</span></button></div><div id="directory-branch-30"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="sets-basics.html"><span class="directory-label">第 1 讲 · 集合、属于关系与集合运算</span></a></div></li><li><div class="directory-row"><a class="directory-link ancestor" href="families-cartesian-relations.html" aria-current="page"><span class="directory-label">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</span><span class="directory-current">当前页</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="relations-inverse-composition-logic.html"><span class="directory-label">第 3 讲 · 逆关系与合成、命题逻辑与真值表</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-2.html"><span class="directory-label">第 2 章 证明、函数与基数</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-34" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 2 章 证明、函数与基数"><span aria-hidden="true">›</span></button></div><div id="directory-branch-34"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="formal-proofs-number-systems.html"><span class="directory-label">第 4 讲 · 一阶逻辑、三类证明与数系进制</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="proof-strategy-functions.html"><span class="directory-label">第 5 讲 · 证明策略选择与函数</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="cardinality-countable-sets.html"><span class="directory-label">第 6 讲 · 基数、可数集与对角线法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-3.html"><span class="directory-label">第 3 章 计数与归纳</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-38" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 3 章 计数与归纳"><span aria-hidden="true">›</span></button></div><div id="directory-branch-38"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="combinatorics-counting.html"><span class="directory-label">第 7 讲 · 组合计数：四公式、Pascal 三角与二项式定理</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="induction-and-stacked-implications.html"><span class="directory-label">第 8 讲 · 堆叠蕴含与数学归纳法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-4.html"><span class="directory-label">第 4 章 数论与模运算</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-41" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 4 章 数论与模运算"><span aria-hidden="true">›</span></button></div><div id="directory-branch-41"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="divisibility-euclidean-algorithm.html"><span class="directory-label">第 9 讲 · 整除、最大公因数与欧几里得算法</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="primes-and-modular-arithmetic.html"><span class="directory-label">第 10 讲 · 素数分解与模运算</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="modular-inverse-rsa-matrices-intro.html"><span class="directory-label">第 11 讲 · 乘法逆元、RSA 与矩阵初步</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-5.html"><span class="directory-label">第 5 章 矩阵、复习与习题</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-45" aria-expanded="true" data-start-open="false" aria-label="展开或收起：第 5 章 矩阵、复习与习题"><span aria-hidden="true">›</span></button></div><div id="directory-branch-45"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="matrices-gauss-jordan.html"><span class="directory-label">第 12 讲 · 矩阵运算、逆矩阵与 Gauss–Jordan 消元</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="exam-review-and-problem-types.html"><span class="directory-label">第 13 讲 · 习题课与考试题型总览</span></a></div></li><li><div class="directory-row"><a class="directory-link" href="supp-exercises.html"><span class="directory-label">补充 · 12 套习题课题目与解答册：六类题型与标准写法</span></a></div></li></ol></div></li><li><div class="directory-row"><a class="directory-link" href="part-6.html"><span class="directory-label">补充专题与习题训练</span></a><button class="directory-expand" type="button" hidden aria-controls="directory-branch-49" aria-expanded="true" data-start-open="false" aria-label="展开或收起：补充专题与习题训练"><span aria-hidden="true">›</span></button></div><div id="directory-branch-49"><ol class="directory-list"><li><div class="directory-row"><a class="directory-link" href="supp-set-proof-workshop.html"><span class="directory-label">补充专题 · 集合证明工作坊：从定义到完整论证</span></a></div></li></ol></div></li></ol></div></li></ol></nav></div></section></aside><div class="page-content" id="page-content" tabindex="-1"><article aria-labelledby="lecture-title" data-lecture-id="30565/families-cartesian-relations"><header class="lecture-head"><p class="lecture-kicker">BM20A9200 数学A · 第 02 / 15 讲</p><h1 id="lecture-title">第 2 讲 · 集合族、幂集、笛卡尔积与二元关系</h1><p class="lecture-subtitle">Families of Sets, Power Sets, Cartesian Products and Binary Relations</p><p class="chaptertag">所属章节：<a href="part-1.html">第 1 章 集合、关系与逻辑</a></p><details class="lecture-sources"><summary>资料来源 · 3 项 / 已附 0 项</summary><dl class="source-metadata"><dt>资料版本</dt><dd>未记录</dd><dt>最近核对</dt><dd>未记录</dd><dt>整理内容指纹</dt><dd><code>87e5ac838daf</code>（用于识别内容变更）</dd></dl><ul><li><code>02-lesson.pdf</code> <span class="sub">未附原文件</span></li><li><code>03-exercise.pdf</code> <span class="sub">未附原文件</span></li><li><code>Lecture1_Sets, relations and graphs.pdf</code> <span class="sub">未附原文件</span></li></ul><p class="sub">未附文件仅列原始名称；版本与核对日期由维护者登记。</p></details><div class="study-toolbar"><div class="study-toolbar-row"><fieldset class="study-status"><legend>学习状态</legend><div class="status-group"><label class="status-pill"><input type="radio" name="lecture-status" value="new"><span>未开始</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="learning"><span>学习中</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="review"><span>待复习</span></label><label class="status-pill"><input type="radio" name="lecture-status" value="mastered"><span>已掌握</span></label></div></fieldset>
 <div class="reader-actions"><details class="reader-options"><summary>阅读设置</summary><div class="study-filters">
 <label>正文字号<select id="reader-font" name="reader-font"><option value="17">标准</option><option value="19">较大</option><option value="22">大字</option></select></label>
 <label>正文行距<select id="reader-line" name="reader-line"><option value="1.65">紧凑</option><option value="1.85">标准</option><option value="2.1">宽松</option></select></label></div></details>
 <button type="button" class="study-button" id="focus-reading" aria-pressed="false">专注阅读</button>
-<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div>
-<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器。</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 1 讲讲清“一个集合”；第 2 讲跨两级：先讲“集合的集合”（集合族 family of sets 与幂集 power set），再讲“由元素对组成的集合”（笛卡尔积与二元关系）。这两步为第 3 讲的关系运算与第 4 讲的函数定义铺路——函数就是特殊的二元关系。</p><p>集合族带来一个技术难点：∪ 与 ∩ 不再只作用于两个集合，而要作用于“一族”集合（<code>⋃F</code>、<code>⋂F</code>）。这也解释了为什么幂集 P(S) 有 2ⁿ 个元素，以及为什么空族会给出 <code>⋃∅ = ∅</code>、<code>⋂∅ = U</code> 这样反直觉的结论。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>判断一个集合是不是集合族、是不是 U 的子集族</li><li>写出小集合的幂集 P(S)，并说出 |P(S)| = 2<sup>|S|</sup></li><li>计算 ⋃F 与 ⋂F，包括 F 为空族与只含一个集合的情形</li><li>区分有序对 (a, b)、n 元组与集合：顺序与重复在前者中才有意义</li><li>写出 A × B 并判断某个集合是否为笛卡尔积（用投影法）</li><li>把二元关系用集合、表格、箭头图、有向图四种方式表示并互相转换</li></ul></section>
+<a class="study-button" id="resume-lecture" hidden>回到上次阅读位置</a></div></div>
+<p class="sub study-storage-note">学习状态与复习勾选同步，记录仅保存在当前浏览器 · 快捷键：<kbd>Ctrl K</kbd> 搜索 / <kbd>[</kbd><kbd>]</kbd> 切换上下讲 / <kbd>F</kbd> 专注阅读</p></div></header><section id="sec-overview" class="card" data-type="overview"><h2 id="s1">本节定位</h2><p>第 1 讲讲清“一个集合”；第 2 讲跨两级：先讲“集合的集合”（集合族 family of sets 与幂集 power set），再讲“由元素对组成的集合”（笛卡尔积与二元关系）。这两步为第 3 讲的关系运算与第 4 讲的函数定义铺路——函数就是特殊的二元关系。</p><p>集合族带来一个技术难点：∪ 与 ∩ 不再只作用于两个集合，而要作用于“一族”集合（<code>⋃F</code>、<code>⋂F</code>）。这也解释了为什么幂集 P(S) 有 2ⁿ 个元素，以及为什么空族会给出 <code>⋃∅ = ∅</code>、<code>⋂∅ = U</code> 这样反直觉的结论。</p><p>学完本节你应当能够：</p><ul class="checklist"><li>判断一个集合是不是集合族、是不是 U 的子集族</li><li>写出小集合的幂集 P(S)，并说出 |P(S)| = 2<sup>|S|</sup></li><li>计算 ⋃F 与 ⋂F，包括 F 为空族与只含一个集合的情形</li><li>区分有序对 (a, b)、n 元组与集合：顺序与重复在前者中才有意义</li><li>写出 A × B 并判断某个集合是否为笛卡尔积（用投影法）</li><li>把二元关系用集合、表格、箭头图、有向图四种方式表示并互相转换</li></ul></section>
 <section id="sec-detail" class="card" data-type="detail"><h3 id="s2">2.1 集合族：元素本身是集合</h3><p>数学里经常要谈论“一组集合”，例如把 N、Z、Q、R 放在一起，或把 {a, b} 的全部子集放在一起。这时外层容器仍是集合，只是它的元素本身也是集合，这就是集合族（family of sets）。</p><p>定义：若集合 S 的每个元素都是集合，即 <code>x ∈ S ⇒ x 是集合</code>，则 S 是集合族。注意 ∅ 也是集合族——“每个元素都是集合”对空集是空真命题。</p><p>正例：<code>{N, Z, Q, R}</code>；<code>{ {1,2,3}, {π, √2, −3}, {apple, banana, 5} }</code>；<code>{ A ⊆ {a, b} } = {∅, {a}, {b}, {a, b}}</code>。反例：<code>{∅, 0, {1, 2}}</code> 因为 0 不是集合；<code>N</code> 本身也不是，因为 5 ∈ N 而 5 不是集合。判断的关键永远是逐个检查元素类型，而不是“看起来像不像”。</p><h3 id="s3">2.2 子集族与局部变量记号</h3><p>设 U 是集合。若 S 的每个元素都是 U 的子集，即 <code>x ∈ S ⇒ x ⊆ U</code>，则 S 是 U 的一个子集族（family of subsets of U）。</p><p>专用写法 <code>{ A ⊆ U : … }</code> 表示“U 的那些满足……的子集 A 所成之族”。这里 U 必须是已定义的集合，A 是局部变量（local variable），只在该花括号内有效。三个标准例：<code>{ A ⊆ U : A ≠ ∅ }</code>（全部非空子集）、<code>{ A ⊆ S }</code>（即幂集）、<code>{ A ⊆ N : A 的元素之和 = 3 }</code>。</p><p>字体约定（建议非硬规定）：小写字母表示元素，大写字母表示集合，花体字母表示集合族，例如 <code>F = { A ⊆ B : A 有 3 个元素 }</code>；用普通大写字母表示族也完全可以，例如 <code>C = { {1,2,3}, {1,2,4} }</code>。考试里重要的是让读者分清层次。</p><h3 id="s4">2.3 幂集 P(S)</h3><p>幂集（power set）是子集族中最重要的一个：<code>P(S) = { A ⊆ S }</code>，以 S 的全部子集为元素。注意 ∅ ∈ P(S) 与 S ∈ P(S) 都成立——空集与 S 自己都是 S 的子集。</p><p>元素个数：若 |S| = n，则 |P(S)| = 2ⁿ。理由是对每个元素独立做“选/不选”两个决定，共 2ⁿ 种组合，每种组合给出唯一子集。第 7 讲会再用到这条结论（子集个数 <code>C(n, k)</code>），它也是 2022 年第三次考试第 1(e) 题的直接考点。</p><div class="callout tip"><b>快速自检</b>写完 P(S) 后数个数，应为 2ⁿ。若 S = {a, b, c}，则 P(S) 有 8 个元素：∅、三个单元素集、三个双元素集、S 本身。漏掉 ∅ 或漏掉 S 是最常见的错误。</div><h3 id="s5">2.4 族的并与族的交</h3><p>族 F 的并：<code>⋃F = { x ∈ U : 存在 A ∈ F 使 x ∈ A }</code>，即把 F 里所有集合的元素倒在一起；若 F = {A, B, C}，则 ⋃F = A ∪ B ∪ C。族的交：<code>⋂F = { x ∈ U : 对所有 A ∈ F 都有 x ∈ A }</code>，只保留同时属于每个成员集合的元素；若 F = {A, B, C}，则 ⋂F = A ∩ B ∩ C。</p><p>两个定义的差别全在量词：“存在某个”（some）对应并，“对所有”（all）对应交。判断 x 是否属于 ⋃F 时只需找到一个成员集合含 x；判断 x 是否属于 ⋂F 时必须验证每一个成员集合都含 x。</p><p>空族（课件用投票活动提出，答案是 A）：<code>⋃∅ = ∅</code>，因为不存在任何 A ∈ ∅，没有 x 能满足“存在 A ∈ ∅ 使 x ∈ A”；<code>⋂∅ = U</code>，因为“对所有 A ∈ ∅，x ∈ A”空真，U 里每个 x 都满足。这与“∅ ⊆ Y 恒真”是同一套空真逻辑。若 F = {A}，则 ⋃F = ⋂F = A，可用来检验是否真懂定义。</p><h3 id="s6">2.5 族运算的四条恒等式</h3><p>设 U 是集合，G、F₁、F₂ 是 U 的子集族，则：(a) 若 F₁ ⊆ F₂ 则 <code>⋃F₁ ⊆ ⋃F₂</code>；(b) 若 F₁ ⊆ F₂ 则 <code>⋂F₂ ⊆ ⋂F₁</code>（方向反转）；(c) <code>(⋂G)∁ = ⋃{ A∁ : A ∈ G }</code>；(d) <code>(⋃G)∁ = ⋂{ A∁ : A ∈ G }</code>。证明留作作业或自学。</p><p>(a) 的直观：族变大，可选集合变多，能倒出的元素只会更多。(b) 的直观：族变大，要“同时满足”的集合变多，条件更严，交集只会更小——这就是方向反转的原因，也是极易失分点。(c)(d) 是德摩根律的“族版本”，与第 1 讲的两集合版本一致。</p><p>证明 (a)：设 x ∈ ⋃F₁，则存在 A ∈ F₁ 使 x ∈ A；因 F₁ ⊆ F₂ 得 A ∈ F₂，故 x ∈ ⋃F₂。证明 (d)：x ∈ (⋃G)∁ ⇔ x ∉ ⋃G ⇔ 对所有 A ∈ G 都有 x ∉ A ⇔ 对所有 A ∈ G 都有 x ∈ A∁ ⇔ x ∈ ⋂{A∁ : A ∈ G}。整串都是“定义的翻译”。</p><h3 id="s7">2.6 面包店过敏原：族交的实际用法</h3><p>四款产品的过敏原：蛋糕（gluten, egg, milk）、酥皮（peanut, sesame）、小面包（gluten, sesame）、甜面包（gluten, egg, milk, peanut）。顾客只对一种配料过敏，但不知道是哪一种，是否保证他能吃到至少一样？</p><p>记四款产品的过敏原集合为 P₁ 至 P₄，顾客的过敏原为 {a}。他能吃某款产品当且仅当 a ∉ Pᵢ。要“保证有得吃”，必须让每种配料都被某款产品避开，也就是 <code>⋂{P₁, P₂, P₃, P₄} = ∅</code>。逐个检查：gluten 不在酥皮；egg、milk 不在酥皮与小面包；peanut 不在小面包；sesame 不在蛋糕与甜面包。交集为空，故“保证有得吃”。这道题训练的是把自然语言翻译成“族交是否为空”。</p><h3 id="s8">2.7 有序对与 n 元组</h3><p>有序对（ordered pair）是 (a, b)，n 元组（n-tuple）是 (a₁, …, aₙ)。与集合的区别用一张表说清：</p><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 1，可横向滚动"><table><tr><th>性质</th><th>n 元组</th><th>集合</th></tr><tr><td>装着对象吗</td><td>是</td><td>是</td></tr><tr><td>允许重复副本吗</td><td>是</td><td>否</td></tr><tr><td>顺序重要吗</td><td>是</td><td>否</td></tr></table></div><p>所以 <code>(1, 2) ≠ (2, 1)</code> 而 <code>{1, 2} = {2, 1}</code>；<code>(1, 1, 2)</code> 是合法三元组，而 <code>{1, 1, 2} = {1, 2}</code>。这个差别在第 7 讲计数四公式里会变成“顺序是否重要、是否允许重复”的分类标准。</p><p>典型用法：把平面点写成 (x, y)；把列表写成 (第一项, 第二项, …, 最后一项)；把一副扑克牌写成 <code>C = { (r, s) : r ∈ R, s ∈ S }</code>，其中 <code>R = {A, 2, 3, …, 10, J, Q, K}</code>、<code>S = {♠, ♡, ♣, ♢}</code>，于是黑桃 A 就是 (A, ♠) ∈ C。</p><h3 id="s9">2.8 笛卡尔积 A × B</h3><p>笛卡尔积：<code>A × B = { (a, b) : a ∈ A, b ∈ B }</code>，约定 <code>A × A = A²</code>。三个例子：扑克牌 C = R × S 共 52 张；平面 <code>R² = { (x, y) : x, y ∈ R }</code>；方格点阵 <code>Z² = { (x, y) ∈ R² : x, y ∈ Z }</code>。</p><p>n 元积：若 n ∈ Z⁺，则 <code>A₁ × … × Aₙ = { (a₁, …, aₙ) : 对每个 i 有 aᵢ ∈ Aᵢ }</code>。例：R³；n 维超立方体顶点 <code>{ (x₁, …, xₙ) ∈ Rⁿ : 每个 xᵢ ∈ {0, 1} }</code>，共 2ⁿ 个。名称来源：笛卡尔与费马在 17 世纪发明解析几何，直角坐标系本质是两条数轴的笛卡尔积。</p><h3 id="s10">2.9 哪些集合是笛卡尔积：投影法</h3><p>判断 <code>S ⊆ A × B</code> 是否等于某个 <code>S₁ × S₂</code>，用投影（projection）：<code>S₁ = { a ∈ A : 存在 b 使 (a, b) ∈ S }</code>、<code>S₂ = { b ∈ B : 存在 a 使 (a, b) ∈ S }</code>。判定定理（课件给出，并要求 S ≠ ∅）：<code>S = S₁ × S₂</code> 当且仅当 S 本身是某个笛卡尔积。</p><p>方法三步：(a) 算 S₁；(b) 算 S₂；(c) 检查 S = S₁ × S₂。若不成立，则 S 不可能是任何集合的笛卡尔积——因为投影是唯一候选。直观判据：把 S 画成方格表，若有标记的格子恰好构成完整的矩形块（某几行与某几列的全部交叉）则是；只要出现“缺角”就不是。</p><div class="callout warn"><b>常见错误</b>只检查“每个 a 都有配对的 b、每个 b 都有配对的 a”不够。例如 <code>S = {(1, 3), (1, 4), (2, 3)}</code>：S₁ = {1, 2}、S₂ = {3, 4}，但 (2, 4) ∉ S，故 S ≠ S₁ × S₂。这正是“证明某集合不是笛卡尔积”的典型反例结构。</div><h3 id="s11">2.10 二元关系的定义</h3><p>设 X、Y 是集合，任何子集 <code>R ⊆ X × Y</code> 都称为 X 与 Y 上的二元关系（binary relation），X = Y 时简称 X 上的关系。常用 <code>xRy</code> 表示 <code>(x, y) ∈ R</code>。</p><p>例 1：<code>R = { (x, y) ∈ R² : x 小于 y }</code>，于是 (3, 1) ∉ R 而 (1, 3) ∈ R；这个关系干脆写成符号 &lt;，于是 1 &lt; 3 就是 (1, 3) ∈ &lt; 的简写。例 2：X = Y = 全体人类，<code>P = { (p, c) : p 是 c 的父母 }</code>，则 aPb 读作“a 是 b 的父母”。</p><p>非例 1：<code>{1, 2, 3, 4}</code> 不是任何集合上的二元关系，因为元素不是有序对。非例 2：<code>{(a, 1), (a, 2), (b, 4)}</code> 不是 {a, b} 与 {1, 2, 3} 之间的关系，因为 (b, 4) ∉ {a, b} × {1, 2, 3}——关系必须是笛卡尔积的子集，越界的对不算。</p><h3 id="s12">2.11 关系的四种表示法</h3><p>取 A = {1,2,3,4}、B = {1,…,6}、<code>S = {(1,1), (1,2), (2,2), (2,3), (3,4), (3,5), (3,6), (4,4)}</code>，同一个 S 有四种写法：① 集合写法，最精确，适合证明；② 表格，行是 A 的元素、列是 B 的元素，打勾表示属于 S；③ 箭头图，左边 A 的点、右边 B 的点，属于 S 的对画一支箭头；④ 有向图，当 X = Y 时把点画在一处，用带箭头的弧表示 (x, y)。</p><p>转换时最容易错的是“行列方向”：表格第 i 行第 j 列对应 (aᵢ, bⱼ)；箭头图里箭尾是第一坐标、箭头是第二坐标。第 3 讲的逆关系 R⁻¹ 等价于“把所有箭头反向”，合成 RS 则等价于“从 x 经 R 到 y 再经 S 到 z，跳过中间点”。</p><h3 id="s13">2.12 图（网络）的定义</h3><p>有向图（directed graph）是二元组 (V, E)：V 是集合，元素称为顶点（vertices，也叫节点 nodes、点 points）；<code>E ⊆ V²</code> 是二元关系，元素称为边（edges，也叫箭头 arrows、线 lines）。</p><p>例：V = {v₁, v₂, v₃, v₄}、E = {(v₁,v₂), (v₁,v₃), (v₃,v₁), (v₃,v₃)}，于是 <code>G = ({v₁,v₂,v₃,v₄}, {(v₁,v₂), (v₁,v₃), (v₃,v₁), (v₃,v₃)})</code>。注意 (v₃, v₃) 这种自环（loop）在有向图里允许。画图时顶点位置完全不重要，重要的是连接关系正确。</p><p>无向图（undirected graph）：(V, E) 是有向图，且对任意 v₁, v₂ 有 <code>(v₁, v₂) ∈ E 当且仅当 (v₂, v₁) ∈ E</code>，即每条边双向。简单图（simple graph）：无向图且对任意 v 有 <code>(v, v) ∉ E</code>，即无自环。日常说“图”时通常指无向图或简单图，需看上下文。</p><h3 id="s14">2.13 从关系到图的实操</h3><p>例（源文件 p35）：X = {v₁, …, v₆}，<code>R = {(v₁,v₁), (v₁,v₄), (v₁,v₅), (v₂,v₃), (v₂,v₄), (v₃,v₅), (v₅,v₂), (v₆,v₁), (v₆,v₂)} ⊆ X²</code>。R 二元，故可画表格；R ⊆ X²，故可画有向图，两种表示信息相同。</p><p>源文件的练习演示反向操作：由箭头图写关系（Ex10）；由语言描述写关系（Ex9 的 apricot/grass/cucumber/pizza/jade 与 F/G 两列，实质是分类关系）；由条件式画图（Ex11：<code>{(a, b) ∈ {1,…,8}² : b/a ∈ N}</code>，即“b 是 a 的倍数”，图很稠密）。</p><div class="callout tip"><b>画图自检</b>画完有向图后随机挑三条边核对：图上有箭头 ⇔ 集合里有对应的对。再数边数：有向图的边数等于关系里对的个数（自环算一条）。</div><div class="callout idea" data-ext="families-cartesian-relations-0"><b>推导补充</b><p>集合族的元素本身是集合，判断时逐个查元素类型，而不是看像不像，因此 ∅ 也算集合族而 N 不是。幂集 P(S) 含 S 的全部子集，∅ 与 S 自己都在内；若 |S|=n，则 |P(S)|=2ⁿ，因为每个元素独立做选或不选两个决定，共 2ⁿ 种组合，每种给出唯一子集——写完可数个数自检，漏 ∅ 或漏 S 最常见。族并 <code>⋃F</code> 对应存在某个成员含 x，族交 <code>⋂F</code> 对应对所有成员都含 x，差别全在量词。</p></div><h3 id="s15">原版图页（源 PDF 插图页）</h3><div class="imggrid" data-imgbatch="1"><figure><img src="../../assets/img/30565/slides/02-lesson-p33.jpg" loading="lazy" alt="02-lesson p33" width="527" height="395" decoding="async" data-full-src="../../assets/img/30565/slides/02-lesson-p33.jpg"><figcaption>02-lesson · 第 33 页</figcaption></figure><figure><img src="../../assets/img/30565/slides/02-lesson-p16.jpg" loading="lazy" alt="02-lesson p16" width="527" height="395" decoding="async" data-full-src="../../assets/img/30565/slides/02-lesson-p16.jpg"><figcaption>02-lesson · 第 16 页</figcaption></figure><figure><img src="../../assets/img/30565/slides/02-lesson-p23.jpg" loading="lazy" alt="02-lesson p23" width="527" height="395" decoding="async" data-full-src="../../assets/img/30565/slides/02-lesson-p23.jpg"><figcaption>02-lesson · 第 23 页</figcaption></figure><figure><img src="../../assets/img/30565/slides/02-lesson-p05.jpg" loading="lazy" alt="02-lesson p5" width="527" height="395" decoding="async" data-full-src="../../assets/img/30565/slides/02-lesson-p05.jpg"><figcaption>02-lesson · 第 5 页</figcaption></figure><figure><img src="../../assets/optimized/cca738eb5d5f9c1ca1fe.webp" loading="lazy" alt="03-exercise p1" width="864" height="1221" decoding="async" data-full-src="../../assets/img/30565/slides/03-exercise-p01.jpg"><figcaption>03-exercise · 第 1 页</figcaption></figure></div><div class="callout tip"><b>原版图页</b>以上为源文件里<b>带插图的页面</b>（按页内图片面积选取），文字内容已在上方知识精讲里展开；看原版排版有助于考前回忆「这页讲过什么」。</div></section>
 <section id="sec-keywords" class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 2，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>family of sets</td><td>集合族</td><td>A set whose elements are themselves sets.</td></tr><tr><td>family of subsets</td><td>子集族</td><td>Every element is a subset of a fixed set U.</td></tr><tr><td>power set</td><td>幂集</td><td>P(S) = { A ⊆ S }; it has 2<sup>|S|</sup> elements.</td></tr><tr><td>arbitrary union</td><td>族的并</td><td>⋃F = { x ∈ U : x ∈ A for some A ∈ F }.</td></tr><tr><td>arbitrary intersection</td><td>族的交</td><td>⋂F = { x ∈ U : x ∈ A for all A ∈ F }.</td></tr><tr><td>empty family</td><td>空族</td><td>⋃∅ = ∅ but ⋂∅ = U.</td></tr><tr><td>ordered pair</td><td>有序对</td><td>(a, b); order matters, so (a, b) ≠ (b, a).</td></tr><tr><td>n-tuple</td><td>n 元组</td><td>(a₁, …, aₙ); copies and order both matter.</td></tr><tr><td>Cartesian product</td><td>笛卡尔积</td><td>A × B = { (a, b) : a ∈ A, b ∈ B }; A × A = A².</td></tr><tr><td>projection</td><td>投影</td><td>S₁ = { a ∈ A : (a, b) ∈ S for some b }.</td></tr><tr><td>binary relation</td><td>二元关系</td><td>Any subset R ⊆ X × Y; xRy means (x, y) ∈ R.</td></tr><tr><td>arrow diagram</td><td>箭头图</td><td>Left column X, right column Y, arrows for pairs of R.</td></tr><tr><td>directed graph</td><td>有向图</td><td>(V, E) with E ⊆ V²; elements of E are edges.</td></tr><tr><td>simple graph</td><td>简单图</td><td>Undirected and without loops: (v, v) ∉ E.</td></tr><tr><td>vertex</td><td>顶点</td><td>Element of V; also called node or point.</td></tr><tr><td>edge</td><td>边</td><td>Element of E; also called arrow or line.</td></tr></table></div></section>
 <section id="sec-examples" class="card" data-type="examples"><div class="qa"><div class="q">例 1　（源文件 Ex2）设 U = {1,2,3,4,5}、F = {A₁, A₂, A₃}，A₁ = {1,2,3}、A₂ = {2,5}、A₃ = {2,3,5}，求 ⋃F 与 ⋂F。</div><p>族的并：把三个集合的元素倒在一起，<code>⋃F = {1, 2, 3, 5}</code>。</p><p>族的交：1 只在 A₁ 里，3 不在 A₂ 里，5 不在 A₁ 里，只有 2 三个都有，故 <code>⋂F = {2}</code>。</p><p>检验：⋂F ⊆ ⋃F 必须成立（{2} ⊆ {1,2,3,5}）；并且 ⋂F 的每个元素都能在每一个 Aᵢ 里找到。</p></div><div class="qa"><div class="q">例 2　（源文件 Ex1）写出 P({a, b, c})。</div><p>按子集大小分类枚举：0 个元素 ∅；1 个元素 {a}、{b}、{c}；2 个元素 {a,b}、{a,c}、{b,c}；3 个元素 {a,b,c}。</p><p>故 <code>P({a,b,c}) = { ∅, {a}, {b}, {c}, {a,b}, {a,c}, {b,c}, {a,b,c} }</code>，共 1 + 3 + 3 + 1 = 8 = 2³ 个。</p><p>易错：不要把 ∅ 写成 {∅}（后者含一个元素）；也不要把 {a,b,c} 写成 a, b, c（幂集的元素是集合）。</p></div><div class="qa"><div class="q">例 3　判断 S = {(1,3), (1,4), (2,3)} ⊆ {1,2} × {3,4} 是否为笛卡尔积。</div><p>算投影：<code>S₁ = {1, 2}</code>、<code>S₂ = {3, 4}</code>。</p><p>候选积 S₁ × S₂ 有 4 个元素：(1,3)、(1,4)、(2,3)、(2,4)；S 只有 3 个，缺 (2,4)。</p><p>故 S ≠ S₁ × S₂，由定理，S 不是任何两个集合的笛卡尔积。方格表上第 2 行第 4 列是空的，出现“缺角”。</p></div><div class="qa"><div class="q">例 4　（源文件 Ex8）设 A, B, C, D 非空，证明 A × B ⊆ C × D 当且仅当 A ⊆ C 且 B ⊆ D。</div><p><b>(⇒)</b> 任取 a ∈ A。因 B 非空，可取 b ∈ B，于是 (a, b) ∈ A × B ⊆ C × D，故 a ∈ C，所以 A ⊆ C。同理任取 b ∈ B，取 a ∈ A 得 (a, b) ∈ C × D，故 b ∈ D，所以 B ⊆ D。</p><p><b>(⇐)</b> 任取 (a, b) ∈ A × B，则 a ∈ A ⊆ C 且 b ∈ B ⊆ D，故 (a, b) ∈ C × D。所以 A × B ⊆ C × D。□</p><p><b>为什么必须非空</b>：若 A = ∅、B = {1}、C = {2}、D = {3}，则 A × B = ∅ ⊆ C × D 成立，但 B ⊄ D，结论为假。取 b ∈ B 那一步正是靠“B 非空”才合法。</p></div><div class="qa"><div class="q">例 5　把 R = {(1,1), (1,2), (2,2), (3,3), (3,4)} 画成有向图并说明它是什么关系。</div><p>顶点取 {1,2,3,4}，逐对画箭头：1→1、1→2、2→2、3→3、3→4。</p><p>结构：每点都指向自己（自反），且只指向“自己或更大的点”，即 <code>(a, b) ∈ R ⇒ a ≤ b</code>。</p><p>语言描述：这是“小于或等于”关系 ≤ 在 {1,2,3,4} 上的限制。2025 年第三次考试第 1(b) 题就是反过来给图求关系。</p></div></section>
@@ -675,7 +866,7 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
 <section id="sec-checklist" class="card" data-type="checklist"><h2 id="s17">方法清单</h2><h3 id="s18">判断与计算集合族</h3><ul class="checklist"><li>逐个元素问“它本身是集合吗”，有一个不是就不是集合族</li><li>子集族还要检查“每个元素都是同一个 U 的子集”</li><li>写幂集按子集大小 0,1,2,…,n 分类枚举，最后用 2ⁿ 校验</li><li>算 ⋃F 用“存在”检验，算 ⋂F 用“所有”检验</li><li>遇到空族直接套 ⋃∅ = ∅、⋂∅ = U</li></ul><h3 id="s19">判断笛卡尔积的三步</h3><ol class="steps"><li>算出第一坐标投影 S₁ = { a : (a, b) ∈ S }</li><li>算出第二坐标投影 S₂ = { b : (a, b) ∈ S }</li><li>比较 S 与 S₁ × S₂：先比元素个数，再逐个核对</li><li>若不相等，结论是“不是任何笛卡尔积”</li></ol><h3 id="s20">四种表示法互转</h3><ol class="steps"><li>先在集合写法里把对写全（按第一坐标分组）</li><li>表格：行 = 第一坐标，列 = 第二坐标，打勾即可</li><li>箭头图：左列第一坐标，右列第二坐标，逐对画箭头</li><li>有向图：X = Y 时把点画在一处，自环要画出</li><li>转换后随机抽三对回查</li></ol></section>
 <section id="sec-mapping" class="card" data-type="mapping"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>源文件</th><th>页码</th><th>覆盖的知识点</th></tr><tr><td>02-lesson.pdf</td><td>p5–p6</td><td>集合论的历史动因：罗素悖论、理发师悖论、ZFC 公理清单</td></tr><tr><td>02-lesson.pdf</td><td>p7–p9</td><td>第 2 周学习目标 1.4–1.5、2.1–2.3、本章目录</td></tr><tr><td>02-lesson.pdf</td><td>p10–p12</td><td>集合族的定义与正反例、子集族定义与 { A ⊆ U : … } 记号、字体约定</td></tr><tr><td>02-lesson.pdf</td><td>p13–p17</td><td>幂集、族的并与交、空族的结果、四条恒等式 (a)–(d)</td></tr><tr><td>02-lesson.pdf</td><td>p20–p21</td><td>有序对与 n 元组、与集合的性质对照表、扑克牌模型</td></tr><tr><td>02-lesson.pdf</td><td>p22–p25</td><td>笛卡尔积定义、A² 与 R²、Z²、n 元积、R³ 与超立方体顶点</td></tr><tr><td>02-lesson.pdf</td><td>p26–p27</td><td>投影法与判定定理、Ex6–Ex8</td></tr><tr><td>02-lesson.pdf</td><td>p29–p35</td><td>二元关系定义与正反例、表格与箭头图、有向图定义、无向图与简单图</td></tr><tr><td>02-lesson.pdf</td><td>p36</td><td>Ex9–Ex11：由箭头图与条件式写关系、画图</td></tr><tr><td>03-exercise.pdf</td><td>全篇</td><td>集合族判定、族的并与交、笛卡尔积判定、关系的图形表示等练习</td></tr><tr><td>（跳过）</td><td>p14、p16、p25、p30</td><td>课堂投票与小组活动页，结论已并入正文</td></tr><tr><td>（补充拓展）</td><td>—</td><td>面包店过敏原问题的完整交集论证、A × B ⊆ C × D 的空集反例、幂集个数的组合解释</td></tr></table></div></section><nav class="sequence-nav" aria-label="顺序导航"><a data-sequence="previous" href="sets-basics.html"><span>上一讲</span><strong>第 1 讲 · 集合、属于关系与集合运算</strong></a><a data-sequence="parent" href="part-1.html"><span>返回目录</span><strong>第 1 章 集合、关系与逻辑</strong></a><a data-sequence="next" href="relations-inverse-composition-logic.html"><span>下一讲</span><strong>第 3 讲 · 逆关系与合成、命题逻辑与真值表</strong></a></nav></article></div></div>
 </main>
-<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-21 <a href="#top" class="totop">回到顶部 ↑</a></footer>
+<footer class="foot">内容基于原始课程文件整理 · 生成于 2026-11-22 <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>/* One disclosure/navigation contract for every static page. Inlined by build.py. */
 (function () {
   'use strict';
@@ -733,6 +924,17 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
     });
     if (!waiting) anchorTarget = null;
   }
+  function scrollDirectoryItemIntoView(link) {
+    if (!link || content.hidden || compact.matches) return;
+    var cRect = content.getBoundingClientRect();
+    var lRect = link.getBoundingClientRect();
+    if (lRect.height === 0) return;
+    if (lRect.top < cRect.top + 36) {
+      content.scrollTop -= (cRect.top + 36 - lRect.top);
+    } else if (lRect.bottom > cRect.bottom - 24) {
+      content.scrollTop += (lRect.bottom - (cRect.bottom - 24));
+    }
+  }
   function updateCurrent() {
     var active = nativeSpy ? localNav.querySelector('a:target-current') : null;
     if (!active) {
@@ -747,7 +949,10 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
       if (a === active) a.setAttribute('aria-current', 'location');
       else a.removeAttribute('aria-current');
     });
-    if (active) reveal(active);
+    if (active) {
+      reveal(active);
+      scrollDirectoryItemIntoView(active);
+    }
     previous = active;
   }
   function schedule() {
@@ -809,12 +1014,75 @@ dialog.mat-modal .mat-close { min-width: 2.75rem; min-height: 2.75rem; }
   addEventListener('keydown', function (event) {
     if (/^(Arrow|Page|Home|End| )/.test(event.key)) anchorTarget = null;
   });
+  var allDirLinks = Array.from(content.querySelectorAll('.directory-link'));
+  if (allDirLinks.length >= 8) {
+    var filterWrap = document.createElement('div');
+    filterWrap.className = 'directory-filter';
+    var filterInput = document.createElement('input');
+    filterInput.type = 'search';
+    filterInput.className = 'directory-filter-input';
+    filterInput.placeholder = '筛选本页目录…';
+    filterInput.setAttribute('aria-label', '筛选本页目录');
+    filterInput.autocomplete = 'off';
+    filterWrap.appendChild(filterInput);
+    var contextEl = content.querySelector('.directory-context');
+    if (contextEl) contextEl.after(filterWrap);
+    else content.prepend(filterWrap);
+
+    var savedExpanded = null;
+    function applyDirFilter() {
+      var q = filterInput.value.trim().toLowerCase();
+      var items = Array.from(content.querySelectorAll('.directory-list li'));
+      if (!q) {
+        items.forEach(function (li) { li.hidden = false; });
+        if (savedExpanded) {
+          branches.forEach(function (btn) {
+            var id = btn.getAttribute('aria-controls');
+            if (Object.prototype.hasOwnProperty.call(savedExpanded, id)) expand(btn, savedExpanded[id]);
+          });
+          savedExpanded = null;
+        }
+        return;
+      }
+      if (!savedExpanded) {
+        savedExpanded = {};
+        branches.forEach(function (btn) {
+          savedExpanded[btn.getAttribute('aria-controls')] = btn.getAttribute('aria-expanded') === 'true';
+        });
+      }
+      items.forEach(function (li) { li.hidden = true; });
+      allDirLinks.forEach(function (a) {
+        var label = a.textContent.toLowerCase();
+        if (label.indexOf(q) !== -1) {
+          var li = a.closest('li');
+          while (li && content.contains(li)) {
+            li.hidden = false;
+            var branch = li.parentElement && li.parentElement.parentElement;
+            if (branch && branch.id && branch.id.indexOf('directory-branch-') === 0) {
+              var btn = directory.querySelector('[aria-controls="' + branch.id + '"]');
+              if (btn) expand(btn, true);
+            }
+            li = li.parentElement ? li.parentElement.closest('li') : null;
+          }
+        }
+      });
+    }
+    filterInput.addEventListener('input', applyDirFilter);
+    filterInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && filterInput.value) {
+        filterInput.value = '';
+        applyDirFilter();
+        event.stopPropagation();
+      }
+    });
+  }
+
   var initialLink = links.find(function (link) { return link.hash === location.hash; });
   if (initialLink) { anchorTarget = targets[links.indexOf(initialLink)]; settleAnchor(); }
   updateCurrent();
 })();
 </script>
-<script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
 <script>
 (function(){
   var bar=document.createElement('div');bar.id='pbar';bar.setAttribute('aria-hidden','true');
