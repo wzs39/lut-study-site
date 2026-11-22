@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>课程合订本</title>
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
 <style>:root{
   color-scheme:light dark;
   --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
@@ -549,6 +550,8 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
 .formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box .katex-display{margin:0.25em 0;text-align:center}
+.formula-box .katex{font-size:1.08em}
 .formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
 .formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
 .formula-box.left .formula-line{text-align:left}
@@ -879,7 +882,7 @@ a.cw-name{color:var(--accent-deep)}
 <b>【拓展深化】声道滤波声学模型（Source-Filter Model）与元音共振峰</b>
 <p>从声学物理学角度解析声带基频（F0）与咽腔/口腔声道共振峰（F1/F2）的解耦分离，说明为什么人类可以通过共振峰频谱直观辨识元音。</p>
 </div>
-<p><b>1. 声源-滤波器理论（Fant 声学模型）</b>：人类语音生成由两部分独立决定：声带振动提供基频 <code>F0</code>（决定音调高低 Pitch），而声道的几何构型充当共振腔滤波器（Filter），使特定频率范围的声波共振增强，形成<b>共振峰（Formants）</b>。</p>
+<p><b>1. 声源-滤波器理论（Fant 声学模型）</b>：人类语音生成由两部分独立决定：声带振动提供基频 $F_0$（决定音调高低 Pitch），而声道的几何构型充当共振腔滤波器（Filter），使特定频率范围的声波共振增强，形成<b>共振峰（Formants）</b>。</p>
 <p><b>2. F1 与 F2 对舌位几何的双向映射定理</b>：</p>
 <ul>
   <li><b>第一共振峰 F1</b>：与<b>舌位高低（舌面抬起程度 / 口腔开合度）</b>严格成反比。舌位越高（如高元音 [i], [u]），咽腔共振体积越大，F1 频率越低（约 250~350 Hz）；舌位越低（如低元音 [a]），F1 频率越高（可达 800 Hz 以上）；</li>
@@ -1150,6 +1153,26 @@ a.cw-name{color:var(--accent-deep)}
 })();
 </script>
 <script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script defer src="../../assets/katex/katex.min.js"></script>
+<script defer src="../../assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\[", right: "\]", display: true },
+        { left: "\(", right: "\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 <script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');

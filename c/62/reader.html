@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>课程合订本</title>
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
 <style>:root{
   color-scheme:light dark;
   --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
@@ -549,6 +550,8 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
 .formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box .katex-display{margin:0.25em 0;text-align:center}
+.formula-box .katex{font-size:1.08em}
 .formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
 .formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
 .formula-box.left .formula-line{text-align:left}
@@ -877,40 +880,40 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 2.0 极限的本质形式化：柯西 ε-δ 语言与严谨证明</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】柯西 ε-δ 极限形式化分析方法</b>
-<p>从动态直觉过渡到静态严格集合刻画：对任意给定的任意小容差 <code>ε > 0</code>，如何通过逆向解不等式构造出自变量受控邻域 <code>δ = min(1, ε/9)</code>。</p>
+<p>从动态直觉过渡到静态严格集合刻画：对任意给定的任意小容差 $\varepsilon > 0$，如何通过逆向解不等式构造出自变量受控邻域 $\delta = \min(1, \varepsilon/9)$。</p>
 </div>
-<p><b>【定义】</b> 我们称 <code>lim_{x→c} f(x) = L</code>，如果对于<b>任意</b>给定的正数 <code>ε > 0</code>，<b>都存在</b>一个正数 <code>δ > 0</code>，使得对定义域内所有满足 <code>0 < |x − c| < δ</code> 的 <code>x</code>，恒有：</p>
+<p><b>【定义】</b> 我们称 $\lim_{x \to c} f(x) = L$，如果对于<b>任意</b>给定的正数 $\varepsilon > 0$，<b>都存在</b>一个正数 $\delta > 0$，使得对定义域内所有满足 $0 < |x - c| < \delta$ 的 $x$，恒有：</p>
+<div class="formula-box highlight">
+  $$0 < |x - c| < \delta \implies |f(x) - L| < \varepsilon$$
+</div>
+<p><b>【严谨 ε-δ 证明典范】</b> 证明 $\lim_{x \to 3} (2x^2 - 5x) = 3$。</p>
+<p><b>证明构思与分析</b>：需控制 $|(2x^2 - 5x) - 3| = |2x + 1| |x - 3| < \varepsilon$。我们需要先限制 $|x - 3|$ 使得因子 $|2x + 1|$ 有界。取初始半径 $\delta_1 = 1$，则：$|x - 3| < 1 \implies 2 < x < 4 \implies 5 < 2x + 1 < 9 \implies |2x + 1| < 9$。于是：</p>
 <div class="formula-box">
-  <div class="formula-line"><b><code>0 < |x − c| < δ  ⟹  |f(x) − L| < ε</code></b></div>
+  $$|2x + 1| |x - 3| < 9 |x - 3|$$
 </div>
-<p><b>【严谨 ε-δ 证明典范】</b> 证明 <code>lim_{x→3} (2x² − 5x) = 3</code>。</p>
-<p><b>证明构思与分析</b>：需控制 <code>|(2x² − 5x) − 3| = |2x + 1| · |x − 3| < ε</code>。我们需要先限制 <code>|x − 3|</code> 使得因子 <code>|2x + 1|</code> 有界。取初始半径 <code>δ₁ = 1</code>，则：<code>|x − 3| < 1 ⟹ 2 < x < 4 ⟹ 5 < 2x + 1 < 9 ⟹ |2x + 1| < 9</code>。于是：</p>
-<div class="formula-box">
-  <div class="formula-line"><code>|2x + 1| · |x − 3| < 9 |x − 3|</code></div>
+<p>为了使乘积小于 $\varepsilon$，只需额外要求 $|x - 3| < \frac{\varepsilon}{9}$。因此我们取 $\delta = \min\left(1, \frac{\varepsilon}{9}\right)$。</p>
+<p><b>正式证明论述</b>：对任意给定的 $\varepsilon > 0$，取 $\delta = \min\left(1, \frac{\varepsilon}{9}\right) > 0$。当 $0 < |x - 3| < \delta$ 时，既有 $|x - 3| < 1$（保证 $|2x + 1| < 9$），又有 $|x - 3| < \frac{\varepsilon}{9}$。两式相乘：</p>
+<div class="formula-box highlight">
+  $$|(2x^2 - 5x) - 3| = |2x + 1| |x - 3| < 9 \cdot \frac{\varepsilon}{9} = \varepsilon$$
 </div>
-<p>为了使乘积小于 <code>ε</code>，只需额外要求 <code>|x − 3| < ε/9</code>。因此我们取 <code>δ = min(1, ε/9)</code>。</p>
-<p><b>正式证明论述</b>：对任意给定的 <code>ε > 0</code>，取 <code>δ = min(1, ε/9) > 0</code>。当 <code>0 < |x − 3| < δ</code> 时，既有 <code>|x − 3| < 1</code>（保证 <code>|2x + 1| < 9</code>），又有 <code>|x − 3| < ε/9</code>。两式相乘：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>|(2x² − 5x) − 3| = |2x + 1| · |x − 3| < 9 · (ε/9) = ε</code></b></div>
-</div>
-<p>证毕。这就是柯西形式化分析方法的核心：通过不等式放缩将任意给定的 <code>ε</code> 逆向映射构造出 <code>δ</code>。</p>
+<p>证毕。这就是柯西形式化分析方法的核心：通过不等式放缩将任意给定的 $\varepsilon$ 逆向映射构造出 $\delta$。</p>
 
 <h3><span class="badge purple">拓展深化</span> 2.5.1 夹逼定理（Squeeze Theorem）与第一重要极限</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】单位圆扇形面积不等式与 lim_{x→0} (sin x)/x = 1 几何构造论证</b>
-<p>在单位圆中由三角形面积小于扇形面积小于外切三角形面积建立 <code>cos θ < (sin θ)/θ < 1</code>，由夹逼定理完成首要超越极限证明。</p>
+<p>在单位圆中由三角形面积小于扇形面积小于外切三角形面积建立 $\cos\theta < \frac{\sin\theta}{\theta} < 1$，由夹逼定理完成首要超越极限证明。</p>
 </div>
-<p>在第一象限单位圆内，当 <code>0 < θ < π/2</code> 时，考察几何面积包合关系：</p>
+<p>在第一象限单位圆内，当 $0 < \theta < \frac{\pi}{2}$ 时，考察几何面积包合关系：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>Area(△OAP) < Area(Sector OAP) < Area(△OAT)</code></div>
-  <div class="formula-line"><code>(1/2) · 1 · sin θ < (1/2) · 1² · θ < (1/2) · 1 · tan θ</code></div>
-  <div class="formula-line"><code>sin θ < θ < tan θ</code></div>
+  $$\text{Area}(\triangle OAP) < \text{Area}(\text{Sector } OAP) < \text{Area}(\triangle OAT)$$
+  $$\frac{1}{2} \cdot 1 \cdot \sin\theta < \frac{1}{2} \cdot 1^2 \cdot \theta < \frac{1}{2} \cdot 1 \cdot \tan\theta$$
+  $$\sin\theta < \theta < \tan\theta$$
 </div>
-<p>同除以 <code>sin θ > 0</code> 并取倒数，不等号变号：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>cos θ < (sin θ)/θ < 1</code></b></div>
+<p>同除以 $\sin\theta > 0$ 并取倒数，不等号变号：</p>
+<div class="formula-box highlight">
+  $$\cos\theta < \frac{\sin\theta}{\theta} < 1$$
 </div>
-<p>由于 <code>lim_{θ→0⁺} cos θ = 1</code> 且 <code>lim_{θ→0⁺} 1 = 1</code>，由夹逼定理，右极限为 1。由于 <code>(sin θ)/θ</code> 为偶函数，左极限亦为 1。故 <code>lim_{θ→0} (sin θ)/θ = 1</code>。</p>
+<p>由于 $\lim_{\theta \to 0^+} \cos\theta = 1$ 且 $\lim_{\theta \to 0^+} 1 = 1$，由夹逼定理，右极限为 1。由于 $\frac{\sin\theta}{\theta}$ 为偶函数，左极限亦为 1。故 $\lim_{\theta \to 0} \frac{\sin\theta}{\theta} = 1$。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>limit of a function</td><td>函数极限</td><td>lim_{x→a} f(x) = L if f(x) can be made arbitrarily close to L.</td></tr><tr><td>epsilon-delta definition</td><td>ε-δ 定义</td><td>For every ε > 0 there is δ > 0 such that 0 < |x−a| < δ forces |f(x)−L| < ε.</td></tr><tr><td>difference quotient</td><td>差商</td><td>The average rate of change (f(x+h) − f(x))/h.</td></tr><tr><td>instantaneous velocity</td><td>瞬时速度</td><td>The limit of average velocity as the time interval shrinks to zero.</td></tr><tr><td>one-sided limit</td><td>单侧极限</td><td>Left and right limits; the two-sided limit exists iff they agree.</td></tr><tr><td>indeterminate form 0/0</td><td>0/0 未定式</td><td>Substitution gives 0/0; simplify by factoring or rationalizing first.</td></tr><tr><td>rationalizing</td><td>有理化</td><td>Multiply by the conjugate to remove a square-root difference.</td></tr><tr><td>squeeze theorem</td><td>夹逼定理</td><td>If g ≤ f ≤ h and both bounds tend to L, then f tends to L.</td></tr><tr><td>infinite limit</td><td>无穷极限</td><td>Values grow without bound; ∞ is a description, not a number.</td></tr><tr><td>vertical asymptote</td><td>竖直渐近线</td><td>x = a where a one-sided limit is ±∞.</td></tr><tr><td>horizontal asymptote</td><td>水平渐近线</td><td>y = L where f(x) → L as x → ±∞.</td></tr><tr><td>oblique asymptote</td><td>斜渐近线</td><td>y = ax + b appearing when deg P = deg Q + 1.</td></tr><tr><td>continuity at a point</td><td>点连续</td><td>f(c) defined, the limit exists, and the two are equal.</td></tr><tr><td>removable discontinuity</td><td>可去间断</td><td>One-sided limits agree but f(c) is missing or mismatched.</td></tr><tr><td>intermediate value theorem</td><td>介值定理</td><td>A continuous function on [a, b] takes every value between f(a) and f(b).</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1（源文件 p3–p7）　石块自由下落 s(t) = 4.9t²，求 (a) 前 2 秒的平均速度；(b) 1 到 2 秒的平均速度；(c) t = 1 秒的瞬时速度。</div><p>(a) <code>(s(2) − s(0))/(2 − 0) = (19.6 − 0)/2 = 9.8</code> m/s。</p><p>(b) <code>(s(2) − s(1))/(2 − 1) = (19.6 − 4.9)/1 = 14.7</code> m/s。两者不同，说明「平均」不能代表「瞬时」。</p><p>(c) 取区间 <code>[1, 1+h]</code>：<code>Δs/Δh = (4.9(1+h)² − 4.9)/h = (9.8h + 4.9h²)/h = 9.8 + 4.9h</code>。</p><p>表中 h = 1, 0.1, 0.01, 0.001, 0.0001 时比值依次为 14.7、10.29、9.849、9.8049、9.80049，趋于 9.8。</p><p>令 <code>h → 0</code>：<code>lim (9.8 + 4.9h) = 9.8</code> m/s。一般地，<code>v(t) = lim (4.9(t+h)² − 4.9t²)/h = 9.8t</code>，即 <code>v = gt</code>（<code>g = 9.8</code>），与物理结论一致。</p></div><div class="qa"><div class="q">例 2（源文件 p12）　用 ε-δ 定义证明 lim_{x→4} (3x − 1) = 11。</div><p><b>分析：</b>要证对每个 <code>ε &gt; 0</code> 存在 <code>δ &gt; 0</code>，使 <code>0 &lt; |x − 4| &lt; δ ⟹ |(3x−1) − 11| &lt; ε</code>。</p><p><b>化简目标不等式：</b><code>|3x − 12| = 3|x − 4| &lt; ε ⟺ |x − 4| &lt; ε/3</code>，可见 δ 应取 ε/3。</p><p><b>正式书写：</b>任给 <code>ε &gt; 0</code>，取 <code>δ = ε/3</code>。则当 <code>0 &lt; |x − 4| &lt; δ</code> 时，有 <code>|(3x−1) − 11| = 3|x − 4| &lt; 3δ = ε</code>。由定义，<code>lim_{x→4}(3x−1) = 11</code>。</p><p><b>方法迁移：</b>线性函数 <code>f(x) = mx + b</code> 的证明永远形如 <code>|f(x) − L| = |m||x − a|</code>，取 <code>δ = ε/|m|</code>。非线性情形需要先限制 δ ≤ 1 把 |x − a| 的因子估成常数，这属于后续课程内容。</p></div><div class="qa"><div class="q">例 3（源文件 p20–p21）　求下列极限：(a) lim_{x→−2} (x² + x − 2)/(x² + 5x + 6)；(b) lim_{x→4} (√x − 2)/(x² − 16)。</div><p>(a) 代入 <code>x = −2</code>：分子 <code>4 − 2 − 2 = 0</code>，分母 <code>4 − 10 + 6 = 0</code>，是 0/0。分解：分子 <code>(x+2)(x−1)</code>，分母 <code>(x+2)(x+3)</code>。约去 <code>x+2</code>（<code>x ≠ −2</code> 时合法）：</p><p><code>lim (x−1)/(x+3) = (−2−1)/(−2+3) = −3</code>。</p><p>(b) 代入 <code>x = 4</code>：<code>√4 − 2 = 0</code>、<code>16 − 16 = 0</code>，是 0/0。同乘共轭 <code>(√x + 2)</code>：</p><p><code>(√x − 2)(√x + 2)/((x−4)(x+4)(√x + 2)) = (x − 4)/((x−4)(x+4)(√x+2)) = 1/((x+4)(√x+2))</code>。</p><p>代入 <code>x = 4</code>：<code>1/(8 · 4) = 1/32</code>。</p><p><b>分辨技巧：</b>多项式型 0/0 先分解；含根号型 0/0 先乘共轭；两者都含根号且含多项式时，先有理化再分解。</p></div><div class="qa"><div class="q">例 4（源文件 p11–p17）　求 (a) lim_{x→∞} (√(x² − x) − x)；(b) 求 f(x) = (x³ − x²)/(x² + 1) 在无穷处的极限与斜渐近线。</div><p>(a) 是 <code>∞ − ∞</code> 型。同乘共轭：<code>(x² − x − x²)/(√(x²−x) + x) = −x/(√(x²−x) + x)</code>。分子分母同除 x（x &gt; 0）：<code>−1/(√(1 − 1/x) + 1) → −1/2</code>。</p><p>(b) 次数 m = 3、n = 2，<code>m = n + 1</code>，故有斜渐近线。做除法：<code>x³ − x² = (x − 1)(x² + 1) + (1 − x)</code>，即 <code>f(x) = x − 1 + (1 − x)/(x² + 1)</code>。</p><p>因为 <code>(1−x)/(x²+1) → 0</code>，斜渐近线是 <code>y = x − 1</code>；且 <code>lim_{x→∞} f = ∞</code>、<code>lim_{x→−∞} f = −∞</code>。同时 <code>x² + 1 &gt; 0</code> 无实零点，故没有竖直渐近线。</p><p><b>验算：</b>取 <code>x = 10</code>，<code>f(10) = 900/101 ≈ 8.91</code>，而 <code>x − 1 = 9</code>，差 <code>≈ 0.09</code>，随 x 增大而趋于 0，符合斜渐近线的定义。</p></div></section>
@@ -958,21 +961,20 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 3.1.1 乘积法则（Product Rule）的严密代数推导</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】差商展开中“加一项减一项”对称技巧推导 (fg)′ = f′g + fg′</b>
-<p>深入差商结构 <code>[f(x+h)g(x+h) − f(x)g(x)] / h</code>，引入中间项拆分为两个极限项，严谨展现可微性与连续性的内在联系。</p>
+<p>深入差商结构 $\frac{f(x+h)g(x+h) - f(x)g(x)}{h}$，引入中间项拆分为两个极限项，严谨展现可微性与连续性的内在联系。</p>
 </div>
-<p>设 <code>u(x) = f(x)g(x)</code>，且 <code>f, g</code> 在 <code>x</code> 处均可微（由可微性可知 <code>f</code> 必在 <code>x</code> 处连续，即 <code>lim_{h→0} f(x+h) = f(x)</code>）。根据导数微商定义：</p>
+<p>设 $u(x) = f(x)g(x)$，且 $f, g$ 在 $x$ 处均可微（由可微性可知 $f$ 必在 $x$ 处连续，即 $\lim_{h \to 0} f(x+h) = f(x)$）。根据导数微商定义：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>u′(x) = lim_{h→0} [f(x+h)g(x+h) − f(x)g(x)] / h</code></div>
+  $$u'(x) = \lim_{h \to 0} \frac{f(x+h)g(x+h) - f(x)g(x)}{h}$$
 </div>
-<p><b>推导关键技巧</b>：在分子中<b>减去并加上</b>辅助项 <code>f(x+h)g(x)</code>：</p>
+<p><b>推导关键技巧</b>：在分子中<b>减去并加上</b>辅助项 $f(x+h)g(x)$：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>u′(x) = lim_{h→0} {[f(x+h)g(x+h) − f(x+h)g(x)] + [f(x+h)g(x) − f(x)g(x)]} / h</code></div>
-  <div class="formula-line"><code>= lim_{h→0} [ f(x+h) · (g(x+h) − g(x))/h + g(x) · (f(x+h) − f(x))/h ]</code></div>
+  $$u'(x) = \lim_{h \to 0} \frac{[f(x+h)g(x+h) - f(x+h)g(x)] + [f(x+h)g(x) - f(x)g(x)]}{h}$$
+  $$= \lim_{h \to 0} \left[ f(x+h) \cdot \frac{g(x+h) - g(x)}{h} + g(x) \cdot \frac{f(x+h) - f(x)}{h} \right]$$
 </div>
-<p>利用极限的线性运算法则及连续性 <code>lim_{h→0} f(x+h) = f(x)</code>：</p>
-<div class="formula-box">
-  <div class="formula-line"><code>u′(x) = (lim_{h→0} f(x+h)) · (lim_{h→0} (g(x+h)−g(x))/h) + g(x) · (lim_{h→0} (f(x+h)−f(x))/h)</code></div>
-  <div class="formula-line"><b><code>= f(x)g′(x) + g(x)f′(x)</code></b></div>
+<p>利用极限的线性运算法则及连续性 $\lim_{h \to 0} f(x+h) = f(x)$：</p>
+<div class="formula-box highlight">
+  $$u'(x) = \left(\lim_{h \to 0} f(x+h)\right) \cdot \left(\lim_{h \to 0} \frac{g(x+h) - g(x)}{h}\right) + g(x) \cdot \left(\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}\right) = f(x)g'(x) + g(x)f'(x)$$
 </div>
 <p>证毕。此推导清晰展现了微积分代数构造中引入对称平衡项的核心技巧。</p>
 </section>
@@ -989,15 +991,15 @@ a.cw-name{color:var(--accent-deep)}
 <p>由闭区间连续函数必有最值结合费马引理证明罗尔定理；构造割线偏差辅助函数证明拉格朗日定理；再推广至参数曲线比率辅助函数证明柯西定理。</p>
 </div>
 <p>整个微分学的核心理论基石由三大中值定理递进构成：</p>
-<p><b>1. 费马引理（Fermat's Lemma）</b>：若 <code>f</code> 在可导点 <code>c</code> 取极值，则必有 <code>f′(c) = 0</code>。证明考察左导数 <code>≥ 0</code> 与右导数 <code>≤ 0</code>，迫使两边极限等于 0。</p>
-<p><b>2. 罗尔定理（Rolle's Theorem）</b>：若 <code>f ∈ C[a, b]</code>，在 <code>(a, b)</code> 可导，且 <code>f(a) = f(b)</code>。由极值定理，<code>f</code> 在闭区间必达最大值 <code>M</code> 与最小值 <code>m</code>。若 <code>M = m</code> 则为常数函数导数恒为 0；若 <code>M ≠ m</code>，至少有一个极值在开区间内取得，由费马引理得 <code>f′(ξ) = 0</code>。</p>
-<p><b>3. 拉格朗日中值定理（Lagrange MVT）</b>：构造割线偏差辅助函数 <code>g(x) = f(x) − f(a) − [(f(b)−f(a))/(b−a)](x − a)</code>。易验 <code>g(a) = g(b) = 0</code>。由罗尔定理，存在 <code>ξ ∈ (a, b)</code> 使得 <code>g′(ξ) = 0</code>，即：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>f′(ξ) = [f(b) − f(a)] / (b − a)  ⟺  f(b) − f(a) = f′(ξ)(b − a)</code></b></div>
+<p><b>1. 费马引理（Fermat's Lemma）</b>：若 $f$ 在可导点 $c$ 取极值，则必有 $f'(c) = 0$。证明考察左导数 $\ge 0$ 与右导数 $\le 0$，迫使两边极限等于 0。</p>
+<p><b>2. 罗尔定理（Rolle's Theorem）</b>：若 $f \in C[a, b]$，在 $(a, b)$ 可导，且 $f(a) = f(b)$。由极值定理，$f$ 在闭区间必达最大值 $M$ 与最小值 $m$。若 $M = m$ 则为常数函数导数恒为 0；若 $M \ne m$，至少有一个极值在开区间内取得，由费马引理得 $f'(\xi) = 0$。</p>
+<p><b>3. 拉格朗日中值定理（Lagrange MVT）</b>：构造割线偏差辅助函数 $g(x) = f(x) - f(a) - \frac{f(b) - f(a)}{b - a}(x - a)$。易验 $g(a) = g(b) = 0$。由罗尔定理，存在 $\xi \in (a, b)$ 使得 $g'(\xi) = 0$，即：</p>
+<div class="formula-box highlight">
+  $$f'(\xi) = \frac{f(b) - f(a)}{b - a} \iff f(b) - f(a) = f'(\xi)(b - a)$$
 </div>
-<p><b>4. 柯西中值定理（Cauchy MVT）</b>：若有两个函数 <code>f, g</code>，构造辅助函数 <code>h(x) = [g(b) − g(a)]f(x) − [f(b) − f(a)]g(x)</code>，同样满足 <code>h(a) = h(b)</code>。由罗尔定理可得：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>[f(b) − f(a)] / [g(b) − g(a)] = f′(ξ) / g′(ξ)</code></b></div>
+<p><b>4. 柯西中值定理（Cauchy MVT）</b>：若有两个函数 $f, g$，构造辅助函数 $h(x) = [g(b) - g(a)]f(x) - [f(b) - f(a)]g(x)$，同样满足 $h(a) = h(b)$。由罗尔定理可得：</p>
+<div class="formula-box highlight">
+  $$\frac{f(b) - f(a)}{g(b) - g(a)} = \frac{f'(\xi)}{g'(\xi)}$$
 </div>
 <p>这是洛必达法则（L'Hôpital's Rule）求未定式极限的直接理论依据。</p>
 </section>
@@ -1025,40 +1027,40 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 7.1.1 微积分基本定理（FTC）第一与第二部分的严密证明</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】积分上限函数导数与牛顿-莱布尼茨公式双向证明</b>
-<p>第一部分利用积分中值定理严格证明变上限积分的导数等于被积函数；第二部分通过对区间划分施加拉格朗日中值定理与黎曼和收敛证明 <code>∫ₐᵇ f(x)dx = F(b) − F(a)</code>。</p>
+<p>第一部分利用积分中值定理严格证明变上限积分的导数等于被积函数；第二部分通过对区间划分施加拉格朗日中值定理与黎曼和收敛证明 $\int_a^b f(x)\,dx = F(b) - F(a)$。</p>
 </div>
 
 <p><span class="step-badge step1">Part 1</span><b>FTC 第一部分（变上限函数导数）</b></p>
-<p>设连续函数 <code>g(x) = ∫ₐˣ f(t) dt</code>。由导数定义计算其微商增量比：</p>
+<p>设连续函数 $g(x) = \int_a^x f(t)\,dt$。由导数微商定义展开其增量比：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>[g(x+h) − g(x)] / h = (1/h) · [∫ₐ^{x+h} f(t)dt − ∫ₐˣ f(t)dt] = (1/h) · ∫ₓ^{x+h} f(t)dt</code></div>
+  $$\frac{g(x+h) - g(x)}{h} = \frac{1}{h} \left( \int_a^{x+h} f(t)\,dt - \int_a^x f(t)\,dt \right) = \frac{1}{h} \int_x^{x+h} f(t)\,dt$$
 </div>
-<p>应用<b>定积分第一中值定理</b>，在闭区间 <code>[x, x+h]</code> 内必定存在一点 <code>μ</code>，使得：</p>
+<p>应用<b>定积分第一中值定理</b>，在闭区间 $[x, x+h]$ 内必定存在一点 $\mu$，使得积分等于高乘以底：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>(1/h) · ∫ₓ^{x+h} f(t)dt = f(μ)</code></div>
+  $$\frac{1}{h} \int_x^{x+h} f(t)\,dt = f(\mu)$$
 </div>
-<p>当 <code>h → 0</code> 时，夹逼迫使 <code>μ → x</code>。由函数 <code>f</code> 的连续性可知 <code>lim_{h→0} f(μ) = f(x)</code>。因此得出微积分基本定理第一结论：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>g′(x) = (d/dx) ∫ₐˣ f(t)dt = f(x)</code></b></div>
+<p>当 $h \to 0$ 时，夹逼迫使 $\mu \to x$。由函数 $f$ 的连续性可知 $\lim_{h \to 0} f(\mu) = f(x)$。两边取极限即得出微积分基本定理第一结论：</p>
+<div class="formula-box highlight">
+  $$g'(x) = \frac{d}{dx} \int_a^x f(t)\,dt = f(x)$$
 </div>
 
 <p><span class="step-badge step2">Part 2</span><b>FTC 第二部分（牛顿-莱布尼茨公式）</b></p>
-<p>设 <code>F(x)</code> 为 <code>f(x)</code> 的任意原函数，即 <code>F′(x) = f(x)</code>。对积分区间 <code>[a, b]</code> 任意插入剖分节点 <code>a = x₀ < x₁ < … < xₙ = b</code>：</p>
+<p>设 $F(x)$ 为 $f(x)$ 在区间上的任意原函数，即满足 $F'(x) = f(x)$。对积分区间 $[a, b]$ 插入任意剖分节点 $a = x_0 < x_1 < \dots < x_n = b$：</p>
 <p>利用“伸缩求和（Telescoping Sum）”将两端差值展开为相邻切片差：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>F(b) − F(a) = ∑ᵢ₌₁ⁿ [F(xᵢ) − F(xᵢ₋₁)]</code></div>
+  $$F(b) - F(a) = \sum_{i=1}^n [F(x_i) - F(x_{i-1})]$$
 </div>
-<p>在每个子区间 <code>[xᵢ₋₁, xᵢ]</code> 上对可导函数 <code>F</code> 施加<b>拉格朗日中值定理</b>，必定存在点 <code>ξᵢ ∈ (xᵢ₋₁, xᵢ)</code> 满足：</p>
+<p>在每个子区间 $[x_{i-1}, x_i]$ 上对可导函数 $F$ 施加<b>拉格朗日中值定理</b>，必定存在点 $\xi_i \in (x_{i-1}, x_i)$ 满足：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>F(xᵢ) − F(xᵢ₋₁) = F′(ξᵢ) · Δxᵢ = f(ξᵢ) · Δxᵢ</code></div>
+  $$F(x_i) - F(x_{i-1}) = F'(\xi_i)\,\Delta x_i = f(\xi_i)\,\Delta x_i$$
 </div>
 <p>代回求和式得到精确等式：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>F(b) − F(a) = ∑ᵢ₌₁ⁿ f(ξᵢ) · Δxᵢ</code></div>
+  $$F(b) - F(a) = \sum_{i=1}^n f(\xi_i)\,\Delta x_i$$
 </div>
-<p>当网格细度 <code>λ = max(Δxᵢ) → 0</code> 时，右侧根据定义恰好收敛为定积分的黎曼和（Riemann Sum）。两端取极限即严格证明：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>∫ₐᵇ f(x)dx = F(b) − F(a)</code></b></div>
+<p>当网格细度 $\lambda = \max(\Delta x_i) \to 0$ 时，右侧根据定义恰好收敛为定积分的黎曼和（Riemann Sum）。两端取极限即严格证明：</p>
+<div class="formula-box highlight">
+  $$\int_a^b f(x)\,dx = F(b) - F(a)$$
 </div>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 33，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>fundamental theorem of calculus</td><td>微积分基本定理</td><td>d/dx∫ₐˣf = f(x) and ∫ₐᵇf = F(b) − F(a).</td></tr><tr><td>average value</td><td>平均值</td><td>f̄ = (1/(b−a))∫ₐᵇ f(x)dx.</td></tr><tr><td>piecewise continuous</td><td>分段连续</td><td>Finitely many discontinuities with finite one-sided limits; integrable.</td></tr><tr><td>substitution</td><td>换元法</td><td>∫f(g(x))g′(x)dx = ∫f(u)du; for definite integrals also change the limits.</td></tr><tr><td>change of limits</td><td>换上下限</td><td>In a definite integral, x = a gives u = g(a), x = b gives u = g(b).</td></tr><tr><td>integration by parts</td><td>分部积分</td><td>∫u dv = uv − ∫v du.</td></tr><tr><td>reduction formula</td><td>递推公式</td><td>Expresses ∫sinⁿ in terms of ∫sin^{n−2}.</td></tr><tr><td>trigonometric integral</td><td>三角积分</td><td>Choose u = cos x or sin x according to which power is odd.</td></tr><tr><td>double-angle formula</td><td>倍角公式</td><td>sin²x = (1−cos2x)/2, cos²x = (1+cos2x)/2, used when both powers are even.</td></tr><tr><td>trigonometric substitution</td><td>三角代换</td><td>x = a sin θ, a tan θ, a sec θ to remove √(a²−x²), √(a²+x²), √(x²−a²).</td></tr><tr><td>partial fractions</td><td>部分分式</td><td>Decompose P/Q into simple fractions according to the factor type of Q.</td></tr><tr><td>improper factor</td><td>不可约二次因子</td><td>ax²+bx+c with negative discriminant; its partial fraction has a linear numerator.</td></tr><tr><td>completing the square</td><td>配方</td><td>ax²+bx+c = a(x + b/2a)² + (c − b²/4a).</td></tr><tr><td>polynomial division</td><td>多项式除法</td><td>Write P/Q = S + R/Q before decomposing, when deg P ≥ deg Q.</td></tr><tr><td>improper integral form</td><td>假分式</td><td>deg P ≥ deg Q; must be divided first.</td></tr></table></div></section>
@@ -1317,6 +1319,26 @@ a.cw-name{color:var(--accent-deep)}
 })();
 </script>
 <script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script defer src="../../assets/katex/katex.min.js"></script>
+<script defer src="../../assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\[", right: "\]", display: true },
+        { left: "\(", right: "\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 <script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');

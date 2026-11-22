@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>课程合订本</title>
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
 <style>:root{
   color-scheme:light dark;
   --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
@@ -549,6 +550,8 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
 .formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box .katex-display{margin:0.25em 0;text-align:center}
+.formula-box .katex{font-size:1.08em}
 .formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
 .formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
 .formula-box.left .formula-line{text-align:left}
@@ -870,30 +873,28 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 1.9 参数曲线的斜率、光滑性与二阶导数深度推导</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】参数方程二阶导数链式法则展开</b>
-<p>参数方程 <code>x = x(t), y = y(t)</code> 的二阶导数 <code>d²y/dx²</code> 必须由外层链式法则 <code>(d/dx)[dy/dx] = [(d/dt)(dy/dx)] / x′(t)</code> 严格展开，切忌错误套用普通除法。</p>
+<p>参数方程 $x = x(t), y = y(t)$ 的二阶导数 $\frac{d^2y}{dx^2}$ 必须由外层链式法则 $\frac{d}{dx}\left(\frac{dy}{dx}\right) = \frac{\frac{d}{dt}\left(\frac{dy}{dx}\right)}{x'(t)}$ 严格展开，切忌错误套用普通除法。</p>
 </div>
-<p><b>【推导过程】</b> 设参数方程为 <code>x = x(t), y = y(t)</code> 且 <code>x′(t) ≠ 0</code>。根据链式法则，一阶导数为：</p>
+<p><b>【推导过程】</b> 设参数方程为 $x = x(t), y = y(t)$ 且 $x'(t) \ne 0$。根据链式法则，一阶导数为：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>dy/dx = (dy/dt) / (dx/dt) = y′(t) / x′(t)</code></div>
+  $$\frac{dy}{dx} = \frac{y'(t)}{x'(t)}$$
 </div>
-<p>对 <code>x</code> 再次求导，必须再次应用复合求导法则：</p>
+<p>对 $x$ 再次求导，必须再次应用复合求导法则：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>d²y/dx² = (d/dx)[dy/dx] = [(d/dt)(y′(t)/x′(t))] / (dx/dt)</code></div>
-  <div class="formula-line"><code>= [(y″(t)x′(t) − y′(t)x″(t)) / (x′(t))²] / x′(t)</code></div>
-  <div class="formula-line"><b><code>d²y/dx² = [y″(t)x′(t) − y′(t)x″(t)] / [x′(t)]³</code></b></div>
+  $$\frac{d^2y}{dx^2} = \frac{d}{dx}\left(\frac{dy}{dx}\right) = \frac{\frac{d}{dt}\left(\frac{y'(t)}{x'(t)}\right)}{\frac{dx}{dt}} = \frac{\frac{y''(t)x'(t) - y'(t)x''(t)}{[x'(t)]^2}}{x'(t)} = \frac{y''(t)x'(t) - y'(t)x''(t)}{[x'(t)]^3}$$
 </div>
-<p><b>关键辨析</b>：分母是三次项 <code>[x′(t)]³</code> 而非平方，且二阶导数绝不能写成 <code>y″(t) / x″(t)</code>！当 <code>d²y/dx² > 0</code> 时曲线在对应区间严格凹向上（Concave Up），为零时为潜在拐点。</p>
+<p><b>关键辨析</b>：分母是三次项 $[x'(t)]^3$ 而非平方，且二阶导数绝不能写成 $y''(t) / x''(t)$！当 $\frac{d^2y}{dx^2} > 0$ 时曲线在对应区间严格凹向上（Concave Up），为零时为潜在拐点。</p>
 
 <h3><span class="badge purple">拓展深化</span> 1.9.1 几何进阶：参数曲线的曲率（Curvature）与密切圆</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】曲率公式 κ(t) 的内积展开与密切圆几何意义</b>
-<p>曲率度量切向量转角对弧长的变化率 <code>κ = |dφ/ds|</code>，通过单位切向量微分与外积展开推导出二维参数形式。</p>
+<p>曲率度量切向量转角对弧长的变化率 $\kappa = \left|\frac{d\phi}{ds}\right|$，通过单位切向量微分与外积展开推导出二维参数形式。</p>
 </div>
-<p>曲率 <code>κ</code> 描述曲线上某点弯曲剧烈程度，定义为切线切向角 <code>φ</code> 对弧长 <code>s</code> 的变化率：<code>κ = |dφ/ds|</code>。由于弧长微分满足 <code>ds = √([x′(t)]² + [y′(t)]²) dt</code>，代入向量外积展开得通用计算公式：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>κ(t) = |x′(t)y″(t) − x″(t)y′(t)| / {[x′(t)]² + [y′(t)]²}^(3/2)</code></b></div>
+<p>曲率 $\kappa$ 描述曲线上某点弯曲剧烈程度，定义为切线切向角 $\phi$ 对弧长 $s$ 的变化率：$\kappa = \left|\frac{d\phi}{ds}\right|$。由于弧长微分满足 $ds = \sqrt{[x'(t)]^2 + [y'(t)]^2}\,dt$，代入向量外积展开得通用计算公式：</p>
+<div class="formula-box highlight">
+  $$\kappa(t) = \frac{|x'(t)y''(t) - x''(t)y'(t)|}{\left([x'(t)]^2 + [y'(t)]^2\right)^{3/2}}$$
 </div>
-<p>曲率半径定义为 <code>ρ = 1/κ</code>。在曲线该点处沿内法线方向距离为 <code>ρ</code> 的圆称为<b>密切圆（Osculating Circle）</b>，它是二阶微积分意义上与原曲线最紧密贴合的最佳二次逼近圆。</p>
+<p>曲率半径定义为 $\rho = 1/\kappa$。在曲线该点处沿内法线方向距离为 $\rho$ 的圆称为<b>密切圆（Osculating Circle）</b>，它是二阶微积分意义上与原曲线最紧密贴合的最佳二次逼近圆。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 3，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>plane curve</td><td>平面曲线</td><td>A set C of points (x, y) with x = f(t), y = g(t), f and g continuous on an interval I.</td></tr><tr><td>parametrization</td><td>参数化</td><td>Any pair (f, g) with interval I that generates the points of C.</td></tr><tr><td>parameter</td><td>参数</td><td>The independent variable t that drives both coordinates; often read as time.</td></tr><tr><td>eliminate the parameter</td><td>消参</td><td>Remove t to obtain a Cartesian equation of the curve.</td></tr><tr><td>endpoints</td><td>端点</td><td>P(a) and P(b) of a curve parametrized on [a, b], provided P(a) is not P(b).</td></tr><tr><td>closed curve</td><td>闭曲线</td><td>A curve with P(a) = P(b).</td></tr><tr><td>simple closed curve</td><td>简单闭曲线</td><td>A closed curve that does not intersect itself.</td></tr><tr><td>self-intersecting</td><td>自交的</td><td>Two different parameter values give the same point.</td></tr><tr><td>cycloid</td><td>摆线</td><td>The path of a point on the rim of a wheel rolling without slipping: x = a(t − sin t), y = a(1 − cos t).</td></tr><tr><td>smooth curve</td><td>光滑曲线</td><td>f′ and g′ are continuous and never both zero.</td></tr><tr><td>slope of a parametric curve</td><td>参数曲线斜率</td><td>dy/dx = g′(t)/f′(t), valid when f′(t) is not zero.</td></tr><tr><td>vertical tangent</td><td>竖直切线</td><td>Occurs where f′(t) = 0 but g′(t) is not zero.</td></tr><tr><td>horizontal tangent</td><td>水平切线</td><td>Occurs where g′(t) = 0 but f′(t) is not zero.</td></tr><tr><td>tangent line</td><td>切线</td><td>x = f(t₀) + f′(t₀)s, y = g(t₀) + g′(t₀)s.</td></tr><tr><td>normal line</td><td>法线</td><td>x = f(t₀) + g′(t₀)s, y = g(t₀) − f′(t₀)s.</td></tr><tr><td>sense of movement</td><td>走向</td><td>Different parametrizations of the same curve may traverse it in different directions.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　把 <code>x = 2cos t, y = 3sin t</code>（0 ≤ t ≤ 2π）化成直角坐标方程，并说明质点的运动。</div><p><b>第一步，消参。</b>由 <code>cos t = x/2</code>、<code>sin t = y/3</code>，用 <code>cos²t + sin²t = 1</code>：</p><p><code>(x/2)² + (y/3)² = 1</code>，即 <code>x²/4 + y²/9 = 1</code>，是长半轴 3、短半轴 2 的椭圆。</p><p><b>第二步，看范围。</b>t 取遍 [0, 2π]，<code>cos t</code>、<code>sin t</code> 各自取遍 [−1, 1]，所以 x 取遍 [−2, 2]、y 取遍 [−3, 3]，整条椭圆都被覆盖，无缺段。</p><p><b>第三步，看走向。</b>t = 0 → (2, 0)；t = π/2 → (0, 3)；t = π → (−2, 0)；t = 3π/2 → (0, −3)；t = 2π → (2, 0)。依次扫描四个顶点，说明质点从 (2, 0) 出发<b>逆时针</b>绕行一圈回到原处，且在 t 增大时不断前进，中途没有折返。</p></div><div class="qa"><div class="q">例 2　把 <code>x = t³ + 1, y = t⁶ − 1</code> 化为直角坐标方程，并求 t = 2 处的切线斜率。</div><p><b>消参。</b>由第一式得 <code>t³ = x − 1</code>，两边平方得 <code>t⁶ = (x − 1)²</code>，代入第二式：</p><p><code>y = (x − 1)² − 1</code>，顶点 (1, −1) 的抛物线。</p><p><b>求斜率（方法一：用参数式）。</b><code>dx/dt = 3t²</code>，<code>dy/dt = 6t⁵</code>，故 <code>dy/dx = 2t³</code>。</p><p><b>求斜率（方法二：用直角坐标式）。</b><code>dy/dx = 2(x − 1)</code>，而 <code>x − 1 = t³</code>，同样得 <code>2t³</code>。两种方法必须一致，这本身就是一个验算手段。</p><p>t = 2 时斜率 <code>= 16</code>，对应点 <code>x = 9, y = 63</code>。切线：<code>y − 63 = 16(x − 9)</code>，即 <code>y = 16x − 81</code>。</p><p><b>点评。</b>本题在 t = 0 处两个导数都为 0，但抛物线在该点 (<code>x = 1, y = −1</code>) 的切线是水平的（由方法二 <code>dy/dx = 2(x − 1) = 0</code>），并不是奇点。这正是「导数同时为零 ≠ 尖点」的例证。</p></div><div class="qa"><div class="q">例 3　求摆线 <code>x = t − sin t, y = 1 − cos t</code> 在 t = π/3 处的切线方程。</div><p><b>求导。</b><code>dx/dt = 1 − cos t</code>，<code>dy/dt = sin t</code>，故 <code>dy/dx = sin t/(1 − cos t)</code>。</p><p><b>代值。</b>t = π/3：<code>x = π/3 − √3/2</code>，<code>y = 1 − 1/2 = 1/2</code>；</p><p>斜率 <code>m = (√3/2)/(1 − 1/2) = √3</code>。</p><p><b>写方程。</b><code>y − 1/2 = √3(x − π/3 + √3/2)</code>，展开得</p><p><code>y = √3·x + 2 − √3π/3</code>（数值上约为 <code>y = 1.732x + 0.186</code>）。</p><p><b>检验。</b>用万能公式 <code>sin t/(1 − cos t) = cot(t/2)</code>，t = π/3 时 <code>cot(π/6) = √3</code>，与上面一致。这条捷径在摆线上非常好用。</p></div><div class="qa"><div class="q">例 4　曲线 <code>x = t³ − 3t, y = 9t²</code>，求 t = 2 处的切线、法线，并求水平、竖直切线对应的 t。</div><p><b>求导。</b><code>dx/dt = 3(t² − 1)</code>，<code>dy/dt = 18t</code>，<code>dy/dx = 6t/(t² − 1)</code>。</p><p><b>t = 2 处。</b>点为 (2, 36)，斜率 12/3 = 4。切线 <code>y = 4x + 28</code>；法线斜率 −1/4，<code>y = −0.25x + 36.5</code>。</p><p><b>水平切线。</b>令 <code>dy/dt = 0</code> 得 t = 0；此时 <code>dx/dt = −3 ≠ 0</code>，斜率确为 0，点为 (0, 0)。</p><p><b>竖直切线。</b>令 <code>dx/dt = 0</code> 得 t = ±1；此时 <code>dy/dt = ±18 ≠ 0</code>，两点分别为 <code>t = 1 → (−2, 9)</code>、<code>t = −1 → (2, 9)</code>，切线均为竖直线。</p><p><b>检验。</b>把曲线改写成 <code>y = 9(t²)</code> 而 <code>t² = (x + 3t)/…</code> 不易消参，但可以数值核对：t = 1.1 附近 x 从 −2 略增大而 y 增大，说明该处曲线走向竖直，与「竖直切线」吻合。</p></div></section>
@@ -905,24 +906,26 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 2.2.1 弧长公式的第一性原理：折线逼近与微元法</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】微元切线逼近与高阶无穷小严格推导</b>
-<p>从折线段长度 <code>Δsₖ = √((Δxₖ)² + (Δyₖ)²)</code> 出发，结合拉格朗日中值定理与黎曼积分严格证明弧长微分。</p>
+<p>从折线段长度 $\Delta s_k = \sqrt{(\Delta x_k)^2 + (\Delta y_k)^2}$ 出发，结合拉格朗日中值定理与黎曼积分严格证明弧长微分。</p>
 </div>
-<p>在区间 <code>[a, b]</code> 上插入分割点 <code>a = x₀ < x₁ < … < xₙ = b</code>。相连弦长为 <code>ΔLₖ = √((Δxₖ)² + (Δyₖ)²)</code>。由拉格朗日中值定理，存在 <code>ξₖ ∈ (xₖ₋₁, xₖ)</code> 使得 <code>Δyₖ = f′(ξₖ)Δxₖ</code>。代入得：</p>
+<p>在区间 $[a, b]$ 上插入分割点 $a = x_0 < x_1 < \dots < x_n = b$。相连弦长为 $\Delta L_k = \sqrt{(\Delta x_k)^2 + (\Delta y_k)^2}$。由拉格朗日中值定理，存在 $\xi_k \in (x_{k-1}, x_k)$ 使得 $\Delta y_k = f'(\xi_k)\Delta x_k$。代入得：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>ΔLₖ = √[1 + (f′(ξₖ))²] · Δxₖ</code></div>
-  <div class="formula-line"><b><code>L = lim_{max Δxₖ → 0} ∑ₖ₌₁ⁿ √[1 + (f′(ξₖ))²] · Δxₖ = ∫ₐᵇ √[1 + (f′(x))²] dx</code></b></div>
+  $$\Delta L_k = \sqrt{1 + [f'(\xi_k)]^2} \cdot \Delta x_k$$
+</div>
+<div class="formula-box highlight">
+  $$L = \lim_{\max\Delta x_k \to 0} \sum_{k=1}^n \sqrt{1 + [f'(\xi_k)]^2} \cdot \Delta x_k = \int_a^b \sqrt{1 + [f'(x)]^2}\,dx$$
 </div>
 
 <h3><span class="badge purple">拓展深化</span> 2.16.1 极坐标下的斜率陷阱：切勿混淆 dr/dθ 与 dy/dx</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】极坐标曲线切线斜率与径向变化率的严格区分</b>
-<p>极坐标方程 <code>r = f(θ)</code> 中 <code>dr/dθ</code> 仅代表矢径长度对极角的变化率，而切线斜率必须通过参数转换 <code>x = r cos θ, y = r sin θ</code> 展开计算。</p>
+<p>极坐标方程 $r = f(\theta)$ 中 $dr/d\theta$ 仅代表矢径长度对极角的变化率，而切线斜率必须通过参数转换 $x = r\cos\theta, y = r\sin\theta$ 展开计算。</p>
 </div>
-<p>在极坐标 <code>r = f(θ)</code> 下，许多同学误将 <code>dr/dθ</code> 当作切线斜率。实际上切线斜率是平面直角坐标系下的 <code>dy/dx</code>。利用参数方程 <code>x = r(θ)cos θ, y = r(θ)sin θ</code>，应用乘积求导法则：</p>
+<p>在极坐标 $r = f(\theta)$ 下，许多同学误将 $dr/d\theta$ 当作切线斜率。实际上切线斜率是平面直角坐标系下的 $dy/dx$。利用参数方程 $x = r(\theta)\cos\theta, y = r(\theta)\sin\theta$，应用乘积求导法则：</p>
 <div class="formula-box">
-  <div class="formula-line"><b><code>dy/dx = (dy/dθ) / (dx/dθ) = [f′(θ)sin θ + f(θ)cos θ] / [f′(θ)cos θ − f(θ)sin θ]</code></b></div>
+  $$\frac{dy}{dx} = \frac{\frac{dy}{d\theta}}{\frac{dx}{d\theta}} = \frac{f'(\theta)\sin\theta + f(\theta)\cos\theta}{f'(\theta)\cos\theta - f(\theta)\sin\theta}$$
 </div>
-<p>只有当曲线穿过极点（即 <code>r = 0</code>）且 <code>r′(θ) ≠ 0</code> 时，公式化简为 <code>dy/dx = (r′ sin θ)/(r′ cos θ) = tan θ</code>，此时切线方向恰好就是极角 <code>θ</code> 的延伸方向。</p>
+<p>只有当曲线穿过极点（即 $r = 0$）且 $r'(\theta) \ne 0$ 时，公式化简为 $\frac{dy}{dx} = \frac{r'\sin\theta}{r'\cos\theta} = \tan\theta$，此时切线方向恰好就是极角 $\theta$ 的延伸方向。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 8，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>arc length</td><td>弧长</td><td>L = ∫ √(x′² + y′²) dt for a parametric curve.</td></tr><tr><td>arc length element</td><td>弧长微元</td><td>ds = √(dx² + dy²); the length of an infinitesimal piece of the curve.</td></tr><tr><td>surface area of revolution</td><td>旋转曲面面积</td><td>A = 2π ∫ |y| ds when rotating about the x-axis.</td></tr><tr><td>radius of revolution</td><td>旋转半径</td><td>The distance from the curve to the axis, always taken as an absolute value.</td></tr><tr><td>torus</td><td>环面</td><td>The surface swept by rotating a circle about an axis lying in its plane.</td></tr><tr><td>polar coordinates</td><td>极坐标</td><td>A point is given as [r, θ] with x = r cos θ, y = r sin θ.</td></tr><tr><td>pole</td><td>极点</td><td>The origin O of the polar coordinate system.</td></tr><tr><td>polar axis</td><td>极轴</td><td>The ray from O pointing horizontally to the right; angles are measured from it.</td></tr><tr><td>directed distance</td><td>有向距离</td><td>r may be negative; a negative r means the distance is measured in the opposite direction.</td></tr><tr><td>cardioid</td><td>心形线</td><td>r = a(1 + cos θ); its total perimeter is 8a.</td></tr><tr><td>astroid</td><td>星形线</td><td>x = 2cos³t, y = 2sin³t; one quadrant has arc length 3 when the radius is 2.</td></tr><tr><td>sector area</td><td>扇形面积</td><td>dA = ½ r² dθ in polar coordinates.</td></tr><tr><td>convert to Cartesian</td><td>化为直角坐标</td><td>Replace r cos θ by x, r sin θ by y and r² by x² + y².</td></tr><tr><td>non-uniqueness of polar coordinates</td><td>极坐标不唯一</td><td>[r, θ] = [r, θ + 2kπ]; also [−r, θ] = [r, θ + π].</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　求曲线 <code>x = 2t − sin 2t</code>、<code>y = 2sin²t</code>（0 ≤ t ≤ π）的弧长。</div><p><b>求导。</b><code>dx/dt = 2 − 2cos 2t</code>；<code>dy/dt = 2 · 2 sin t cos t = 2 sin 2t</code>。</p><p><b>平方和。</b><code>x′² + y′² = 4(1 − cos 2t)² + 4sin²2t = 4[(1 − cos 2t)² + sin²2t]</code>。</p><p>括号内展开：<code>1 − 2cos 2t + cos²2t + sin²2t = 2 − 2cos 2t</code>，故 <code>x′² + y′² = 4(2 − 2cos 2t) = 16sin²t</code>。</p><p><b>开方。</b>0 ≤ t ≤ π 时 <code>sin t ≥ 0</code>，取 <code>4 sin t</code>。</p><p><b>积分。</b><code>L = ∫[0, π] 4 sin t dt = 8</code>。</p><p><b>点评。</b>「配方、开方、判符号」三步就是参数弧长的标准流程。若区间改成 0 ≤ t ≤ 2π，则必须写 <code>4|sin t|</code> 并分段积分，结果仍是 16（因为曲线把同一形状走了两遍）。</p></div><div class="qa"><div class="q">例 2　求星形线 <code>x = 2cos³t</code>、<code>y = 2sin³t</code> 在 0 ≤ t ≤ π/2 上的弧长。</div><p><b>求导。</b><code>dx/dt = −6cos²t sin t</code>，<code>dy/dt = 6sin²t cos t</code>。</p><p><b>平方和。</b><code>x′² + y′² = 36cos⁴t sin²t + 36sin⁴t cos²t = 36sin²t cos²t(cos²t + sin²t) = 36sin²t cos²t</code>。</p><p><b>开方。</b>第一象限内 <code>sin t cos t ≥ 0</code>，取 <code>6 sin t cos t = 3 sin 2t</code>。</p><p><b>积分。</b><code>L = ∫[0, π/2] 3 sin 2t dt = [−(3/2)cos 2t]₀^{π/2} = 3/2 + 3/2 = 3</code>。</p><p><b>验算。</b>四段合计 12；外接圆半径 2、周长 4π ≈ 12.57，星形线略短，合理。</p></div><div class="qa"><div class="q">例 3　把 <code>r = 4cos θ</code> 化为直角坐标方程，并求它所围区域的面积。</div><p><b>化直角坐标。</b>两边乘 r：<code>r² = 4r cos θ</code>。代入 <code>r² = x² + y²</code>、<code>r cos θ = x</code> 得 <code>x² + y² = 4x</code>，配方得 <code>(x − 2)² + y² = 4</code>：圆心 (2, 0)、半径 2 的圆。</p><p><b>极坐标求面积。</b>θ 从 −π/2 到 π/2 描出整个圆：<code>A = ½∫[−π/2, π/2] 16cos²θ dθ = 8∫[−π/2, π/2] cos²θ dθ</code>。</p><p>用 <code>cos²θ = (1 + cos 2θ)/2</code>：<code>A = 8 · (1/2)(π) = 4π</code>。</p><p><b>验算。</b>半径 2 的圆面积是 <code>π·2² = 4π</code>，一致。这也说明极坐标面积公式中的 ½ 是正确的。</p></div><div class="qa"><div class="q">例 4　求心形线 <code>r = a(1 + cos θ)</code>（a &gt; 0，−π ≤ θ ≤ π）的周长。</div><p><b>求导。</b><code>r′ = −a sin θ</code>，故 <code>r² + r′² = a²[(1 + cos θ)² + sin²θ] = a²(2 + 2cos θ)</code>。</p><p><b>半角化简。</b><code>1 + cos θ = 2cos²(θ/2)</code>，故 <code>r² + r′² = 4a²cos²(θ/2)</code>，<code>√(r² + r′²) = 2a|cos(θ/2)|</code>。</p><p><b>去绝对值。</b><code>θ/2 ∈ [−π/2, π/2]</code>，余弦非负，直接取 <code>2a cos(θ/2)</code>。</p><p><b>积分。</b><code>L = 2a∫[−π, π] cos(θ/2) dθ = 2a[2 sin(θ/2)]_{−π}^{π} = 2a(2 + 2) = 8a</code>。</p><p><b>点评。</b>若区间改成 0 ≤ θ ≤ 2π，心形线会被描两遍，答案变成 16a。题目特意声明「从 −π 到 π 恰好描出一次」，就是为了堵住这个错误。</p></div></section>
@@ -934,20 +937,19 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 3.7.1 坐标变换的局部体积变形率：雅可比行列式（Jacobian）推导</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】雅可比行列式作为正交曲线坐标基向量标量三重积</b>
-<p>柱坐标体积元 <code>dV = r dr dθ dz</code> 与球坐标体积元 <code>dV = ρ² sin φ dρ dφ dθ</code> 的本质是切向量张成微元六面体的行列式有向体积。</p>
+<p>柱坐标体积元 $dV = r\,dr\,d\theta\,dz$ 与球坐标体积元 $dV = \rho^2\sin\phi\,d\rho\,d\phi\,d\theta$ 的本质是切向量张成微元六面体的行列式有向体积。</p>
 </div>
-<p>在多元微积分变量替换中，微元体积变换满足 <code>dV = |J| du dv dw</code>。雅可比行列式 <code>J</code> 几何意义是局部切空间基向量张成的平行六面体有向体积：</p>
-<p><b>1. 柱坐标雅可比推导</b>：变换关系为 <code>x = r cos θ, y = r sin θ, z = z</code>。计算偏导数行列式：</p>
+<p>在多元微积分变量替换中，微元体积变换满足 $dV = |J|\,du\,dv\,dw$。雅可比行列式 $J$ 几何意义是局部切空间基向量张成的平行六面体有向体积：</p>
+<p><b>1. 柱坐标雅可比推导</b>：变换关系为 $x = r\cos\theta, y = r\sin\theta, z = z$。计算偏导数行列式：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>J_cyl = det [[cos θ, −r sin θ, 0], [sin θ, r cos θ, 0], [0, 0, 1]] = cos θ(r cos θ) − (−r sin θ)(sin θ) = r</code></div>
-  <div class="formula-line"><b><code>dV_cyl = r · dr dθ dz</code></b></div>
+  $$J_{cyl} = \det \begin{pmatrix} \cos\theta & -r\sin\theta & 0 \\ \sin\theta & r\cos\theta & 0 \\ 0 & 0 & 1 \end{pmatrix} = r$$
+  $$dV_{cyl} = r\,dr\,d\theta\,dz$$
 </div>
-<p><b>2. 球坐标雅可比推导</b>：变换关系为 <code>x = ρ sin φ cos θ, y = ρ sin φ sin θ, z = ρ cos φ</code>。展开 3×3 偏导数矩阵行列式：</p>
-<div class="formula-box">
-  <div class="formula-line"><code>J_sph = det(∂(x,y,z)/∂(ρ,φ,θ)) = ρ² sin φ</code></div>
-  <div class="formula-line"><b><code>dV_sph = ρ² sin φ · dρ dφ dθ</code></b></div>
+<p><b>2. 球坐标雅可比推导</b>：变换关系为 $x = \rho\sin\phi\cos\theta, y = \rho\sin\phi\sin\theta, z = \rho\cos\phi$。展开 $3 \times 3$ 偏导数矩阵行列式：</p>
+<div class="formula-box highlight">
+  $$J_{sph} = \det \frac{\partial(x,y,z)}{\partial(\rho,\phi,\theta)} = \rho^2 \sin\phi \implies dV_{sph} = \rho^2 \sin\phi\,d\rho\,d\phi\,d\theta$$
 </div>
-<p>这从根本上解释了为什么球坐标积分绝不能漏写因子 <code>ρ² sin φ</code>，它代表纬度与经度网格在球面上的实际面积缩放率。</p>
+<p>这从根本上解释了为什么球坐标积分绝不能漏写因子 $\rho^2 \sin\phi$，它代表纬度与经度网格在球面上的实际面积缩放率。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 12，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>cylindrical coordinates</td><td>柱坐标</td><td>A point is given as [r, θ, z] with x = r cos θ, y = r sin θ, z = z.</td></tr><tr><td>spherical coordinates</td><td>球坐标</td><td>A point is given as [ρ, φ, θ] with x = ρ sin φ cos θ, y = ρ sin φ sin θ, z = ρ cos φ.</td></tr><tr><td>radial distance</td><td>径向距离</td><td>ρ, the distance from the point to the origin.</td></tr><tr><td>inclination angle</td><td>倾角</td><td>φ, the angle between OP and the positive z-axis, 0 ≤ φ ≤ π.</td></tr><tr><td>azimuthal angle</td><td>方位角</td><td>θ, the angle between the xz-plane and the plane containing P and the z-axis.</td></tr><tr><td>coordinate surface</td><td>坐标面</td><td>The surface obtained by holding one coordinate constant; r = constant is a cylinder.</td></tr><tr><td>circular paraboloid</td><td>旋转抛物面</td><td>z = x² + y², i.e. z = r² in cylindrical coordinates.</td></tr><tr><td>cone</td><td>圆锥面</td><td>z² = x² + y², i.e. φ = π/4 or 3π/4 in spherical coordinates.</td></tr><tr><td>half-plane</td><td>半平面</td><td>θ = constant in cylindrical coordinates.</td></tr><tr><td>identify a surface</td><td>识别曲面</td><td>Convert the equation to Cartesian form and recognise its shape.</td></tr><tr><td>convert coordinates</td><td>坐标互化</td><td>r = ρ sin φ, z = ρ cos φ, ρ² = r² + z² = x² + y² + z².</td></tr><tr><td>symmetry</td><td>对称性</td><td>The criterion used to choose cylindrical or spherical coordinates.</td></tr><tr><td>sphere in spherical form</td><td>球面的球坐标形式</td><td>ρ = 2 cos φ is the sphere x² + y² + (z − 1)² = 1.</td></tr><tr><td>distance to the z-axis</td><td>到 z 轴的距离</td><td>r = √(x² + y²), which is not the same as ρ.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　把直角坐标点 (−1, 1, 2) 化为柱坐标与球坐标。</div><p><b>柱坐标。</b><code>r = √(1 + 1) = √2</code>；点在第二象限，<code>θ = 3π/4</code>（不是 tan⁻¹(−1) = −π/4，那是对应第四象限的主值）；<code>z = 2</code>。故为 <code>[√2, 3π/4, 2]</code>。</p><p><b>球坐标。</b><code>ρ = √(1 + 1 + 4) = √6</code>；<code>cos φ = z/ρ = 2/√6</code>，故 <code>φ = cos⁻¹(2/√6) ≈ 35.3°</code>；<code>θ = 3π/4</code>。故为 <code>[√6, cos⁻¹(2/√6), 3π/4]</code>。</p><p><b>验算。</b><code>ρ sin φ = √6 · √(1 − 4/6) = √6 · √(1/3) = √2 = r</code>，与柱坐标的 r 一致。</p></div><div class="qa"><div class="q">例 2　把球坐标 <code>[4, π/4, π/3]</code> 化为直角坐标与柱坐标。</div><p><b>直角坐标。</b><code>x = 4 sin(π/4) cos(π/3) = 4 · (√2/2) · (1/2) = √2</code>；<code>y = 4 sin(π/4) sin(π/3) = 4 · (√2/2) · (√3/2) = √6</code>；<code>z = 4 cos(π/4) = 2√2</code>。</p><p><b>柱坐标。</b><code>r = ρ sin φ = 2√2</code>，<code>θ = π/3</code>，<code>z = 2√2</code>。</p><p><b>验算。</b><code>r² + z² = 8 + 8 = 16 = ρ²</code>；<code>x² + y² + z² = 2 + 6 + 8 = 16</code>。两处都吻合，说明三个量没有代错。</p></div><div class="qa"><div class="q">例 3　识别并化简柱坐标方程 <code>r² + z² = 2z</code>。</div><p><b>换直角坐标。</b><code>r² = x² + y²</code>，代入得 <code>x² + y² + z² = 2z</code>。</p><p><b>配方。</b><code>x² + y² + (z − 1)² = 1</code>：以 (0, 0, 1) 为心、半径 1 的球面。</p><p><b>换球坐标验算。</b><code>ρ² = 2ρ cos φ</code>，即 <code>ρ = 2cos φ</code>，与 3.10 的 Task 2a（2）完全一致。这说明柱坐标与球坐标两条路给出同一个答案。</p></div><div class="qa"><div class="q">例 4　识别球坐标方程 <code>ρ = 2 sin φ cos θ + 2 sin φ sin θ</code> 所代表的曲面。</div><p><b>两边乘 ρ。</b><code>ρ² = 2ρ sin φ cos θ + 2ρ sin φ sin θ</code>。</p><p><b>替换。</b><code>ρ sin φ cos θ = x</code>、<code>ρ sin φ sin θ = y</code>，故 <code>x² + y² + z² = 2x + 2y</code>。</p><p><b>配方。</b><code>(x − 1)² + (y − 1)² + z² = 2</code>：以 (1, 1, 0) 为心、半径 √2 的球面。</p><p><b>点评。</b>两个三角项同时出现，相当于球心在 x、y 两个方向都有偏移。只要坚持「乘 ρ → 替换 → 配方」三步，再复杂的球坐标方程都能还原。</p></div></section>
@@ -959,24 +961,24 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 4.6.1 为什么矩阵乘法是“行乘列”：线性映射复合的本质推导</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】矩阵乘法行乘列法则的同态复合起源</b>
-<p>矩阵本质上是有限维向量空间之间线性映射在选定基底下的坐标表示，两矩阵相乘对应两个线性映射的复合变换 <code>T_B ∘ T_A</code>。</p>
+<p>矩阵本质上是有限维向量空间之间线性映射在选定基底下的坐标表示，两矩阵相乘对应两个线性映射的复合变换 $T_B \circ T_A$。</p>
 </div>
-<p>设线性变换 <code>T_A: ℝᵖ → ℝⁿ</code> 由矩阵 <code>A</code> 诱导，即 <code>y = Ax</code>；变换 <code>T_B: ℝᵐ → ℝᵖ</code> 由矩阵 <code>B</code> 诱导，即 <code>x = Bz</code>。考察复合映射 <code>T = T_A ∘ T_B: ℝᵐ → ℝⁿ</code>：</p>
+<p>设线性变换 $T_A: \mathbb{R}^p \to \mathbb{R}^n$ 由矩阵 $A$ 诱导，即 $y = Ax$；变换 $T_B: \mathbb{R}^m \to \mathbb{R}^p$ 由矩阵 $B$ 诱导，即 $x = Bz$。考察复合映射 $T = T_A \circ T_B: \mathbb{R}^m \to \mathbb{R}^n$：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>yᵢ = ∑ₖ₌₁ᵖ a_{ik} xₖ = ∑ₖ₌₁ᵖ a_{ik} (∑ⱼ₌₁ᵐ b_{kj} zⱼ) = ∑ⱼ₌₁ᵐ (∑ₖ₌₁ᵖ a_{ik} b_{kj}) zⱼ</code></div>
+  $$y_i = \sum_{k=1}^p a_{ik} x_k = \sum_{k=1}^p a_{ik} \left(\sum_{j=1}^m b_{kj} z_j\right) = \sum_{j=1}^m \left(\sum_{k=1}^p a_{ik} b_{kj}\right) z_j$$
 </div>
-<p>为使复合变换仍满足 <code>y = Cz</code>，矩阵 <code>C</code> 的第 <code>i</code> 行第 <code>j</code> 列元素必须定义为 <code>c_{ij} = ∑ₖ₌₁ᵖ a_{ik} b_{kj}</code>。这在几何上正是 <code>A</code> 的第 <code>i</code> 个行向量与 <code>B</code> 的第 <code>j</code> 个列向量的标准内积。因此，“行乘列”不是人为规定的运算规则，而是保持映射复合结合律的唯一数学选择。</p>
+<p>为使复合变换仍满足 $y = Cz$，矩阵 $C$ 的第 $i$ 行第 $j$ 列元素必须定义为 $c_{ij} = \sum_{k=1}^p a_{ik} b_{kj}$。这在几何上正是 $A$ 的第 $i$ 个行向量与 $B$ 的第 $j$ 个列向量的标准内积。因此，“行乘列”不是人为规定的运算规则，而是保持映射复合结合律的唯一数学选择。</p>
 
 <h3><span class="badge purple">拓展深化</span> 4.10.1 经典几何变换矩阵的严密推导：平面正交旋转矩阵</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】基向量旋转变换与和差角公式推导正交矩阵</b>
-<p>标准正交基 <code>e₁ = [1, 0]ᵀ, e₂ = [0, 1]ᵀ</code> 逆时针旋转 <code>θ</code> 角后的坐标直接给出旋转矩阵的列向量。</p>
+<p>标准正交基 $e_1 = [1, 0]^T, e_2 = [0, 1]^T$ 逆时针旋转 $\theta$ 角后的坐标直接给出旋转矩阵的列向量。</p>
 </div>
-<p>利用线性变换的基底决定性定理：一个线性变换完全由它对一组基向量的作用所决定。将第一基向量 <code>e₁</code> 逆时针旋转 <code>θ</code> 得到 <code>[cos θ, sin θ]ᵀ</code>；将第二基向量 <code>e₂</code> 旋转 <code>θ</code> 得到 <code>[−sin θ, cos θ]ᵀ</code>。两列向量拼接即得到旋转算子矩阵：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>R_θ = [[cos θ, −sin θ], [sin θ, cos θ]]</code></b></div>
+<p>利用线性变换的基底决定性定理：一个线性变换完全由它对一组基向量的作用所决定。将第一基向量 $e_1$ 逆时针旋转 $\theta$ 得到 $[\cos\theta, \sin\theta]^T$；将第二基向量 $e_2$ 旋转 $\theta$ 得到 $[-\sin\theta, \cos\theta]^T$。两列向量拼接即得到旋转算子矩阵：</p>
+<div class="formula-box highlight">
+  $$R_\theta = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}$$
 </div>
-<p>由于各列互相正交且模长为 1，满足 <code>(R_θ)ᵀ · R_θ = I</code> 且 <code>det(R_θ) = cos²θ + sin²θ = 1</code>，这严格证明了平面刚体旋转是保长、保角且保定向的特殊正交群 SO(2) 变换。</p>
+<p>由于各列互相正交且模长为 1，满足 $(R_\theta)^T R_\theta = I$ 且 $\det(R_\theta) = \cos^2\theta + \sin^2\theta = 1$，这严格证明了平面刚体旋转是保长、保角且保定向的特殊正交群 $\text{SO}(2)$ 变换。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 16，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>matrix</td><td>矩阵</td><td>A rectangular array of mn numbers arranged in m rows and n columns.</td></tr><tr><td>element</td><td>元素</td><td>a_ij is the entry in the i-th row and the j-th column.</td></tr><tr><td>size of a matrix</td><td>矩阵的型</td><td>m×n, i.e. m rows and n columns.</td></tr><tr><td>row vector</td><td>行向量</td><td>A 1×n matrix.</td></tr><tr><td>column vector</td><td>列向量</td><td>An n×1 matrix.</td></tr><tr><td>scalar multiplication</td><td>数乘</td><td>Multiply every entry by the same number k.</td></tr><tr><td>matrix multiplication</td><td>矩阵乘法</td><td>c_ij = Σ a_ik b_kj; A must have as many columns as B has rows.</td></tr><tr><td>square matrix</td><td>方阵</td><td>A matrix with the same number of rows and columns.</td></tr><tr><td>symmetric matrix</td><td>对称阵</td><td>A square matrix with a_ij = a_ji, equivalently Aᵀ = A.</td></tr><tr><td>antisymmetric matrix</td><td>反对称阵</td><td>A square matrix with Aᵀ = −A; all diagonal entries must be zero.</td></tr><tr><td>diagonal matrix</td><td>对角阵</td><td>A square matrix whose entries off the main diagonal are all zero.</td></tr><tr><td>identity matrix</td><td>单位阵</td><td>A diagonal matrix with all diagonal entries 1; AI = IA = A.</td></tr><tr><td>transpose</td><td>转置</td><td>Swap rows and columns; (AB)ᵀ = BᵀAᵀ.</td></tr><tr><td>transformation</td><td>变换</td><td>A mapping such as reflection, rotation or translation, stored as a matrix.</td></tr><tr><td>reflection</td><td>反射</td><td>For the line y = x the matrix is [[0, 1], [1, 0]].</td></tr><tr><td>pixel matrix</td><td>像素矩阵</td><td>An image stored as a matrix of 0 (off) and 1 (on) entries.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　设 <code>A = [[1, 2, 3], [4, 5, 6]]</code>，<code>B = [[1, 0], [2, 1], [0, 3]]</code>，求 AB 与 BA。</div><p><b>AB。</b>型为 (2×3)(3×2) → 2×2。</p><p><code>c₁₁ = 1×1 + 2×2 + 3×0 = 5</code>，<code>c₁₂ = 1×0 + 2×1 + 3×3 = 11</code></p><p><code>c₂₁ = 4×1 + 5×2 + 6×0 = 14</code>，<code>c₂₂ = 4×0 + 5×1 + 6×3 = 23</code></p><p>故 <code>AB = [[5, 11], [14, 23]]</code>。</p><p><b>BA。</b>型为 (3×2)(2×3) → 3×3：</p><p><code>[[1, 2, 3], [6, 9, 12], [12, 15, 18]]</code>（逐行算：第一行 <code>[1×1+0×4, 1×2+0×5, 1×3+0×6] = [1, 2, 3]</code>；第二行 <code>[2×1+1×4, 2×2+1×5, 2×3+1×6]</code>；第三行 <code>[0×1+3×4, 0×2+3×5, 0×3+3×6]</code>）。</p><p><b>结论。</b>AB 是 2×2、BA 是 3×3，两者连型都不同，谈不上相等。这是「乘法不可交换」最直接的证据。</p></div><div class="qa"><div class="q">例 2　设 <code>A = [[1, 2], [2, 5]]</code>，求 <code>Aᵀ</code>，判断 A 是否对称，并计算 <code>AAᵀ</code>。</div><p><code>Aᵀ = [[1, 2], [2, 5]]</code>，与 A 相同，故 A 是对称阵。</p><p><code>AAᵀ = A² = [[1×1 + 2×2, 1×2 + 2×5], [2×1 + 5×2, 2×2 + 5×5]] = [[5, 12], [12, 29]]</code>。</p><p><b>观察。</b>结果仍是对称阵。这不是巧合：对任意矩阵，<code>AAᵀ</code> 与 <code>AᵀA</code> 都是对称阵，因为 <code>(AAᵀ)ᵀ = (Aᵀ)ᵀAᵀ = AAᵀ</code>。这条性质在统计学（协方差矩阵）与最小二乘法里反复出现。</p></div><div class="qa"><div class="q">例 3　把三角形 P(−1, 2)、Q(3, 2)、R(1, 5) 绕原点逆时针旋转 90°，求旋转后三个顶点。</div><p><b>写顶点矩阵。</b>按列排：<code>A = [[−1, 3, 1], [2, 2, 5]]</code>。</p><p><b>写旋转矩阵。</b>逆时针 90° 为 <code>R = [[0, −1], [1, 0]]</code>。</p><p><b>相乘。</b><code>RA = [[0, −1], [1, 0]]·[[−1, 3, 1], [2, 2, 5]] = [[−2, −2, −5], [−1, 3, 1]]</code>。</p><p>三个顶点变为 P′(−2, −1)、Q′(−2, 3)、R′(−5, 1)。</p><p><b>验算。</b>用单点公式 <code>(x, y) → (−y, x)</code>：P(−1, 2) → (−2, −1) ✓；Q(3, 2) → (−2, 3) ✓；R(1, 5) → (−5, 1) ✓。</p></div><div class="qa"><div class="q">例 4　判断 <code>M = [[0, 2, −3], [−2, 0, 1], [3, −1, 0]]</code> 是否反对称，并说明理由。</div><p><b>看对角元。</b>主对角线为 0、0、0，符合反对称的必要条件。</p><p><b>看对称位置。</b><code>m₁₂ = 2</code> 而 <code>m₂₁ = −2</code>，互为相反数；<code>m₁₃ = −3</code> 而 <code>m₃₁ = 3</code>；<code>m₂₃ = 1</code> 而 <code>m₃₂ = −1</code>，全部满足 <code>a_ij = −a_ji</code>。</p><p><b>结论。</b>M 是反对称阵。若把某个对角元改成非零（如 m₁₁ = 1），它立刻就不再反对称——因为 <code>a₁₁ = −a₁₁</code> 只能给出 0。</p></div></section>
@@ -988,20 +990,20 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 5.8.1 行列式降阶与代数余子式定理：伴随矩阵恒等式证明</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】Laplace 代数余子式展开与伴随矩阵恒等式 A · adj(A) = |A|I 证明</b>
-<p>证明 <code>i = j</code> 时代数余子式展开等于行列式自身，而 <code>i ≠ j</code> 时异行代数余子式相乘等于带有相同两行的奇异矩阵行列式（必为 0）。</p>
+<p>证明 $i = j$ 时代数余子式展开等于行列式自身，而 $i \ne j$ 时异行代数余子式相乘等于带有相同两行的奇异矩阵行列式（必为 0）。</p>
 </div>
-<p>定义伴随矩阵 <code>adj(A) = [C_{ij}]ᵀ</code>，其中 <code>C_{ij} = (−1)ⁱ⁺ʲ M_{ij}</code> 为代数余子式。考虑乘积 <code>P = A · adj(A)</code> 的第 <code>i</code> 行第 <code>k</code> 列元素：</p>
+<p>定义伴随矩阵 $\text{adj}(A) = [C_{ij}]^T$，其中 $C_{ij} = (-1)^{i+j} M_{ij}$ 为代数余子式。考虑乘积 $P = A \cdot \text{adj}(A)$ 的第 $i$ 行第 $k$ 列元素：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>P_{ik} = ∑ⱼ₌₁ⁿ a_{ij} (adj(A))_{jk} = ∑ⱼ₌₁ⁿ a_{ij} C_{kj}</code></div>
+  $$P_{ik} = \sum_{j=1}^n a_{ij} (\text{adj}(A))_{jk} = \sum_{j=1}^n a_{ij} C_{kj}$$
 </div>
 <ul>
-  <li>当 <code>i = k</code> 时：上式恰好是矩阵 <code>A</code> 沿第 <code>i</code> 行的 Laplace 展开式，其值严格等于行列式 <code>det(A)</code>；</li>
-  <li>当 <code>i ≠ k</code> 时：上式表示用 <code>A</code> 的第 <code>i</code> 行元素去乘第 <code>k</code> 行的代数余子式，其几何等价于计算一个将第 <code>k</code> 行替换为第 <code>i</code> 行的新矩阵的行列式。由于该新矩阵包含两行完全相同元素，由行列式反对称性，其值恒等于 0。</li>
+  <li>当 $i = k$ 时：上式恰好是矩阵 $A$ 沿第 $i$ 行的 Laplace 展开式，其值严格等于行列式 $\det(A)$；</li>
+  <li>当 $i \ne k$ 时：上式表示用 $A$ 的第 $i$ 行元素去乘第 $k$ 行的代数余子式，其几何等价于计算一个将第 $k$ 行替换为第 $i$ 行的新矩阵的行列式。由于该新矩阵包含两行完全相同元素，由行列式反对称性，其值恒等于 0。</li>
 </ul>
 <p>综合两项即严格证明核心矩阵恒等式：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>A · adj(A) = adj(A) · A = det(A) · I</code></b></div>
-  <div class="formula-line"><b><code>当 det(A) ≠ 0 时，A⁻¹ = (1 / det(A)) · adj(A)</code></b></div>
+<div class="formula-box highlight">
+  $$A \cdot \text{adj}(A) = \text{adj}(A) \cdot A = \det(A) \cdot I$$
+  $$\text{当 } \det(A) \ne 0 \text{ 时，} A^{-1} = \frac{1}{\det(A)}\,\text{adj}(A)$$
 </div>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 18，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>determinant</td><td>行列式</td><td>A number det(A) or |A| defined only for square matrices.</td></tr><tr><td>minor</td><td>余子式</td><td>M_ij, the determinant obtained by deleting row i and column j.</td></tr><tr><td>co-factor</td><td>代数余子式</td><td>A_ij = (−1)^{i+j} M_ij.</td></tr><tr><td>cofactor expansion</td><td>余子式展开</td><td>det(A) = Σ a_ij A_ij along any row or column.</td></tr><tr><td>place sign</td><td>位置符号</td><td>The checkerboard + − + pattern arising from (−1)^{i+j}.</td></tr><tr><td>singular matrix</td><td>奇异矩阵</td><td>A square matrix with det(A) = 0.</td></tr><tr><td>non-singular matrix</td><td>非奇异矩阵</td><td>A square matrix with det(A) ≠ 0; it has an inverse.</td></tr><tr><td>adjugate</td><td>伴随矩阵</td><td>Transpose A, then replace every entry by its co-factor.</td></tr><tr><td>inverse matrix</td><td>逆矩阵</td><td>A⁻¹ = adj(A)/det(A), satisfying AA⁻¹ = I.</td></tr><tr><td>invertible</td><td>可逆的</td><td>Synonym for non-singular.</td></tr><tr><td>coefficient matrix</td><td>系数矩阵</td><td>The matrix A in the system Ax = b.</td></tr><tr><td>homogeneous system</td><td>齐次方程组</td><td>A system with b = 0, written Ax = 0.</td></tr><tr><td>row operation</td><td>行变换</td><td>Swapping rows, scaling a row, or adding a multiple of one row to another.</td></tr><tr><td>linear combination</td><td>线性组合</td><td>A row that equals a sum of multiples of other rows makes the determinant zero.</td></tr><tr><td>det(AB) = det(A)det(B)</td><td>乘积的行列式</td><td>The determinant of a product equals the product of the determinants.</td></tr></table></div></section>
@@ -1014,19 +1016,19 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 6.3.1 高斯消元背后的初等矩阵分解与矩阵秩（Rank）的本质</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】初等行变换的初等矩阵乘积同构与相抵标准形</b>
-<p>高斯消元中的倍加、对换、倍乘操作在代数上完全等价于左乘三种初等矩阵 <code>E_{ij}(c), P_{ij}, D_i(c)</code>，均严格非奇异且逆矩阵同型。</p>
+<p>高斯消元中的倍加、对换、倍乘操作在代数上完全等价于左乘三种初等矩阵 $E_{ij}(c), P_{ij}, D_i(c)$，均严格非奇异且逆矩阵同型。</p>
 </div>
-<p>对矩阵进行初等行变换等价于对单位矩阵 <code>I</code> 施行相同变换得到的<b>初等矩阵（Elementary Matrix）</b>实施左乘：</p>
+<p>对矩阵进行初等行变换等价于对单位矩阵 $I$ 施行相同变换得到的<b>初等矩阵（Elementary Matrix）</b>实施左乘：</p>
 <ul>
-  <li><b>倍加行变换 <code>rᵢ ← rᵢ + c · rⱼ</code></b>：对应初等矩阵 <code>E_{ij}(c)</code>，其逆矩阵为同型的 <code>E_{ij}(−c)</code>；</li>
-  <li><b>交换行变换 <code>rᵢ ↔ rⱼ</code></b>：对应置换矩阵 <code>P_{ij}</code>，其逆矩阵为自身 <code>P_{ij}⁻¹ = P_{ij}</code>；</li>
-  <li><b>倍乘行变换 <code>rᵢ ← c · rᵢ (c ≠ 0)</code></b>：对应对角阵 <code>D_i(c)</code>，其逆矩阵为 <code>D_i(1/c)</code>。</li>
+  <li><b>倍加行变换 $r_i \leftarrow r_i + c \cdot r_j$</b>：对应初等矩阵 $E_{ij}(c)$，其逆矩阵为同型的 $E_{ij}(-c)$；</li>
+  <li><b>交换行变换 $r_i \leftrightarrow r_j$</b>：对应置换矩阵 $P_{ij}$，其逆矩阵为自身 $P_{ij}^{-1} = P_{ij}$；</li>
+  <li><b>倍乘行变换 $r_i \leftarrow c \cdot r_i (c \ne 0)$</b>：对应对角阵 $D_i(c)$，其逆矩阵为 $D_i(1/c)$。</li>
 </ul>
-<p>由于所有初等矩阵皆可逆，消元过程 <code>Eₖ … E₂ E₁ A = U</code> 保持矩阵行阶梯空间的秩（Rank）完全不变。根据 <b>Rouché-Capelli 定理</b>：</p>
-<div class="formula-box">
-  <div class="formula-line"><code>rank(A) = rank([A | b]) = n  ⟹  唯一解</code></div>
-  <div class="formula-line"><code>rank(A) = rank([A | b]) = r < n  ⟹  无穷多解（自由未知数个数为 n − r）</code></div>
-  <div class="formula-line"><code>rank(A) < rank([A | b])  ⟹  无解（增广列包含独立矛盾阶梯）</code></div>
+<p>由于所有初等矩阵皆可逆，消元过程 $E_k \dots E_2 E_1 A = U$ 保持矩阵行阶梯空间的秩（Rank）完全不变。根据 <b>Rouché-Capelli 定理</b>：</p>
+<div class="formula-box highlight">
+  $$\text{rank}(A) = \text{rank}([A \mid b]) = n \implies \text{唯一解}$$
+  $$\text{rank}(A) = \text{rank}([A \mid b]) = r < n \implies \text{无穷多解（自由未知数个数为 } n - r \text{）}$$
+  $$\text{rank}(A) < \text{rank}([A \mid b]) \implies \text{无解（增广列包含独立矛盾阶梯）}$$
 </div>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 21，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>system of linear equations</td><td>线性方程组</td><td>A collection of linear equations written compactly as Ax = b.</td></tr><tr><td>coefficient matrix</td><td>系数矩阵</td><td>The matrix A formed by the coefficients of the unknowns.</td></tr><tr><td>augmented matrix</td><td>增广矩阵</td><td>[A | b], the coefficient matrix with the constant column appended.</td></tr><tr><td>homogeneous system</td><td>齐次方程组</td><td>A system with b = 0; it always has the trivial solution.</td></tr><tr><td>non-homogeneous system</td><td>非齐次方程组</td><td>A system with b ≠ 0.</td></tr><tr><td>trivial solution</td><td>平凡解</td><td>x = 0, which every homogeneous system possesses.</td></tr><tr><td>non-trivial solution</td><td>非平凡解</td><td>A solution in which at least one unknown is non-zero.</td></tr><tr><td>Gaussian elimination</td><td>高斯消元</td><td>Using row operations to reduce the augmented matrix to echelon form.</td></tr><tr><td>row operation</td><td>行运算</td><td>Scaling a row by a non-zero constant, swapping rows, or adding a multiple of one row to another.</td></tr><tr><td>echelon form</td><td>阶梯形</td><td>Zeros below the leading entry of each row, with leading entries moving right.</td></tr><tr><td>back substitution</td><td>回代</td><td>Solve the last equation first, then substitute upward.</td></tr><tr><td>free variable</td><td>自由变量</td><td>A variable that can be chosen freely when the system has infinitely many solutions.</td></tr><tr><td>contradictory row</td><td>矛盾行</td><td>A row of the form [0 … 0 | c] with c ≠ 0, signalling no solution.</td></tr><tr><td>singular</td><td>奇异的</td><td>det(A) = 0; the system is either inconsistent or under-determined.</td></tr><tr><td>unique solution</td><td>唯一解</td><td>Occurs exactly when det(A) ≠ 0.</td></tr></table></div></section>
@@ -1074,13 +1076,13 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 7.1.1 特征值与特征向量的几何代数本质：不变子空间与对角化充要条件</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】特征方程 det(A − λI) = 0 的非平凡解核空间本质</b>
-<p>特征向量所在的一维子空间在变换 <code>A</code> 下保持方向不变，几何重数 <code>dim(ker(A − λI))</code> 不超过代数重数是矩阵可对角化的核心准则。</p>
+<p>特征向量所在的一维子空间在变换 $A$ 下保持方向不变，几何重数 $\dim(\ker(A - \lambda I))$ 不超过代数重数是矩阵可对角化的核心准则。</p>
 </div>
-<p>若存在非零向量 <code>v</code> 使得 <code>Av = λv</code>，说明线性变换 <code>A</code> 将一维子空间 <code>span{v}</code> 映射到其自身，该一维子空间称为算子的<b>一维不变子空间（Invariant Subspace）</b>。移项得同质方程：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>(A − λI)v = 0  ⟺  det(A − λI) = 0</code></b></div>
+<p>若存在非零向量 $v$ 使得 $Av = \lambda v$，说明线性变换 $A$ 将一维子空间 $\text{span}\{v\}$ 映射到其自身，该一维子空间称为算子的<b>一维不变子空间（Invariant Subspace）</b>。移项得同质方程：</p>
+<div class="formula-box highlight">
+  $$(A - \lambda I)v = 0 \iff \det(A - \lambda I) = 0$$
 </div>
-<p>该齐次线性方程组存在非零解当且仅当系数矩阵奇异，从而导出特征多项式。若 <code>n</code> 阶矩阵具有 <code>n</code> 个线性无关的特征向量，则可构造相似变换矩阵 <code>P = [v₁ v₂ … vₙ]</code>，使得 <code>P⁻¹AP = diag(λ₁, λ₂, …, λₙ)</code> 实现完全解耦对角化。</p>
+<p>该齐次线性方程组存在非零解当且仅当系数矩阵奇异，从而导出特征多项式。若 $n$ 阶矩阵具有 $n$ 个线性无关的特征向量，则可构造相似变换矩阵 $P = [v_1\ v_2\ \dots\ v_n]$，使得 $P^{-1}AP = \text{diag}(\lambda_1, \lambda_2, \dots, \lambda_n)$ 实现完全解耦对角化。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 25，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>eigenvalue</td><td>特征值</td><td>A number λ for which Ax = λx has a non-zero solution x.</td></tr><tr><td>eigenvector</td><td>特征向量</td><td>A non-zero vector x satisfying Ax = λx.</td></tr><tr><td>characteristic equation</td><td>特征方程</td><td>det(A − λI) = 0; its roots are the eigenvalues.</td></tr><tr><td>characteristic polynomial</td><td>特征多项式</td><td>The polynomial det(A − λI) in λ.</td></tr><tr><td>identity matrix</td><td>单位阵</td><td>I, needed to write A − λI because λ is a scalar.</td></tr><tr><td>repeated eigenvalue</td><td>重特征值</td><td>A double root of the characteristic equation, e.g. λ = 5 twice.</td></tr><tr><td>trace</td><td>迹</td><td>The sum of the diagonal entries; equals the sum of the eigenvalues.</td></tr><tr><td>singular matrix</td><td>奇异矩阵</td><td>A − λI is singular exactly at the eigenvalues.</td></tr><tr><td>Cramer's rule</td><td>克拉默法则</td><td>x_i = det(A_i)/det(A), where column i of A is replaced by b.</td></tr><tr><td>non-trivial solution</td><td>非平凡解</td><td>A non-zero solution of the homogeneous system (A − λI)x = 0.</td></tr><tr><td>determinant of the coefficient matrix</td><td>系数行列式</td><td>det(A); it must be non-zero for Cramer's rule to apply.</td></tr><tr><td>stretching factor</td><td>伸缩倍数</td><td>The geometric meaning of λ along an eigenvector direction.</td></tr><tr><td>natural frequency</td><td>固有频率</td><td>An engineering interpretation of eigenvalues in vibration problems.</td></tr><tr><td>unique solution</td><td>唯一解</td><td>Guaranteed when det(A) ≠ 0, for any right-hand side b.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　求 <code>A = [[4, 1], [2, 3]]</code> 的特征值。</div><p><b>写特征方程。</b><code>det(A − λI) = (4 − λ)(3 − λ) − 1×2</code>。</p><p>展开：<code>12 − 7λ + λ² − 2 = λ² − 7λ + 10</code>。</p><p><b>解方程。</b><code>(λ − 2)(λ − 5) = 0</code>，故 <b>λ = 2 或 λ = 5</b>。</p><p><b>双验算。</b>tr = 4 + 3 = 7 = 2 + 5 ✓；det = 12 − 2 = 10 = 2 × 5 ✓。</p></div><div class="qa"><div class="q">例 2　求 <code>A = [[2, 1], [1, 2]]</code> 的特征值，并说明 λ = 1 对应的特征向量方向。</div><p><b>特征方程。</b><code>(2 − λ)² − 1 = λ² − 4λ + 3 = (λ − 1)(λ − 3)</code>，故 λ = 1 或 λ = 3。</p><p><b>λ = 1 的方向。</b>解 <code>(A − I)x = 0</code>：<code>[[1, 1], [1, 1]]·[x, y] = 0</code>，即 <code>x + y = 0</code>，方向向量取 (1, −1)。</p><p><b>几何解释。</b>沿 (1, −1) 方向，矩阵的作用是乘 1（长度不变、方向不变）；沿 (1, 1) 方向则乘 3（拉伸三倍）。这正是对称阵的典型行为：两个特征方向互相垂直。</p></div><div class="qa"><div class="q">例 3　用克拉默法则解 <code>2x + y = 5</code>、<code>x + 3y = 10</code>，并只用克拉默法则求 y。</div><p><b>系数行列式。</b><code>det(A) = 2×3 − 1×1 = 5</code>。</p><p><b>替换第一列求 x。</b><code>det(A₁) = det[[5, 1], [10, 3]] = 15 − 10 = 5</code>，故 <code>x = 5/5 = 1</code>。</p><p><b>替换第二列求 y。</b><code>det(A₂) = det[[2, 5], [1, 10]] = 20 − 5 = 15</code>，故 <code>y = 15/5 = 3</code>。</p><p><b>检验。</b><code>2 + 3 = 5</code> ✓；<code>1 + 9 = 10</code> ✓。若题目只问 y，只需算 <code>det(A₂)</code> 与 <code>det(A)</code> 两个行列式。</p></div><div class="qa"><div class="q">例 4　求 <code>A = [[0, 1], [−2, −3]]</code> 的特征值，并判断对应的变换是拉伸还是反向。</div><p><b>特征方程。</b><code>det(A − λI) = (−λ)(−3 − λ) − 1×(−2) = λ² + 3λ + 2</code>。</p><p><b>解。</b><code>(λ + 1)(λ + 2) = 0</code>，故 <b>λ = −1 或 λ = −2</b>。</p><p><b>几何判断。</b>两个特征值都是负数，说明沿两个特征方向矩阵都「反向」。λ = −1 时长度不变、方向反转；λ = −2 时反向并放大一倍。</p><p><b>验算。</b>tr = 0 + (−3) = −3 = (−1) + (−2) ✓；det = 0 − (−2) = 2 = (−1)(−2) ✓。</p></div></section>
@@ -1121,26 +1123,29 @@ a.cw-name{color:var(--accent-deep)}
 <h3><span class="badge purple">拓展深化</span> 8.4.1 柯西-施瓦茨不等式（Cauchy-Schwarz）判别式代数证明与三角不等式</h3>
 <div class="callout idea" data-ext="true">
 <b>【拓展深化】基于二次实多项式非负性与判别式 Δ ≤ 0 的精妙证明</b>
-<p>构建参数化二次实多项式 <code>P(t) = ||u + t v||² ≥ 0</code>，利用实数二次型恒非负则一元二次方程判别式必须非正，彻底推导出向量内积的核心不等式。</p>
+<p>构建参数化二次实多项式 $P(t) = \|u + t v\|^2 \ge 0$，利用实数二次型恒非负则一元二次方程判别式必须非正，彻底推导出向量内积的核心不等式。</p>
 </div>
-<p><b>【严密代数证明】</b> 对任意实内积空间中的向量 <code>u, v</code>，构造实变量 <code>t</code> 的标量函数：</p>
+<p><b>【严密代数证明】</b> 对任意实内积空间中的向量 $u, v$，构造实变量 $t$ 的标量函数：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>P(t) = ||u + t v||² = (u + t v) · (u + t v) = ||v||² t² + 2(u · v) t + ||u||²</code></div>
+  $$P(t) = \|u + t v\|^2 = (u + t v) \cdot (u + t v) = \|v\|^2 t^2 + 2(u \cdot v) t + \|u\|^2$$
 </div>
-<p>根据内积的正定性，对任意实数 <code>t</code> 恒有 <code>P(t) ≥ 0</code>。这是一个关于 <code>t</code> 的一元二次多项式。若 <code>||v|| ≠ 0</code>，它要对所有实数 <code>t</code> 恒非负，其对应二次方程的一元二次判别式 <code>Δ</code> 必须满足 <code>Δ ≤ 0</code>：</p>
+<p>根据内积的正定性，对任意实数 $t$ 恒有 $P(t) \ge 0$。这是一个关于 $t$ 的一元二次多项式。若 $\|v\| \ne 0$，它要对所有实数 $t$ 恒非负，其对应二次方程的一元二次判别式 $\Delta$ 必须满足 $\Delta \le 0$：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>Δ = [2(u · v)]² − 4 · ||v||² · ||u||² ≤ 0</code></div>
-  <div class="formula-line"><code>4(u · v)² ≤ 4 ||u||² ||v||²  ⟹  (u · v)² ≤ ||u||² ||v||²</code></div>
-  <div class="formula-line"><b><code>|u · v| ≤ ||u|| · ||v||</code></b></div>
+  $$\Delta = [2(u \cdot v)]^2 - 4 \|v\|^2 \|u\|^2 \le 0$$
+  $$4(u \cdot v)^2 \le 4 \|u\|^2 \|v\|^2 \implies (u \cdot v)^2 \le \|u\|^2 \|v\|^2$$
 </div>
-<p>两边开平方即得<b>柯西-施瓦茨不等式</b>，等号成立当且仅当 <code>u</code> 与 <code>v</code> 线性相关。</p>
+<div class="formula-box highlight">
+  $$|u \cdot v| \le \|u\| \|v\|$$
+</div>
+<p>两边开平方即得<b>柯西-施瓦茨不等式</b>，等号成立当且仅当 $u$ 与 $v$ 线性相关。</p>
 <p><b>【推论：三角不等式】</b> 考察两向量之和的模平方：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>||u + v||² = ||u||² + 2(u · v) + ||v||² ≤ ||u||² + 2|u · v| + ||v||²</code></div>
-  <div class="formula-line"><code>≤ ||u||² + 2||u|| · ||v|| + ||v||² = (||u|| + ||v||)²</code></div>
-  <div class="formula-line"><b><code>||u + v|| ≤ ||u|| + ||v||</code></b></div>
+  $$\|u + v\|^2 = \|u\|^2 + 2(u \cdot v) + \|v\|^2 \le \|u\|^2 + 2|u \cdot v| + \|v\|^2 \le (\|u\| + \|v\|)^2$$
 </div>
-<p>证毕。这从代数上保证了内积空间中两向量夹角余弦 <code>cos θ = (u · v) / (||u|| ||v||)</code> 严格落在 <code>[−1, 1]</code> 区间内，使得空间夹角概念具有严格的几何自洽性。</p>
+<div class="formula-box highlight">
+  $$\|u + v\| \le \|u\| + \|v\|$$
+</div>
+<p>证毕。这从代数上保证了内积空间中两向量夹角余弦 $\cos\theta = \frac{u \cdot v}{\|u\| \|v\|}$ 严格落在 $[-1, 1]$ 区间内，使得空间夹角概念具有严格的几何自洽性。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 27，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>scalar</td><td>标量</td><td>A quantity with magnitude only: length, mass, temperature.</td></tr><tr><td>vector</td><td>向量</td><td>A quantity with both magnitude and direction: force, velocity, displacement.</td></tr><tr><td>magnitude</td><td>模</td><td>|v|, the length of the arrow representing the vector.</td></tr><tr><td>equal vectors</td><td>相等向量</td><td>Same length and same direction, regardless of position.</td></tr><tr><td>triangle law</td><td>三角形法则</td><td>Place the tail of v at the head of u; u + v runs from the tail of u to the head of v.</td></tr><tr><td>parallelogram law</td><td>平行四边形法则</td><td>The diagonal of the parallelogram spanned by u and v is u + v.</td></tr><tr><td>scalar multiple</td><td>数乘</td><td>ku has magnitude |k||u|; direction is the same if k &gt; 0 and opposite if k &lt; 0.</td></tr><tr><td>position vector</td><td>位置向量</td><td>The vector from the origin to a point P.</td></tr><tr><td>unit vector</td><td>单位向量</td><td>û = u/|u|, a vector of length 1 in the direction of u.</td></tr><tr><td>standard basis vectors</td><td>标准基向量</td><td>i = ⟨1,0⟩, j = ⟨0,1⟩ in the plane and additionally k = ⟨0,0,1⟩ in space.</td></tr><tr><td>dot product</td><td>点积</td><td>u·v = x₁x₂ + y₁y₂ + z₁z₂; also called inner or scalar product.</td></tr><tr><td>orthogonal</td><td>正交</td><td>u·v = 0; the angle between the vectors is 90°.</td></tr><tr><td>angle between vectors</td><td>向量夹角</td><td>θ = cos⁻¹(u·v/(|u||v|)).</td></tr><tr><td>Cauchy-Schwarz inequality</td><td>柯西–施瓦茨不等式</td><td>|u·v| ≤ |u||v|, with equality when the vectors are collinear.</td></tr><tr><td>triangle inequality</td><td>三角不等式</td><td>|u + v| ≤ |u| + |v|.</td></tr><tr><td>normalization</td><td>单位化</td><td>Dividing a vector by its magnitude to obtain a unit vector.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　设 <code>u = ⟨2, −1, 3⟩</code>、<code>v = ⟨1, 4, −2⟩</code>，求 <code>2u − 3v</code>、<code>|u|</code>、<code>u·v</code> 与二者的夹角。</div><p><b>线性组合。</b><code>2u = ⟨4, −2, 6⟩</code>，<code>3v = ⟨3, 12, −6⟩</code>，故 <code>2u − 3v = ⟨1, −14, 12⟩</code>。</p><p><b>模。</b><code>|u| = √(4 + 1 + 9) = √14</code>，<code>|v| = √(1 + 16 + 4) = √21</code>。</p><p><b>点积。</b><code>u·v = 2×1 + (−1)×4 + 3×(−2) = 2 − 4 − 6 = −8</code>。</p><p><b>夹角。</b><code>cos θ = −8/(√14·√21) = −8/√294 ≈ −0.4665</code>，故 <code>θ ≈ 117.8°</code>。点积为负，夹角为钝角，与结果一致。</p></div><div class="qa"><div class="q">例 2　已知 <code>u = ⟨1, 2, 2⟩</code>，求与 u 同向的单位向量，并求 u 与 <code>w = ⟨2, 1, −2⟩</code> 的夹角。</div><p><b>单位化。</b><code>|u| = √(1 + 4 + 4) = 3</code>，故 <code>û = ⟨1/3, 2/3, 2/3⟩</code>。检验：<code>(1 + 4 + 4)/9 = 1</code> ✓。</p><p><b>点积。</b><code>u·w = 2 + 2 − 4 = 0</code>，故 u ⊥ w，夹角为 90°。</p><p><b>点评。</b>点积为 0 是最快的正交判据，不必算模与反余弦。本题若硬套夹角公式，会得到 <code>cos θ = 0</code>，一样能得出结论，但多算了两步。</p></div><div class="qa"><div class="q">例 3　已知 <code>|u| = 3</code>、<code>|v| = 5</code>、<code>u·v = 6</code>，求 <code>|u + v|</code> 与 <code>|u − v|</code>。</div><p><b>用点积展开。</b><code>|u + v|² = |u|² + 2u·v + |v|² = 9 + 12 + 25 = 46</code>，故 <code>|u + v| = √46</code>。</p><p><code>|u − v|² = |u|² − 2u·v + |v|² = 9 − 12 + 25 = 22</code>，故 <code>|u − v| = √22 ≈ 4.69</code>。</p><p><b>验算三角不等式。</b><code>√46 ≈ 6.78 ≤ 3 + 5 = 8</code> ✓。两条对角线长度的平方和为 <code>46 + 22 = 68 = 2(9 + 25)</code>，正是平行四边形定律 <code>|u+v|² + |u−v|² = 2(|u|² + |v|²)</code>——这个恒等式可以用来检查答案。</p></div><div class="qa"><div class="q">例 4　用柯西–施瓦茨不等式求 <code>2x + 3y + z</code> 在条件 <code>x² + y² + z² = 1</code> 下的最大值。</div><p><b>配向量。</b>取 <code>u = ⟨2, 3, 1⟩</code>、<code>v = ⟨x, y, z⟩</code>，则 <code>u·v = 2x + 3y + z</code>，<code>|v| = 1</code>，<code>|u| = √14</code>。</p><p><b>用不等式。</b><code>|2x + 3y + z| ≤ √14 · 1 = √14</code>，故最大值为 <code>√14</code>。</p><p><b>验证取等。</b>取等要求 <code>v</code> 与 <code>u</code> 同向，即 <code>⟨x, y, z⟩ = ⟨2, 3, 1⟩/√14</code>。代入 <code>x² + y² + z² = (4 + 9 + 1)/14 = 1</code> ✓，故最大值确实能取到。</p><p><b>点评。</b>柯西–施瓦茨的用法固定：把「线性组合」看成点积，把「平方和」看成模的平方，然后套不等式。取等条件必须验证，否则无法排除「上界取不到」的可能。</p></div></section>
@@ -1391,6 +1396,26 @@ a.cw-name{color:var(--accent-deep)}
 })();
 </script>
 <script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script defer src="../../assets/katex/katex.min.js"></script>
+<script defer src="../../assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\[", right: "\]", display: true },
+        { left: "\(", right: "\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 <script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');

@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>课程合订本</title>
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
 <style>:root{
   color-scheme:light dark;
   --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
@@ -549,6 +550,8 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
 .formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box .katex-display{margin:0.25em 0;text-align:center}
+.formula-box .katex{font-size:1.08em}
 .formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
 .formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
 .formula-box.left .formula-line{text-align:left}
@@ -922,15 +925,15 @@ a.cw-name{color:var(--accent-deep)}
 <b>【拓展深化】网络分区下一致性（Consistency）与可用性（Availability）的不可能三角反证</b>
 <p>严格反证说明在异步不可靠网络信道中，为什么任何分布式数据存储无法同时实现强一致性、高可用性与分区容错性。</p>
 </div>
-<p><b>严密反证构造</b>：设分布式系统由两个独立节点 <code>G₁, G₂</code> 组成。当物理光缆中断时，系统陷入分区状态 <code>P</code>（<code>G₁</code> 与 <code>G₂</code> 无法通信）：</p>
+<p><b>严密反证构造</b>：设分布式系统由两个独立节点 $G_1, G_2$ 组成。当物理光缆中断时，系统陷入分区状态 $P$（$G_1$ 与 $G_2$ 无法通信）：</p>
 <ul>
-  <li>客户端向 <code>G₁</code> 发起写请求 <code>Write(v = 1)</code>；</li>
-  <li>若系统满足可用性（A），<code>G₁</code> 必须在不能与 <code>G₂</code> 通信的情况下单方面向客户端确认写入成功；</li>
-  <li>紧接着另一个客户端向 <code>G₂</code> 发起读请求 <code>Read()</code>；</li>
-  <li>若系统要保证可用性（A），<code>G₂</code> 必须立刻响应而不能无限阻塞等待网络恢复；</li>
-  <li>但因为网络分区阻断了 <code>G₁</code> 向 <code>G₂</code> 同步数据的消息，<code>G₂</code> 只能返回旧值 <code>v = 0</code>。</li>
+  <li>客户端向 $G_1$ 发起写请求 <code>Write(v=1)</code>；</li>
+  <li>若系统满足可用性（A），$G_1$ 必须在不能与 $G_2$ 通信的情况下单方面向客户端确认写入成功；</li>
+  <li>紧接着另一个客户端向 $G_2$ 发起读请求 <code>Read()</code>；</li>
+  <li>若系统要保证可用性（A），$G_2$ 必须立刻响应而不能无限阻塞等待网络恢复；</li>
+  <li>但因为网络分区阻断了 $G_1$ 向 $G_2$ 同步数据的消息，$G_2$ 只能返回旧值 $v=0$。</li>
 </ul>
-<p>此时客户端在 <code>G₂</code> 上读到了脏数据，违反了强一致性（C）。若强制要求一致性，<code>G₂</code> 必须拒绝请求报错，则违反了可用性（A）。因此在分区容错（P）不可避免的物理现实下，架构师必须在 AP 与 CP 之间做出取舍权衡。</p>
+<p>此时客户端在 $G_2$ 上读到了脏数据，违反了强一致性（C）。若强制要求一致性，$G_2$ 必须拒绝请求报错，则违反了可用性（A）。因此在分区容错（P）不可避免的物理现实下，架构师必须在 AP 与 CP 之间做出取舍权衡。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 56，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>architectural design</td><td>体系结构设计</td><td>Understanding how a system should be organised and designing its overall structure.</td></tr><tr><td>architecture in the small</td><td>程序内架构</td><td>Architecture of individual programs: how one program is decomposed.</td></tr><tr><td>architecture in the large</td><td>企业级架构</td><td>Architecture of complex enterprise systems including other systems, possibly owned by different companies.</td></tr><tr><td>box and line diagram</td><td>盒线图</td><td>Informal block diagram; lacks semantics but useful for communication and planning.</td></tr><tr><td>architectural pattern</td><td>架构模式</td><td>A stylised description of good design practice tried in different environments.</td></tr><tr><td>MVC</td><td>模型-视图-控制器</td><td>Separates presentation and interaction from system data.</td></tr><tr><td>layered architecture</td><td>分层架构</td><td>Layers of related functionality; each layer provides services to the layer above.</td></tr><tr><td>repository architecture</td><td>仓库架构</td><td>All data managed in a central repository; components interact only through it.</td></tr><tr><td>client-server</td><td>客户-服务器</td><td>Services delivered by separate servers; clients access them over a network.</td></tr><tr><td>pipe and filter</td><td>管道-过滤器</td><td>Each processing component performs one transformation; data flows between them.</td></tr><tr><td>application architecture</td><td>应用架构</td><td>A generic architecture for a type of software system, configurable for specific requirements.</td></tr><tr><td>architectural view</td><td>架构视图</td><td>Logical, development, process, physical and scenario views; each shows one perspective.</td></tr><tr><td>single point of failure</td><td>单点故障</td><td>One component whose failure brings down the whole system, e.g. a repository or a server.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　按非功能需求选策略</div><p>情境：某证券行情系统要求：① 行情推送端到端延迟 &lt; 100 ms；② 交易指令必须防止越权；③ 系统全年可用性 99.99%；④ 策略模块需每周更新并可独立上线。请为每条需求给出架构策略。</p><p><b>分析：</b>逐条对应课件的「特征 → 策略」表。</p><p>① 性能 → <b>局部化关键操作、最小化通信、使用大粒度构件</b>。具体做法：把行情解析与推送放在同一进程内，避免跨进程序列化；用批量推送代替逐条推送。</p><p>② 安全 → <b>分层架构、关键资产在内层</b>。具体做法：把指令校验与签名放在最内层，外层网关只做限流与鉴权；即使外层被攻破，内层仍需独立授权。</p><p>③ 可用性 → <b>冗余构件 + 容错机制</b>。具体做法：推送服务双活、数据库主备 + 自动切换、关键链路熔断降级。</p><p>④ 可维护性 → <b>细粒度、可替换构件</b>。具体做法：策略模块做成独立服务/插件，定义稳定接口，支持灰度与回滚。</p><p><b>冲突提示：</b>①要「大粒度」，④要「细粒度」——两者在同一系统里冲突。可行解是分层处理：行情链路用大粒度，策略模块用细粒度，并在架构文档中明确这条权衡。</p></div><div class="qa"><div class="q">例 2　MVC 与分层，选哪个</div><p>情境：某高校要做「教师工作量统计」系统：数据来自教务、科研、人事三个库；同一份数据要给教师看（明细）、给院长看（汇总）、给人事看（报表导出）。请选架构模式并说明理由。</p><p><b>分析：</b>先抓「同一份数据的多种表示」这个特征——这是 MVC 的典型适用条件；再抓「多来源数据 + 事务一致性」——这是仓库架构的适用条件。两者并不互斥：系统整体可用仓库，表示层用 MVC。</p><p><b>方案：</b>总体采用<b>仓库架构</b>：建立中央工作量数据仓库，从三个源系统抽取、清洗、汇总；各前端不直接连源库，只读仓库。表示层采用 <b>MVC</b>：Model 是工作量数据与聚合逻辑，View 分别是教师明细页、院长看板、人事报表，Controller 处理筛选与导出请求。</p><p><b>理由：</b>仓库避免三套口径不一致（数据集中、可一致管理），并使前端与源系统解耦；MVC 使三种视图共享同一模型，修改一处表示不影响其他。</p><p><b>风险：</b>仓库是单点故障，且抽取任务失败会导致数据陈旧——需加监控与重跑机制；这正是仓库模式「缺点」栏的内容。</p></div><div class="qa"><div class="q">例 3　管道-过滤器还是客户-服务器</div><p>情境：某银行每晚要处理百万级交易流水：解析 → 反洗钱规则匹配 → 计费 → 汇总 → 生成报表。另有柜员需要实时查询单笔交易状态。请判断两类需求分别适合什么架构。</p><p><b>分析：</b>批处理链路是「顺序变换、输入分阶段处理、生成相关输出」——正是管道-过滤器的定义场景（顺序时称批顺序模型）。实时单笔查询是「从多个位置访问共享数据」——正是客户-服务器的适用条件。</p><p><b>方案：</b>批处理链路用<b>管道-过滤器</b>：每个过滤器只做一种变换，中间结果用约定格式（如 Avro/Parquet）落盘；新增反欺诈规则时只需插入一个过滤器，符合「通过增加变换来演化很直接」的优点。实时查询用<b>客户-服务器</b>：查询服务作为服务器，柜员终端作为客户。</p><p><b>注意管道-过滤器的代价：</b>相邻过滤器必须就数据格式达成一致，每个过滤器都要解析输入、反解析输出，开销不小；若某一步骤需要全局状态（如跨笔交易的关联分析），纯管道模型会很别扭，需要引入共享存储。</p></div><div class="qa"><div class="q">例 4　用五种视图描述一个架构</div><p>情境：请用逻辑、开发、进程、物理、场景五种视图描述一个「在线考试系统」，每个视图写两句话。</p><p><b>逻辑视图：</b>系统由 Exam、Question、AnswerSheet、Grading、Proctor 等关键抽象组成；Exam 聚合 Question，AnswerSheet 关联 Exam 与 Student。它回答「系统向用户提供哪些服务」。</p><p><b>开发视图：</b>代码分为 exam-core、grading-engine、web-api、web-ui 四个模块，分别由 2–3 人小组开发；grading-engine 以独立库形式被 web-api 依赖。它回答「开发环境里如何分包」。</p><p><b>进程视图：</b>web-api 多实例部署于负载均衡之后；grading-engine 作为独立进程消费阅卷队列，支持水平扩容；考试进行中禁止重启 web-api。它回答「并发与分布如何安排」。</p><p><b>物理视图：</b>web-api 与数据库部署在主数据中心，阅卷集群部署在可弹性伸缩的云区域；数据库跨可用区主备。它回答「软件映射到哪些节点」。</p><p><b>场景视图：</b>场景「考试开始前 5 分钟 3000 名学生同时进入」：负载均衡 → web-api 扩容 → 题库缓存预热 → 数据库连接池打满告警。它用具体用例验证其他四个视图能否支撑真实负载。</p><p><b>要点：</b>五个视图不是五份文档，而是同一架构的五个投影；写完后要检查它们是否矛盾（例如进程视图说「多实例」，逻辑视图就不能假设单例状态）。</p></div></section>
@@ -944,15 +947,15 @@ a.cw-name{color:var(--accent-deep)}
 <b>【拓展深化】图论欧拉示性数推导圈复杂度公式 V(G) = E − V + 2 = π + 1</b>
 <p>通过控制流图（CFG）的代数拓扑回路基底，严格推导程序线性独立路径数量的计算方法，指导基本路径测试集的覆盖设计。</p>
 </div>
-<p><b>【数学公式推导】</b> 设程序的控制流图为强连通有向图 <code>G = (V, E)</code>，其中 <code>V</code> 为指令块节点数，<code>E</code> 为控制流转移边数。根据代数拓扑学欧拉示性数，图的独立回路数（圈复杂度）由下式严格定义：</p>
+<p><b>【数学公式推导】</b> 设程序的控制流图为强连通有向图 $G = (V, E)$，其中 $V$ 为指令块节点数，$E$ 为控制流转移边数。根据代数拓扑学欧拉示性数，图的独立回路数（圈复杂度）由下式严格定义：</p>
 <div class="formula-box">
-  <div class="formula-line"><b><code>V(G) = E − V + 2P</code></b></div>
+  $$V(G) = E - V + 2P$$
 </div>
-<p>对于单入口单出口的独立函数模块（连通分支数 <code>P = 1</code>），公式简化为：</p>
-<div class="formula-box">
-  <div class="formula-line"><b><code>V(G) = E − V + 2 = π + 1</code></b></div>
+<p>对于单入口单出口的独立函数模块（连通分支数 $P = 1$），公式简化为：</p>
+<div class="formula-box highlight">
+  $$V(G) = E - V + 2 = \pi + 1$$
 </div>
-<p>其中 <code>π</code> 是图中的判定分支节点数（如 <code>if, while, for</code>）。圈复杂度给出了设计全分支覆盖所需的<b>最小线性独立测试路径数</b>，通常工业界建议单个函数的 <code>V(G) ≤ 10</code>，若超过 15 则必须实施重构拆分。</p>
+<p>其中 $\pi$ 是图中的判定分支节点数（如 <code>if, while, for</code>）。圈复杂度给出了设计全分支覆盖所需的<b>最小线性独立测试路径数</b>，通常工业界建议单个函数的 $V(G) \le 10$，若超过 15 则必须实施重构拆分。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 67，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>verification</td><td>验证</td><td>Are we building the product right? Conform to specification.</td></tr><tr><td>validation</td><td>确认</td><td>Are we building the right product? Do what the user really requires.</td></tr><tr><td>defect testing</td><td>缺陷测试</td><td>Test cases designed to expose defects; a successful test makes the system fail.</td></tr><tr><td>software inspection</td><td>软件检查</td><td>Static analysis of representations by people, without executing the system.</td></tr><tr><td>unit testing</td><td>单元测试</td><td>Testing individual components in isolation; a defect testing process.</td></tr><tr><td>component testing</td><td>构件测试</td><td>Testing composite components, focusing on component interfaces.</td></tr><tr><td>interface misuse</td><td>接口误用</td><td>A calling component makes an error in using the interface, e.g. wrong parameter order.</td></tr><tr><td>interface misunderstanding</td><td>接口误解</td><td>The caller embeds incorrect assumptions about the called component’s behaviour.</td></tr><tr><td>timing error</td><td>时序错误</td><td>Components operate at different speeds and out-of-date information is accessed.</td></tr><tr><td>system testing</td><td>系统测试</td><td>Testing integrated components; focus on interactions and emergent behaviour.</td></tr><tr><td>test-driven development</td><td>测试驱动开发</td><td>Tests written before code; passing tests drives development.</td></tr><tr><td>release testing</td><td>发布测试</td><td>Black-box testing of a release by an independent team to show it is good enough for use.</td></tr><tr><td>stress testing</td><td>压力测试</td><td>Deliberately overloading the system to test its failure behaviour.</td></tr><tr><td>acceptance testing</td><td>验收测试</td><td>Customers decide whether to accept the system for deployment.</td></tr><tr><td>equivalence partitioning</td><td>等价类划分</td><td>Dividing the input domain into classes that behave equivalently; pick one test per class.</td></tr><tr><td>software quality management</td><td>软件质量管理</td><td>A systematic process ensuring software meets standards of functionality, reliability and satisfaction.</td></tr></table></div></section>
 <section class="card" data-type="examples"><div class="qa"><div class="q">例 1　等价类划分与边界值</div><p>情境：某函数接收「年龄」参数（整数，允许 0–120），用于保险报价；小于 18 岁需监护人确认，18–65 为成人费率，66 及以上为老年费率。请设计等价类与测试用例。</p><p><b>分析：</b>先分有效类与无效类，再按业务规则把有效域细分，最后补边界。</p><p><b>有效等价类：</b>E1 = 0–17（未成年）；E2 = 18–65（成人）；E3 = 66–120（老年）。<b>无效等价类：</b>I1 = 负数；I2 = 121 及以上；I3 = 非整数（如 3.5）；I4 = 非数字（如空、字母）。</p><p><b>代表值：</b>E1 取 10；E2 取 30；E3 取 80；I1 取 −1；I2 取 121；I3 取 17.5；I4 取「abc」。共 7 个用例。</p><p><b>边界值（必须补）：</b>−1、0、17、18、65、66、120、121。边界最容易出错，因为实现常用 &lt; 与 ≤ 混淆。</p><p><b>期望输出要写清：</b>E1 应返回「需监护人确认」并给出未成年费率；E2 成人费率；E3 老年费率；无效类应抛出明确错误而非静默返回默认值。</p></div><div class="qa"><div class="q">例 2　三类接口错误的识别</div><p>情境：某支付服务调用风控服务。① 风控接口签名为 check(userId, amount, currency)，调用方写成 check(amount, userId, currency)；② 调用方假设「风控返回 false 时一定抛异常」，实际是返回「code = RISK」；③ 风控侧每 200 ms 刷新一次黑名单，支付侧在请求开始时读取黑名单快照，但请求排队 1 秒后才执行。请分别归类。</p><p><b>解：</b>① 参数顺序传反 → <b>接口误用 interface misuse</b>（调用方使用接口时出错）。</p><p>② 对返回契约的错误假设 → <b>接口误解 interface misunderstanding</b>（对被调用方行为嵌入了错误假设）。这类错误往往在集成测试才暴露，因为单元测试里 mock 的行为是调用方自己设想的。</p><p>③ 快照过期 → <b>时序错误 timing error</b>（两侧速度/时序不同，读到过期信息）。</p><p><b>对策：</b>① 用具名参数或 DTO 替代长参数列表；② 契约测试（consumer-driven contract test）+ 明确文档；③ 在请求执行时而非入队时读取黑名单，或用版本号校验。</p></div><div class="qa"><div class="q">例 3　TDD 循环与它的边界</div><p>情境：要实现「密码强度校验」：长度 ≥ 12，含大写、小写、数字、符号中至少三类，不得包含用户名。请写出 TDD 的前三轮循环，并说明哪一类测试不适合用 TDD 增量编写。</p><p><b>第一轮：</b>写测试「长度 11 的密码应被判为弱」→ 运行，失败（功能未实现）→ 实现最小逻辑（长度检查）→ 重跑，通过。</p><p><b>第二轮：</b>写测试「长度 12 但只含小写的密码应被判为弱」→ 失败 → 增加字符类别计数 → 通过。</p><p><b>第三轮：</b>写测试「包含用户名（不区分大小写）的强密码应被判为弱」→ 失败 → 增加用户名比对 → 通过。</p><p><b>收益对应：</b>每轮都留下一个回归测试（回归测试增量建立）；失败时只需看新写的代码（简化调试）；测试本身就是「密码规则」的可执行文档（系统文档）；每段实现代码都有测试（覆盖率）。</p><p><b>不适合增量编写：</b>复杂界面的「显示逻辑」与屏幕间工作流——因为难以在界面未成形时写出稳定的断言；这类测试更适合在界面稳定后用端到端测试或人工探索性测试补足。这正是课件列出的 TDD 问题之一。</p></div><div class="qa"><div class="q">例 4　设计发布测试与用户测试</div><p>情境：某公司要把一套「药店库存与处方核对」系统卖给连锁药店（通用产品）。请设计发布测试与用户测试方案，并说明各自不能替代什么。</p><p><b>发布测试（独立团队，黑盒，从规格导出）：</b>① 功能覆盖：规格中每条需求至少一个用例，含处方核对的正例与反例（药物相互作用、剂量超限、重复用药）；② 非功能：在典型药店网络（4G 备份链路）下的响应时间；③ 性能与压力：模拟 200 家门店同时在早高峰下单，负载逐步增加至性能不可接受，记录失效行为；④ 可靠性：连续运行 7 天，检查内存泄漏与数据一致性。</p><p><b>用户测试：</b>alpha——选 3 家合作药店，在开发者场所模拟真实柜台流程，观察药师操作；beta——向 30 家门店发布候选版本，收集问题报告；验收——由连锁总部按合同条款逐项验收（可用性、数据迁移、报表口径）。</p><p><b>不能替代什么：</b>发布测试不能替代用户测试——药店的柜台空间、网络抖动、药师的工作习惯无法在测试环境复制（课件原句：these cannot be replicated in a testing environment）；用户测试也不能替代发布测试——用户不会系统覆盖规格，也测不出压力下的失效行为。</p></div></section>
@@ -1402,6 +1405,26 @@ a.cw-name{color:var(--accent-deep)}
 })();
 </script>
 <script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script defer src="../../assets/katex/katex.min.js"></script>
+<script defer src="../../assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\[", right: "\]", display: true },
+        { left: "\(", right: "\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 <script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');

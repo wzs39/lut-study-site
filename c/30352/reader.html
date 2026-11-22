@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>课程合订本</title>
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
 <style>:root{
   color-scheme:light dark;
   --bg:#f4f6fa; --fg:#18202c; --muted:#5a6575; --line:#e2e7ef; --line-soft:#edf1f7;
@@ -549,6 +550,8 @@ sup,sub{line-height:0;font-size:.78em}
 
 /* ---------- 严谨数学公式与推导卡片视觉增强 ---------- */
 .formula-box{margin:1.15em 0;padding:14px 18px;background:var(--detail-bg);border:1px solid var(--callout-line);border-left:4px solid var(--purple);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,0.03);overflow-x:auto}
+.formula-box .katex-display{margin:0.25em 0;text-align:center}
+.formula-box .katex{font-size:1.08em}
 .formula-box.highlight{background:var(--purple-soft);border-color:var(--purple)}
 .formula-line{font-family:"Cascadia Code",Consolas,"SFMono-Regular",Menlo,Monaco,monospace;font-size:1.02em;color:var(--fg);line-height:1.65;text-align:center}
 .formula-box.left .formula-line{text-align:left}
@@ -2524,11 +2527,11 @@ print(np.ones((2, 4)))</code></pre><div class="table-scroll" role="region" tabin
 <b>【拓展深化】ndarray 结构体、跨步（Strides）计算与零拷贝切片机理</b>
 <p>解密 NumPy 为何比原生 Python 列表快 100 倍以上：连续内存块、CPU L1/L2 缓存友好性与基于步长的多维张量索引代数。</p>
 </div>
-<p><b>1. 内存存储模型：从扁平一维数组到高维张量</b>：NumPy 数组内部由两部分构成：一块连续的 C 语言原生内存缓冲区（Data Buffer）和元数据（Shape, Dtype, Strides）。对于形状为 <code>(d₀, d₁, …, dₖ₋₁)</code> 的数组，其步长元组 <code>(s₀, s₁, …, sₖ₋₁)</code> 严格定义了每个维度递增 1 时在物理内存中跳跃的字节数：</p>
+<p><b>1. 内存存储模型：从扁平一维数组到高维张量</b>：NumPy 数组内部由两部分构成：一块连续的 C 语言原生内存缓冲区（Data Buffer）和元数据（Shape, Dtype, Strides）。对于形状为 $(d_0, d_1, \dots, d_{k-1})$ 的数组，其步长元组 $(s_0, s_1, \dots, s_{k-1})$ 严格定义了每个维度递增 1 时在物理内存中跳跃的字节数：</p>
 <div class="formula-box">
-  <div class="formula-line"><code>Memory_Offset = ∑ᵢ₌₀ⁿ⁻¹ (indexᵢ · strideᵢ)</code></div>
+  $$\text{Memory\_Offset} = \sum_{i=0}^{n-1} (\text{index}_i \cdot \text{stride}_i)$$
 </div>
-<p>切片操作（如 <code>arr[::2, :]</code>）仅修改 <code>shape</code> 和 <code>strides</code> 元数据，完全不复制底层数据缓冲区，因此耗时恒为 O(1) 零拷贝（Zero-copy View）。</p>
+<p>切片操作（如 <code>arr[::2, :]</code>）仅修改 <code>shape</code> 和 <code>strides</code> 元数据，完全不复制底层数据缓冲区，因此耗时恒为 $O(1)$ 零拷贝（Zero-copy View）。</p>
 <p><b>2. 广播机制（Broadcasting Rules）严格算法</b>：两数组在某维度上兼容当且仅当：该维大小相等，或者其中一个数组该维大小为 1。当某一维为 1 时，NumPy 将该维的步长直接设为 0，硬件在循环迭代时读取同一内存位置，避免了庞大的内存膨胀复制。</p>
 </section>
 <section class="card" data-type="keywords"><div class="table-scroll" role="region" tabindex="0" aria-label="讲义表格 69，可横向滚动"><table><tr><th>English</th><th>中文</th><th>说明 / 例句</th></tr><tr><td>tuple</td><td>元组</td><td>point = (3, 5)</td></tr><tr><td>immutable</td><td>不可变</td><td>t[0] = 1 会报错</td></tr><tr><td>unpacking</td><td>解包</td><td>low, high = min_max(x)</td></tr><tr><td>set</td><td>集合</td><td>a = {1, 2, 3}</td></tr><tr><td>hashable</td><td>可哈希</td><td>元组可哈希，列表不可</td></tr><tr><td>duplicate</td><td>重复元素</td><td>集合自动去重</td></tr><tr><td>union / intersection</td><td>并集 / 交集</td><td>a | b, a & b</td></tr><tr><td>type conversion</td><td>类型转换</td><td>list()、tuple()、set()</td></tr><tr><td>package</td><td>包</td><td>numpy 是包，math 是模块</td></tr><tr><td>PyPI</td><td>Python 包索引</td><td>pypi.org</td></tr><tr><td>pip</td><td>包安装工具</td><td>pip install numpy</td></tr><tr><td>ndarray</td><td>NumPy 数组</td><td>np.array([1,2,3])</td></tr><tr><td>shape</td><td>形状</td><td>(2, 3) 表示 2 行 3 列</td></tr><tr><td>broadcasting</td><td>广播</td><td>不同形状按规则扩展</td></tr></table></div></section>
@@ -2989,6 +2992,26 @@ file.close()</code></pre><p>更安全的写法是 <code>with open(...) as f:</co
 })();
 </script>
 <script src="../../assets/config.js"></script><script src="../../data/learning-catalog.js"></script><script src="../../assets/learning.bundle.js"></script>
+<script defer src="../../assets/katex/katex.min.js"></script>
+<script defer src="../../assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\[", right: "\]", display: true },
+        { left: "\(", right: "\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 <script>
 (function(){
   var KEY='lut-theme', m=document.querySelector('meta[name="color-scheme"]'), b=document.getElementById('thbtn');

@@ -68,6 +68,7 @@ LAYOUT = """<!doctype html>
 <meta name="color-scheme" content="light dark">
 <script>try{var s=localStorage.getItem("lut-theme");document.querySelector("meta[name=color-scheme]").content=(s==="light"||s==="dark")?s:"light dark";}catch(e){}</script>
 <title>{{TITLE}}</title>
+<link rel="stylesheet" href="{{PREFIX}}assets/katex/katex.min.css">
 <style>{{CSSTEXT}}</style>
 </head>
 <body id="top" data-module="{{MODULE}}">
@@ -88,6 +89,26 @@ LAYOUT = """<!doctype html>
 <footer class="foot">内容基于原始课程文件整理 · 生成于 {{DATE}} <a href="#top" class="totop">回到顶部 ↑</a></footer>
 <script>{{NAVSCRIPT}}</script>
 <script src="{{PREFIX}}assets/config.js"></script><script src="{{PREFIX}}data/learning-catalog.js"></script><script src="{{PREFIX}}assets/learning.bundle.js"></script>
+<script defer src="{{PREFIX}}assets/katex/katex.min.js"></script>
+<script defer src="{{PREFIX}}assets/katex/contrib/auto-render.min.js" onload="renderLUTMath()"></script>
+<script>
+function renderLUTMath() {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+      throwOnError: false
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", renderLUTMath);
+window.addEventListener("load", renderLUTMath);
+</script>
 {{SCRIPT}}{{THEME}}
 </body>
 </html>
